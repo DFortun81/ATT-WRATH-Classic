@@ -147,7 +147,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Zangarmarsh.lua
 
 -- Northrend
--- TODO
+-- #IMPORT: 02 - Outdoor Zones\\04 Northrend
 
 -- Holidays
 -- #IMPORT: 21 - Holidays\\07 - Brewfest\\Brewfest.lua
