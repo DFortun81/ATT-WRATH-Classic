@@ -6,13 +6,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "A large concentration of night elves lives in this enchanted land of perpetual summer twilight. Many live in the city of Nighthaven; the others choose a more solitary existence in the woods.\n\nThe Moonglade contains the Barrow Dens, a series of holy underground passages that held the druids as they slept through the millennia. Sapphire moonwells are scattered throughout the forest and shine pale light up into the canopy. Many forest creatures live in the Moonglade, and crazed furbolg and satyrs have also found their way in.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(855, {	-- Explore Moonglade
+				explorationAch(855, {	-- Explore Moonglade
 					-- #if BEFORE WRATH
 					["description"] = "Explore Moonglade, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

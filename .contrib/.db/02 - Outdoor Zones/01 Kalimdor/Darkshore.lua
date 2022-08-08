@@ -6,13 +6,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "This rocky area stretches along Kalimdor's north coast. Rains, winds and rocky beaches make the place inhospitable. Old night elf ruins stand crumbling on the cliffs, and murlocs and naga lurk within. The night elf village of Auberdine serves as a friendly trading post.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(844, {	-- Explore Darkshore
+				explorationAch(844, {	-- Explore Darkshore
 					-- #if BEFORE WRATH
 					["description"] = "Explore Darkshore, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

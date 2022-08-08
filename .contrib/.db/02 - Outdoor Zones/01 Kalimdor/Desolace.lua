@@ -17,13 +17,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "Centaur control this rugged wilderness. Desolace is a land of craggy rock faces and stormy skies, and the rampaging centaur let no other race survive. Five centaur tribes strike from individual strongholds, but the great fortress of Maraudon occasionally plays host to them all.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(848, {	-- Explore Desolace
+				explorationAch(848, {	-- Explore Desolace
 					-- #if BEFORE WRATH
 					["description"] = "Explore Desolace, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

@@ -6,13 +6,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "The Stonetalon Mountains are craggy and forbidding. The air is usually hot, though violent rainstorms and severe winds cool the slopes and endanger travelers. The mountains are home to many fi erce creatures, including hippogryphs, harpies, drakes, wyverns and kobolds. This region is inhospitable and extreme.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(847, {	-- Explore Stonetalon Mountains
+				explorationAch(847, {	-- Explore Stonetalon Mountains
 					-- #if BEFORE WRATH
 					["description"] = "Explore Stonetalon Mountains, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

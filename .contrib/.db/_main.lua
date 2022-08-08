@@ -781,11 +781,11 @@ SEASON_GLADIATOR = -664;
 SEASON_MERCILESS = -665;
 SEASON_VENGEFUL = -666;
 SEASON_BRUTAL = -667;
---PRE_SEASON_HATEFUL = -657;
---SEASON_DEADLY = -668;
---SEASON_FURIOUS = -669;
---SEASON_RELENTLESS = -670;
---SEASON_WRATHFUL = -671;
+PRE_SEASON_HATEFUL = -657;
+SEASON_DEADLY = -668;
+SEASON_FURIOUS = -669;
+SEASON_RELENTLESS = -670;
+SEASON_WRATHFUL = -671;
 --SEASON_VICIOUS = -672;
 --	HONOR_RUTHLESS = -656;
 --SEASON_RUTHLESS = -673;
@@ -1695,6 +1695,14 @@ end
 exploration = function(id, t)							-- Create an EXPLORATION Object
 	if type(t) == "string" then t = { ["maphash"] = t }; end
 	return struct("explorationID", id, t);
+end
+explorationAch = function(id, t)						-- Create an EXPLORATION ACHIEVEMENT Object
+	t = struct("achievementID", id, t or {});
+	-- #if ANYCLASSIC
+	t.OnClick = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]];
+	t.OnUpdate = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]];
+	-- #endif
+	return t;
 end
 explorationBatch = function(data)
 	local groups = {};

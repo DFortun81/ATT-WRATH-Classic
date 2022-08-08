@@ -108,13 +108,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "Winterspring is a frosty valley in northern Kalimdor. This frigid zone is littered with night elven ruins, and serves as the primary home of the Blue Dragonflight in Kalimdor. The only settlement in Winterspring is Everlook, a Steamwheedle Cartel town that is neutral to both Horde and Alliance.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(857, {	-- Explore Winterspring
+				explorationAch(857, {	-- Explore Winterspring
 					-- #if BEFORE WRATH
 					["description"] = "Explore Winterspring, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 				removeclassicphase(ach(944, {	-- They Love Me In That Tunnel
 					-- #if BEFORE 3.0.1
 					["OnClick"] = [[_.CommonAchievementHandlers.EXALTED_REP_OnClick]],

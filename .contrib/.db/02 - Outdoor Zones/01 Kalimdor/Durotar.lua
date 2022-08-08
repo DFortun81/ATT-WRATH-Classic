@@ -6,13 +6,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "Once the home of the savage quilboar, the Horde arrived on Kalimdor's shore and, in the aftermath of the Third War, drove the quilboar from the land and established this region as its own. Warchief Thrall named the new nation after his father, Durotan, and rules ably. Horde settlements are scattered throughout the rocky land, which is only marginally more fertile than the Barrens.\n\nThe Horde's greatest city is Orgrimmar, a warrior city that symbolizes the greatness of the orcs and their allies. Much of Durotar remains wild, and the orcs continually fend off centaur and quilboar as they attempt to tame the land.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(728, {	-- Explore Durotar
+				explorationAch(728, {	-- Explore Durotar
 					-- #if BEFORE WRATH
 					["description"] = "Explore Durotar, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

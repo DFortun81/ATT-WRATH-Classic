@@ -190,13 +190,11 @@ root("Zones", m(KALIMDOR, {
 				},
 			})),
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(851, {	-- Explore Tanaris
+				explorationAch(851, {	-- Explore Tanaris
 					-- #if BEFORE WRATH
 					["description"] = "Explore Tanaris, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

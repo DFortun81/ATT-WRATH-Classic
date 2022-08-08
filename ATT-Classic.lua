@@ -3860,9 +3860,10 @@ local criteriaFields = {
 		return true;
 	end,
 };
-
+local useAchievementAPI = false;
 if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
+	useAchievementAPI = true;
 	fields.text = function(t)
 		return t.link or RETRIEVING_DATA;
 	end
@@ -4038,6 +4039,7 @@ app.CreateAchievementCategory = function(id, t)
 end
 app.CommonAchievementHandlers = {
 ["ALL_ITEM_COSTS"] = function(t)
+	if useAchievementAPI then return; end
 	local collected = true;
 	for i,provider in ipairs(t.cost) do
 		if provider[1] == "i" and GetItemCount(provider[2], true) == 0 then
@@ -4048,6 +4050,7 @@ app.CommonAchievementHandlers = {
 	t.SetAchievementCollected(t.achievementID, collected);
 end,
 ["ANY_ITEM_COST"] = function(t)
+	if useAchievementAPI then return; end
 	local collected = false;
 	for i,provider in ipairs(t.cost) do
 		if provider[1] == "i" and GetItemCount(provider[2], true) > 0 then
@@ -4058,6 +4061,7 @@ end,
 	t.SetAchievementCollected(t.achievementID, collected);
 end,
 ["ALL_ITEM_PROVIDERS"] = function(t)
+	if useAchievementAPI then return; end
 	local collected = true;
 	for i,provider in ipairs(t.providers) do
 		if provider[1] == "i" and GetItemCount(provider[2], true) == 0 then
@@ -4068,6 +4072,7 @@ end,
 	t.SetAchievementCollected(t.achievementID, collected);
 end,
 ["ANY_ITEM_PROVIDER"] = function(t)
+	if useAchievementAPI then return; end
 	local collected = false;
 	for i,provider in ipairs(t.providers) do
 		if provider[1] == "i" and GetItemCount(provider[2], true) > 0 then
@@ -4078,6 +4083,7 @@ end,
 	t.SetAchievementCollected(t.achievementID, collected);
 end,
 ["ALL_SOURCE_QUESTS"] = function(t)
+	if useAchievementAPI then return; end
 	local collected = true;
 	for i,questID in ipairs(t.sourceQuests) do
 		if not C_QuestLog.IsQuestFlaggedCompleted(questID) then
@@ -4088,6 +4094,7 @@ end,
 	t.SetAchievementCollected(t.achievementID, collected);
 end,
 ["ANY_SOURCE_QUEST"] = function(t)
+	if useAchievementAPI then return; end
 	local collected = false;
 	for i,questID in ipairs(t.sourceQuests) do
 		if C_QuestLog.IsQuestFlaggedCompleted(questID) then
@@ -4113,6 +4120,7 @@ end,
 				return true;
 			end
 		end
+		if useAchievementAPI then return; end
 		local collected = true;
 		for i,o in ipairs(t.areas) do
 			if o.collected ~= 1 and app.FilterItemClass_UnobtainableItem(o) then
@@ -4152,6 +4160,7 @@ end,
 				return true;
 			end
 		end
+		if useAchievementAPI then return; end
 		t.SetAchievementCollected(t.achievementID, t.rep.standing == 8);
 	end
 end,
@@ -4184,6 +4193,7 @@ end,
 			if #reps < 1 then return true; end
 			t.reps = reps;
 		end
+		if useAchievementAPI then return; end
 		local collected = true;
 		for i,faction in ipairs(t.reps) do
 			if faction.standing < 8 then
@@ -4209,6 +4219,7 @@ end,
 			if #reps < 1 then return true; end
 			t.reps = reps;
 		end
+		if useAchievementAPI then return; end
 		local collected = false;
 		for i,faction in ipairs(t.reps) do
 			if faction.standing < 8 then
@@ -4368,6 +4379,7 @@ end,
 		end
 		t.p = p;
 		t.quests = quests;
+		if useAchievementAPI then return; end
 		t.SetAchievementCollected(t.achievementID, p >= t.rank);
 	else
 		return true;
@@ -4410,6 +4422,7 @@ end,
 			if #achievements < 1 then return true; end
 			t.achievements = achievements;
 		end
+		if useAchievementAPI then return; end
 		local collected = true;
 		for i,faction in ipairs(t.achievements) do
 			if not faction.collected then
@@ -4433,6 +4446,7 @@ end,
 			if not achievements then return true; end
 			t.achievements = achievements;
 		end
+		if useAchievementAPI then return; end
 		local collected = true;
 		for i,faction in ipairs(t.achievements) do
 			if not faction.collected and app.FilterItemClass_UnobtainableItem(faction) then

@@ -6,13 +6,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "A shattered stretch of coastline on Kalimdor's northeast, Azshara was once the greatest night elf metropolis. The city fell millennia ago in the War of the Ancients, but a few ragged buildings perch on the cliffs overlooking similar ruins among the coral. The Horde has established a small outpost, Grim Ulang, in the area, but naga are a constant danger.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(852, {	-- Explore Azshara
+				explorationAch(852, {	-- Explore Azshara
 					-- #if BEFORE WRATH
 					["description"] = "Explore Azshara, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({

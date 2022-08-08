@@ -6,13 +6,11 @@ root("Zones", m(KALIMDOR, {
 		["lore"] = "Silithus is a rough desert in the southwest end of Kalimdor. While Silithus today acts as the main working place of the Cenarion Circle, it was once the seat of the Aqiri Empire, known to the world as Ahn'Qiraj. Its gates were sealed off millennia ago by the Night Elves, but the silithid managed to regain some footage over Kalimdor. Today, the Cenarion Circle enlists both the Horde and the Alliance to help with their vigil.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				removeclassicphase(ach(856, {	-- Explore Silithus
+				explorationAch(856, {	-- Explore Silithus
 					-- #if BEFORE WRATH
 					["description"] = "Explore Silithus, revealing the covered areas of the world map.",
-					["OnClick"] = [[_.CommonAchievementHandlers.EXPLORATION_OnClick]],
-					["OnUpdate"] = [[_.CommonAchievementHandlers.EXPLORATION_OnUpdate]],
 					-- #endif
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, {
