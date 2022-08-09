@@ -3843,23 +3843,6 @@ local categoryFields = {
 		return app.asset("Category_Achievements");
 	end,
 };
-local criteriaFields = {
-	["key"] = function(t)
-		return "criteriaID";
-	end,
-	["achievementID"] = function(t)
-		return t.parent.achievementID;
-	end,
-	["index"] = function(t)
-		return 1;
-	end,
-	["collectible"] = function(t)
-		return t.parent.collectible;
-	end,
-	["trackable"] = function(t)
-		return true;
-	end,
-};
 local useAchievementAPI = false;
 if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
@@ -3891,37 +3874,85 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	categoryFields.parentCategoryID = function(t)
 		return select(2, GetCategoryInfo(t.achievementCategoryID)) or -1;
 	end
-	criteriaFields.collected = function(t)
-		-- If the parent is collected, return immediately.
-		local collected = t.parent.collected;
-		if collected then return collected; end
-		
-		-- Check to see if the criteria was completed.
-		local achievementID = t.achievementID;
-		if achievementID then
-			if app.CurrentCharacter.Achievements[achievementID] then return true; end
-			if t.criteriaID and t.criteriaID <= (GetAchievementNumCriteria(achievementID) or -1) then
-				return select(3, GetAchievementCriteriaInfo(achievementID, t.criteriaID, true));
-			end
-		end
-	end
-	criteriaFields.saved = function(t)
-		-- If the parent is saved, return immediately.
-		local saved = t.parent.saved;
-		if saved then return saved; end
-		
-		-- Check to see if the criteria was completed.
-		local achievementID = t.achievementID;
-		if achievementID then
-			if app.CurrentCharacter.Achievements[achievementID] then return true; end
-			if t.criteriaID and t.criteriaID <= (GetAchievementNumCriteria(achievementID) or -1) then
-				return select(3, GetAchievementCriteriaInfo(achievementID, t.criteriaID, true));
-			end
-		end
-	end
 	app.CreateAchievement = function(id, t)
 		return setmetatable(constructor(id, t, "achievementID"), app.BaseAchievement);
 	end
+	
+	local onClickForCriteria = function(row, button)
+		if button == "RightButton" then
+			app.CreateMiniListForGroup(app.CreateAchievement(row.ref.achievementID));
+			return true;
+		end
+	end;
+	app.BaseAchievementCriteria = app.BaseObjectFields({
+		["key"] = function(t)
+			return "criteriaID";
+		end,
+		["achievementID"] = function(t)
+			return t.achID or t.parent.achievementID;
+		end,
+		["index"] = function(t)
+			return 1;
+		end,
+		["collectible"] = function(t)
+			return app.CollectibleAchievements;
+		end,
+		["trackable"] = function(t)
+			return true;
+		end,
+		["text"] = function(t)
+			return "|cffffff00[Criteria: " .. (t.name or RETRIEVING_DATA) .. "]|r";
+		end,
+		["name"] = function(t)
+			local achievementID = t.achievementID;
+			if achievementID then
+				return GetAchievementCriteriaInfo(achievementID, t.criteriaID);
+			end
+		end,
+		["icon"] = function(t)
+			local achievementID = t.achievementID;
+			if achievementID then
+				return select(10, GetAchievementInfo(achievementID));
+			end
+		end,
+		["description"] = function(t)
+			local achievementID = t.achievementID;
+			if achievementID then
+				return "Criteria for achievement '" .. select(2, GetAchievementInfo(achievementID)) .. "'";
+			end
+		end,
+		["collected"] = function(t)
+			if t.parent.achievementID then
+				-- If the parent is collected, return immediately.
+				local collected = t.parent.collected;
+				if collected then return collected; end
+			end
+			
+			-- Check to see if the criteria was completed.
+			local achievementID = t.achievementID;
+			if achievementID then
+				if app.CurrentCharacter.Achievements[achievementID] then return true; end
+				return select(3, GetAchievementCriteriaInfo(achievementID, t.criteriaID));
+			end
+		end,
+		["saved"] = function(t)
+			if t.parent.achievementID then
+				-- If the parent is saved, return immediately.
+				local saved = t.parent.saved;
+				if saved then return saved; end
+			end
+			
+			-- Check to see if the criteria was completed.
+			local achievementID = t.achievementID;
+			if achievementID then
+				if app.CurrentCharacter.Achievements[achievementID] then return true; end
+				return select(3, GetAchievementCriteriaInfo(achievementID, t.criteriaID));
+			end
+		end,
+		["OnClick"] = function()
+			return onClickForCriteria;
+		end,
+	});
 	app.CreateAchievementCriteria = function(id, t)
 		return setmetatable(constructor(id, t, "criteriaID"), app.BaseAchievementCriteria);
 	end
@@ -4007,16 +4038,6 @@ else
 		local data = L.ACHIEVEMENT_CRITERIA_DATA[t.achievementCategoryID];
 		if data then return data[1]; end
 		return -1;
-	end
-	criteriaFields.collected = function(t)
-		-- If the parent is collected, return immediately.
-		local collected = t.parent.collected;
-		if collected then return collected; end
-	end
-	criteriaFields.saved = function(t)
-		-- If the parent is saved, return immediately.
-		local saved = t.parent.saved;
-		if saved then return saved; end
 	end
 	
 	local fieldsWithSpellID = RawCloneData(fields);
