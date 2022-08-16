@@ -6141,19 +6141,22 @@ app.CacheFlightPathDataForMap = function(mapID, nodes)
 	if count > 0 then
 		if count > 1 then
 			count = 0;
-			local pos = C_Map.GetPlayerMapPosition(app.CurrentMapID, "player");
-			if pos then
-				local px, py = pos:GetXY();
-				px = px * 100;
-				py = py * 100;
-				
-				-- Select the best flight path node.
-				for nodeID,node in pairs(temp) do
-					local coord = node.coords and node.coords[1];
-					if coord then
-						-- Allow for a little bit of leeway.
-						if math.sqrt((coord[1] - px)^2 + (coord[2] - py)^2) < 0.6 then
-							nodes[nodeID] = true;
+			local mapID = app.CurrentMapID;
+			if mapID then
+				local pos = C_Map.GetPlayerMapPosition(mapID, "player");
+				if pos then
+					local px, py = pos:GetXY();
+					px = px * 100;
+					py = py * 100;
+					
+					-- Select the best flight path node.
+					for nodeID,node in pairs(temp) do
+						local coord = node.coords and node.coords[1];
+						if coord then
+							-- Allow for a little bit of leeway.
+							if math.sqrt((coord[1] - px)^2 + (coord[2] - py)^2) < 0.6 then
+								nodes[nodeID] = true;
+							end
 						end
 					end
 				end
@@ -7459,8 +7462,12 @@ app.events.MAP_EXPLORATION_UPDATED = function(...)
 	app.CurrentMapID = app.GetCurrentMapID();
 	StartCoroutine("RefreshExploration", function()
 		coroutine.yield();
-		
-		local pos = C_Map.GetPlayerMapPosition(app.CurrentMapID, "player");
+		local mapID = app.CurrentMapID;
+		while not mapID do
+			coroutine.yield();
+			mapID = app.CurrentMapID;
+		end
+		local pos = C_Map.GetPlayerMapPosition(mapID, "player");
 		if pos then
 			local x, y = pos:GetXY();
 			local explored = C_MapExplorationInfo_GetExploredAreaIDsAtPosition(app.CurrentMapID, pos);
