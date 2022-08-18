@@ -3981,7 +3981,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 		["description"] = function(t)
 			local achievementID = t.achievementID;
 			if achievementID then
-				return "Criteria for achievement '" .. select(2, GetAchievementInfo(achievementID)) .. "'";
+				return "Criteria for |cffffff00[" .. (select(2, GetAchievementInfo(achievementID)) or RETRIEVING_DATA) .. "]|r";
 			end
 		end,
 		["collected"] = function(t)
