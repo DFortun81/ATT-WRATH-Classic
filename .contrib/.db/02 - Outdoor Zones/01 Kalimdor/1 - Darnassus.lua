@@ -173,7 +173,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["timeline"] = { "removed 3.0.2" },
 					["classes"] = { PRIEST },
-					["races"] = { UNDEAD },
+					["races"] = { NIGHTELF },
 					["lvl"] = 20,
 					-- #if BEFORE 3.0.2
 					["groups"] = {
@@ -352,7 +352,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["timeline"] = { "removed 3.0.2" },
 					["classes"] = { PRIEST },
-					["races"] = { UNDEAD },
+					["races"] = { NIGHTELF },
 					["lvl"] = 10,
 					-- #if BEFORE 3.0.2
 					["groups"] = {
