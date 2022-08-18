@@ -3898,19 +3898,26 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
 			GameTooltip:AddLine(" ", 1, 1, 1);
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
-			local criteriaID = t.criteriaID;
-			if totalCriteria > 0 and criteriaID and criteriaID <= totalCriteria then
-				local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaID);
-				GameTooltip:AddDoubleLine("  criteriaString", tostring(criteriaString), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  criteriaType", tostring(criteriaType), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  completed", tostring(completed), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  quantity", tostring(quantity), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  reqQuantity", tostring(reqQuantity), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  charName", tostring(charName), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  flags", tostring(flags), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  assetID", tostring(assetID), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  quantityString", tostring(quantityString), 1, 1, 1, 1, 1, 1);
-				GameTooltip:AddDoubleLine("  criteriaID", tostring(criteriaID), 1, 1, 1, 1, 1, 1);
+			if totalCriteria > 0 then
+				local criteriaIndex = t.criteriaID;
+				if criteriaIndex then
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID;
+					if criteriaIndex <= totalCriteria then
+						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfo(achievementID, criteriaIndex);
+					else
+						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfoByID(achievementID, criteriaIndex);
+					end
+					GameTooltip:AddDoubleLine("  criteriaString", tostring(criteriaString), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  criteriaType", tostring(criteriaType), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  completed", tostring(completed), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  quantity", tostring(quantity), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  reqQuantity", tostring(reqQuantity), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  charName", tostring(charName), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  flags", tostring(flags), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  assetID", tostring(assetID), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  quantityString", tostring(quantityString), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  criteriaID", tostring(criteriaID), 1, 1, 1, 1, 1, 1);
+				end
 			end
 		end
 	end
@@ -3956,11 +3963,12 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			local achievementID = t.achievementID;
 			if achievementID then
 				local criteriaID = t.criteriaID;
-				if criteriaID and criteriaID <= GetAchievementNumCriteria(achievementID) then
-					return GetAchievementCriteriaInfo(achievementID, criteriaID);
-				else
-					print("Invalid Criteria", achievementID, criteriaID)
-					return "Invalid Criteria: " .. (criteriaID or "??");
+				if criteriaID then
+					if criteriaID <= GetAchievementNumCriteria(achievementID) then
+						return GetAchievementCriteriaInfo(achievementID, criteriaID);
+					else
+						return GetAchievementCriteriaInfoByID(achievementID, criteriaID);
+					end
 				end
 			end
 		end,
@@ -3988,8 +3996,12 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
 				local criteriaID = t.criteriaID;
-				if criteriaID and criteriaID <= GetAchievementNumCriteria(achievementID) then
-					return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+				if criteriaID then
+					if criteriaID <= GetAchievementNumCriteria(achievementID) then
+						return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+					else
+						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
+					end
 				end
 			end
 		end,
@@ -4005,8 +4017,12 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
 				local criteriaID = t.criteriaID;
-				if criteriaID and criteriaID <= GetAchievementNumCriteria(achievementID) then
-					return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+				if criteriaID then
+					if criteriaID <= GetAchievementNumCriteria(achievementID) then
+						return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+					else
+						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
+					end
 				end
 			end
 		end,
