@@ -1618,7 +1618,7 @@ end
 category = function(id, t)								-- Create a CATEGORY Object.
 	return struct("categoryID", id, t);
 end
-cl = function(id, specc, t)									-- Create a CHARACTER CLASS Object
+cl = function(id, specc, t)								-- Create a CHARACTER CLASS Object
 	-- specc is optional
 	if not t then
 		t = specc;
@@ -1658,10 +1658,15 @@ faction = function(id, t)								-- Create a FACTION Object
 	return struct("factionID", id, t);
 end
 e = function(id, t)										-- Create an ENCOUNTER Object
-	-- #if BEFORE CATA
+	-- #if AFTER WRATH
+	return struct("encounterID", id, t);
+	-- #else
 	-- Not yet supported in classic.
 	if t then
 		if t.groups or t.g then
+			-- #if AFTER WRATH
+			t.encounterID = id;
+			-- #endif
 			-- Convert to a Header or NPC ID.
 			if t.npcID then
 				return t;
@@ -1688,8 +1693,6 @@ e = function(id, t)										-- Create an ENCOUNTER Object
 			return { ["npcID"] = -1, ["groups"] = t };
 		end
 	end
-	-- #else
-	return struct("encounterID", id, t);
 	-- #endif
 end
 exploration = function(id, t)							-- Create an EXPLORATION Object

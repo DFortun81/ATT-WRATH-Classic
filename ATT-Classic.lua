@@ -3868,6 +3868,55 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			print("Attempted to set achievement " .. achievementID .. " as collected: " .. (collected and 1 or 0));
 		end
 	end
+	local onTooltipForAchievement = function(t)
+		local achievementID = t.achievementID;
+		if achievementID then
+			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
+			GameTooltip:AddLine(" ", 1, 1, 1);
+			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
+			if totalCriteria > 0 then
+				for criteriaID=1,totalCriteria,1 do
+					GameTooltip:AddLine(" CRITERIA " .. criteriaID .. ":", 1, 1, 1);
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaID);
+					GameTooltip:AddDoubleLine("  criteriaString", tostring(criteriaString), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  criteriaType", tostring(criteriaType), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  completed", tostring(completed), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  quantity", tostring(quantity), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  reqQuantity", tostring(reqQuantity), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  charName", tostring(charName), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  flags", tostring(flags), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  assetID", tostring(assetID), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  quantityString", tostring(quantityString), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine("  criteriaID", tostring(criteriaID), 1, 1, 1, 1, 1, 1);
+				end
+			end
+		end
+	end
+	local onTooltipForAchievementCriteria = function(t)
+		local achievementID = t.achievementID;
+		if achievementID then
+			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
+			GameTooltip:AddLine(" ", 1, 1, 1);
+			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
+			local criteriaID = t.criteriaID;
+			if totalCriteria > 0 and criteriaID and criteriaID <= totalCriteria then
+				local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaID);
+				GameTooltip:AddDoubleLine("  criteriaString", tostring(criteriaString), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  criteriaType", tostring(criteriaType), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  completed", tostring(completed), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  quantity", tostring(quantity), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  reqQuantity", tostring(reqQuantity), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  charName", tostring(charName), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  flags", tostring(flags), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  assetID", tostring(assetID), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  quantityString", tostring(quantityString), 1, 1, 1, 1, 1, 1);
+				GameTooltip:AddDoubleLine("  criteriaID", tostring(criteriaID), 1, 1, 1, 1, 1, 1);
+			end
+		end
+	end
+	fields.OnTooltip = function(t)
+		return onTooltipForAchievement;
+	end
 	categoryFields.text = function(t)
 		return GetCategoryInfo(t.achievementCategoryID);
 	end
@@ -3906,7 +3955,13 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 		["name"] = function(t)
 			local achievementID = t.achievementID;
 			if achievementID then
-				return GetAchievementCriteriaInfo(achievementID, t.criteriaID);
+				local criteriaID = t.criteriaID;
+				if criteriaID and criteriaID <= GetAchievementNumCriteria(achievementID) then
+					return GetAchievementCriteriaInfo(achievementID, criteriaID);
+				else
+					print("Invalid Criteria", achievementID, criteriaID)
+					return "Invalid Criteria: " .. (criteriaID or "??");
+				end
 			end
 		end,
 		["icon"] = function(t)
@@ -3932,7 +3987,10 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			local achievementID = t.achievementID;
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
-				return select(3, GetAchievementCriteriaInfo(achievementID, t.criteriaID));
+				local criteriaID = t.criteriaID;
+				if criteriaID and criteriaID <= GetAchievementNumCriteria(achievementID) then
+					return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+				end
 			end
 		end,
 		["saved"] = function(t)
@@ -3946,11 +4004,17 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			local achievementID = t.achievementID;
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
-				return select(3, GetAchievementCriteriaInfo(achievementID, t.criteriaID));
+				local criteriaID = t.criteriaID;
+				if criteriaID and criteriaID <= GetAchievementNumCriteria(achievementID) then
+					return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+				end
 			end
 		end,
 		["OnClick"] = function()
 			return onClickForCriteria;
+		end,
+		["OnTooltip"] = function()
+			return onTooltipForAchievementCriteria;
 		end,
 	});
 	app.CreateAchievementCriteria = function(id, t)
@@ -5853,8 +5917,17 @@ if EJ_GetEncounterInfo then
 	end
 else
 	app.CreateEncounter = function(id, t)
-		-- Do nothing, not supported yet.
-		return nil;
+		local npcID = t.creatureID or (t.crs and t.crs[1]) or t.npcID or (t.qgs and t.qgs[1]);
+		if npcID then
+			t = app.CreateNPC(npcID, t);
+			t.encounterID = id;
+			return t;
+		else
+			t = constructor(id, t, "encounterID");
+			t.text = "INVALID ENCOUNTER " .. id;
+			print(t.text);
+			return t;
+		end
 	end
 end
 end)();
