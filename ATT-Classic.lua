@@ -2901,6 +2901,8 @@ fieldConverters = {
 					CacheField(group, "itemIDAsCost", v[2]);
 				elseif v[1] == "o" and v[2] > 0 then
 					cacheObjectID(group, v[2]);
+				elseif v[1] == "c" and v[2] > 0 then
+					CacheField(group, "currencyID", v[2]);
 				end
 			end
 		end
@@ -3758,8 +3760,14 @@ app.OpenMainList = OpenMainList;
 	local GameTooltip_SetCurrencyByID = GameTooltip.SetCurrencyByID;
 	GameTooltip.SetCurrencyByID = function(self, currencyID, count)
 		-- Make sure to call to base functionality
-		GameTooltip_SetCurrencyByID(self, currencyID, count);
-		
+		if GameTooltip_SetCurrencyByID then
+			GameTooltip_SetCurrencyByID(self, currencyID, count);
+		else
+			local results = SearchForField("currencyID", currencyID);
+			if results and #results > 0 then
+				GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
+			end
+		end
 		if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
 			AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, SearchForField, "currencyID", currencyID);
 			if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
@@ -3769,8 +3777,7 @@ app.OpenMainList = OpenMainList;
 	local GameTooltip_SetCurrencyToken = GameTooltip.SetCurrencyToken;
 	GameTooltip.SetCurrencyToken = function(self, tokenID)
 		-- Make sure to call to base functionality
-		GameTooltip_SetCurrencyToken(self, tokenID);
-		
+		if GameTooltip_SetCurrencyToken then GameTooltip_SetCurrencyToken(self, tokenID); end
 		if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
 			-- Determine what kind of list data this is. (Blizzard is whack and using this API call for headers too...)
 			local name, isHeader = GetCurrencyListInfo(tokenID);
@@ -3782,6 +3789,12 @@ app.OpenMainList = OpenMainList;
 					for currencyID, _ in pairs(cache) do
 						-- Compare the name of the currency vs the name of the token
 						if select(1, GetCurrencyInfo(currencyID)) == name then
+							if not GameTooltip_SetCurrencyToken then
+								local results = SearchForField("currencyID", currencyID);
+								if results and #results > 0 then
+									GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
+								end
+							end
 							AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, SearchForField, "currencyID", currencyID);
 							if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
 							self:Show();
@@ -3875,19 +3888,9 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			GameTooltip:AddLine(" ", 1, 1, 1);
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
 			if totalCriteria > 0 then
-				for criteriaID=1,totalCriteria,1 do
-					GameTooltip:AddLine(" CRITERIA " .. criteriaID .. ":", 1, 1, 1);
-					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaID);
-					GameTooltip:AddDoubleLine("  criteriaString", tostring(criteriaString), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  criteriaType", tostring(criteriaType), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  completed", tostring(completed), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  quantity", tostring(quantity), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  reqQuantity", tostring(reqQuantity), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  charName", tostring(charName), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  flags", tostring(flags), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  assetID", tostring(assetID), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  quantityString", tostring(quantityString), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  criteriaID", tostring(criteriaID), 1, 1, 1, 1, 1, 1);
+				for criteriaIndex=1,totalCriteria,1 do
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaIndex);
+					GameTooltip:AddDoubleLine(" " .. criteriaIndex .. ": [" .. criteriaID .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
 				end
 			end
 		end
@@ -3907,16 +3910,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 					else
 						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfoByID(achievementID, criteriaIndex);
 					end
-					GameTooltip:AddDoubleLine("  criteriaString", tostring(criteriaString), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  criteriaType", tostring(criteriaType), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  completed", tostring(completed), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  quantity", tostring(quantity), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  reqQuantity", tostring(reqQuantity), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  charName", tostring(charName), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  flags", tostring(flags), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  assetID", tostring(assetID), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  quantityString", tostring(quantityString), 1, 1, 1, 1, 1, 1);
-					GameTooltip:AddDoubleLine("  criteriaID", tostring(criteriaID), 1, 1, 1, 1, 1, 1);
+					GameTooltip:AddDoubleLine(" [" .. criteriaID .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
 				end
 			end
 		end
