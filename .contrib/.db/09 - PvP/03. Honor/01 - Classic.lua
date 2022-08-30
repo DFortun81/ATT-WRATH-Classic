@@ -661,6 +661,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -675,6 +677,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -689,6 +693,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -703,6 +709,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -717,6 +725,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -1381,6 +1391,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -1409,6 +1421,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -1423,6 +1437,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
@@ -1437,6 +1453,8 @@ root("PVP", {
 								{ "i", 137642, 15 },	-- Mark of Honor
 								-- #elseif AFTER 4.0
 								{ "c", 1901, 2000 },	-- 2000 Honor Points
+								-- #elseif AFTER WRATH
+								{ "c", 1901, 16650 },	-- 16650 Honor Points
 								-- #else
 								{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
 								{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
