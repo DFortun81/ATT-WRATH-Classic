@@ -713,6 +713,39 @@ root("Achievements", {
 				12948,	-- The Champion of Anguish
 			},
 		})),
+		
+		-- #if AFTER 3.0.1
+		ach(1681, applyclassicphase(WRATH_PHASE_ONE, {	-- The Loremaster (A)
+			["sym"] = {
+				{"select","achievementID",
+					1678,	-- Loremaster of Kalimdor
+					1676,	-- Loremaster of Eastern Kingdoms
+					1262,	-- Loremaster of Outland
+					41,	-- Loremaster of Northrend
+				},
+			},
+			["races"] = ALLIANCE_ONLY,
+			["groups"] = {
+				title(93),		-- Loremaster
+				i(43300),		-- Loremaster's Colors
+			},
+		})),
+		ach(1682, applyclassicphase(WRATH_PHASE_ONE, {	-- The Loremaster (H)
+			["sym"] = {
+				{"select","achievementID",
+					1680,	-- Loremaster of Kalimdor
+					1677,	-- Loremaster of Eastern Kingdoms
+					1274,	-- Loremaster of Outland
+					1360,	-- Loremaster of Northrend
+				},
+			},
+			["races"] = HORDE_ONLY,
+			["groups"] = {
+				title(93),		-- Loremaster
+				i(43300),		-- Loremaster's Colors
+			},
+		})),
+		-- #endif
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_EXPLORATION, {
 		-- #if AFTER 2.0.1
