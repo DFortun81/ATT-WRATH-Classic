@@ -1594,10 +1594,11 @@ ach = function(id, altID, t)							-- Create an ACHIEVEMENT Object
 	if t or type(altID) == "number" then
 		t = struct("allianceAchievementID", id, t or {});
 		t["hordeAchievementID"] = altID;
-		return applyclassicphase(WRATH_PHASE_ONE, t);
 	else
-		return applyclassicphase(WRATH_PHASE_ONE, struct("achievementID", id, altID));
+		t = struct("achievementID", id, altID);
 	end
+	if not t.timeline then bubbleDown({ ["timeline"] = { "added 3.0.1" } }, t); end
+	return t;
 end
 achcat = function(id, t)								-- Create an ACHIEVEMENT CATEGORY Object
 	return struct("achievementCategoryID", id, t);

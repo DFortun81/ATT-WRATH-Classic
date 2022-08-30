@@ -383,7 +383,7 @@ root("Achievements", {
 		})),
 		-- #if BEFORE 4.0.1
 		ach(92, {	-- Did Somebody Order a Knuckle Sandwich?
-			["timeline"] = { "removed 4.0.1" },
+			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
 		}),
 		-- #endif
 		ach(2716),	-- Dual Talent Specialization
@@ -1405,7 +1405,7 @@ root("Achievements", {
 		})),
 		-- #if AFTER 4.0.1
 		ach(92, {	-- Did Somebody Order a Knuckle Sandwich?
-			["timeline"] = { "removed 4.0.1" },
+			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
 		}),
 		-- #endif
 		ach(2336, applyclassicphase(PHASE_THREE, {	-- Insane in the Membrane
