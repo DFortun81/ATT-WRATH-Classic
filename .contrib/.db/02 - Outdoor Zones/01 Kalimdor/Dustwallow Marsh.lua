@@ -1674,6 +1674,20 @@ root("Zones", m(KALIMDOR, {
 				n(14232, {	-- Dart
 					["coord"] = { 47.6, 18.6, DUSTWALLOW_MARSH },
 				}),
+				o(202080, {	-- Dart's Nest
+					["coords"] = {
+						{ 47.9, 19.0, DUSTWALLOW_MARSH },
+						{ 49.1, 17.5, DUSTWALLOW_MARSH },
+						{ 48.0, 14.5, DUSTWALLOW_MARSH },
+						{ 46.5, 17.2, DUSTWALLOW_MARSH },
+					},
+					["timeline"] = { "added 3.2.0.10072" },
+					["groups"] = {
+						i(48112, {	-- Darting Hatchling (PET!)
+							["timeline"] = { "added 3.2.0.10072" },
+						}),
+					},
+				}),
 				n(14231, {	-- Drogoth the Roamer
 					["coords"] = {
 						{ 36.2, 13.6, DUSTWALLOW_MARSH },

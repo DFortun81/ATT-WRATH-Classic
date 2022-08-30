@@ -2141,6 +2141,28 @@ root("Zones", m(KALIMDOR, {
 						{ 61.0, 13.6, THE_BARRENS },
 					},
 				}),
+				o(202081, {	-- Takk's Nest
+					["coords"] = {
+						-- #if AFTER CATA
+						{ 61.0, 19.8, NORTHERN_BARRENS },
+						{ 62.8, 20.2, NORTHERN_BARRENS },
+						{ 64.1, 23.0, NORTHERN_BARRENS },
+						{ 65.0, 28.7, NORTHERN_BARRENS },
+						--{ 56.0, 49.3, NORTHERN_BARRENS },	-- Wowhead notes this as another coord, but only before cataclysm
+						-- #else
+						{ 59.8, 8.5, THE_BARRENS },
+						{ 60.3, 10.1, THE_BARRENS },
+						{ 61.1, 11.4, THE_BARRENS },
+						{ 60.7, 13.4, THE_BARRENS },
+						-- #endif
+					},
+					["timeline"] = { "added 3.2.0.10072" },
+					["groups"] = {
+						i(48118, {	-- Leaping Hatchling
+							["timeline"] = { "added 3.2.0.10072" },
+						}),
+					},
+				}),
 				n(5832, {	-- Thunderstomp
 					["coords"] = {
 						{ 47.0, 77.2, THE_BARRENS },

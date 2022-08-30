@@ -517,6 +517,21 @@ root("Zones", m(KALIMDOR, {
 				n(6581, {	-- Ravasaur Matriarch
 					["coord"] = { 62.4, 66.0, UNGORO_CRATER },
 				}),
+				o(202082, {	-- Ravasaur Matriarch's Nest
+					["coords"] = {
+						{ 68.9, 61.2, UNGORO_CRATER },
+						{ 68.9, 66.9, UNGORO_CRATER },
+						{ 63.0, 63.2, UNGORO_CRATER },
+						{ 62.2, 65.3, UNGORO_CRATER },
+						{ 62.0, 73.6, UNGORO_CRATER },
+					},
+					["timeline"] = { "added 3.2.0.10072" },
+					["groups"] = {
+						i(48122, {	-- Ravasaur Hatchling (PET!)
+							["timeline"] = { "added 3.2.0.10072" },
+						}),
+					},
+				}),
 				n(6585, {	-- Uhk'loc
 					["coord"] = { 68.5, 12.7, UNGORO_CRATER },
 				}),
