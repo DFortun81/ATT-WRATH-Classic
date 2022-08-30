@@ -415,7 +415,7 @@ settings.CreateTab = function(self, text)
 	return tab;
 end
 settings.ShowCopyPasteDialog = function(self)
-	app:ShowPopupDialogWithEditBox("Ctrl+A, Ctrl+C to Copy to your Clipboard.", self:GetText(), nil, 10);
+	app:ShowPopupDialogWithEditBox("Ctrl+A, Ctrl+C to Copy to your Clipboard.", self.copypasta or self:GetText(), nil, 10);
 end
 
 settings.SetAccountMode = function(self, accountMode)
@@ -639,23 +639,36 @@ settings.version = f;
 
 f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
 f:SetPoint("TOPLEFT", settings, "BOTTOMLEFT", 0, -6);
-f:SetText("discord.gg/allthethings");
-f:SetWidth(230);
+f:SetText("CurseForge");
+f:SetWidth(140);
+f:SetHeight(30);
+f:RegisterForClicks("AnyUp");
+f:SetScript("OnClick", settings.ShowCopyPasteDialog);
+f:SetATTTooltip("Click this button to copy the url to get the ALL THE THINGS addon from Curse.\n\nYou can give this link to your friends to ruin their lives too! They'll eventually forgive you... maybe.");
+f.copypasta = "https://www.curseforge.com/wow/addons/all-the-things";
+settings.curse = f;
+
+f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f:SetPoint("TOPLEFT", settings.curse, "TOPRIGHT", 4, 0);
+f:SetText("Discord");
+f:SetWidth(140);
 f:SetHeight(30);
 f:RegisterForClicks("AnyUp");
 f:SetScript("OnClick", settings.ShowCopyPasteDialog);
 f:SetATTTooltip("Click this button to copy the url to get to the ALL THE THINGS Discord.\n\nYou can share your progress/frustrations with other collectors!");
-settings.twitch = f;
+f.copypasta = "discord.gg/allthethings";
+settings.discord = f;
 
 f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
-f:SetPoint("TOPLEFT", settings.twitch, "TOPRIGHT", 4, 0);
-f:SetText("twitch.tv/crieve");
-f:SetWidth(200);
+f:SetPoint("TOPLEFT", settings.discord, "TOPRIGHT", 4, 0);
+f:SetText("Twitch");
+f:SetWidth(140);
 f:SetHeight(30);
 f:RegisterForClicks("AnyUp");
 f:SetScript("OnClick", settings.ShowCopyPasteDialog);
 f:SetATTTooltip("Click this button to copy the url to get to my Twitch Channel.\n\nYou can ask questions while I'm streaming and I will try my best to answer them!");
-settings.community = f;
+f.copypasta = "twitch.tv/crieve";
+settings.twitch = f;
 
 ------------------------------------------
 -- The "General" Tab.					--
@@ -1444,6 +1457,7 @@ end)();
 ------------------------------------------
 (function()
 local tab = settings:CreateTab("Filters");
+local reasons = L["UNOBTAINABLE_ITEM_REASONS"];
 tab.OnRefresh = function(self)
 	if settings:Get("DebugMode") then
 		PanelTemplates_DisableTab(settings, self:GetID());
@@ -1520,7 +1534,7 @@ for i,filterID in ipairs({ 21, 22, 23, 24, 25, 26 }) do
 end
 
 -- Secondary Armor Classes
-last, xoffset, yoffset = ItemFiltersLabel, 120, -4;
+last, xoffset, yoffset = ItemFiltersLabel, 180, -4;
 for i,filterID in ipairs({ 10, 9, 51, 52, 53 }) do
 	local filter = settings:CreateCheckBox(itemFilterNames[filterID] or tostring(filterID), ItemFilterOnRefresh, ItemFilterOnClick);
 	filter:SetPoint("TOPLEFT", last, "BOTTOMLEFT", xoffset, yoffset);
@@ -1613,6 +1627,43 @@ f.OnRefresh = function(self)
 	end
 end;
 table.insert(settings.MostRecentTab.objects, f);
+
+local SeasonalHolidayFiltersLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+SeasonalHolidayFiltersLabel:SetPoint("TOPLEFT", line, "BOTTOMRIGHT", -200, -8);
+SeasonalHolidayFiltersLabel:SetJustifyH("LEFT");
+SeasonalHolidayFiltersLabel:SetText("|CFFAAAAFFSeasonal Holiday Filters|r");
+SeasonalHolidayFiltersLabel:Show();
+table.insert(settings.MostRecentTab.objects, SeasonalHolidayFiltersLabel);
+
+-- Seasonal Filters
+last, xoffset, yoffset = SeasonalHolidayFiltersLabel, 0, -4;
+for i,u in ipairs({ 1000, 1001, 1002, 1012, 1003, 1004, 1005, 1006, 1007, 1008, 1010, 1011, 1013, 1015 }) do
+	local filter = settings:CreateCheckBox(reasons[u][3] or tostring(u), UnobtainableOnRefresh, UnobtainableFilterOnClick);
+	filter:SetATTTooltip(reasons[u][2]);
+	filter:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, yoffset);
+	filter.u = u;
+	last = filter;
+	yoffset = 6;
+end
+
+local GeneralUnobtainableFiltersLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+GeneralUnobtainableFiltersLabel:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -8);
+GeneralUnobtainableFiltersLabel:SetJustifyH("LEFT");
+GeneralUnobtainableFiltersLabel:SetText("|CFFFFAAAAGeneral Unobtainable Filters|r");
+GeneralUnobtainableFiltersLabel:Show();
+table.insert(settings.MostRecentTab.objects, GeneralUnobtainableFiltersLabel);
+
+-- General Unobtainable Filters
+yoffset = -4;
+last = GeneralUnobtainableFiltersLabel;
+for i,u in ipairs({ 1, 2, 3, 4 }) do
+	local filter = settings:CreateCheckBox(reasons[u][3] or tostring(u), UnobtainableOnRefresh, UnobtainableFilterOnClick);
+	filter:SetATTTooltip(reasons[u][2]);
+	filter:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, yoffset);
+	filter.u = u;
+	last = filter;
+	yoffset = 6;
+end
 end)();
 
 ------------------------------------------
@@ -1681,7 +1732,7 @@ for u,reason in pairs(reasons) do
 end
 UnobtainableSettingsBase.__index[11] = true;
 
-local ClassicPhasesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+local ClassicPhasesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
 ClassicPhasesLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
 ClassicPhasesLabel:SetJustifyH("LEFT");
 ClassicPhasesLabel:SetText("|CFFAAFFAAClassic Phases|r");
@@ -1703,8 +1754,9 @@ for i,o in ipairs({ { 11, 0, 0 }, {1101, spacing, -vspacing }, { 12, 0, -vspacin
 	last = filter;
 end
 
-local TBCPhasesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
-TBCPhasesLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 148, -8);
+local TBCPhasesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+TBCPhasesLabel:SetPoint("TOP", ClassicPhasesLabel, "TOP", 0, 0);
+TBCPhasesLabel:SetPoint("LEFT", line, "LEFT", 208, 0);
 TBCPhasesLabel:SetJustifyH("LEFT");
 TBCPhasesLabel:SetText("|CFFAAFFAATBC Phases|r");
 TBCPhasesLabel:Show();
@@ -1724,42 +1776,28 @@ for i,o in ipairs({ { 17, 0, 0 }, { 18, 0 }, {1801, spacing, -vspacing }, { 1802
 	last = filter;
 end
 
-local SeasonalHolidayFiltersLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
-SeasonalHolidayFiltersLabel:SetPoint("TOPLEFT", line, "BOTTOMRIGHT", -200, -8);
-SeasonalHolidayFiltersLabel:SetJustifyH("LEFT");
-SeasonalHolidayFiltersLabel:SetText("|CFFAAAAFFSeasonal Holiday Filters|r");
-SeasonalHolidayFiltersLabel:Show();
-table.insert(settings.MostRecentTab.objects, SeasonalHolidayFiltersLabel);
+local WrathPhasesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+WrathPhasesLabel:SetPoint("TOP", ClassicPhasesLabel, "TOP", 0, 0);
+WrathPhasesLabel:SetPoint("LEFT", line, "LEFT", 408, 0);
+WrathPhasesLabel:SetJustifyH("LEFT");
+WrathPhasesLabel:SetText("|CFFAAFFAAWrath Phases|r");
+WrathPhasesLabel:Show();
+table.insert(settings.MostRecentTab.objects, WrathPhasesLabel);
 
--- Seasonal Filters
-last, xoffset, yoffset = SeasonalHolidayFiltersLabel, 0, -4;
-for i,u in ipairs({ 1000, 1001, 1002, 1012, 1003, 1004, 1005, 1006, 1007, 1008, 1010, 1011, 1013, 1015 }) do
-	local filter = settings:CreateCheckBox(reasons[u][3] or tostring(u), UnobtainableOnRefresh, UnobtainableFilterOnClick);
-	filter:SetATTTooltip(reasons[u][2]);
-	filter:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, yoffset);
+last, xoffset, yoffset = WrathPhasesLabel, 0, -4;
+for i,o in ipairs({ { 30, 0, 0 }, {3001, spacing, -vspacing }, { 31, 0, -vspacing }, {3101, spacing, -vspacing }, { 32, 0, -vspacing }, { 33, 0 }, {3301, spacing, -vspacing }, { 34, 0, -vspacing }, }) do
+	local u = o[1];
+	yoffset = o[3] or 6;
+	local reason = reasons[u];
+	local filter = settings:CreateCheckBox(reason[3] or tostring(u), UnobtainableOnRefresh, UnobtainableFilterOnClick);
+	filter:SetATTTooltip(reason[2] .. (reason[6] or ""));
+	filter:SetPoint("LEFT", WrathPhasesLabel, "LEFT", o[2], 0);
+	filter:SetPoint("TOP", last, "BOTTOMLEFT", 0, yoffset);
+	filter:SetScale(o[2] > 0 and 0.8 or 1);
 	filter.u = u;
 	last = filter;
-	yoffset = 6;
 end
 
-local GeneralUnobtainableFiltersLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
-GeneralUnobtainableFiltersLabel:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -8);
-GeneralUnobtainableFiltersLabel:SetJustifyH("LEFT");
-GeneralUnobtainableFiltersLabel:SetText("|CFFFFAAAAGeneral Unobtainable Filters|r");
-GeneralUnobtainableFiltersLabel:Show();
-table.insert(settings.MostRecentTab.objects, GeneralUnobtainableFiltersLabel);
-
--- General Unobtainable Filters
-yoffset = -4;
-last = GeneralUnobtainableFiltersLabel;
-for i,u in ipairs({ 1, 2, 3, 4 }) do
-	local filter = settings:CreateCheckBox(reasons[u][3] or tostring(u), UnobtainableOnRefresh, UnobtainableFilterOnClick);
-	filter:SetATTTooltip(reasons[u][2]);
-	filter:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, yoffset);
-	filter.u = u;
-	last = filter;
-	yoffset = 6;
-end
 end)();
 
 ------------------------------------------
