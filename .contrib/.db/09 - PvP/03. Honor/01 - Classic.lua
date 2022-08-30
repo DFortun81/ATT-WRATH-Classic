@@ -95,7 +95,7 @@ root("PVP", {
 					-- #endif
 					["groups"] = {
 						applyclassicphase(TBC_PHASE_ONE, title(	-- Justicar <Name>
-							-- #if BEFORE WRATH
+							-- #if BEFORE CATA
 							35,
 							-- #else
 							48,
@@ -832,7 +832,7 @@ root("PVP", {
 					-- #endif
 					["groups"] = {
 						applyclassicphase(TBC_PHASE_ONE, title(	-- Conqueror <Name>
-							-- #if BEFORE WRATH
+							-- #if BEFORE CATA
 							34,
 							-- #else
 							47,

@@ -681,7 +681,11 @@ root("Achievements", {
 		ach(508),	-- 1500 Quests Completed
 		ach(32),	-- 2000 Quests Completed
 		ach(978, applyclassicphase(WRATH_PHASE_ONE, {	-- 3000 Quests Completed
+			-- #if AFTER CATA
 			title(81),	-- The Seeker
+			-- #else
+			title(42),	-- The Seeker
+			-- #endif
 		})),
 		
 		ach(31),	-- A Simple Re-Quest
@@ -745,7 +749,11 @@ root("Achievements", {
 			i(43348),	-- Tabard of the Explorer
 		}),
 		ach(46, {	-- World Explorer
+			-- #if AFTER CATA
 			title(78),	-- % the Explorer
+			-- #else
+			title(47),	-- % the Explorer
+			-- #endif
 		}),
 	}),
 	pvp(achcat(ACHIEVEMENT_CATEGORY_PVP, {
@@ -812,25 +820,40 @@ root("Achievements", {
 			["OnUpdate"] = HK_OnUpdate,
 			-- #endif
 			["groups"] = {
+				-- #if ANYCLASSIC
+				title(94, {	-- <Name> of the Alliance
+					["races"] = ALLIANCE_ONLY,
+				}),
+				title(95, {	-- <Name> of the Horde
+					["races"] = HORDE_ONLY,
+				}),
+				-- #else
 				title(126, {	-- <Name> of the Alliance
 					["races"] = ALLIANCE_ONLY,
 				}),
 				title(127, {	-- <Name> of the Horde
 					["races"] = HORDE_ONLY,
 				}),
+				-- #endif
 			},
 		})),
 		ach(230, applyclassicphase(WRATH_PHASE_ONE, {	-- Battlemaster (Alliance)
 			["races"] = ALLIANCE_ONLY,
+			-- #if AFTER CATA
+			-- Crieve NOTE: This is coming back with the wrong title. Disabled for now.
 			["groups"] = {
 				title(72),	-- Battlemaster
 			},
+			-- #endif
 		})),
 		ach(1175, applyclassicphase(WRATH_PHASE_ONE, {	-- Battlemaster (Horde)
 			["races"] = HORDE_ONLY,
+			-- #if AFTER CATA
+			-- Crieve NOTE: This is coming back with the wrong title. Disabled for now.
 			["groups"] = {
 				title(72),	-- Battlemaster
 			},
+			-- #endif
 		})),
 		ach(611, applyclassicphase(WRATH_PHASE_ONE, {	-- Bleeding Bloodhoof
 			["provider"] = { "n", 3057 },	-- Cairne Bloodhoof <High Chieftain>
@@ -1107,7 +1130,11 @@ root("Achievements", {
 			ach(1516, {	-- Accomplished Angler
 				["requireSkill"] = FISHING,
 				["groups"] = {
+					-- #if AFTER CATA
 					title(83),	-- Salty %t
+					-- #else
+					title(51),	-- Salty %t
+					-- #endif
 				},
 			}),
 			classicAch(126, {	-- Journeyman Fisherman
@@ -1323,9 +1350,13 @@ root("Achievements", {
 			["description"] = "Earn exalted reputation with 5 home cities.",
 			-- #endif
 			["races"] = ALLIANCE_ONLY,
-			["groups"] = {
-				applyclassicphase(WRATH_PHASE_ONE, title(130)),	-- Ambassador %
-			},
+			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
+				-- #if AFTER CATA
+				title(130),	-- Ambassador %
+				-- #else
+				title(98),	-- Ambassador %
+				-- #endif
+			}),
 		})),
 		ach(762, applyclassicphase(PHASE_ONE, {	-- Ambassador of the Horde
 			-- #if BEFORE 3.0.1
@@ -1335,9 +1366,13 @@ root("Achievements", {
 			["description"] = "Earn exalted reputation with 5 home cities.",
 			-- #endif
 			["races"] = HORDE_ONLY,
-			["groups"] = {
-				applyclassicphase(WRATH_PHASE_ONE, title(130)),	-- Ambassador %
-			},
+			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
+				-- #if AFTER CATA
+				title(130),	-- Ambassador %
+				-- #else
+				title(98),	-- Ambassador %
+				-- #endif
+			}),
 		})),
 		ach(945, {	-- The Argent Champion
 			-- #if BEFORE 3.0.1
@@ -1346,9 +1381,13 @@ root("Achievements", {
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 947, 946); end]],
 			["description"] = "Earn exalted status with the Argent Dawn and the Argent Crusade.",
 			-- #endif
-			["groups"] = {
-				applyclassicphase(WRATH_PHASE_ONE, title(131)),	-- % the Argent Champion
-			},
+			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
+				-- #if AFTER CATA
+				title(131),	-- % the Argent Champion
+				-- #else
+				title(99),	-- % the Argent Champion
+				-- #endif
+			}),
 		}),
 		ach(942, applyclassicphase(TBC_PHASE_ONE, {	-- The Diplomat
 			-- #if BEFORE 3.0.1
@@ -1360,7 +1399,11 @@ root("Achievements", {
 			["maps"] = { FERALAS, ZANGARMARSH, NAGRAND },
 			["races"] = ALLIANCE_ONLY,
 			["groups"] = {
-				applyclassicphase(WRATH_PHASE_ONE, title(79)),	-- % the Diplomat
+				-- #if AFTER CATA
+				title(79),	-- % the Diplomat
+				-- #else
+				title(48),	-- % the Diplomat
+				-- #endif
 			},
 		})),
 		ach(943, applyclassicphase(TBC_PHASE_ONE, {	-- The Diplomat
@@ -1372,9 +1415,13 @@ root("Achievements", {
 			-- #endif
 			["maps"] = { FERALAS, ZANGARMARSH, NAGRAND },
 			["races"] = HORDE_ONLY,
-			["groups"] = {
-				applyclassicphase(WRATH_PHASE_ONE, title(79)),	-- % the Diplomat
-			},
+			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
+				-- #if AFTER CATA
+				title(79),	-- % the Diplomat
+				-- #else
+				title(48),	-- % the Diplomat
+				-- #endif
+			}),
 		})),
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_WORLD_EVENTS, {
@@ -1413,6 +1460,11 @@ root("Achievements", {
 			["OnTooltip"] = INSANE_IN_THE_MEMBRANE_OnTooltip,
 			["OnUpdate"] = INSANE_IN_THE_MEMBRANE_OnUpdate,
 			["description"] = "Insane in the Membrane is a Feat of Strength that rewards the title <The Insane>. This feat requires you to become honored with the Bloodsail Buccaneers and exalted with the Steamwheedle Cartel (Booty Bay, Everlook, Gadgetzan, Ratchet), Ravenholdt, Darkmoon Faire, and the Shen'dralar. It does not require that all of these reputation levels be reached at the same time, however, this may not be a thing until the achievement itself is introduced. Raising reputation with these factions is typically very difficult, time-consuming, and costly.",
+			["groups"] = {
+				title(112, {	-- the Insane
+					["timeline"] = { "added 3.0.1" },
+				}),
+			},
 		})),
 		ach(879, applyclassicphase(PHASE_ONE, {	-- Old School Ride
 			["providers"] = {

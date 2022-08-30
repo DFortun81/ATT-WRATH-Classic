@@ -3861,24 +3861,63 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
 	useAchievementAPI = true;
 	fields.text = function(t)
-		return t.link or RETRIEVING_DATA;
+		return t.link or "|cffffff00[" .. (t.name or ("@CRIEVE: INVALID ACHIEVEMENT " .. t.achievementID)) .. "]|r";
 	end
 	fields.name = function(t)
-		return select(2, GetAchievementInfo(t.achievementID));
+		local name = select(2, GetAchievementInfo(t.achievementID));
+		if name then return name; end
+		local data = L.ACHIEVEMENT_DATA[t.achievementID];
+		if data and data[2] then return data[2]; end
+		if t.providers then
+			for k,v in ipairs(t.providers) do
+				if v[2] > 0 then
+					if v[1] == "o" then
+						return app.ObjectNames[v[2]];
+					elseif v[1] == "i" then
+						return select(1, GetItemInfo(v[2]));
+					end
+				end
+			end
+		end
+		if t.spellID then return select(1, GetSpellInfo(t.spellID)); end
 	end
 	fields.link = function(t)
 		return GetAchievementLink(t.achievementID);
 	end
 	fields.icon = function(t)
-		return select(10, GetAchievementInfo(t.achievementID));
+		local name = select(10, GetAchievementInfo(t.achievementID));
+		if name then return name; end
+		local data = L.ACHIEVEMENT_DATA[t.achievementID];
+		if data and data[3] then return data[3]; end
+		if t.providers then
+			for k,v in ipairs(t.providers) do
+				if v[2] > 0 then
+					if v[1] == "o" then
+						return app.ObjectIcons[v[2]] or "Interface\\Worldmap\\Gear_64Grey";
+					elseif v[1] == "i" then
+						return select(5, GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
+					end
+				end
+			end
+		end
+		if t.spellID then return select(3, GetSpellInfo(t.spellID)); end
+		return t.parent.icon or "Interface\\Worldmap\\Gear_64Grey";
 	end
 	fields.parentCategoryID = function(t)
-		return GetAchievementCategory(t.achievementID) or -1;
+		local data = GetAchievementCategory(t.achievementID);
+		if data then return data; end
+		data = L.ACHIEVEMENT_DATA[t.achievementID];
+		if data then return data[1]; end
+		return -1;
 	end
 	fields.SetAchievementCollected = function(t)
-		print("Attempted to retrieve the function SetAchievementCollected from the Achievement object. (no longer available)");
-		return function(achievementID, collected)
-			print("Attempted to set achievement " .. achievementID .. " as collected: " .. (collected and 1 or 0));
+		if t.achievementID == 5788 or t.achievementID == 6059 then
+			return SetAchievementCollected;
+		else
+			print("Attempted to retrieve the function SetAchievementCollected from the Achievement object. (no longer available)");
+			return function(achievementID, collected)
+				print("Attempted to set achievement " .. achievementID .. " as collected: " .. (collected and 1 or 0));
+			end
 		end
 	end
 	local onTooltipForAchievement = function(t)
@@ -3919,10 +3958,18 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 		return onTooltipForAchievement;
 	end
 	categoryFields.text = function(t)
-		return GetCategoryInfo(t.achievementCategoryID);
+		local data = GetCategoryInfo(t.achievementCategoryID);
+		if data then return data; end
+		data = L.ACHIEVEMENT_CRITERIA_DATA[t.achievementCategoryID];
+		if data then return data[2]; end
+		return RETRIEVING_DATA .. " achcat:" .. t.achievementCategoryID;
 	end
 	categoryFields.parentCategoryID = function(t)
-		return select(2, GetCategoryInfo(t.achievementCategoryID)) or -1;
+		local data = select(2, GetCategoryInfo(t.achievementCategoryID));
+		if data then return data; end
+		data = L.ACHIEVEMENT_CRITERIA_DATA[t.achievementCategoryID];
+		if data then return data[1]; end
+		return -1;
 	end
 	app.CreateAchievement = function(id, t)
 		return setmetatable(constructor(id, t, "achievementID"), app.BaseAchievement);
