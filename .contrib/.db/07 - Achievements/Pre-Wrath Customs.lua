@@ -382,7 +382,7 @@ root("Achievements", {
 			["rank"] = 1,
 		}),
 		-- #if BEFORE 4.0.1
-		ach(92, {	-- Did Somebody Order a Knuckle Sandwich?
+		ach(16, {	-- Did Somebody Order a Knuckle Sandwich?
 			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
 		}),
 		-- #endif

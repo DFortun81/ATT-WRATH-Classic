@@ -1999,7 +1999,8 @@ crit = function(criteriaID, t)           -- Create an Achievement Criteria Objec
 		end
 	end
 	t.criteriaID = criteriaID;
-	return un(WRATH_PHASE_ONE, t);
+	if not t.timeline then bubbleDown({ ["timeline"] = { "added 3.0.1" } }, t); end
+	return t;
 end
 model = function(displayID, t)
 	t.displayID = displayID;
