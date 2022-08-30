@@ -422,7 +422,7 @@ root("Zones", m(KALIMDOR, {
 							["provider"] = { "i", 47196 },	-- Venomhide Baby Tooth
 							["cost"] = { { "i", 46362, 1 } },	-- Venomhide Hatchling
 						}),
-						removeclassicphase(ach(3357, {	-- Venomhide Ravasaur
+						classicAch(3357, {	-- Venomhide Ravasaur
 							["provider"] = { "i", 46102 },	-- Whistle of the Venomhide Ravasaur
 							["timeline"] = { "added 3.2.0.10026" },
 							["races"] = HORDE_ONLY,
@@ -431,7 +431,7 @@ root("Zones", m(KALIMDOR, {
 							["description"] = "Obtain a Venomhide Ravasaur.",
 							["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_ITEM_PROVIDER]],
 							-- #endif
-						})),
+						}),
 						i(46102, {	-- Whistle of the Venomhide Ravasaur
 							["timeline"] = { "added 3.2.0.10026" },
 							["races"] = HORDE_ONLY,

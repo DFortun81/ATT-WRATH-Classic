@@ -374,13 +374,13 @@ root("Achievements", {
 			["spellID"] = 90265,	-- Master Riding
 			["rank"] = 5,
 		})),
-		removeclassicphase(ach(1017, {	-- Can I Keep Him?
+		classicAch(1017, {	-- Can I Keep Him?
 			["OnClick"] = COMPANIONS_OnClick,
 			["OnTooltip"] = COMPANIONS_OnTooltip,
 			["OnUpdate"] = COMPANIONS_OnUpdate,
 			["f"] = 101,
 			["rank"] = 1,
-		})),
+		}),
 		-- #if BEFORE 4.0.1
 		ach(92, {	-- Did Somebody Order a Knuckle Sandwich?
 			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
@@ -388,17 +388,17 @@ root("Achievements", {
 		-- #endif
 		ach(2716),	-- Dual Talent Specialization
 		ach(556),	-- Epic
-		removeclassicphase(ach(889, {	-- Fast and Furious
+		classicAch(889, {	-- Fast and Furious
 			["spellID"] = 33391,	-- Journeyman Riding
 			["rank"] = 2,
-		})),
-		removeclassicphase(ach(2142, {	-- Filling Up The Barn
+		}),
+		classicAch(2142, {	-- Filling Up The Barn
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
 			["OnUpdate"] = MOUNTS_OnUpdate,
 			["rank"] = 25,
 			["f"] = 100,
-		})),
+		}),
 		-- Friend or Fowl? Located in Howling Fjord.
 		ach(2097, {	-- Get to the Choppa!
 			["providers"] = {
@@ -407,10 +407,10 @@ root("Achievements", {
 			},
 			["f"] = 100,
 		}),
-		removeclassicphase(ach(891, {	-- Giddy Up!
+		classicAch(891, {	-- Giddy Up!
 			["spellID"] = 33388,	-- Apprentice Riding
 			["rank"] = 1,
-		})),
+		}),
 		ach(964),	-- Going Down?
 		ach(1176, {	-- Got My Mind On My Money [100g]
 			["rank"] = 100,
@@ -444,42 +444,42 @@ root("Achievements", {
 				applyclassicphase(WRATH_PHASE_ONE, i(44178)),	-- Reins of the Albino Drake
 			},
 		})),
-		removeclassicphase(ach(6, {	-- Level 10
+		classicAch(6, {	-- Level 10
 			["lvl"] = 10,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = LEVEL_OnUpdate,
 			-- #endif
-		})),
-		removeclassicphase(ach(7, {	-- Level 20
+		}),
+		classicAch(7, {	-- Level 20
 			["lvl"] = 20,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = LEVEL_OnUpdate,
 			-- #endif
-		})),
-		removeclassicphase(ach(8, {	-- Level 30
+		}),
+		classicAch(8, {	-- Level 30
 			["lvl"] = 30,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = LEVEL_OnUpdate,
 			-- #endif
-		})),
-		removeclassicphase(ach(9, {	-- Level 40
+		}),
+		classicAch(9, {	-- Level 40
 			["lvl"] = 40,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = LEVEL_OnUpdate,
 			-- #endif
-		})),
-		removeclassicphase(ach(10, {	-- Level 50
+		}),
+		classicAch(10, {	-- Level 50
 			["lvl"] = 50,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = LEVEL_OnUpdate,
 			-- #endif
-		})),
-		removeclassicphase(ach(11, {	-- Level 60
+		}),
+		classicAch(11, {	-- Level 60
 			["lvl"] = 60,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = LEVEL_OnUpdate,
 			-- #endif
-		})),
+		}),
 		ach(12, applyclassicphase(TBC_PHASE_ONE, {	-- Level 70
 			["lvl"] = 70,
 			-- #if BEFORE WRATH
@@ -533,30 +533,30 @@ root("Achievements", {
 		-- My Sack is "Gigantique", located in Shattrath
 		ach(559),	-- Needy
 		ach(2556),	-- Pest Control
-		removeclassicphase(ach(15, {	-- Plenty of Pets
+		classicAch(15, {	-- Plenty of Pets
 			["OnClick"] = COMPANIONS_OnClick,
 			["OnTooltip"] = COMPANIONS_OnTooltip,
 			["OnUpdate"] = COMPANIONS_OnUpdate,
 			["f"] = 101,
 			["rank"] = 15,
-		})),
-		removeclassicphase(ach(1248, {	-- Plethora of Pets
+		}),
+		classicAch(1248, {	-- Plethora of Pets
 			["OnClick"] = COMPANIONS_OnClick,
 			["OnTooltip"] = COMPANIONS_OnTooltip,
 			["OnUpdate"] = COMPANIONS_OnUpdate,
 			["f"] = 101,
 			["rank"] = 25,
-		})),
+		}),
 		ach(621, {	-- Represent [TODO]
 			["rank"] = 1,
 		}),
 		-- Ring of the Kirin Tor, located in Dalaran.
-		removeclassicphase(ach(546, {	-- Safe Deposit
+		classicAch(546, {	-- Safe Deposit
 			-- #if BEFORE WRATH
 			["description"] = "Buy 7 additional bank slots.",
 			["OnUpdate"] = [[function(t) t.SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 7); end]],
 			-- #endif
-		})),
+		}),
 		ach(545),	-- Shave and a Haircut
 		ach(1250, applyclassicphase(TBC_PHASE_ONE, {	-- Shop Smart, Shop Pet...Smart
 			["OnClick"] = COMPANIONS_OnClick,
@@ -568,13 +568,13 @@ root("Achievements", {
 				applyclassicphase(WRATH_PHASE_ONE, i(40653)),	-- Reeking Pet Carrier
 			},
 		})),
-		removeclassicphase(ach(2141, {	-- Stable Keeper
+		classicAch(2141, {	-- Stable Keeper
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
 			["OnUpdate"] = MOUNTS_OnUpdate,
 			["rank"] = 10,
 			["f"] = 100,
-		})),
+		}),
 		ach(557),	-- Superior
 		ach(1832),	-- Tastes Like Chicken
 		ach(1020, {	-- Ten Tabards [TODO]
@@ -599,7 +599,7 @@ root("Achievements", {
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_QUESTS, {
 		achcat(ACHIEVEMENT_CATEGORY_EASTERN_KINGDOMS_QUESTS, {	-- Pre-Cata, this is CLASSIC.
-			removeclassicphase(ach(1676, {	-- Loremaster of Eastern Kingdoms
+			classicAch(1676, {	-- Loremaster of Eastern Kingdoms
 				-- #if BEFORE WRATH
 				["description"] = "Complete 700 quests in Eastern Kingdoms.",
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
@@ -608,8 +608,8 @@ root("Achievements", {
 				["rank"] = 700,
 				-- #endif
 				["races"] = ALLIANCE_ONLY,
-			})),
-			removeclassicphase(ach(1677, {	-- Loremaster of Eastern Kingdoms
+			}),
+			classicAch(1677, {	-- Loremaster of Eastern Kingdoms
 				-- #if BEFORE WRATH
 				["description"] = "Complete 550 quests in Eastern Kingdoms.",
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
@@ -618,8 +618,8 @@ root("Achievements", {
 				["rank"] = 550,
 				-- #endif
 				["races"] = HORDE_ONLY,
-			})),
-			removeclassicphase(ach(1678, {	-- Loremaster of Kalimdor
+			}),
+			classicAch(1678, {	-- Loremaster of Kalimdor
 				-- #if BEFORE WRATH
 				["description"] = "Complete 700 quests in Kalimdor.",
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
@@ -628,8 +628,8 @@ root("Achievements", {
 				["rank"] = 700,
 				-- #endif
 				["races"] = ALLIANCE_ONLY,
-			})),
-			removeclassicphase(ach(1680, {	-- Loremaster of Kalimdor
+			}),
+			classicAch(1680, {	-- Loremaster of Kalimdor
 				-- #if BEFORE WRATH
 				["description"] = "Complete 685 quests in Kalimdor.",
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
@@ -638,7 +638,7 @@ root("Achievements", {
 				["rank"] = 685,
 				-- #endif
 				["races"] = HORDE_ONLY,
-			})),
+			}),
 		}),
 		-- #if AFTER 2.0.1
 		achcat(ACHIEVEMENT_CATEGORY_OUTLAND_QUESTS, {
@@ -717,22 +717,22 @@ root("Achievements", {
 			ach(1311),	-- Medium Rare
 		}),
 		-- #endif
-		removeclassicphase(ach(42, {	-- Explore Eastern Kingdoms
+		classicAch(42, {	-- Explore Eastern Kingdoms
 			-- #if BEFORE WRATH
 			["description"] = "Explore the regions of Eastern Kingdoms.",
 			["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_EASTERN_KINGDOMS_EXP .. [[); end]],
 			-- #endif
-		})),
-		removeclassicphase(ach(43, {	-- Explore Kalimdor
+		}),
+		classicAch(43, {	-- Explore Kalimdor
 			-- #if BEFORE WRATH
 			["description"] = "Explore the regions of Kalimdor.",
 			["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_KALIMDOR_EXP .. [[); end]],
 			-- #endif
-		})),
+		}),
 		ach(44, applyclassicphase(TBC_PHASE_ONE, {	-- Explore Outland
 			-- #if BEFORE WRATH
 			["description"] = "Explore the regions of Outland.",
@@ -971,21 +971,21 @@ root("Achievements", {
 				["requireSkill"] = COOKING,
 				["races"] = HORDE_ONLY,
 			}),
-			removeclassicphase(ach(121, {	-- Journeyman Cook
+			classicAch(121, {	-- Journeyman Cook
 				["requireSkill"] = COOKING,
 				["spellID"] = 3102,	-- Cooking (Journeyman)
 				["rank"] = 2,
-			})),
-			removeclassicphase(ach(122, {	-- Expert Cook
+			}),
+			classicAch(122, {	-- Expert Cook
 				["requireSkill"] = COOKING,
 				["spellID"] = 3413,	-- Cooking (Expert)
 				["rank"] = 3,
-			})),
-			removeclassicphase(ach(123, {	-- Artisan Cook
+			}),
+			classicAch(123, {	-- Artisan Cook
 				["requireSkill"] = COOKING,
 				["spellID"] = 18260,	-- Cooking (Artisan)
 				["rank"] = 4,
-			})),
+			}),
 			ach(124, applyclassicphase(TBC_PHASE_ONE, {	-- Master Cook
 				["requireSkill"] = COOKING,
 				["spellID"] = 33359,	-- Cooking (Master)
@@ -1110,21 +1110,21 @@ root("Achievements", {
 					title(83),	-- Salty %t
 				},
 			}),
-			removeclassicphase(ach(126, {	-- Journeyman Fisherman
+			classicAch(126, {	-- Journeyman Fisherman
 				["requireSkill"] = FISHING,
 				["spellID"] = 7731,	-- Fishing (Journeyman)
 				["rank"] = 2,
-			})),
-			removeclassicphase(ach(127, {	-- Expert Fisherman
+			}),
+			classicAch(127, {	-- Expert Fisherman
 				["requireSkill"] = FISHING,
 				["spellID"] = 7732,	-- Fishing (Expert)
 				["rank"] = 3,
-			})),
-			removeclassicphase(ach(128, {	-- Artisan Fisherman
+			}),
+			classicAch(128, {	-- Artisan Fisherman
 				["requireSkill"] = FISHING,
 				["spellID"] = 18248,	-- Fishing (Artisan)
 				["rank"] = 4,
-			})),
+			}),
 			ach(129, applyclassicphase(TBC_PHASE_ONE, {	-- Master Fisherman
 				["requireSkill"] = FISHING,
 				["spellID"] = 33095,	-- Fishing (Master)
@@ -1135,14 +1135,14 @@ root("Achievements", {
 				["spellID"] = 51294,	-- Fishing (Grand Master)
 				["rank"] = 6,
 			})),
-			removeclassicphase(ach(1243, {	-- Fish Don't Leave Footprints
+			classicAch(1243, {	-- Fish Don't Leave Footprints
 				["timeline"] = { "added 2.3.0" },
 				-- #if BEFORE WRATH
 				["description"] = "Learn the ability to find fish.",
 				-- #endif
 				["requireSkill"] = FISHING,
 				["spellID"] = 43308,	-- Find Fish
-			})),
+			}),
 			ach(1556, {	-- 25 Fish
 				["requireSkill"] = FISHING,
 			}),
@@ -1177,7 +1177,7 @@ root("Achievements", {
 			ach(1517, {	-- Northrend Angler
 				["requireSkill"] = FISHING,
 			}),
-			removeclassicphase(ach(878, {	-- One That Didn't Get Away
+			ach(878, {	-- One That Didn't Get Away
 				["providers"] = {
 					{ "i", 6295 },	-- 15 Pound Mud Snapper
 					{ "i", 13913 },	-- 22 Pound Lobster
@@ -1197,7 +1197,7 @@ root("Achievements", {
 				["description"] = "Catch one of the rare fish in the list below.\n\nKeep one in your inventory somewhere to keep credit for this.",
 				["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_ITEM_PROVIDER]],
 				-- #endif
-			})),
+			}),
 			ach(1225, {	-- Outland Angler
 				["requireSkill"] = FISHING,
 			}),
@@ -1225,21 +1225,21 @@ root("Achievements", {
 			}),
 		}),
 		achcat(172, {	-- First Aid
-			removeclassicphase(ach(131, {	-- Journeyman in First Aid
+			classicAch(131, {	-- Journeyman in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 3274,	-- First Aid (Journeyman)
 				["rank"] = 2,
-			})),
-			removeclassicphase(ach(132, {	-- Expert in First Aid
+			}),
+			classicAch(132, {	-- Expert in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 7924,	-- First Aid (Expert)
 				["rank"] = 3,
-			})),
-			removeclassicphase(ach(133, {	-- Artisan in First Aid
+			}),
+			classicAch(133, {	-- Artisan in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 10846,	-- First Aid (Artisan)
 				["rank"] = 4,
-			})),
+			}),
 			ach(134, applyclassicphase(TBC_PHASE_ONE, {	-- Master in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 27028,	-- First Aid (Master)
@@ -1261,36 +1261,36 @@ root("Achievements", {
 		ach(735),	-- Working Day and Night
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_REPUTATION, {
-		removeclassicphase(ach(522, {	-- Somebody Likes Me
+		classicAch(522, {	-- Somebody Likes Me
 			["OnClick"] = REPUTATIONS_OnClick,
 			["OnTooltip"] = REPUTATIONS_OnTooltip,
 			["OnUpdate"] = REPUTATIONS_OnUpdate,
 			["rank"] = 1,
-		})),
-		removeclassicphase(ach(523, {	-- 5 Exalted Reputations
+		}),
+		classicAch(523, {	-- 5 Exalted Reputations
 			["OnClick"] = REPUTATIONS_OnClick,
 			["OnTooltip"] = REPUTATIONS_OnTooltip,
 			["OnUpdate"] = REPUTATIONS_OnUpdate,
 			["rank"] = 5,
-		})),
-		removeclassicphase(ach(524, {	-- 10 Exalted Reputations
+		}),
+		classicAch(524, {	-- 10 Exalted Reputations
 			["OnClick"] = REPUTATIONS_OnClick,
 			["OnTooltip"] = REPUTATIONS_OnTooltip,
 			["OnUpdate"] = REPUTATIONS_OnUpdate,
 			["rank"] = 10,
-		})),
-		removeclassicphase(ach(521, {	-- 15 Exalted Reputations
+		}),
+		classicAch(521, {	-- 15 Exalted Reputations
 			["OnClick"] = REPUTATIONS_OnClick,
 			["OnTooltip"] = REPUTATIONS_OnTooltip,
 			["OnUpdate"] = REPUTATIONS_OnUpdate,
 			["rank"] = 15,
-		})),
-		removeclassicphase(ach(520, {	-- 20 Exalted Reputations
+		}),
+		classicAch(520, {	-- 20 Exalted Reputations
 			["OnClick"] = REPUTATIONS_OnClick,
 			["OnTooltip"] = REPUTATIONS_OnTooltip,
 			["OnUpdate"] = REPUTATIONS_OnUpdate,
 			["rank"] = 20,
-		})),
+		}),
 		ach(519, applyclassicphase(TBC_PHASE_ONE, {	-- 25 Exalted Reputations
 			["OnClick"] = REPUTATIONS_OnClick,
 			["OnTooltip"] = REPUTATIONS_OnTooltip,
@@ -1390,7 +1390,7 @@ root("Achievements", {
 		
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_FEATS_OF_STRENGTH, {
-		removeclassicphase(ach(2358, {	-- Charger
+		classicAch(2358, {	-- Charger
 			["classes"] = { PALADIN },
 			["f"] = 100,
 			-- #if BEFORE 3.0.1
@@ -1402,7 +1402,7 @@ root("Achievements", {
 			},
 			["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_SOURCE_QUEST]],
 			-- #endif
-		})),
+		}),
 		-- #if AFTER 4.0.1
 		ach(92, {	-- Did Somebody Order a Knuckle Sandwich?
 			["timeline"] = { "added 3.0.1", "removed 4.0.1" },

@@ -113,7 +113,7 @@ root("Zones", m(KALIMDOR, {
 					["description"] = "Explore Winterspring, revealing the covered areas of the world map.",
 					-- #endif
 				}),
-				removeclassicphase(ach(944, {	-- They Love Me In That Tunnel
+				classicAch(944, {	-- They Love Me In That Tunnel
 					-- #if BEFORE 3.0.1
 					["OnClick"] = [[_.CommonAchievementHandlers.EXALTED_REP_OnClick]],
 					["OnTooltip"] = [[_.CommonAchievementHandlers.EXALTED_REP_OnTooltip]],
@@ -121,7 +121,7 @@ root("Zones", m(KALIMDOR, {
 					["description"] = "Raise your reputation with Timbermaw Hold to Exalted.",
 					-- #endif
 					["maps"] = { FELWOOD },
-				})),
+				}),
 			}),
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({
@@ -777,7 +777,7 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 49.8, 9.8, WINTERSPRING },
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						removeclassicphase(ach(3356, {	-- Winterspring Frostsaber
+						classicAch(3356, {	-- Winterspring Frostsaber
 							["provider"] = { "i", 13086 },	-- Reins of the Winterspring Frostsaber
 							["races"] = ALLIANCE_ONLY,
 							["f"] = 100,
@@ -785,7 +785,7 @@ root("Zones", m(KALIMDOR, {
 							["description"] = "Obtain a Winterspring Frosaber.",
 							["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_ITEM_PROVIDER]],
 							-- #endif
-						})),
+						}),
 						i(13086), 	-- Reins of the Winterspring Frostsaber (MOUNT!)
 					},
 				}),

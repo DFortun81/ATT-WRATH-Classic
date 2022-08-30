@@ -525,6 +525,7 @@ app.L = {
 		[1636] = { 81 },	-- Competitor's Tabard, name and icon from providers
 		[1637] = { 81, "Spirit of Competition" },	-- Spirit of Competition, icon from providers
 		[1705] = { 81 },	-- Clockwork Rocket Bot, name and icon from providers
+		[1706] = { 81 },	-- Crashin' Thrashin' Racer Controller, name and icon from providers
 		[2079] = { 81 },	-- Tabard of the Protector, name and icon from providers
 		[2116] = { 81 },	-- Tabard of the Argent Dawn, name and icon from providers
 		[2358] = { 81, "Charger", "Interface\\Icons\\ability_mount_charger" },
