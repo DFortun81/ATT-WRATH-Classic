@@ -602,6 +602,8 @@ root("Achievements", {
 			classicAch(1676, {	-- Loremaster of Eastern Kingdoms
 				-- #if BEFORE WRATH
 				["description"] = "Complete 700 quests in Eastern Kingdoms.",
+				-- #endif
+				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.LOREMASTER_OnTooltip]],
 				["OnUpdate"] = [[_.CommonAchievementHandlers.LOREMASTER_EASTERNKINGDOMS_OnUpdate]],
@@ -612,6 +614,8 @@ root("Achievements", {
 			classicAch(1677, {	-- Loremaster of Eastern Kingdoms
 				-- #if BEFORE WRATH
 				["description"] = "Complete 550 quests in Eastern Kingdoms.",
+				-- #endif
+				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.LOREMASTER_OnTooltip]],
 				["OnUpdate"] = [[_.CommonAchievementHandlers.LOREMASTER_EASTERNKINGDOMS_OnUpdate]],
@@ -622,6 +626,8 @@ root("Achievements", {
 			classicAch(1678, {	-- Loremaster of Kalimdor
 				-- #if BEFORE WRATH
 				["description"] = "Complete 700 quests in Kalimdor.",
+				-- #endif
+				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.LOREMASTER_OnTooltip]],
 				["OnUpdate"] = [[_.CommonAchievementHandlers.LOREMASTER_KALIMDOR_OnUpdate]],
@@ -632,6 +638,8 @@ root("Achievements", {
 			classicAch(1680, {	-- Loremaster of Kalimdor
 				-- #if BEFORE WRATH
 				["description"] = "Complete 685 quests in Kalimdor.",
+				-- #endif
+				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.LOREMASTER_OnTooltip]],
 				["OnUpdate"] = [[_.CommonAchievementHandlers.LOREMASTER_KALIMDOR_OnUpdate]],
@@ -642,9 +650,11 @@ root("Achievements", {
 		}),
 		-- #if AFTER 2.0.1
 		achcat(ACHIEVEMENT_CATEGORY_OUTLAND_QUESTS, {
-			ach(1262, applyclassicphase(TBC_PHASE_ONE, {	-- Loremaster of Outland
+			ach(1262, applyclassicphase(TBC_PHASE_ONE, {	-- Loremaster of Outland (A)
 				-- #if BEFORE WRATH
 				["description"] = "Complete the Outland quest achievements listed below.",
+				-- #endif
+				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 1194, 1190, 1192, 1193, 1195, 1191, 1189); end]],
@@ -653,9 +663,11 @@ root("Achievements", {
 				-- #endif
 				["races"] = ALLIANCE_ONLY,
 			})),
-			ach(1274, applyclassicphase(TBC_PHASE_ONE, {	-- Loremaster of Outland
+			ach(1274, applyclassicphase(TBC_PHASE_ONE, {	-- Loremaster of Outland (H)
 				-- #if BEFORE WRATH
 				["description"] = "Complete the Outland quest achievements listed below.",
+				-- #endif
+				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 1194, 1190, 1273, 1193, 1195, 1272, 1271); end]],
@@ -666,26 +678,82 @@ root("Achievements", {
 			})),
 		}),
 		-- #endif
-		ach(973),	-- 5 Daily Quests Complete
-		ach(974),	-- 50 Daily Quests Complete
-		ach(975),	-- 200 Daily Quests Complete
-		ach(976),	-- 500 Daily Quests Complete
-		ach(977),	-- 1000 Daily Quests Complete
+		-- #if AFTER 3.0.1
+		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_QUESTS, {
+			ach(41, applyclassicphase(WRATH_PHASE_ONE, {	-- Loremaster of Northrend (A)
+				-- #if BEFORE WRATH
+				["description"] = "Complete the Northrend quest achievements listed below.",
+				-- #endif
+				-- #if ANYCLASSIC
+				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
+				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
+				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 33, 35, 36, 37, 38, 39, 34, 40); end]],
+				-- #else
+				["sym"] = { {"select","achievementID", 33, 35, 36, 37, 38, 39, 34, 40 } },
+				-- #endif
+				["races"] = ALLIANCE_ONLY,
+			})),
+			ach(1360, applyclassicphase(WRATH_PHASE_ONE, {	-- Loremaster of Northrend (H)
+				-- #if BEFORE WRATH
+				["description"] = "Complete the Northrend quest achievements listed below.",
+				-- #endif
+				-- #if ANYCLASSIC
+				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
+				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
+				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 1358, 1356, 38, 1357, 1359, 39, 36, 40); end]],
+				-- #else
+				["sym"] = { {"select","achievementID", 1358, 1356, 38, 1357, 1359, 39, 36, 40 } },
+				-- #endif
+				["races"] = HORDE_ONLY,
+			})),
+		}),
+		-- #endif
+		ach(973, {	-- 5 Daily Quests Complete
+			["rank"] = 5,
+		}),
+		ach(974, {	-- 50 Daily Quests Complete
+			["rank"] = 50,
+		}),
+		ach(975, {	-- 200 Daily Quests Complete
+			["rank"] = 200,
+		}),
+		ach(976, {	-- 500 Daily Quests Complete
+			["rank"] = 500,
+		}),
+		ach(977, {	-- 1000 Daily Quests Complete
+			["rank"] = 1000,
+		}),
 		
-		
-		ach(503),	-- 50 Quests Completed
-		ach(504),	-- 100 Quests Completed
-		ach(505),	-- 250 Quests Completed
-		ach(506),	-- 500 Quests Completed
-		ach(507),	-- 1000 Quests Completed
-		ach(508),	-- 1500 Quests Completed
-		ach(32),	-- 2000 Quests Completed
+		ach(503, {	-- 50 Quests Completed
+			["rank"] = 50,
+		}),
+		ach(504, {	-- 100 Quests Completed
+			["rank"] = 100,
+		}),
+		ach(505, {	-- 250 Quests Completed
+			["rank"] = 250,
+		}),
+		ach(506, {	-- 500 Quests Completed
+			["rank"] = 500,
+		}),
+		ach(507, {	-- 1000 Quests Completed
+			["rank"] = 1000,
+		}),
+		ach(508, {	-- 1500 Quests Completed
+			["rank"] = 1500,
+		}),
+		ach(32, {	-- 2000 Quests Completed
+			["rank"] = 2000,
+		}),
 		ach(978, applyclassicphase(WRATH_PHASE_ONE, {	-- 3000 Quests Completed
-			-- #if AFTER CATA
-			title(81),	-- The Seeker
-			-- #else
-			title(42),	-- The Seeker
-			-- #endif
+			["rank"] = 3000,
+			["groups"] = {
+				-- #if AFTER CATA
+				title(81),	-- The Seeker
+				-- #else
+				title(42),	-- The Seeker
+				-- #endif
+			},
 		})),
 		
 		ach(31),	-- A Simple Re-Quest

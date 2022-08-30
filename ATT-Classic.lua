@@ -4491,11 +4491,17 @@ end,
 				return true;
 			end
 			
+			-- Clone the list to prevent dirtying the quest list in the zone.
+			quests = RawCloneArray(quests);
+			for i=#quests,1,-1 do
+				if quests[i].repeatable then
+					table.remove(quests, i);
+				end
+			end
+			
 			-- If additional questIDs were manually included, let's do some extra work.
 			local extraQuestIDs = { ... };
 			if #extraQuestIDs > 0 then
-				-- Clone the list to prevent dirtying the quest list in the zone.
-				quests = RawCloneArray(quests);
 				for i,questID in ipairs(extraQuestIDs) do
 					local results = SearchForField("questID", questID);
 					if results and #results > 0 then
