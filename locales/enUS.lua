@@ -1092,7 +1092,7 @@ app.L = {
 		[2107] = {2, "|CFFAAFFAAThis was not available until the Alch Lab on the Isle of Quel'Danas was completed.|r", "Alch Lab", 20501, 30400, "\n \n|CFFFFAAAAIf the Shattered Sun Offensive has already unlocked the Alch Lab on your server, simply turn this on.|r" },
 		
 		[30] = {2, "|CFFAAFFAAThis was not available until Phase 1 of Wrath Classic.|r", "Phase 1", 30400, 30400, "\n \n|CFFFFAAAAIncluded Naxxramas, Obsidian Sanctum, and Eye of Eternity.|r" },
-		[3001] = {2, "|CFFAAFFAAThis was only available for the first player to do the thing!|r", "Server First", 30400, nil, "\n \n|CFFFFAAAABut if you were server first, good for you.|r" },
+		[3001] = {2, "|CFFAAFFAAThis was only available for the first player to do the thing on your realm!|r", "Realm First", 30400, nil, "\n \n|CFFFFAAAABut if you were realm first, good for you.|r" },
 		[31] = {2, "|CFFAAFFAAThis was not available until Phase 2 of Wrath Classic.|r", "Phase 2", 30400, 30401, "\n \n|CFFFFAAAAIncluded Ulduar.|r" },
 		[3101] = {2, "|CFFAAFFAAThe wielder of this Hammer was on time!|r", "Hammer Prio", 20501, nil, "\n \n|CFFFFAAAADue to the exclusivity of the Hammer and how prio isn't always given to collectors over sweaties, Crieve decided it was appropriate for now to provide a filter to reduce guild drama.\n\nThis filter will be defaulted on after cata prepatch.\n\nIf you do actually have Hammer prio, simply turn this on.|r" },
 		[32] = {2, "|CFFAAFFAAThis was not available until Phase 3 of Wrath Classic.|r", "Phase 3", 30400, 30402, "\n \n|CFFFFAAAAIncluded Trial of the Crusader.|r" },
