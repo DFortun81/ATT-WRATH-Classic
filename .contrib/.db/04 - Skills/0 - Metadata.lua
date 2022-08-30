@@ -503,6 +503,9 @@ root("Skills", {
 				["classes"] = {
 					HUNTER,
 					PALADIN,
+					-- #if AFTER WRATH
+					ROGUE,
+					-- #endif
 					SHAMAN,
 					WARRIOR,
 				},
@@ -541,6 +544,9 @@ root("Skills", {
 			{
 				["recipeID"] = 200,	-- Polearms
 				["classes"] = {
+					-- #if AFTER WRATH
+					DRUID,
+					-- #endif
 					HUNTER,
 					PALADIN,
 					WARRIOR,
