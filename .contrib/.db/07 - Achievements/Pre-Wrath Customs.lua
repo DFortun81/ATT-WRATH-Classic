@@ -411,7 +411,6 @@ root("Achievements", {
 			["spellID"] = 33388,	-- Apprentice Riding
 			["rank"] = 1,
 		}),
-		ach(964),	-- Going Down?
 		ach(1176, {	-- Got My Mind On My Money [100g]
 			["rank"] = 100,
 		}),
