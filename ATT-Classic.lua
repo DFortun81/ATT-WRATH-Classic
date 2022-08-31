@@ -4284,7 +4284,7 @@ end,
 		return true;
 	end
 end,
-["EXALTED_REP_OnUpdate"] = function(t, factionID)
+["EXALTED_REP_OnUpdate"] = function(t, factionID, override)
 	if t.collectible then
 		if not t.rep then
 			local f = app.SearchForField("factionID", factionID);
@@ -4305,7 +4305,7 @@ end,
 				return true;
 			end
 		end
-		if useAchievementAPI then return; end
+		if useAchievementAPI and not override then return; end
 		t.SetAchievementCollected(t.achievementID, t.rep.standing == 8);
 	end
 end,
