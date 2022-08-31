@@ -997,7 +997,6 @@ end
 
 local ItemDB = root("ItemDBConditional");
 local pet = function(itemID, speciesID, altSpeciesID)
-	print(speciesID, CompanionPetSpeciesIDToSpellID[speciesID]);
 	local item = { ["speciesID"] = speciesID, ["spellID"] = CompanionPetSpeciesIDToSpellID[speciesID], ["ignoreBonus"] = true };
 	if altSpeciesID then item.altSpeciesID = altSpeciesID; end
 	ItemDB[itemID] = item;

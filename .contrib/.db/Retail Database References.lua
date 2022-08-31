@@ -65,16 +65,16 @@
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\2 Naxxramas.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\3 The Obsidian Sanctum.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\4 The Eye of Eternity.lua
--- Ulduar is broken
+-- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\5 Ulduar.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\6 Trial of the Crusader.lua
--- ICC is broken
+-- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\8 Icecrown Citadel.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\9 The Ruby Sanctum.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\10 Currency.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Ahn'kahet The Old Kingdom.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Azjol-Nerub.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Drak'Tharon Keep.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Gundrak.lua
--- Halls of Lightning is broken
+-- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Halls of Lightning.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Halls of Reflection.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Halls of Stone.lua
 -- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Pit of Saron.lua
