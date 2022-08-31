@@ -11688,9 +11688,10 @@ function app:RefreshData(lazy, got, manual)
 	app.refreshDataForce = app.refreshDataForce or not lazy;
 	app.countdown = manual and 0 or 30;
 	if app.refreshingData then return; end
-	app.refreshingData = true;
 	--print("RefreshData(" .. tostring(lazy or false) .. ", " .. tostring(got or false) .. ")");
 	StartCoroutine("RefreshData", function()
+		app.refreshingData = true;
+		
 		-- While the player is in combat, wait for combat to end.
 		while InCombatLockdown() do coroutine.yield(); end
 		

@@ -984,18 +984,18 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 1748,	-- Highlord Bolvar Fordragon
 					["sourceQuest"] = 11222,	-- Warn Bolvar!
 					["coord"] = { 78.2, 18.1, STORMWIND_CITY },
-					["timeline"] = { "added 2.0.1", "removed 3.0.2" },
+					["timeline"] = { "added 2.0.1", "removed 4.0.3.13277" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 33,
 					["groups"] = {
 						i(33269, {	-- Bejeweled Dagger
-							["timeline"] = { "added 2.0.1", "removed 3.0.2" },
+							["timeline"] = { "added 2.0.1", "removed 4.0.3.13277" },
 						}),
 						i(33252, {	-- Gleaming Scale Breastplate
-							["timeline"] = { "added 2.0.1", "removed 3.0.2" },
+							["timeline"] = { "added 2.0.1", "removed 4.0.3.13277" },
 						}),
 						i(33250, {	-- Archer's Wristguard
-							["timeline"] = { "added 2.0.1", "removed 3.0.2" },	-- Moved to "Survey Alcaz Island" with Cata
+							["timeline"] = { "added 2.0.1", "removed 4.0.3.13277" },	-- Moved to "Survey Alcaz Island" with Cata
 						}),
 					},
 				}),
@@ -1003,7 +1003,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 1750,	-- Grand Admiral Jes-Tereth
 					["sourceQuest"] = 27240,	-- Proof of Treachery
 					["coord"] = { 85.6, 32.9, STORMWIND_CITY },
-					["timeline"] = { "added 3.0.2" },
+					["timeline"] = { "added 4.0.3.13277" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 33,
 				}),
