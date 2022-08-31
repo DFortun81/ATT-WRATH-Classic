@@ -1172,9 +1172,6 @@ root("Achievements", {
 			ach(1785, {	-- Dinner Impossible
 				["requireSkill"] = COOKING,
 			}),
-			ach(906, {	-- Kickin' It Up a Notch
-				["requireSkill"] = COOKING,
-			}),
 			ach(1795, {	-- Lunch Lady
 				["requireSkill"] = COOKING,
 				["rank"] = 25,
