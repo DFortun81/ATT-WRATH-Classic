@@ -3824,6 +3824,7 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
 		ATTAccountWideData.Achievements[achievementID] = 1;
+		if refresh then app:RefreshData(false, true); end
 	elseif app.CurrentCharacter.Achievements[achievementID] then
 		app.CurrentCharacter.Achievements[achievementID] = nil;
 		ATTAccountWideData.Achievements[achievementID] = nil;
@@ -3833,9 +3834,7 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 				break;
 			end
 		end
-	end
-	if refresh then
-		app:RefreshData(false, true);
+		if refresh then app:RefreshData(false, true); end
 	end
 end
 local fields = {
@@ -11686,9 +11685,11 @@ function app:GetDataCache()
 	return allData;
 end
 function app:RefreshData(lazy, got, manual)
-	--print("RefreshData(" .. tostring(lazy or false) .. ", " .. tostring(got or false) .. ")");
+	if app.refreshingData then return; end
+	app.refreshingData = true;
 	app.refreshDataForce = app.refreshDataForce or not lazy;
 	app.countdown = manual and 0 or 30;
+	--print("RefreshData(" .. tostring(lazy or false) .. ", " .. tostring(got or false) .. ")");
 	StartCoroutine("RefreshData", function()
 		-- While the player is in combat, wait for combat to end.
 		while InCombatLockdown() do coroutine.yield(); end
@@ -11728,6 +11729,7 @@ function app:RefreshData(lazy, got, manual)
 			app.lastMsg = msg;
 		end
 		wipe(searchCache);
+		app.refreshingData = nil;
 	end);
 end
 function app:GetWindow(suffix, parent, onUpdate)
