@@ -13020,7 +13020,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, got)
 		app.RefreshLocation = RefreshLocation;
 		self:SetScript("OnEvent", function(self, e, ...)
 			RefreshLocation();
-			UpdateWindow(self);
+			UpdateWindow(self, true, e == "QUEST_WATCH_UPDATE");
 		end);
 		self:RegisterEvent("ZONE_CHANGED");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
