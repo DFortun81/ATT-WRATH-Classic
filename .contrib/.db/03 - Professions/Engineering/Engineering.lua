@@ -88,6 +88,11 @@ profession(ENGINEERING, {
 					["recipeID"] = 23077
 				},
 				{
+					["name"] = "High-powered Flashlight",
+					["timeline"] = { "added 3.1.0.9614" },
+					["recipeID"] = 63750
+				},
+				{
 					["name"] = "Hyper-Radiant Flame Reflector",
 					["recipeID"] = 23081
 				},
