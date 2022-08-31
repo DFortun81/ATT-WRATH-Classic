@@ -425,6 +425,7 @@ _.ObjectNames = {
 	[194389] = "Stolen Explorers' League Document",
 	[194390] = "Stolen Explorers' League Document",
 	[194391] = "Stolen Explorers' League Document",
+	[195665] = "Argent Crusade Tribute Chest",
 	[202080] = "Dart's Nest",
 	[202081] = "Takk's Nest",
 	[202082] = "Ravasaur Matriarch's Nest",
