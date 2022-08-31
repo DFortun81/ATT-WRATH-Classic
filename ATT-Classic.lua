@@ -5685,10 +5685,8 @@ else
 		end
 		app:RegisterEvent("COMPANION_LEARNED");
 		app:RegisterEvent("COMPANION_UNLEARNED");
-		app:RegisterEvent("COMPANION_UPDATE");
 		app.events.COMPANION_LEARNED = RefreshCompanionCollectionStatus;
 		app.events.COMPANION_UNLEARNED = RefreshCompanionCollectionStatus;
-		app.events.COMPANION_UPDATE = RefreshCompanionCollectionStatus;
 	else
 		speciesFields.collected = function(t)
 			return SetBattlePetCollected(t.speciesID, t.itemID and GetItemCount(t.itemID, true) > 0);
