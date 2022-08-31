@@ -11685,10 +11685,10 @@ function app:GetDataCache()
 	return allData;
 end
 function app:RefreshData(lazy, got, manual)
-	if app.refreshingData then return; end
-	app.refreshingData = true;
 	app.refreshDataForce = app.refreshDataForce or not lazy;
 	app.countdown = manual and 0 or 30;
+	if app.refreshingData then return; end
+	app.refreshingData = true;
 	--print("RefreshData(" .. tostring(lazy or false) .. ", " .. tostring(got or false) .. ")");
 	StartCoroutine("RefreshData", function()
 		-- While the player is in combat, wait for combat to end.
@@ -13244,7 +13244,7 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 					end
 					for count=#g,100 do
 						local i = db.currentItemID - 1;
-						if i > 0 then
+						if i > db.minimumItemID then
 							db.currentItemID = i;
 							local t = app.CreateItemHarvester(i);
 							t.parent = db;
@@ -13264,7 +13264,8 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 			db.progress = 0;
 			db.total = 0;
 			db.back = 1;
-			db.currentItemID = 40001;
+			db.currentItemID = 60000;
+			db.minimumItemID = 60000;
 			self.data = db;
 		end
 		self.data.progress = 0;
