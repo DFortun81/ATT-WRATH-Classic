@@ -3820,7 +3820,7 @@ end
 
 -- Achievement Lib
 (function()
-local SetAchievementCollected = function(achievementID, collected)
+local SetAchievementCollected = function(achievementID, collected, refresh)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
 		ATTAccountWideData.Achievements[achievementID] = 1;
@@ -3833,6 +3833,9 @@ local SetAchievementCollected = function(achievementID, collected)
 				break;
 			end
 		end
+	end
+	if refresh then
+		app:RefreshData(false, true);
 	end
 end
 local fields = {
@@ -4080,7 +4083,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	
 	local function CheckAchievementCollectionStatus(achievementID)
 		achievementID = tonumber(achievementID);
-		SetAchievementCollected(achievementID, select(13, GetAchievementInfo(achievementID)));
+		SetAchievementCollected(achievementID, select(13, GetAchievementInfo(achievementID)), true);
 	end
 	app.RefreshAchievementCollection = function()
 		if ATTAccountWideData then
