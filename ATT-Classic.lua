@@ -5634,29 +5634,39 @@ else
 	if GetCompanionInfo then
 		local CollectedBattlePetHelper = {};
 		local CollectedMountHelper = {};
-		local function RefreshCompanionCollectionStatus()
-			setmetatable(CollectedBattlePetHelper, nil);
-			setmetatable(CollectedMountHelper, nil);
-			wipe(CollectedBattlePetHelper);
-			for i=GetNumCompanions("CRITTER"),1,-1 do
-				local spellID = select(3, GetCompanionInfo("CRITTER", i));
-				if spellID then
-					CollectedBattlePetHelper[spellID] = true;
-				else
-					print("Failed to get Companion Info for Critter ".. i);
+		local function RefreshCompanionCollectionStatus(companionType)
+			local anythingNew = false;
+			if not companionType or companionType == "CRITTER" then
+				setmetatable(CollectedBattlePetHelper, nil);
+				for i=GetNumCompanions("CRITTER"),1,-1 do
+					local spellID = select(3, GetCompanionInfo("CRITTER", i));
+					if spellID then
+						if not CollectedBattlePetHelper[spellID] then
+							CollectedBattlePetHelper[spellID] = true;
+							anythingNew = true;
+						end
+					else
+						print("Failed to get Companion Info for Critter ".. i);
+					end
 				end
 			end
-			wipe(CollectedMountHelper);
-			for i=GetNumCompanions("MOUNT"),1,-1 do
-				local spellID = select(3, GetCompanionInfo("MOUNT", i));
-				if spellID then
-					CollectedMountHelper[spellID] = true;
-				else
-					print("Failed to get Companion Info for Mount ".. i);
+			if not companionType or companionType == "MOUNT" then
+				setmetatable(CollectedMountHelper, nil);
+				for i=GetNumCompanions("MOUNT"),1,-1 do
+					local spellID = select(3, GetCompanionInfo("MOUNT", i));
+					if spellID then
+						if not CollectedMountHelper[spellID] then
+							CollectedMountHelper[spellID] = true;
+							anythingNew = true;
+						end
+					else
+						print("Failed to get Companion Info for Mount ".. i);
+					end
 				end
 			end
-			setmetatable(CollectedBattlePetHelper, meta);
-			setmetatable(CollectedMountHelper, meta);
+			if anythingNew then
+				app:RefreshData(true, true);
+			end
 		end
 		local meta = { __index = function(t, spellID)
 			RefreshCompanionCollectionStatus();
@@ -5665,10 +5675,10 @@ else
 		setmetatable(CollectedBattlePetHelper, meta);
 		setmetatable(CollectedMountHelper, meta);
 		speciesFields.collected = function(t)
-			return SetBattlePetCollected(t.speciesID, (t.spellID and CollectedBattlePetHelper[t.spellID]) or (t.itemID and GetItemCount(t.itemID, true) > 0));
+			return SetBattlePetCollected(t.speciesID, (t.spellID and CollectedBattlePetHelper[t.spellID]));
 		end
 		mountFields.collected = function(t)
-			return SetMountCollected(t.spellID, (t.spellID and CollectedMountHelper[t.spellID]) or (t.itemID and GetItemCount(t.itemID, true) > 0));
+			return SetMountCollected(t.spellID, (t.spellID and CollectedMountHelper[t.spellID]));
 		end
 		app:RegisterEvent("COMPANION_LEARNED");
 		app:RegisterEvent("COMPANION_UNLEARNED");
