@@ -174,6 +174,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- Craftables
 -- #IMPORT: 10 - Craftables\\01 - Classic.lua
 -- #IMPORT: 10 - Craftables\\02 - Burning Crusade.lua
+-- #IMPORT: 10 - Craftables\\03 - Wrath of the Lich King.lua
 
 -- Professions
 -- #IMPORT: 11 - Professions\\Beast Training\\Beast Training.lua
@@ -181,6 +182,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 11 - Professions\\First Aid\\First Aid.lua
 -- #IMPORT: 11 - Professions\\Fishing\\Fishing.lua
 -- #IMPORT: 11 - Professions\\Herbalism\\Herbalism.lua
+-- #IMPORT: 11 - Professions\\Inscription\\Inscription.lua
 -- #IMPORT: 11 - Professions\\Jewelcrafting\\Jewelcrafting.lua
 -- #IMPORT: 11 - Professions\\Lockpicking\\Lockpicking.lua
 -- #IMPORT: 11 - Professions\\Mining\\Mining.lua
