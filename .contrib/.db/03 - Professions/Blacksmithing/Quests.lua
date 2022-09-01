@@ -55,18 +55,6 @@ profession(BLACKSMITHING, {
 			["races"] = HORDE_ONLY,
 			["lvl"] = 40,
 		}),
-		{
-			["itemID"] = 9719,	-- Broken Blade of Heroes
-			["cost"] = {
-				{ "i", 7068, 2 },	-- Elemental Fire
-				{ "i", 3486, 2 },	-- Heavy Grinding Stone
-				{ "i", 3859, 4 },	-- Steel Bar
-				{ "i", 3466, 4 },	-- Strong Flux
-			},
-			["groups"] = {
-				i(9718),	-- Reforged Blade of Heroes
-			},
-		},
 		q(5307, {	-- Corruption
 			["qg"] = 11193,	-- Seril Scourgebane
 			["coord"] = { 61.2, 37.2, WINTERSPRING },

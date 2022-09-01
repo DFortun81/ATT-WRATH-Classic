@@ -2079,13 +2079,13 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(13066),	-- Wyrmslayer Spaulders
 	}),
 	category(227, {	-- Weapons
-		filter(21, {	-- 1H Axes
+		filter(ONE_HANDED_AXES, {
 			i(13014),	-- Axe of Rin'ji
 			i(811),		-- Axe of the Deep Woods
 			i(2878),	-- Bearded Boneaxe
 			i(15237),	-- Corpse Harvester
 			i(15235),	-- Crescent Edge
-			i(2815),	-- Curve-bladed Ripper
+			i(2815),	-- Curve-Bladed Ripper [CATA+] / Curve-bladed Ripper
 			i(15240),	-- Demon's Claw
 			i(2073),	-- Dwarven Hatchet
 			i(1994),	-- Ebonclaw Reaver
@@ -2107,7 +2107,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(934),		-- Stalvan's Reaper
 			i(15238),	-- Warlord's Axe
 		}),
-		filter(22, {	-- 2H Axes
+		filter(TWO_HANDED_AXES, {
 			i(3201),	-- Barbarian War Axe
 			i(3195),	-- Barbaric Battle Axe
 			i(3199),	-- Battle Slayer
@@ -2129,9 +2129,9 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(12975),	-- Prospector Axe
 			i(15272),	-- Razor Axe
 			i(4562),	-- Severing Axe
-			i(15268),	-- Twin-bladed Axe
+			i(15268),	-- Twin-Bladed Axe [CATA+] / Twin-bladed Axe
 		}),
-		filter(23, {	-- 1H Maces
+		filter(ONE_HANDED_MACES, {
 			i(868),		-- Ardent Custodian
 			i(15222),	-- Barbed Club
 			i(15224),	-- Battlesmasher
@@ -2140,13 +2140,16 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(13028),	-- Bludstone Hammer
 			i(13027),	-- Bonesnapper
 			i(13025),	-- Deadwood Sledge
-			i(2194),	-- Diamond Hammer
 			i(15227),	-- Diamond-Tip Bludgeon
+			i(2194),	-- Diamond Hammer
 			i(15226),	-- Giant Club
 			i(8194),	-- Goblin Nutcracker
 			i(810),		-- Hammer of the Northern Wind
 			i(2243),	-- Hand of Edward the Odd
 			i(13026),	-- Heaven's Light
+			-- #if AFTER CATA
+			i(2075),	-- Heavy Mace [CATA+] / Priest's Mace
+			-- #endif
 			i(15223),	-- Jagged Star
 			i(865),		-- Leaden Mace
 			i(13048),	-- Looming Gavel
@@ -2154,7 +2157,9 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(936),		-- Midnight Mace
 			i(4090),	-- Mug O' Hurt
 			i(1207),	-- Murphstar
-			i(2075),	-- Priest's Mace
+			-- #if BEFORE CATA
+			i(2075),	-- Priest's Mace / Heavy Mace [CATA+]
+			-- #endif
 			i(15225),	-- Sequoia Hammer
 			i(2079),	-- Sergeant's Warhammer
 			i(2256),	-- Skeletal Club
@@ -2164,7 +2169,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(789),		-- Stout Battlehammer
 			i(1721),	-- Viking Warhammer
 		}),
-		filter(24, {	-- 2H Maces
+		filter(TWO_HANDED_MACES, {
 			i(15264),	-- Backbreaker
 			i(1990),	-- Ballast Maul
 			i(3198),	-- Battering Hammer
@@ -2188,10 +2193,11 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(13047),	-- Twig of the World Tree
 			i(13045),	-- Viscous Hammer
 		}),
-		filter(25, {	-- 1H Swords
+		filter(ONE_HANDED_SWORDS, {
 			i(13036),	-- Assassination Blade
 			i(15220),	-- Battlefell Sabre
 			i(809),		-- Bloodrazor
+			i(9719),	-- Broken Blade of Heroes
 			i(15218),	-- Crystal Sword
 			i(869),		-- Dazzling Longsword
 			i(3740),	-- Decapitating Sword
@@ -2225,13 +2231,13 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(15217),	-- Widow Blade
 			i(13033),	-- Zealot Blade
 		}),
-		filter(26, {	-- 2H Swords
+		filter(TWO_HANDED_SWORDS, {
 			i(9385),	-- Archaic Defender
 			i(8199),	-- Battlefield Destroyer
 			i(15253),	-- Beheading Blade
 			i(2801),	-- Blade of Hanna
 			i(13043),	-- Blade of the Titans
-			i(3206),	-- Cavalier Two-hander
+			i(3206),	-- Cavalier Two-Hander [CATA+] / Cavalier Two-hander
 			i(2877),	-- Combatant Claymore
 			i(15254),	-- Dark Espadon
 			i(13049),	-- Deanship Claymore
@@ -2260,7 +2266,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(13052),	-- Warmonger
 			i(13051),	-- Witchfury
 		}),
-		filter(32, {	-- Bows
+		filter(BOWS, {
 			i(15285),	-- Archer's Longbow
 			i(15289),	-- Archstrike Bow
 			i(15288),	-- Blasthorn Bow
@@ -2287,13 +2293,13 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(4087),	-- Trueshot Bow
 			i(3037),	-- Whipwood Recurve Bow
 		}),
-		filter(33, {	-- Crossbows
+		filter(CROSSBOWS, {
 			i(13037),	-- Crystalpine Stinger
 			i(13040),	-- Heartseeking Crossbow
 			i(13039),	-- Skull Splitting Crossbow
 			i(13038),	-- Swiftwind
 		}),
-		filter(20, {	-- Daggers
+		filter(DAGGERS, {
 			i(14555),	-- Alcor's Sunrazor
 			i(15241),	-- Battle Knife
 			i(2236),	-- Blackfang
@@ -2320,12 +2326,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(4571),	-- War Knife
 			i(4091),	-- Widowmaker
 		}),
-		filter(31, {	-- Guns
+		filter(GUNS, {
 			i(3041),	-- "Mage-Eye" Blunderbuss
 			i(3042),	-- BKP "Sparrow" Smallbore
 			i(15324),	-- Burnside Rifle
 			i(4577),	-- Compact Shotgun
-			i(2098),	-- Double-barreled Shotgun
+			i(2098),	-- Double-Barreled Shotgun [CATA+] / Double-barreled Shotgun
 			i(2099),	-- Dwarven Hand Cannon
 			i(8188),	-- Explosive Shotgun
 			i(13139),	-- Guttbuster
@@ -2341,18 +2347,18 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(3430),	-- Sniper Rifle
 			i(13138),	-- The Silencer
 		}),
-		filter(29, {	-- Polearms
+		filter(POLEARMS, {
 			i(13057),	-- Bloodpike
 			i(13055),	-- Bonechewer
 			i(13056),	-- Frenzied Striker
 			i(12989),	-- Gargoyle's Bite
 			i(13054),	-- Grim Reaper
 			i(13058),	-- Khoo's Point
-			i(1726),	-- Poison-tipped Bone Spear
+			i(1726),	-- Poison-Tipped Bone Spear [CATA+] / Poison-tipped Bone Spear
 			i(13059),	-- Stoneraven
 			i(13060),	-- The Needler
 		}),
-		filter(28, {	-- Staves
+		filter(STAVES, {
 			i(3185),	-- Acrobatic Staff
 			i(937),		-- Black Duskwood Staff
 			i(15274),	-- Diviner Long Staff
@@ -2375,7 +2381,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(890),		-- Twisted Chanter's Staff
 			i(943),		-- Warden Staff
 		}),
-		filter(27, {	-- Wands
+		filter(WANDS, {
 			i(5212),	-- Blazing Wand
 			i(8186),	-- Dire Wand
 			i(15282),	-- Dragon Finger
@@ -2399,7 +2405,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(15280),	-- Wizard's Hand
 		}),
 	}),
-	filter(8, {	-- Shield
+	filter(SHIELDS, {
 		i(1203),	-- Aegis of Stormwind
 		i(8320),	-- Alabaster Shield
 		i(15604),	-- Ancient Defender
@@ -2457,8 +2463,8 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14607),	-- Hawkeye's Buckler
 		i(15352),	-- Headhunter's Buckler
 		i(10204),	-- Heavy Lamellar Shield
-		i(15887),	-- Heroic Guard
 		i(8313),	-- Hero's Buckler
+		i(15887),	-- Heroic Guard
 		i(14964),	-- High Chief's Shield
 		i(15891),	-- Hulking Shield
 		i(3652),	-- Hunting Buckler
@@ -2514,7 +2520,11 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15584),	-- Sparkleshell Shield
 		i(15522),	-- Spiked Chain Shield
 		i(15592),	-- Steadfast Buckler
-		i(7188),	-- Stormwind Guard Shield
+		-- #if BEFORE 8.2.0
+		i(7188, {	-- Stormwind Guard Shield
+			["timeline"] = { "created 1.12.1.12941", "added 8.2.0" },
+		}),
+		-- #endif
 		i(14852),	-- Sunscale Shield
 		i(9804),	-- Superior Buckler
 		i(14825),	-- Symbolic Crest
@@ -2537,7 +2547,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15543),	-- Wicked Chain Shield
 		i(15332),	-- Wrangler's Buckler
 	}),
-	filter(1, {	-- Held in Off-hand
+	filter(HELD_IN_OFF_HAND, {
 		i(9944),	-- Abjurer's Crystal
 		i(15971),	-- Aboriginal Rod
 		i(15944),	-- Ancestral Orb
@@ -2561,8 +2571,13 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(7609),	-- Elder's Amber Stave
 		i(15940),	-- Elegant Scepter
 		i(15968),	-- Elunarian Sphere
-		i(15979),	-- Embersilk Stave
+		-- #if BEFORE CATA
+		i(15979),	-- Embersilk Stave / Flamecloth Stave [CATA+]
+		-- #endif
 		i(15989),	-- Eternal Rod
+		-- #if AFTER CATA
+		i(15979),	-- Flamecloth Stave [CATA+] / Embersilk Stave
+		-- #endif
 		i(15983),	-- Gaea's Scepter
 		i(15978),	-- Geomancer's Rod
 		i(7557),	-- Gossamer Rod
@@ -2577,8 +2592,8 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15981),	-- Lunar Sphere
 		i(15942),	-- Master's Rod
 		i(7611),	-- Mistscape Stave
-		i(15938),	-- Mystical Orb
 		i(15946),	-- Mystic's Sphere
+		i(15938),	-- Mystical Orb
 		i(15970),	-- Native Branch
 		i(15929),	-- Nightsky Orb
 		i(15984),	-- Opulent Scepter
@@ -2597,7 +2612,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(7608),	-- Seer's Fine Stein
 		i(7558),	-- Shimmering Stave
 		i(15964),	-- Silksand Star
-		i(15928),	-- Silver-thread Rod
+		i(15928),	-- Silver-Thread Rod [CATA+] / Silver-thread Rod
 		i(15933),	-- Simple Branch
 		i(9882),	-- Sorcerer Sphere
 		i(15926),	-- Spellbinder Orb
@@ -2740,8 +2755,19 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(2802),	-- Blazing Emblem
 		i(833),		-- Lifestone
 		i(7734),	-- Six Demon Bag
-		i(14557),	-- The Lion Horn of Stormwind [Not available yet? It is one of the rarest items in the game]
+		i(14557, {	-- The Lion Horn of Stormwind
+			-- #if AFTER 6.0.1
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			-- #endif
+			["timeline"] = { "removed 3.0.2", "added 6.0.1", "removed 7.0.1" },
+		}),
 		i(11302),	-- Uther's Strength
+	}),
+	filter(113, {	-- Bags
+		i(5765),	-- Black Silk Pack
+		i(856),		-- Blue Leather Bag
+		i(4498),	-- Brown Leather Satchel
+		i(4500),	-- Traveler's Backpack
 	}),
 	filter(50, {	-- Miscellaneous
 		i(17962),	-- Blue Sack of Gems
@@ -2751,13 +2777,26 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(17965, {	-- Yellow Sack of Gems
 			i(12363),	-- Arcane Crystal
 		}),
-		applyclassicphase(PHASE_FIVE, i(23197)),	-- Idol of the Moon [Phase 5/6]
+		-- #if BEFORE 5.0.4
+		applyclassicphase(PHASE_FIVE, i(23197, {	-- Idol of the Moon [Phase 5/6]
+			["timeline"] = { "removed 5.0.4" },
+		})),
+		-- #endif
+		-- #if AFTER 9.1.0
+		i(3670, {	-- Large Slimy Bone
+			["description"] = "Drops from Slimes in Classic zones.",
+		}),
+		-- #endif
 		i(11733, {	-- Libram of Constitution
 			-- #if AFTER CATA
 			["description"] = "This item is now completely worthless.",
 			-- #endif
 		}),
-		applyclassicphase(PHASE_FIVE, i(23203)),	-- Libram of Fervor [Phase 5/6]
+		-- #if BEFORE 5.0.4
+		applyclassicphase(PHASE_FIVE, i(23203, {	-- Libram of Fervor [Phase 5/6]
+			["timeline"] = { "removed 5.0.4" },
+		})),
+		-- #endif
 		i(11736, {	-- Libram of Resilience
 			-- #if AFTER CATA
 			["description"] = "This item is now completely worthless.",
@@ -2778,46 +2817,57 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			["description"] = "This item is now completely worthless.",
 			-- #endif
 		}),
-		applyclassicphase(PHASE_FIVE, i(23199)),	-- Totem of the Storm [Phase 5/6]
-		i(4500),	-- Traveler's Backpack
+		-- #if AFTER 9.1.0
+		i(3300, {	-- Rabbit's Foot
+			["description"] = "Drops from wolves or dogs in Classic zones.",
+		}),
+		i(11406, {	-- Rotting Bear Carcass
+			["description"] = "Drops from bears in Classic zones.",
+		}),
+		-- #endif
+		-- #if BEFORE 5.0.4
+		applyclassicphase(PHASE_FIVE, i(23199, {	-- Totem of the Storm [Phase 5/6]
+			["timeline"] = { "removed 5.0.4" },
+		})),
+		-- #endif
 	}),
-	category(106, {	-- Tarot Cards
-		applyclassicphase(PHASE_THREE, i(19230)),	-- Two of Beasts
-		applyclassicphase(PHASE_THREE, i(19231)),	-- Three of Beasts
-		applyclassicphase(PHASE_THREE, i(19232)),	-- Four of Beasts
-		applyclassicphase(PHASE_THREE, i(19233)),	-- Five of Beasts
-		applyclassicphase(PHASE_THREE, i(19234)),	-- Six of Beasts
-		applyclassicphase(PHASE_THREE, i(19235)),	-- Seven of Beasts
-		applyclassicphase(PHASE_THREE, i(19236)),	-- Eight of Beasts
+	category(106, applyclassicphase(PHASE_THREE, {	-- Tarot Cards
+		i(19230),	-- Two of Beasts
+		i(19231),	-- Three of Beasts
+		i(19232),	-- Four of Beasts
+		i(19233),	-- Five of Beasts
+		i(19234),	-- Six of Beasts
+		i(19235),	-- Seven of Beasts
+		i(19236),	-- Eight of Beasts
 
-		applyclassicphase(PHASE_THREE, i(19269)),	-- Two of Elementals
-		applyclassicphase(PHASE_THREE, i(19270)),	-- Three of Elementals
-		applyclassicphase(PHASE_THREE, i(19271)),	-- Four of Elementals
-		applyclassicphase(PHASE_THREE, i(19272)),	-- Five of Elementals
-		applyclassicphase(PHASE_THREE, i(19273)),	-- Six of Elementals
-		applyclassicphase(PHASE_THREE, i(19274)),	-- Seven of Elementals
-		applyclassicphase(PHASE_THREE, i(19275)),	-- Eight of Elementals
+		i(19269),	-- Two of Elementals
+		i(19270),	-- Three of Elementals
+		i(19271),	-- Four of Elementals
+		i(19272),	-- Five of Elementals
+		i(19273),	-- Six of Elementals
+		i(19274),	-- Seven of Elementals
+		i(19275),	-- Eight of Elementals
 
-		applyclassicphase(PHASE_THREE, i(19278)),	-- Two of Portals
-		applyclassicphase(PHASE_THREE, i(19279)),	-- Three of Portals
-		applyclassicphase(PHASE_THREE, i(19280)),	-- Four of Portals
-		applyclassicphase(PHASE_THREE, i(19281)),	-- Five of Portals
-		applyclassicphase(PHASE_THREE, i(19282)),	-- Six of Portals
-		applyclassicphase(PHASE_THREE, i(19283)),	-- Seven of Portals
-		applyclassicphase(PHASE_THREE, i(19284)),	-- Eight of Portals
+		i(19278),	-- Two of Portals
+		i(19279),	-- Three of Portals
+		i(19280),	-- Four of Portals
+		i(19281),	-- Five of Portals
+		i(19282),	-- Six of Portals
+		i(19283),	-- Seven of Portals
+		i(19284),	-- Eight of Portals
 
-		applyclassicphase(PHASE_THREE, i(19259)),	-- Two of Warlords
-		applyclassicphase(PHASE_THREE, i(19260)),	-- Three of Warlords
-		applyclassicphase(PHASE_THREE, i(19261)),	-- Four of Warlords
-		applyclassicphase(PHASE_THREE, i(19262)),	-- Five of Warlords
-		applyclassicphase(PHASE_THREE, i(19263)),	-- Six of Warlords
-		applyclassicphase(PHASE_THREE, i(19264)),	-- Seven of Warlords
-		applyclassicphase(PHASE_THREE, i(19265)),	-- Eight of Warlords
-	}),
+		i(19259),	-- Two of Warlords
+		i(19260),	-- Three of Warlords
+		i(19261),	-- Four of Warlords
+		i(19262),	-- Five of Warlords
+		i(19263),	-- Six of Warlords
+		i(19264),	-- Seven of Warlords
+		i(19265),	-- Eight of Warlords
+	})),
 	filter(TOYS, {
 		i(1973),	-- Orb of Deception (TOY!)
 	}),
-	filter(200, {	-- Recipes
+	filter(RECIPES, {
 		-- #if BEFORE 4.0.1
 		cl(DRUID, {
 			{
@@ -2914,102 +2964,140 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(13487),	-- Recipe: Transmute Water to Undeath
 		}),
 		prof(BLACKSMITHING, {
-			i(7992),	-- Plans: Blue Glittering Axe
-			i(3609),	-- Plans: Copper Chain Vest
-			applyclassicphase(TBC_PHASE_ONE, i(12698)),	-- Plans: Dawnbringer Shoulders
-			i(7993),	-- Plans: Dazzling Mithril Rapier
-			i(2883),	-- Plans: Deadly Bronze Poniard
-			i(3868),	-- Plans: Frost Tiger Blade
-			i(3610),	-- Plans: Gemmed Copper Gauntlets
-			i(3867),	-- Plans: Golden Iron Destroyer
-			i(3875),	-- Plans: Golden Scale Boots
-			i(3873),	-- Plans: Golden Scale Cuirass
-			i(3872),	-- Plans: Golden Scale Leggings
-			i(3871),	-- Plans: Golden Scale Shoulders
-			i(3611),	-- Plans: Green Iron Boots
-			i(3612),	-- Plans: Green Iron Gauntlets
-			i(3870),	-- Plans: Green Iron Shoulders
-			i(7975),	-- Plans: Heavy Mithril Pants
-			i(7990),	-- Plans: Heavy Mithril Helm
-			i(12716),	-- Plans: Helm of the Great Chief
-			i(12728),	-- Plans: Invulnerable Mail [Also available from Goraluk Anvilcrack in UBRS.]
-			i(5543),	-- Plans: Iridescent Hammer
-			i(6045),	-- Plans: Iron Counterweight
-			i(6044),	-- Plans: Iron Shield Spike
-			i(3866),	-- Plans: Jade Serpentblade
-			i(12717),	-- Plans: Lionheart Helm
-			i(3608),	-- Plans: Mighty Iron Hammer
-			i(7991),	-- Plans: Mithril Scale Shoulders
-			i(7976),	-- Plans: Mithril Shield Spike
-			i(7989),	-- Plans: Mithril Spurs
-			i(22390),	-- Plans: Persuader
-			i(3874),	-- Plans: Polished Steel Boots
-			i(12685),	-- Plans: Radiant Belt
-			i(12697),	-- Plans: Radiant Boots
-			i(12689),	-- Plans: Radiant Breastplate
-			i(12702),	-- Plans: Radiant Circlet
-			i(12695),	-- Plans: Radiant Gloves
-			i(12713),	-- Plans: Radiant Leggings
-			i(2881),	-- Plans: Runed Copper Breastplate
-			i(8028),	-- Plans: Runed Mithril Hammer
-			i(22389),	-- Plans: Sageblade
-			i(12261),	-- Plans: Searing Golden Blade
-			i(3869),	-- Plans: Shadow Crescent Axe
-			i(5578),	-- Plans: Silvered Bronze Breastplate
-			i(10424),	-- Plans: Silvered Bronze Leggings
-			i(2882),	-- Plans: Silvered Bronze Shoulders
-			i(6046),	-- Plans: Steel Weapon Chain
-			i(12720),	-- Plans: Stronghold Gauntlets
-			i(12682),	-- Plans: Thorium Armor
-			i(12683),	-- Plans: Thorium Belt
-			i(12693),	-- Plans: Thorium Boots
-			i(12684),	-- Plans: Thorium Bracers
-			i(12694),	-- Plans: Thorium Helm
-			i(12704),	-- Plans: Thorium Leggings
-			i(12692),	-- Plans: Thorium Shield Spike
-			applyclassicphase(PHASE_FIVE, i(22388)),	-- Plans: Titanic Leggings
-			i(8029),	-- Plans: Wicked Mithril Blade
-			i(12711),	-- Plans: Whitesoul Helm
-			i(12691),	-- Plans: Wildthorn Mail
+			i(7992),	-- Plans: Blue Glittering Axe (RECIPE!)
+			i(3609),	-- Plans: Copper Chain Vest (RECIPE!)
+			i(12698, {	-- Plans: Dawnbringer Shoulders (RECIPE!)
+				["timeline"]={ "created 1.12.1.6180", "added 2.0.1" },
+			}),
+			i(7993),	-- Plans: Dazzling Mithril Rapier (RECIPE!)
+			i(2883),	-- Plans: Deadly Bronze Poniard (RECIPE!)
+			i(3868),	-- Plans: Frost Tiger Blade (RECIPE!)
+			i(3610),	-- Plans: Gemmed Copper Gauntlets (RECIPE!)
+			i(3867),	-- Plans: Golden Iron Destroyer (RECIPE!)
+			i(3875),	-- Plans: Golden Scale Boots (RECIPE!)
+			i(3873),	-- Plans: Golden Scale Cuirass (RECIPE!)
+			i(3872),	-- Plans: Golden Scale Leggings (RECIPE!)
+			i(3871),	-- Plans: Golden Scale Shoulders (RECIPE!)
+			i(3611),	-- Plans: Green Iron Boots (RECIPE!)
+			i(3612),	-- Plans: Green Iron Gauntlets (RECIPE!)
+			i(3870),	-- Plans: Green Iron Shoulders (RECIPE!)
+			i(7990),	-- Plans: Heavy Mithril Helm (RECIPE!)
+			i(7975),	-- Plans: Heavy Mithril Pants (RECIPE!)
+			i(12716),	-- Plans: Helm of the Great Chief (RECIPE!)
+			i(12728),	-- Plans: Invulnerable Mail (RECIPE!)
+			i(5543),	-- Plans: Iridescent Hammer (RECIPE!)
+			i(6045),	-- Plans: Iron Counterweight (RECIPE!)
+			i(6044),	-- Plans: Iron Shield Spike (RECIPE!)
+			i(3866),	-- Plans: Jade Serpentblade (RECIPE!)
+			i(12717),	-- Plans: Lionheart Helm (RECIPE!)
+			i(3608),	-- Plans: Mighty Iron Hammer (RECIPE!)
+			i(7991),	-- Plans: Mithril Scale Shoulders (RECIPE!)
+			i(7976),	-- Plans: Mithril Shield Spike (RECIPE!)
+			i(7989),	-- Plans: Mithril Spurs (RECIPE!)
+			applyclassicphase(PHASE_FIVE, i(22390)),	-- Plans: Persuader (RECIPE!)
+			i(3874),	-- Plans: Polished Steel Boots (RECIPE!)
+			i(12685),	-- Plans: Radiant Belt (RECIPE!)
+			i(12697),	-- Plans: Radiant Boots (RECIPE!)
+			i(12689),	-- Plans: Radiant Breastplate (RECIPE!)
+			i(12702),	-- Plans: Radiant Circlet (RECIPE!)
+			i(12695),	-- Plans: Radiant Gloves (RECIPE!)
+			i(12713),	-- Plans: Radiant Leggings (RECIPE!)
+			i(2881),	-- Plans: Runed Copper Breastplate (RECIPE!)
+			i(8028),	-- Plans: Runed Mithril Hammer (RECIPE!)
+			applyclassicphase(PHASE_FIVE, i(22389)),	-- Plans: Sageblade (RECIPE!)
+			i(12261),	-- Plans: Searing Golden Blade (RECIPE!)
+			i(3869),	-- Plans: Shadow Crescent Axe (RECIPE!)
+			i(5578),	-- Plans: Silvered Bronze Breastplate (RECIPE!)
+			i(10424),	-- Plans: Silvered Bronze Leggings (RECIPE!)
+			i(2882),	-- Plans: Silvered Bronze Shoulders (RECIPE!)
+			i(6046),	-- Plans: Steel Weapon Chain (RECIPE!)
+			i(12703),	-- Plans: Storm Gauntlets (RECIPE!)
+			i(12720),	-- Plans: Stronghold Gauntlets (RECIPE!)
+			i(12682),	-- Plans: Thorium Armor (RECIPE!)
+			i(12683),	-- Plans: Thorium Belt (RECIPE!)
+			i(12693),	-- Plans: Thorium Boots (RECIPE!)
+			i(12684),	-- Plans: Thorium Bracers (RECIPE!)
+			i(12694),	-- Plans: Thorium Helm (RECIPE!)
+			i(12704),	-- Plans: Thorium Leggings (RECIPE!)
+			i(12692),	-- Plans: Thorium Shield Spike (RECIPE!)
+			applyclassicphase(PHASE_FIVE, i(22388)),	-- Plans: Titanic Leggings (RECIPE!)
+			i(12711),	-- Plans: Whitesoul Helm (RECIPE!)
+			i(8029),	-- Plans: Wicked Mithril Blade (RECIPE!)
+			i(12691),	-- Plans: Wildthorn Mail (RECIPE!)
 		}),
 		prof(ENCHANTING, {
-			i(11038),	-- Formula: Enchant 2H Weapon - Lesser Spirit
-			i(16245),	-- Formula: Enchant Boots - Greater Agility
-			i(16215),	-- Formula: Enchant Boots - Greater Stamina
-			i(11167),	-- Formula: Enchant Boots - Lesser Spirit
-			i(16220),	-- Formula: Enchant Boots - Spirit
-			i(11204),	-- Formula: Enchant Bracer - Greater Spirit
-			i(11225),	-- Formula: Enchant Bracer - Greater Stamina
-			i(6375),	-- Formula: Enchant Bracer - Lesser Spirit
-			i(6344),	-- Formula: Enchant Bracer - Minor Spirit
-			i(6347),	-- Formula: Enchant Bracer - Minor Strength
-			i(16218),	-- Formula: Enchant Bracer - Superior Spirit
-			i(16251),	-- Formula: Enchant Bracer - Superior Stamina
-			i(16253),	-- Formula: Enchant Chest - Greater Stats
-			i(6342),	-- Formula: Enchant Chest - Minor Mana
-			i(11098),	-- Formula: Enchant Cloak - Lesser Shadow Resistance
-			i(11226),	-- Formula: Enchant Gloves - Riding Skill
-			i(11224),	-- Formula: Enchant Shield - Frost Resistance
-			i(11168),	-- Formula: Enchant Shield - Lesser Block
-			i(11081),	-- Formula: Enchant Shield - Lesser Protection
-			i(11202),	-- Formula: Enchant Shield - Stamina
-			i(11208),	-- Formula: Enchant Weapon - Demonslaying
-			i(11164),	-- Formula: Enchant Weapon - Lesser Beastslayer
-			i(11165),	-- Formula: Enchant Weapon - Lesser Elemental Slayer
-			i(6348),	-- Formula: Enchant Weapon - Minor Beastslayer
+			i(11038),	-- Formula: Enchant 2H Weapon - Lesser Versatility / CLASSIC: Formula: Enchant 2H Weapon - Lesser Spirit (RECIPE!)
+			i(16245, {	-- Formula: Enchant Boots - Greater Agility (RECIPE!)
+				["timeline"] = { "removed 2.3.0" },	-- Learned at trainer
+			}),
+			i(16215),	-- Formula: Enchant Boots - Greater Stamina (RECIPE!)
+			i(11167),	-- Formula: Enchant Boots - Lesser Versatility / CLASSIC: Formula: Enchant Boots - Lesser Spirit (RECIPE!)
+			i(16220),	-- Formula: Enchant Boots - Versatility / CLASSIC: Formula: Enchant Boots - Spirit (RECIPE!)
+			-- #if BEFORE 7.0.3
+			i(11204),	-- CLASSIC: Formula: Enchant Bracer - Greater Spirit / Formula: Enchant Bracer - Greater Versatility (RECIPE!)
+			-- #endif
+			i(11225),	-- Formula: Enchant Bracer - Greater Stamina (RECIPE!)
+			-- #if AFTER 7.0.3
+			i(11204),	-- Formula: Enchant Bracer - Greater Versatility / CLASSIC: Formula: Enchant Bracer - Greater Spirit (RECIPE!)
+			-- #endif
+			i(6375),	-- Formula: Enchant Bracer - Lesser Versatility / CLASSIC: Formula: Enchant Bracer - Lesser Spirit (RECIPE!)
+			-- #if BEFORE 7.0.3
+			i(6344),	-- CLASSIC: Formula: Enchant Bracer - Minor Spirit / Formula: Enchant Bracer - Minor Versatility (RECIPE!)
+			-- #endif
+			i(6347),	-- Formula: Enchant Bracer - Minor Strength (RECIPE!)
+			-- #if AFTER 7.0.3
+			i(6344),	-- Formula: Enchant Bracer - Minor Versatility / CLASSIC: Formula: Enchant Bracer - Minor Spirit (RECIPE!)
+			-- #endif
+			-- #if BEFORE 7.0.3
+			i(16218),	-- CLASSIC: Formula: Enchant Bracer - Superior Spirit / Formula: Enchant Bracer - Superior Versatility (RECIPE!)
+			-- #endif
+			i(16251),	-- Formula: Enchant Bracer - Superior Stamina (RECIPE!)
+			-- #if AFTER 7.0.3
+			i(16218),	-- Formula: Enchant Bracer - Superior Versatility / CLASSIC: Formula: Enchant Bracer - Superior Spirit (RECIPE!)
+			-- #endif
+			i(16253),	-- Formula: Enchant Chest - Greater Stats (RECIPE!)
+			i(6342),	-- Formula: Enchant Chest - Minor Mana (RECIPE!)
+			i(11098, {	-- Formula: Enchant Cloak - Lesser Shadow Resistance (RECIPE!)
+				["timeline"] = { "removed 5.0.4" },
+			}),
+			i(11039),	-- Formula: Enchant Cloak - Minor Agility (RECIPE!)
+			i(11226),	-- Formula: Enchant Gloves - Riding Skill (RECIPE!)
+			i(11224, {	-- Formula: Enchant Shield - Frost Resistance (RECIPE!)
+				["timeline"] = { "removed 5.0.4" },
+			}),
+			i(11168),	-- Formula: Enchant Shield - Lesser Parry / CLASSIC: Formula: Enchant Shield - Lesser Block (RECIPE!)
+			i(11081),	-- Formula: Enchant Shield - Lesser Protection (RECIPE!)
+			i(11202),	-- Formula: Enchant Shield - Stamina (RECIPE!)
+			i(11208),	-- Formula: Enchant Weapon - Demonslaying (RECIPE!)
+			i(11164),	-- Formula: Enchant Weapon - Lesser Beastslayer (RECIPE!)
+			i(11165),	-- Formula: Enchant Weapon - Lesser Elemental Slayer (RECIPE!)
+			i(6348),	-- Formula: Enchant Weapon - Minor Beastslayer (RECIPE!)
 		}),
 		prof(ENGINEERING, {
 			i(16055),	-- Schematic: Arcane Bomb
 			i(10601),	-- Schematic: Bright-Eye Goggles
 			i(10603),	-- Schematic: Catseye Ultra Goggles
+			i(6716),	-- Schematic: EZ-Thro Dynamite
+			i(4416),	-- Schematic: Goblin Land Mine
+			i(4417),	-- Schematic: Large Seaforium Charge
 			i(16044),	-- Schematic: Lifelike Mechanical Toad
-			i(4408),	-- Schematic: Mechanical Squirrel
-			i(10604),	-- Schematic: Mithril Heavy-bore Rifle
+			i(4408),	-- Schematic: Mechanical Squirrel Box [Wrath+] / Schematic: Mechanical Squirrel
+			i(10604), 	-- Schematic: Mithril Heavy-Bore Rifle [CATA+] / Schematic: Mithril Heavy-bore Rifle
+			i(4412),	-- Schematic: Moonsight Rifle
 			i(10606),	-- Schematic: Parachute Cloak
+			i(4414),	-- Schematic: Portable Bronze Mortar
+			i(4410),	-- Schematic: Shadow Goggles
+			i(4409),	-- Schematic: Small Seaforium Charge
 			i(10608),	-- Schematic: Sniper Scope
-			i(10605),	-- Schematic: Spellpower Goggles Xtreme
-			i(16043),	-- Schematic: Thorium Rifle
-			i(16051),	-- Schematic: Thorium Shells
+			i(10605, {	-- Schematic: Spellpower Goggles Xtreme
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(16043, {	-- Schematic: Thorium Rifle
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(16051, {	-- Schematic: Thorium Shells
+				["timeline"] = { "removed 2.0.3", "deleted 4.0.1" },	-- Taught by trainer
+			}),
 		}),
 		-- #if BEFORE 8.0.1.10000
 		prof(FIRST_AID, {
@@ -3055,34 +3143,63 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(4294),	-- Pattern: Hillman's Belt
 			i(4293),	-- Pattern: Hillman's Leather Vest
 			i(7363),	-- Pattern: Pilferer's Gloves
-			i(15745),	-- Pattern: Runic Leather Belt
-			i(15731),	-- Pattern: Runic Leather Gauntlets
-			i(15765),	-- Pattern: Runic Leather Pants
 			i(7288),	-- Pattern: Rugged Leather Pants
+			i(15745, {	-- Pattern: Runic Leather Belt
+				["timeline"] = { "removed 5.0.4" },	-- Taught by trainer
+			}),
+			i(15731, {	-- Pattern: Runic Leather Gauntlets
+				["timeline"] = { "removed 5.0.4" },	-- Taught by trainer
+			}),
+			i(15765, {	-- Pattern: Runic Leather Pants
+				["timeline"] = { "removed 5.0.4" },	-- Taught by trainer
+			}),
 			i(7453),	-- Pattern: Swift Boots
+			i(8385),	-- Pattern: Turtle Scale Gloves
 			i(15742),	-- Pattern: Warbear Harness
 			i(2407),	-- Pattern: White Leather Jerkin
-			i(15757),	-- Pattern: Wicked Leather Pants
+			i(15757, {	-- Pattern: Wicked Leather Pants
+				["timeline"] = { "removed 5.0.4" },	-- Taught by trainer
+			}),
 		}),
 		prof(TAILORING, {
 			i(7085),	-- Pattern: Azure Shoulders
 			i(4352),	-- Pattern: Boots of the Enchanter
 			i(14510),	-- Pattern: Bottomless Bag
-			i(14484),	-- Pattern: Brightcloth Cloak
-			i(14479),	-- Pattern: Brightcloth Gloves
+			i(14484, {	-- Pattern: Brightcloth Cloak
+				["timeline"] = { "removed 4.0.3" },	-- Taught by trainer
+			}),
+			i(14479, {	-- Pattern: Brightcloth Gloves
+				["timeline"] = { "removed 4.0.3" },	-- Taught by trainer
+			}),
 			i(14494),	-- Pattern: Brightcloth Pants
-			i(14478),	-- Pattern: Brightcloth Robe
+			i(14478, {	-- Pattern: Brightcloth Robe
+				["timeline"] = { "removed 4.0.3" },	-- Taught by trainer
+			}),
 			i(10316),	-- Pattern: Colorful Kilt
 			i(7084),	-- Pattern: Crimson Silk Shoulders
 			i(7086),	-- Pattern: Earthen Silk Belt
-			i(14492),	-- Pattern: Felcloth Boots
-			i(14496),	-- Pattern: Felcloth Hood
-			i(14506),	-- Pattern: Felcloth Robe
-			i(14508),	-- Pattern: Felcloth Shoulders
-			i(14474),	-- Pattern: Frostweave Gloves
-			i(14489),	-- Pattern: Frostweave Pants
+			i(14492, {	-- Pattern: Felcloth Boots
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14496, {	-- Pattern: Felcloth Hood
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14506, {	-- Pattern: Felcloth Robe
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14508, {	-- Pattern: Felcloth Shoulders
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14474, {	-- Pattern: Frostweave Gloves
+				["timeline"] = { "removed 4.0.3" },	-- Taught by trainer
+			}),
+			i(14489, {	-- Pattern: Frostweave Pants
+				["timeline"] = { "removed 4.0.3" },	-- Taught by trainer
+			}),
 			i(14467),	-- Pattern: Frostweave Robe
-			i(14466),	-- Pattern: Frostweave Tunic
+			i(14466, {	-- Pattern: Frostweave Tunic
+				["timeline"] = { "removed 4.0.3" },	-- Taught by trainer
+			}),
 			i(14511),	-- Pattern: Gloves of Spell Mastery
 			i(2601),	-- Pattern: Gray Woolen Robe
 			i(7090),	-- Pattern: Green Silk Armor
@@ -3107,10 +3224,18 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(4345),	-- Pattern: Red Woolen Boots
 			i(4347),	-- Pattern: Reinforced Woolen Shoulders
 			i(4354),	-- Pattern: Rich Purple Silk Shirt
-			i(14498),	-- Pattern: Runecloth Headband
-			i(14491),	-- Pattern: Runecloth Pants
-			i(14504),	-- Pattern: Runecloth Shoulders
-			i(14470),	-- Pattern: Runecloth Tunic
+			i(14498, {	-- Pattern: Runecloth Headband
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14491, {	-- Pattern: Runecloth Pants
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14504, {	-- Pattern: Runecloth Shoulders
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
+			i(14470, {	-- Pattern: Runecloth Tunic
+				["timeline"] = { "removed 2.0.3" },	-- Taught by trainer
+			}),
 			i(4351),	-- Pattern: Shadow Hood
 			i(4353),	-- Pattern: Spider Belt
 			i(4350),	-- Pattern: Spider Silk Slippers
@@ -3120,197 +3245,5 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(7091),	-- Pattern: Truefaith Gloves
 			i(10301),	-- Pattern: White Bandit Mask
 		}),
-	}),
-}));
-
--- These items never made it in.
-root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
-	filter(1, {	-- Held in Off-hand
-	
-	}),
-	filter(2, {	-- Cosmetic [TODO: Move to Hallow's End?]
-		
-	}),
-	filter(3, {	-- Cloak
-		
-	}),
-	filter(4, {	-- Cloth
-		i(20351),	-- 63 Green Frost Belt
-		i(20352),	-- 63 Green Frost Bindings
-		i(20355),	-- 63 Green Frost Gloves
-		i(20324),	-- 90 Epic Frost Belt
-		i(20325),	-- 90 Epic Frost Bindings
-		i(20328),	-- 90 Epic Frost Gloves
-		i(20338),	-- 90 Green Frost Belt
-		i(20339),	-- 90 Green Frost Bindings
-		i(20342),	-- 90 Green Frost Gloves
-	}),
-	filter(5, {	-- Leather
-		i(20311),	-- 63 Green Rogue Belt
-		i(20314),	-- 63 Green Rogue Bracers
-		i(20267),	-- 90 Epic Rogue Belt
-		i(20269),	-- 90 Epic Rogue Bracers
-		i(20297),	-- 90 Green Rogue Belt
-		i(20300),	-- 90 Green Rogue Bracers
-	}),
-	filter(6, {	-- Mail
-		
-	}),
-	filter(7, {	-- Plate
-		
-	}),
-	filter(8, {	-- Shield
-		i(14609),	-- Deprecated Ceremonial Buckler
-		i(9888),	-- Deprecated Elven Protector
-		i(15888),	-- Deprecated Glorious Shield
-		i(15889),	-- Deprecated Jademir Scale Shield
-		i(14597),	-- Deprecated Warden's Buckler
-	}),
-	filter(9, {	-- Tabard
-	
-	}),
-	filter(10, {	-- Shirt
-		i(105),	-- Deprecated Dwarven Recruit's Shirt
-		i(101),	-- Deprecated Dwarven Squire's Shirt
-		i(133),	-- Deprecated Orc Acolyte's Shirt
-		i(123),	-- Deprecated Orc Apprentice Shirt
-		i(964),	-- Deprecated Red Linen Shirt
-		i(3149),	-- Deprecated Ripped Vest
-		i(134),	-- Deprecated Stiff Leather Shirt
-		i(3147),	-- Deprecated Tattered Shirt
-		i(151),	-- Deprecated Tauren Apprentice Shirt
-		i(157),	-- Deprecated Tauren Recruit's Shirt
-		i(5090),	-- Deprecated Torn Shirt
-		i(93),	-- OLDDwarven Initiate's Shirt
-		i(89),	-- OLDThick Trapper's Shirt
-		i(5091),	-- test Eric Shirt
-	}),
-	filter(20, {	-- Dagger
-		i(19810),	-- 1000 Test dagger 60 blue
-		i(19313),	-- 1300 Test Dagger 63 blue
-		i(19622),	-- 1800 Test Dagger 63 blue
-		i(19314),	-- 2000 Test Dagger 63 blue
-	}),
-	filter(21, {	-- One Handed Axe
-		
-	}),
-	filter(22, {	-- Two Handed Axe
-		i(19185),	-- 2100 Test 2h Axe 63 blue
-		i(19188),	-- 2200 Test 2h Axe 63 blue
-		i(19189),	-- 2300 Test 2h Axe 63 blue
-		i(19190),	-- 2400 Test 2h Axe 63 blue
-		i(19809),	-- 2500 Test 2h Axe 60 blue
-		i(19811),	-- 2500 Test 2h Axe 60 blue (bear)
-		i(19191),	-- 2500 Test 2h Axe 63 blue
-		i(19192),	-- 2600 Test 2h Axe 63 blue
-		i(19186),	-- 2700 Test 2h Axe 63 blue
-		i(19193),	-- 2800 Test 2h Axe 63 blue
-		i(19194),	-- 2900 Test 2h Axe 63 blue
-		i(19195),	-- 3000 Test 2h Axe 63 blue
-		i(19196),	-- 3100 Test 2h Axe 63 blue
-		i(19187),	-- 3200 Test 2h Axe 63 blue
-		i(19197),	-- 3300 Test 2h Axe 63 blue
-		i(19198),	-- 3400 Test 2h Axe 63 blue
-		i(19199),	-- 3500 Test 2h Axe 63 blue
-		i(19455),	-- 3500 Test 2h Axe 70 purple
-		i(19662),	-- 3500 Test 2h Axe 80 purple
-		i(19200),	-- 3600 Test 2h Axe 63 blue
-		i(19201),	-- 3700 Test 2h Axe 63 blue
-		i(19184),	-- 3800 Test 2h Axe 63 blue
-		i(20280),	-- 63 Green Warrior Axe
-		i(20149),	-- 90 Epic Warrior Axe
-		i(20238),	-- 90 Green Warrior Axe
-	}),
-	filter(23, {	-- One Handed Mace
-		i(2189),	-- Tigole's Boomstick (TEST)
-	}),
-	filter(24, {	-- Two Handed Mace
-	
-	}),
-	filter(25, {	-- One Handed Sword
-		i(19427),	-- 1500 Test sword 63 blue
-		i(19457),	-- 1500 Test sword 80 purple
-		i(21782),	-- 2000 Test sword 63 blue
-		i(19502),	-- 2200 Test sword 63 blue
-		i(19504),	-- 2200 Test sword 70 purple
-		i(19503),	-- 2200 Test sword 80 purple
-		i(19428),	-- 2900 Test sword 63 blue
-		i(19456),	-- 2900 Test sword 80 purple
-		i(3933),	-- Deprecated Moon Glaive
-	}),
-	filter(26, {	-- Two Handed Sword
-		i(3687),	-- Deprecated Unholy Avenger
-		i(3934),	-- Deprecated Warden Blade
-	}),
-	filter(27, {	-- Wand
-		
-	}),
-	filter(28, {	-- Staff
-		
-	}),
-	filter(29, {	-- Polearm
-		
-	}),
-	filter(31, {	-- Gun
-		i(20285),	-- 63 Green Warrior Gun
-		i(20146),	-- 90 Epic Warrior Gun
-		i(20245),	-- 90 Green Warrior Gun
-	}),
-	filter(32, {	-- Bow
-		i(4763),	-- Blackwood Recurve Bow
-	}),
-	filter(33, {	-- Crossbow
-	
-	}),
-	filter(34, {	-- Fist Weapon
-		
-	}),
-	filter(36, {	-- Thrown
-		
-	}),
-	filter(37, {	-- Ammo
-		i(10579),	-- Explosive Arrow
-	}),
-	filter(50, {	-- Miscellaneous
-		
-	}),
-	filter(52, {	-- Ring
-		i(12947),	-- Alex's Ring of Audacity
-		i(5828),	-- Ring of Uber Resists (TEST)
-	}),
-	filter(53, {	-- Trinket
-		
-	}),
-	filter(55, {	-- Consumable
-		
-	}),
-	filter(100, {	-- Mount
-		i(875),	-- Brown Horse Summoning
-		i(901),	-- Deptecated White Stallion Summoning (Mount)
-		i(5874),	-- Harness: Black Ram
-		i(5875),	-- Harness: Blue Ram
-		i(1041),	-- Horn of the Black Wolf
-		i(1134),	-- Horn of the Gray Wolf
-		i(5663),	-- Horn of the Red Wolf
-		i(8583),	-- Horn of the Skeletal Mount
-		i(1133),	-- Horn of the Winter Wolf
-		i(14062),	-- Kodo Mount
-		i(8589),	-- Old Whistle of the Ivory Raptor
-		i(8590),	-- Old Whistle of the Obsidian Raptor
-		i(2413),	-- Palomino
-		i(8633),	-- Reins of the Leopard
-		i(8627),	-- Reins of the Night saber
-		i(8628),	-- Reins of the Spotted Nightsaber
-		i(2415),	-- White Stallion
-	}),
-	filter(BATTLE_PETS, {
-		i(21168),	-- Baby Shark
-		i(11903),	-- Cat Carrier (Corrupted Kitten)
-	}),
-	filter(113, {	-- Bag
-		
-	}),
-	filter(200, {	-- Recipe
-		
 	}),
 }));

@@ -1508,12 +1508,13 @@ root("Zones", m(KALIMDOR, {
 				i(15739, {	-- Pattern: Runic Leather Bracers
 					["cr"] = 7112,	-- Jaedenar Cultist
 				}),
-				un(2, i(15754, {	-- Pattern: Warbear Woolies
+				i(15754, {	-- Pattern: Warbear Woolies
+					["timeline"] = { "removed 1.11.1.5462" },
 					["crs"] = {
 						7158,	-- Deadwood Shaman
 						7156,	-- Deadwood Den Watcher
 					},
-				})),
+				}),
 				i(15744, {	-- Pattern: Wicked Leather Headband
 					["cr"] = 7107,	-- Jadefire Trickster
 				}),
