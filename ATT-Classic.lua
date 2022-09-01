@@ -63,7 +63,6 @@ local HORDE_ONLY = {
 };
 
 -- Coroutine Helper Functions
-app.RawData = {};
 app.refreshing = {};
 local function OnUpdate(self)
 	for i=#self.__stack,1,-1 do
@@ -9548,7 +9547,6 @@ local function CreateMiniListForGroup(group)
 		popout.data.progress = 0;
 		BuildGroups(popout.data, popout.data.g);
 		UpdateGroups(popout.data, popout.data.g);
-		table.insert(app.RawData, popout.data);
 	end
 	if IsAltKeyDown() then
 		AddTomTomWaypoint(popout.data, false);
@@ -10770,7 +10768,6 @@ function app:GetDataCache()
 		allData.total = 0;
 		local g, db = {};
 		allData.g = g;
-		table.insert(app.RawData, allData);
 		
 		-- Dungeons & Raids
 		db = {};
@@ -11082,7 +11079,6 @@ function app:GetDataCache()
 		allData.total = 0;
 		local g, db = {};
 		allData.g = g;
-		table.insert(app.RawData, allData);
 		
 		-- Never Implemented
 		if app.Categories.NeverImplemented then
@@ -11698,13 +11694,6 @@ function app:RefreshData(fromTrigger)
 		if app.forceFullDataRefresh then
 			app.forceFullDataRefresh = nil;
 			app:GetDataCache();
-			for i,data in ipairs(app.RawData) do
-				data.progress = 0;
-				data.total = 0;
-				UpdateGroups(data, data.g);
-			end
-			
-			-- Forcibly update the windows.
 			app:UpdateWindows(true, app.refreshFromTrigger);
 		else
 			app:UpdateWindows(nil, app.refreshFromTrigger);
@@ -11778,39 +11767,6 @@ function app:GetWindow(suffix, parent, onUpdate)
 			}
 		};
 		window:Hide();
-		window.AddObject = function(self, info)
-			-- Bubble Up the Maps
-			local mapInfo;
-			local mapID = app.CurrentMapID;
-			if mapID then
-				local pos = C_Map.GetPlayerMapPosition(mapID, "player");
-				if pos then
-					local px, py = pos:GetXY();
-					info.coord = { px * 100, py * 100, mapID };
-				end
-				repeat
-					mapInfo = C_Map.GetMapInfo(mapID);
-					if mapInfo then
-						info = { ["mapID"] = mapInfo.mapID, ["g"] = { info } };
-						mapID = mapInfo.parentMapID
-					end
-				until not mapInfo or not mapID;
-			end
-			
-			MergeObject(self.data.g, CreateObject(info));
-			MergeObject(self.rawData, info);
-			self:Update();
-		end
-		window.Clear = function(self)
-			if self.rawData then
-				wipe(self.rawData);
-			else
-				self.rawData = {};
-			end
-			app.SetDataMember(self.Suffix, self.rawData);
-			wipe(self.data.g);
-			self:Update();
-		end
 		local function DelayedUpdateCoroutine()
 			while window.delayRemaining > 0 do
 				coroutine.yield();
@@ -12492,8 +12448,6 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 				},
 			},
 		});
-		table.insert(app.RawData, self.data);
-		self.rawData = {};
 		local IsSameMap = function(data, results)
 			if data.mapID then
 				-- Exact same map?
@@ -12878,6 +12832,29 @@ end);
 app:GetWindow("Debugger", UIParent, function(self)
 	if not self.initialized then
 		self.initialized = true;
+		self.AddObject = function(self, info)
+			-- Bubble Up the Maps
+			local mapInfo;
+			local mapID = app.CurrentMapID;
+			if mapID then
+				local pos = C_Map.GetPlayerMapPosition(mapID, "player");
+				if pos then
+					local px, py = pos:GetXY();
+					info.coord = { px * 100, py * 100, mapID };
+				end
+				repeat
+					mapInfo = C_Map.GetMapInfo(mapID);
+					if mapInfo then
+						info = { ["mapID"] = mapInfo.mapID, ["g"] = { info } };
+						mapID = mapInfo.parentMapID
+					end
+				until not mapInfo or not mapID;
+			end
+			
+			MergeObject(self.data.g, CreateObject(info));
+			MergeObject(self.rawData, info);
+			self:Update();
+		end
 		self.data = {
 			['text'] = "Session History",
 			['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
