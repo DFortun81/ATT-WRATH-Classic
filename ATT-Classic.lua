@@ -9603,7 +9603,7 @@ local function SetRowData(self, row, data)
 		if not text or text == RETRIEVING_DATA then
 			text = RETRIEVING_DATA;
 			self.processingLinks = true;
-		elseif string.find(text, "%[%]") then
+		elseif string.find(text, "%[%]") or string.find(text, "%[" .. RETRIEVING_DATA .. "%]") then
 			-- This means the link is still rendering
 			text = RETRIEVING_DATA;
 			self.processingLinks = true;
