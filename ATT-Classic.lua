@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 --                        A L L   T H E   T H I N G S                         --
 --------------------------------------------------------------------------------
---				Copyright 2017-2021 Dylan Fortune (Crieve-Sargeras)           --
+--				Copyright 2017-2022 Dylan Fortune (Crieve-Sargeras)           --
 --------------------------------------------------------------------------------
 local app = select(2, ...);
 local L = app.L;
@@ -3819,7 +3819,7 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
 		ATTAccountWideData.Achievements[achievementID] = 1;
-		if refresh then app:RefreshDataQuietly(); end
+		if refresh then app:RefreshDataCompletely(true); end
 	elseif app.CurrentCharacter.Achievements[achievementID] then
 		app.CurrentCharacter.Achievements[achievementID] = nil;
 		ATTAccountWideData.Achievements[achievementID] = nil;
@@ -3829,7 +3829,7 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 				break;
 			end
 		end
-		if refresh then app:RefreshDataQuietly(); end
+		if refresh then app:RefreshDataCompletely(true); end
 	end
 end
 local fields = {
@@ -5662,7 +5662,7 @@ else
 					end
 				end
 			end
-			if anythingNew then app:RefreshDataQuietly(); end
+			if anythingNew then app:RefreshDataCompletely(true); end
 		end
 		local meta = { __index = function(t, spellID)
 			RefreshCompanionCollectionStatus();
@@ -6953,10 +6953,8 @@ itemHarvesterFields.text = function(t)
 			if class == "Recipe" or class == "Mount" then
 				spellName, spellID = GetItemSpell(t.itemID);
 				if spellName == "Learning" then spellID = nil; end	-- RIP.
-				setmetatable(t, app.BaseItemTooltipHarvester);
-			else
-				setmetatable(t, app.BaseItemTooltipHarvester);
 			end
+			setmetatable(t, app.BaseItemTooltipHarvester);
 			local info = {
 				["name"] = itemName,
 				["itemID"] = t.itemID,
@@ -7633,7 +7631,7 @@ app.events.MAP_EXPLORATION_UPDATED = function(...)
 						end
 					end
 				end
-				if newArea then app:RefreshDataQuietly(); end
+				if newArea then app:RefreshDataCompletely(true); end
 			end
 		end
 	end);
@@ -9320,7 +9318,6 @@ local function CreateMiniListForGroup(group)
 	local popout = app.Windows[suffix];
 	if not popout then
 		popout = app:GetWindow(suffix);
-		popout.shouldFullRefresh = true;
 		if group.questID or group.sourceQuests then
 			-- This is a quest object. Let's show prereqs and breadcrumbs.
 			local questID = group.questID;
@@ -10683,7 +10680,7 @@ local function ProcessGroup(data, object)
 		end
 	end
 end
-local function UpdateWindow(self, force, got)
+local function UpdateWindow(self, force, fromTrigger)
 	-- If this window doesn't have data, do nothing.
 	if not self.data then return; end
 	if not self.rowData then
@@ -10691,12 +10688,14 @@ local function UpdateWindow(self, force, got)
 	else
 		wipe(self.rowData);
 	end
+	self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
 	if self.data and (force or self:IsVisible()) then
 		self.data.expanded = true;
-		if self.shouldFullRefresh and (force or got) then
+		if self.forceFullDataRefresh then
 			self.data.progress = 0;
 			self.data.total = 0;
 			UpdateGroups(self.data, self.data.g);
+			self.forceFullDataRefresh = nil;
 		end
 		ProcessGroup(self.rowData, self.data);
 		
@@ -10708,7 +10707,7 @@ local function UpdateWindow(self, force, got)
 					tinsert(self.rowData, self.data);
 				end
 				if self.missingData then
-					if got then app:PlayCompleteSound(); end
+					if fromTrigger then app:PlayCompleteSound(); end
 					self.missingData = nil;
 				end
 				tinsert(self.rowData, {
@@ -10736,9 +10735,9 @@ local function UpdateWindowColor(self, suffix)
 	self:SetBackdropBorderColor(1, 1, 1, 1);
 	self:SetBackdropColor(0, 0, 0, 1);
 end
-function app:UpdateWindows(force, got)
+function app:UpdateWindows(force, fromTrigger)
 	for name, window in pairs(app.Windows) do
-		window:Update(force, got);
+		window:Update(force, fromTrigger);
 	end
 end
 function app:UpdateWindowColors()
@@ -11674,10 +11673,11 @@ function app:GetDataCache()
 	end
 	return allData;
 end
-function app:RefreshData(lazy, got)
+function app:RefreshData(fromTrigger)
 	app.countdown = app.countdown or 0;
+	app.refreshFromTrigger = app.refreshFromTrigger or fromTrigger;
 	if app.currentlyRefreshingData then return; end
-	--print("RefreshData(" .. tostring(lazy or false) .. ", " .. tostring(got or false) .. ")");
+	--print("RefreshData(" .. tostring(fromTrigger or false) .. ")");
 	StartCoroutine("RefreshData", function()
 		app.currentlyRefreshingData = true;
 		
@@ -11705,10 +11705,11 @@ function app:RefreshData(lazy, got)
 			end
 			
 			-- Forcibly update the windows.
-			app:UpdateWindows(true, got);
+			app:UpdateWindows(true, app.refreshFromTrigger);
 		else
-			app:UpdateWindows(nil, got);
+			app:UpdateWindows(nil, app.refreshFromTrigger);
 		end
+		app.refreshFromTrigger = nil;
 		
 		-- Send a message to your party members.
 		local data = app:GetWindow("Prime").data;
@@ -11722,7 +11723,7 @@ function app:RefreshData(lazy, got)
 		app.currentlyRefreshingData = nil;
 	end);
 end
-function app:RefreshDataCompletely()
+function app:RefreshDataCompletely(fromTrigger)
 	app.forceFullDataRefresh = true;
 	app:RefreshData(true, true);
 end
@@ -11862,7 +11863,7 @@ function app:GetWindow(suffix, parent, onUpdate)
 		container.rows = {};
 		scrollbar:SetValue(1);
 		container:Show();
-		window:Update(true);
+		window:Update();
 	end
 	return window;
 end
@@ -12468,245 +12469,7 @@ app:GetWindow("CosmicInfuser", UIParent, function(self)
 		UpdateWindow(self, true);
 	end
 end);
-
--- Uncomment this section if you need to enable Debugger:
---[[
-app:GetWindow("Debugger", UIParent, function(self)
-	if not self.initialized then
-		self.initialized = true;
-		self.data = {
-			['text'] = "Session History",
-			['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
-			["description"] = "This keeps a visual record of all of the quests, maps, loot, and vendors that you have come into contact with since the session was started.",
-			['visible'] = true, 
-			['expanded'] = true,
-			['back'] = 1,
-			['options'] = {
-				{
-					['text'] = "Clear History",
-					['icon'] = "Interface\\Icons\\Ability_Rogue_FeignDeath.blp", 
-					["description"] = "Click this to fully clear this window.\n\nNOTE: If you click this by accident, use the dynamic Restore Buttons that this generates to reapply the data that was cleared.\n\nWARNING: If you reload the UI, the data stored in the Reload Button will be lost forever!",
-					['visible'] = true,
-					['count'] = 0,
-					['OnClick'] = function(row, button)
-						local copy = {};
-						for i,o in ipairs(self.rawData) do
-							tinsert(copy, o);
-						end
-						if #copy < 1 then
-							app.print("There is nothing to clear.");
-							return true;
-						end
-						row.ref.count = row.ref.count + 1;
-						tinsert(self.data.options, {
-							['text'] = "Restore Button " .. row.ref.count,
-							['icon'] = "Interface\\Icons\\ability_monk_roll.blp", 
-							["description"] = "Click this to restore your cleared data.\n\nNOTE: Each Restore Button houses different data.\n\nWARNING: This data will be lost forever when you reload your UI!",
-							['visible'] = true,
-							['data'] = copy,
-							['OnClick'] = function(row, button)
-								for i,info in ipairs(row.ref.data) do
-									MergeObject(self.data.g, CreateObject(info));
-									MergeObject(self.rawData, info);
-								end
-								self:Update();
-								return true;
-							end,
-						});
-						wipe(self.rawData);
-						wipe(self.data.g);
-						for i=#self.data.options,1,-1 do
-							tinsert(self.data.g, 1, self.data.options[i]);
-						end
-						self:Update();
-						return true;
-					end,
-				},
-			},
-			['g'] = {},
-		};
-		self.rawData = {};
-		
-		-- Setup Event Handlers and register for events
-		self:SetScript("OnEvent", function(self, e, ...)
-			--print(e, ...);
-			if e == "VARIABLES_LOADED" then
-				if not ATTClassicDebugData then
-					ATTClassicDebugData = app.GetDataMember("Debugger", {});
-					app.SetDataMember("Debugger", nil);
-				end
-				self.rawData = ATTClassicDebugData;
-				self.data.g = CreateObject(self.rawData);
-				for i=#self.data.options,1,-1 do
-					tinsert(self.data.g, 1, self.data.options[i]);
-				end
-				self:Update();
-			elseif e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
-				-- Bubble Up the Maps
-				local mapInfo, info;
-				local mapID = app.CurrentMapID;
-				if mapID then
-					repeat
-						info = { ["mapID"] = mapID, ["g"] = info and { info } or nil };
-						mapInfo = C_Map.GetMapInfo(mapID);
-						if mapInfo then
-							mapID = mapInfo.parentMapID;
-						end
-					until not mapInfo or not mapID;
-					
-					MergeObject(self.data.g, CreateObject(info));
-					MergeObject(self.rawData, info);
-					self:Update();
-				end
-			elseif e == "MERCHANT_SHOW" or e == "MERCHANT_UPDATE" then
-				C_Timer.After(0.6, function()
-					local guid = UnitGUID("npc");
-					local ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
-					if guid then ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
-					if npcID then
-						npcID = tonumber(npcID);
-						
-						-- Ignore vendor mount...
-						if npcID == 62822 then
-							return true;
-						end
-						
-						local numItems = GetMerchantNumItems();
-						--print("MERCHANT DETAILS", ty, npcID, numItems);
-						
-						local rawGroups = {};
-						for i=1,numItems,1 do
-							local link = GetMerchantItemLink(i);
-							if link then
-								local name, texture, cost, quantity, numAvailable, isPurchasable, isUsable, extendedCost = GetMerchantItemInfo(i);
-								if extendedCost then
-									cost = {};
-									local itemCount = GetMerchantItemCostInfo(i);
-									for j=1,itemCount,1 do
-										local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(i, j);
-										if itemLink then
-											-- print("  ", itemValue, itemLink, gsub(itemLink, "\124", "\124\124"));
-											local m = itemLink:match("currency:(%d+)");
-											if m then
-												-- Parse as a CURRENCY.
-												tinsert(cost, {"c", tonumber(m), itemValue});
-											else
-												-- Parse as an ITEM.
-												tinsert(cost, {"i", tonumber(itemLink:match("item:(%d+)")), itemValue});
-											end
-										end
-									end
-								end
-								
-								-- Parse as an ITEM LINK.
-								table.insert(rawGroups, {["itemID"] = tonumber(link:match("item:(%d+)")), ["cost"] = cost});
-							end
-						end
-						
-						local info = { [(ty == "GameObject") and "objectID" or "npcID"] = npcID };
-						info.faction = UnitFactionGroup("npc");
-						info.text = UnitName("npc");
-						info.g = rawGroups;
-						self:AddObject(info);
-					end
-				end);
-			elseif e == "GOSSIP_SHOW" then
-				local guid = UnitGUID("npc");
-				if guid then
-					local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
-					if npcID then
-						npcID = tonumber(npcID);
-						--print("GOSSIP_SHOW", type, npcID);
-						if type == "GameObject" then
-							info = { ["objectID"] = npcID, ["text"] = UnitName("npc") };
-						else
-							info = { ["npcID"] = npcID };
-							info.name = UnitName("npc");
-						end
-						info.faction = UnitFactionGroup("npc");
-						self:AddObject(info);
-					end
-				end
-			elseif e == "QUEST_DETAIL" then
-				local questStartItemID = ...;
-				local questID = GetQuestID();
-				if questID == 0 then return false; end
-				local npc = "questnpc";
-				local guid = UnitGUID(npc);
-				if not guid then
-					npc = "npc";
-					guid = UnitGUID(npc);
-				end
-				local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
-				if guid then type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
-				-- print("QUEST_DETAIL", questStartItemID, " => Quest #", questID, type, npcID);
-				
-				local rawGroups = {};
-				for i=1,GetNumQuestRewards(),1 do
-					local link = GetQuestItemLink("reward", i);
-					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
-				end
-				for i=1,GetNumQuestChoices(),1 do
-					local link = GetQuestItemLink("choice", i);
-					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
-				end
-				for i=1,GetNumQuestLogRewardSpells(questID),1 do
-					local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
-					if spellID then
-						if isTradeskillSpell then
-							table.insert(rawGroups, { ["recipeID"] = spellID, ["name"] = name });
-						else
-							table.insert(rawGroups, { ["spellID"] = spellID, ["name"] = name });
-						end
-					end
-				end
-				
-				local info = { ["questID"] = questID, ["description"] = GetQuestText(), ["objectives"] = GetObjectiveText(), ["g"] = rawGroups };
-				if questStartItemID and questStartItemID > 0 then info.itemID = questStartItemID; end
-				if npcID then
-					npcID = tonumber(npcID);
-					if type == "GameObject" then
-						info = { ["objectID"] = npcID, ["text"] = UnitName(npc), ["g"] = { info } };
-					else
-						info.qgs = {npcID};
-						info.name = UnitName(npc);
-					end
-					info.faction = UnitFactionGroup(npc);
-				end
-				self:AddObject(info);
-			elseif e == "CHAT_MSG_LOOT" then
-				local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
-				local itemString = string.match(msg, "item[%-?%d:]+");
-				if itemString then
-					self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
-				end
-			end
-		end);
-		self:RegisterEvent("VARIABLES_LOADED");
-		self:RegisterEvent("GOSSIP_SHOW");
-		self:RegisterEvent("QUEST_DETAIL");
-		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
-		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-		self:RegisterEvent("ZONE_CHANGED");
-		self:RegisterEvent("MERCHANT_SHOW");
-		self:RegisterEvent("MERCHANT_UPDATE");
-		self:RegisterEvent("CHAT_MSG_LOOT");
-		--self:RegisterAllEvents();
-	end
-	
-	-- Update the window and all of its row data
-	if self.data.OnUpdate then self.data.OnUpdate(self.data); end
-	for i,g in ipairs(self.data.g) do
-		if g.OnUpdate then g.OnUpdate(g); end
-	end
-	self.data.index = 0;
-	self.data.back = 1;
-	self.data.indent = 0;
-	BuildGroups(self.data, self.data.g);
-	UpdateWindow(self, true);
-end);
-]]--
-app:GetWindow("CurrentInstance", UIParent, function(self, force, got)
+app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 	if not self.initialized then
 		self.initialized = true;
 		self.openedOnLogin = false;
@@ -13037,7 +12800,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, got)
 		self.data.indent = 0;
 		UpdateGroups(self.data, self.data.g);
 		self.data.visible = true;
-		UpdateWindow(self, true, got);
+		UpdateWindow(self, true, fromTrigger);
 	end
 end);
 app:GetWindow("Dailies", UIParent, function(self)
@@ -13109,6 +12872,244 @@ app:GetWindow("Dailies", UIParent, function(self)
 		UpdateWindow(self, true);
 	end
 end);
+
+-- Uncomment this section if you need to enable Debugger:
+--[[
+app:GetWindow("Debugger", UIParent, function(self)
+	if not self.initialized then
+		self.initialized = true;
+		self.data = {
+			['text'] = "Session History",
+			['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
+			["description"] = "This keeps a visual record of all of the quests, maps, loot, and vendors that you have come into contact with since the session was started.",
+			['visible'] = true, 
+			['expanded'] = true,
+			['back'] = 1,
+			['options'] = {
+				{
+					['text'] = "Clear History",
+					['icon'] = "Interface\\Icons\\Ability_Rogue_FeignDeath.blp", 
+					["description"] = "Click this to fully clear this window.\n\nNOTE: If you click this by accident, use the dynamic Restore Buttons that this generates to reapply the data that was cleared.\n\nWARNING: If you reload the UI, the data stored in the Reload Button will be lost forever!",
+					['visible'] = true,
+					['count'] = 0,
+					['OnClick'] = function(row, button)
+						local copy = {};
+						for i,o in ipairs(self.rawData) do
+							tinsert(copy, o);
+						end
+						if #copy < 1 then
+							app.print("There is nothing to clear.");
+							return true;
+						end
+						row.ref.count = row.ref.count + 1;
+						tinsert(self.data.options, {
+							['text'] = "Restore Button " .. row.ref.count,
+							['icon'] = "Interface\\Icons\\ability_monk_roll.blp", 
+							["description"] = "Click this to restore your cleared data.\n\nNOTE: Each Restore Button houses different data.\n\nWARNING: This data will be lost forever when you reload your UI!",
+							['visible'] = true,
+							['data'] = copy,
+							['OnClick'] = function(row, button)
+								for i,info in ipairs(row.ref.data) do
+									MergeObject(self.data.g, CreateObject(info));
+									MergeObject(self.rawData, info);
+								end
+								self:Update();
+								return true;
+							end,
+						});
+						wipe(self.rawData);
+						wipe(self.data.g);
+						for i=#self.data.options,1,-1 do
+							tinsert(self.data.g, 1, self.data.options[i]);
+						end
+						self:Update();
+						return true;
+					end,
+				},
+			},
+			['g'] = {},
+		};
+		self.rawData = {};
+		
+		-- Setup Event Handlers and register for events
+		self:SetScript("OnEvent", function(self, e, ...)
+			--print(e, ...);
+			if e == "VARIABLES_LOADED" then
+				if not ATTClassicDebugData then
+					ATTClassicDebugData = app.GetDataMember("Debugger", {});
+					app.SetDataMember("Debugger", nil);
+				end
+				self.rawData = ATTClassicDebugData;
+				self.data.g = CreateObject(self.rawData);
+				for i=#self.data.options,1,-1 do
+					tinsert(self.data.g, 1, self.data.options[i]);
+				end
+				self:Update();
+			elseif e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
+				-- Bubble Up the Maps
+				local mapInfo, info;
+				local mapID = app.CurrentMapID;
+				if mapID then
+					repeat
+						info = { ["mapID"] = mapID, ["g"] = info and { info } or nil };
+						mapInfo = C_Map.GetMapInfo(mapID);
+						if mapInfo then
+							mapID = mapInfo.parentMapID;
+						end
+					until not mapInfo or not mapID;
+					
+					MergeObject(self.data.g, CreateObject(info));
+					MergeObject(self.rawData, info);
+					self:Update();
+				end
+			elseif e == "MERCHANT_SHOW" or e == "MERCHANT_UPDATE" then
+				C_Timer.After(0.6, function()
+					local guid = UnitGUID("npc");
+					local ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
+					if guid then ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
+					if npcID then
+						npcID = tonumber(npcID);
+						
+						-- Ignore vendor mount...
+						if npcID == 62822 then
+							return true;
+						end
+						
+						local numItems = GetMerchantNumItems();
+						--print("MERCHANT DETAILS", ty, npcID, numItems);
+						
+						local rawGroups = {};
+						for i=1,numItems,1 do
+							local link = GetMerchantItemLink(i);
+							if link then
+								local name, texture, cost, quantity, numAvailable, isPurchasable, isUsable, extendedCost = GetMerchantItemInfo(i);
+								if extendedCost then
+									cost = {};
+									local itemCount = GetMerchantItemCostInfo(i);
+									for j=1,itemCount,1 do
+										local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(i, j);
+										if itemLink then
+											-- print("  ", itemValue, itemLink, gsub(itemLink, "\124", "\124\124"));
+											local m = itemLink:match("currency:(%d+)");
+											if m then
+												-- Parse as a CURRENCY.
+												tinsert(cost, {"c", tonumber(m), itemValue});
+											else
+												-- Parse as an ITEM.
+												tinsert(cost, {"i", tonumber(itemLink:match("item:(%d+)")), itemValue});
+											end
+										end
+									end
+								end
+								
+								-- Parse as an ITEM LINK.
+								table.insert(rawGroups, {["itemID"] = tonumber(link:match("item:(%d+)")), ["cost"] = cost});
+							end
+						end
+						
+						local info = { [(ty == "GameObject") and "objectID" or "npcID"] = npcID };
+						info.faction = UnitFactionGroup("npc");
+						info.text = UnitName("npc");
+						info.g = rawGroups;
+						self:AddObject(info);
+					end
+				end);
+			elseif e == "GOSSIP_SHOW" then
+				local guid = UnitGUID("npc");
+				if guid then
+					local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
+					if npcID then
+						npcID = tonumber(npcID);
+						--print("GOSSIP_SHOW", type, npcID);
+						if type == "GameObject" then
+							info = { ["objectID"] = npcID, ["text"] = UnitName("npc") };
+						else
+							info = { ["npcID"] = npcID };
+							info.name = UnitName("npc");
+						end
+						info.faction = UnitFactionGroup("npc");
+						self:AddObject(info);
+					end
+				end
+			elseif e == "QUEST_DETAIL" then
+				local questStartItemID = ...;
+				local questID = GetQuestID();
+				if questID == 0 then return false; end
+				local npc = "questnpc";
+				local guid = UnitGUID(npc);
+				if not guid then
+					npc = "npc";
+					guid = UnitGUID(npc);
+				end
+				local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
+				if guid then type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
+				-- print("QUEST_DETAIL", questStartItemID, " => Quest #", questID, type, npcID);
+				
+				local rawGroups = {};
+				for i=1,GetNumQuestRewards(),1 do
+					local link = GetQuestItemLink("reward", i);
+					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
+				end
+				for i=1,GetNumQuestChoices(),1 do
+					local link = GetQuestItemLink("choice", i);
+					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
+				end
+				for i=1,GetNumQuestLogRewardSpells(questID),1 do
+					local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
+					if spellID then
+						if isTradeskillSpell then
+							table.insert(rawGroups, { ["recipeID"] = spellID, ["name"] = name });
+						else
+							table.insert(rawGroups, { ["spellID"] = spellID, ["name"] = name });
+						end
+					end
+				end
+				
+				local info = { ["questID"] = questID, ["description"] = GetQuestText(), ["objectives"] = GetObjectiveText(), ["g"] = rawGroups };
+				if questStartItemID and questStartItemID > 0 then info.itemID = questStartItemID; end
+				if npcID then
+					npcID = tonumber(npcID);
+					if type == "GameObject" then
+						info = { ["objectID"] = npcID, ["text"] = UnitName(npc), ["g"] = { info } };
+					else
+						info.qgs = {npcID};
+						info.name = UnitName(npc);
+					end
+					info.faction = UnitFactionGroup(npc);
+				end
+				self:AddObject(info);
+			elseif e == "CHAT_MSG_LOOT" then
+				local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
+				local itemString = string.match(msg, "item[%-?%d:]+");
+				if itemString then
+					self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
+				end
+			end
+		end);
+		self:RegisterEvent("VARIABLES_LOADED");
+		self:RegisterEvent("GOSSIP_SHOW");
+		self:RegisterEvent("QUEST_DETAIL");
+		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
+		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+		self:RegisterEvent("ZONE_CHANGED");
+		self:RegisterEvent("MERCHANT_SHOW");
+		self:RegisterEvent("MERCHANT_UPDATE");
+		self:RegisterEvent("CHAT_MSG_LOOT");
+		--self:RegisterAllEvents();
+	end
+	
+	-- Update the window and all of its row data
+	if self.data.OnUpdate then self.data.OnUpdate(self.data); end
+	for i,g in ipairs(self.data.g) do
+		if g.OnUpdate then g.OnUpdate(g); end
+	end
+	self.data.index = 0;
+	self.data.back = 1;
+	self.data.indent = 0;
+	BuildGroups(self.data, self.data.g);
+	UpdateWindow(self, true);
+end);
+]]--
 app:GetWindow("ItemFilter", UIParent, function(self)
 	if self:IsVisible() then
 		if not self.initialized then
@@ -13234,7 +13235,6 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 						for i=count,1,-1 do
 							if g[i].collected then
 								table.remove(g, i);
-								self.shouldFullRefresh = true;
 							end
 						end
 					end
@@ -13245,7 +13245,6 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 							local t = app.CreateItemHarvester(i);
 							t.parent = db;
 							tinsert(g, t);
-							self.shouldFullRefresh = true;
 						end
 					end
 					self:DelayedUpdate(true);
@@ -14920,7 +14919,7 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 				if learned > 0 then
 					app.print("Cached " .. learned .. " known recipes!");
 					wipe(searchCache);
-					app:RefreshDataQuietly();
+					app:RefreshDataCompletely(true);
 				end
 			end
 		end
@@ -15040,7 +15039,7 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 						if not previousState or not app.Settings:Get("AccountWide:Recipes") then
 							app:PlayFanfare();
 						end
-						app:RefreshDataQuietly();
+						app:RefreshDataCompletely(true);
 					end
 					self:RefreshRecipes();
 				end
@@ -15687,7 +15686,6 @@ app.events.ADDON_LOADED = function(addonName)
 		
 		-- Create the movable Auction Data window.
 		local window = app:GetWindow("AuctionData");
-		window.shouldFullRefresh = true;
 		window:SetParent(AuctionFrame);
 		window:SetPoint("TOPLEFT", AuctionFrame, "TOPRIGHT", 0, -10);
 		window:SetPoint("BOTTOMLEFT", AuctionFrame, "BOTTOMRIGHT", 0, 10);
@@ -16426,7 +16424,7 @@ app.events.QUEST_TURNED_IN = function(questID)
 		wipe(DirtyQuests);
 		wipe(searchCache);
 	end
-	app:RefreshDataQuietly();
+	app:RefreshDataCompletely(true);
 end
 app.events.QUEST_WATCH_UPDATE = function()
 	wipe(searchCache);
