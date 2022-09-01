@@ -375,7 +375,6 @@ root("NeverImplemented", {
 		i(13092),	-- Deprecated Dragonstalker Tunic
 		i(13242),	-- Deprecated Stormrage Boots
 		i(19837),	-- Test Ranged Slot
-		i(5968),	-- Rugged Boots
 		i(14550),	-- Bladebane Armguards
 		i(21594),	-- Bracers of the Fallen Son
 		i(19743),	-- Cloaked Hood TEST
@@ -422,8 +421,6 @@ root("NeverImplemented", {
 		i(21614),	-- Wormhide Protector
 	}),
 	filter(6, {		-- Mail
-		i(2016),	-- Dusty Chain Armor
-		i(2273),	-- Guerrilla Armor
 		i(6730),	-- Ironforge Chain
 		i(6733),	-- Ironforge Gauntlets
 		i(7925),	-- Mithril Scale Gloves

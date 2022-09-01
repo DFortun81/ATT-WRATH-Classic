@@ -77,6 +77,27 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14450),	-- Highborne Cloak
 		i(14745),	-- Hulking Cloak
 		i(9890),	-- Huntsman's Cape
+		i(68762, {	-- Imbued Cadet Cloak
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68748, {	-- Imbued Disciple's Cloak
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68759, {	-- Imbued Gypsy Cloak
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68743, {	-- Imbued Infantry Cloak
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68744, {	-- Imbued Pioneer Cloak
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68746, {	-- Imbued Primal Cape
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68756, {	-- Imbued Simple Cape
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
 		i(15661),	-- Impenetrable Cloak
 		i(6432),	-- Imperial Cloak
 		i(8248),	-- Imperial Red Cloak
@@ -149,7 +170,13 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(8259),	-- Serpentskin Cloak
 		i(6564),	-- Shimmering Cloak
 		i(14420),	-- Silksand Cape
-		i(4713),	-- Silver-thread Cloak
+		i(4713),	-- Silver-Thread Cloak [CATA+] / Silver-thread Cloak
+		i(22782, {	-- Sin'dorei Cloak of Warding
+			-- #if AFTER 6.0.1
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			-- #endif
+			["timeline"] = { "created 4.0.1.12941", "added 6.0.1", "removed 7.0.1" },
+		}),
 		i(14752),	-- Slayer's Cape
 		i(9877),	-- Sorcerer Cloak
 		i(15579),	-- Sparkleshell Cloak
@@ -445,6 +472,18 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14452),	-- Highborne Pauldrons
 		i(14453),	-- Highborne Robes
 		i(2721),	-- Holy Shroud
+		i(68754, {	-- Imbued Disciple's Boots
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68749, {	-- Imbued Disciple's Bracers
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68755, {	-- Imbued Disciple's Gloves
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68747, {	-- Imbued Disciple's Sash
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
 		i(8246),	-- Imperial Red Boots
 		i(8247),	-- Imperial Red Bracers
 		i(8254),	-- Imperial Red Circlet
@@ -587,7 +626,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14127),	-- Ritual Shroud
 		i(14133),	-- Ritual Tunic
 		i(1716),	-- Robe of the Magi
-		i(940),	-- Robes of Insight
+		i(940),		-- Robes of Insight
 		i(9912),	-- Royal Amice
 		i(9909),	-- Royal Bands
 		i(9905),	-- Royal Blouse
@@ -638,14 +677,14 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14423),	-- Silksand Shoulder Pads
 		i(14417),	-- Silksand Tunic
 		i(14425),	-- Silksand Wraps
-		i(6395),	-- Silver-thread Amice
-		i(7110),	-- Silver-thread Armor
-		i(6394),	-- Silver-thread Boots
-		i(4036),	-- Silver-thread Cuffs
-		i(6393),	-- Silver-thread Gloves
-		i(4037),	-- Silver-thread Pants
-		i(4035),	-- Silver-thread Robe
-		i(4714),	-- Silver-thread Sash
+		i(6395),	-- Silver-Thread Amice [CATA+] / Silver-thread Amice
+		i(7110),	-- Silver-Thread Armor [CATA+] / Silver-thread Armor
+		i(6394),	-- Silver-Thread Boots [CATA+] / Silver-thread Boots
+		i(4036),	-- Silver-Thread Cuffs [CATA+] / Silver-thread Cuffs
+		i(6393),	-- Silver-Thread Gloves [CATA+] / Silver-thread Gloves
+		i(4037),	-- Silver-Thread Pants [CATA+] / Silver-thread Pants
+		i(4035),	-- Silver-Thread Robe [CATA+] / Silver-thread Robe
+		i(4714),	-- Silver-Thread Sash [CATA+] / Silver-thread Sash
 		i(9749),	-- Simple Blouse
 		i(9747),	-- Simple Britches
 		i(9748),	-- Simple Robe
@@ -911,6 +950,21 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(9892),	-- Huntsman's Gloves
 		i(9893),	-- Huntsman's Leggings
 		i(9894),	-- Huntsman's Shoulders
+		i(68750, {	-- Imbued Pioneer Belt
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68758, {	-- Imbued Pioneer Boots
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68751, {	-- Imbued Pioneer Bracers
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68757, {	-- Imbued Pioneer Gloves
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68745, {	-- Imbued Primal Belt
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
 		i(4738),	-- Imperial Leather Belt
 		i(6431),	-- Imperial Leather Boots
 		i(4061),	-- Imperial Leather Bracers
@@ -1093,6 +1147,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15126),	-- Robust Leggings
 		i(15127),	-- Robust Shoulders
 		i(15128),	-- Robust Tunic
+		i(5968, {	-- Rugged Boots
+			-- #if AFTER 6.0.1
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			-- #endif
+			["timeline"] = { "created 1.12.1.12941", "added 6.0.1", "removed 7.0.1" },
+		}),
 		i(13111),	-- Sandals of the Insurgent
 		i(14553),	-- Sash of Mercy
 		i(9827),	-- Scaled Leather Belt
@@ -1135,7 +1195,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(8262),	-- Serpentskin Leggings
 		i(8263),	-- Serpentskin Spaulders
 		i(13115),	-- Sheepshear Mantle
-		i(13011),	-- Silver-lined Belt
+		i(13011),	-- Silver-Lined Belt [CATA+] / Silver-lined Belt
 		i(13116),	-- Spaulders of the Unseen
 		i(12988),	-- Starsight Tunic
 		i(9801),	-- Superior Belt
@@ -1241,7 +1301,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(9841),	-- Banded Leggings
 		i(9842),	-- Banded Pauldrons
 		i(3282),	-- Battle Chain Pants
-		i(3283),	-- Battle Chain Tunic
+		i(3283, {	-- Battle Chain Tunic
+			["timeline"] = { "removed 6.1.0.19445" },
+		}),
+		i(120950, {	-- Battle Chain Vest
+			["timeline"] = { "added 6.1.0.19445" },
+		}),
 		i(13126),	-- Battlecaller Gauntlets
 		i(6592),	-- Battleforge Armor
 		i(6590),	-- Battleforge Boots
@@ -1282,7 +1347,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15616),	-- Bonelink Legplates
 		i(15614),	-- Bonelink Sabatons
 		i(3302),	-- Brackwater Boots
-		i(3305),	-- Brackwater Leggings
+		i(3305, {	-- Brackwater Leggings
+			["timeline"] = { "removed 6.1.0.19445" },
+		}),
+		i(120954, {	-- Brackwater Legguards
+			["timeline"] = { "added 6.1.0.19445" },
+		}),
 		i(3306),	-- Brackwater Vest
 		i(9926),	-- Brigade Boots
 		i(9927),	-- Brigade Bracers
@@ -1298,6 +1368,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(2992),	-- Burnished Gloves
 		i(2990),	-- Burnished Leggings
 		i(2989),	-- Burnished Tunic
+		i(54784, {	-- Burnished Tunic
+			-- #if AFTER 6.0.1
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			-- #endif
+			["timeline"] = { "created 4.0.1.12941", "added 6.0.1", "removed 7.0.1" },
+		}),
 		i(9763),	-- Cadet Leggings
 		i(9765),	-- Cadet Vest
 		i(7490),	-- Captain's Boots
@@ -1345,6 +1421,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(13133),	-- Drakesfire Epaulets
 		i(13010),	-- Dreamsinger Legguards
 		i(13123),	-- Dreamwalker Armor
+		i(2016, {	-- Dusty Chain Armor
+			-- #if AFTER 6.0.1
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			-- #endif
+			["timeline"] = { "created 1.12.1.12941", "added 6.0.1", "removed 7.0.1" },
+		}),
 		i(8265),	-- Ebonhold Armor
 		i(8269),	-- Ebonhold Boots
 		i(8267),	-- Ebonhold Gauntlets
@@ -1397,7 +1479,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(4073),	-- Glimmering Mail Greaves
 		i(6386),	-- Glimmering Mail Legguards
 		i(6388),	-- Glimmering Mail Pauldrons
-		i(15506),	-- Grunt's AnkleWraps
+		i(15506),	-- Grunt's Ankle Wraps [CATA+] / Grunt's AnkleWraps
 		i(15510),	-- Grunt's Belt
 		i(15507),	-- Grunt's Bracers
 		i(15514),	-- Grunt's Chestpiece
@@ -1412,6 +1494,12 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15626),	-- Gryphon Mail Greaves
 		i(15627),	-- Gryphon Mail Legguards
 		i(15628),	-- Gryphon Mail Pauldrons
+		i(2273, {	-- Guerrilla Armor
+			-- #if AFTER 6.0.1
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			-- #endif
+			["timeline"] = { "created 1.12.1.12941", "added 6.0.1", "removed 7.0.1" },
+		}),
 		i(2245),	-- Helm of Narv
 		i(8308),	-- Hero's Band
 		i(8306),	-- Hero's Belt
@@ -1430,6 +1518,18 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14748),	-- Hulking Leggings
 		i(14749),	-- Hulking Spaulders
 		i(1981),	-- Icemail Jerkin
+		i(68752, {	-- Imbued Infantry Belt
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68761, {	-- Imbued Infantry Boots
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68753, {	-- Imbued Infantry Bracers
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
+		i(68760, {	-- Imbued Infantry Gauntlets
+			["timeline"] = { "added 4.0.6.13596" },
+		}),
 		i(15663),	-- Impenetrable Belt
 		i(15659),	-- Impenetrable Bindings
 		i(15660),	-- Impenetrable Breastplate
@@ -1615,13 +1715,17 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15531),	-- Sentry's Shoulderguards
 		i(15525),	-- Sentry's Slippers
 		i(15524),	-- Sentry's Surcoat
-		i(12982),	-- Silver-linked Footguards
+		i(12982),	-- Silver-Linked Footguards [CATA+] / Silver-linked Footguards
 		i(13132),	-- Skeletal Shoulders
+		i(120952, {	-- Slarkhide
+			["description"] = "Dropped from Big Crate of Salvage during Warlords of Draenor.",
+			["timeline"] = { "added 6.1.0.19445", "removed 7.0.1" },
+		}),
 		i(14750),	-- Slayer's Cuffs
 		i(14754),	-- Slayer's Gloves
 		i(14757),	-- Slayer's Pants
 		i(14755),	-- Slayer's Sash
-		i(14758),	-- Slayer's Shoulder Pads
+		i(14758),	-- Slayer's Shoulderguards [TBC+] / Slayer's Shoulder Pads
 		i(14753),	-- Slayer's Skullcap
 		i(14756),	-- Slayer's Slippers
 		i(14751),	-- Slayer's Surcoat
@@ -1676,7 +1780,10 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(15684),	-- Triumphant Skullcap
 		i(2977),	-- Veteran Armor
 		i(2980),	-- Veteran Gloves
-		i(2978),	-- Veteran Leggings
+		i(2978),	-- Veteran Leggings [CRIEVE NOTE: This might be in a similar situation to the two other mail items that were swapped out.]
+		i(120953, {	-- Veteran Legguards
+			["timeline"] = { "added 6.1.0.19445" },
+		}),
 		i(14722),	-- War Paint Anklewraps
 		i(14723),	-- War Paint Bindings
 		i(14730),	-- War Paint Chestpiece
@@ -1748,14 +1855,14 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(8141),	-- Chromite Greaves
 		i(8143),	-- Chromite Legplates
 		i(8144),	-- Chromite Pauldrons
+		i(10378),	-- Commander's Armor
+		i(10376),	-- Commander's Boots
+		i(10380),	-- Commander's Gauntlets
+		i(10381),	-- Commander's Girdle
 		i(10379),	-- Commander's Helm
+		i(10382),	-- Commander's Leggings
 		i(10383),	-- Commander's Pauldrons
 		i(10377),	-- Commander's Vambraces
-		i(10380),	-- Commander's Gauntlets
-		i(10378),	-- Commander's Armor
-		i(10381),	-- Commander's Girdle
-		i(10382),	-- Commander's Leggings
-		i(10376),	-- Commander's Boots
 		i(14554),	-- Cloudkeeper Legplates
 		i(13075),	-- Direwing Legguards
 		i(9966),	-- Embossed Plate Armor
@@ -1898,7 +2005,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(14897),	-- Saltstone Gauntlets
 		i(14898),	-- Saltstone Girdle
 		i(14899),	-- Saltstone Helm
-		i(14900),	-- Saltstone Legplates
+		i(14900),	-- Saltstone LegChains [LEGION+] / Saltstone Legplates
 		i(14896),	-- Saltstone Sabatons
 		i(14901),	-- Saltstone Shoulder Pads
 		i(14895),	-- Saltstone Surcoat
@@ -2632,7 +2739,6 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		i(1713),	-- Ankh of Life
 		i(2802),	-- Blazing Emblem
 		i(833),		-- Lifestone
-		i(1973),	-- Orb of Deception
 		i(7734),	-- Six Demon Bag
 		i(14557),	-- The Lion Horn of Stormwind [Not available yet? It is one of the rarest items in the game]
 		i(11302),	-- Uther's Strength
@@ -2708,7 +2814,11 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 		applyclassicphase(PHASE_THREE, i(19264)),	-- Seven of Warlords
 		applyclassicphase(PHASE_THREE, i(19265)),	-- Eight of Warlords
 	}),
+	filter(TOYS, {
+		i(1973),	-- Orb of Deception (TOY!)
+	}),
 	filter(200, {	-- Recipes
+		-- #if BEFORE 4.0.1
 		cl(DRUID, {
 			{
 				["itemID"] = 17682,		-- Book: Gift of the Wild
@@ -2757,6 +2867,7 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 				["rank"] = 4,
 			}),
 		}),
+		-- #endif
 		prof(ALCHEMY, {
 			-- #if AFTER 8.0.1.10000
 			i(6454),	-- Manual: Strong Anti-Venom
@@ -2768,16 +2879,34 @@ root("WorldDrops", tier(CLASSIC_TIER, {
 			i(3396),	-- Recipe: Elixir of Lesser Agility
 			i(2553),	-- Recipe: Elixir of Minor Agility
 			i(6211),	-- Recipe: Elixir of Ogre's Strength
-			i(3394),	-- Recipe: Elixir of Poison Resistance
-			i(13518),	-- Recipe: Flask of Petrification
-			i(13493),	-- Recipe: Greater Arcane Elixir
+			-- #if BEFORE TBC
+			i(3394),	-- Recipe: Elixir of Poison Resistance / Recipe: Potion of Curing [TBC+]
+			-- #endif
+			-- #if BEFORE 3.2.0
+			i(13518),	-- Recipe: Flask of Petrification / Recipe: Potion of Petrification [3.2.0+]
+			-- #endif
+			i(13493, {	-- Recipe: Greater Arcane Elixir
+				["timeline"] = { "removed 2.0.1" },
+			}),
 			i(13490),	-- Recipe: Greater Stoneshield Potion
 			i(9295),	-- Recipe: Invisibility Potion
 			i(3395),	-- Recipe: Limited Invulnerability Potion
-			i(9293),	-- Recipe: Magic Resistance Potion
-			i(3831),	-- Recipe: Mighty Troll's Blood Potion
-			i(3393),	-- Recipe: Minor Magic Resistance Potion
-			i(13492),	-- Recipe: Purification Potion
+			i(9293, {	-- Recipe: Magic Resistance Potion
+				["timeline"] = { "deleted 5.0.4" },
+			}),
+			i(3831),	-- Recipe: Mighty Troll's Blood Potion / Recipe: Major Troll's Blood Elixir [Wrath+]
+			i(3393, {	-- Recipe: Minor Magic Resistance Potion
+				["timeline"] = { "deleted 5.0.4" },
+			}),
+			-- #if AFTER TBC
+			i(3394),	-- Recipe: Potion of Curing [TBC+] / Recipe: Elixir of Poison Resistance
+			-- #endif
+			-- #if AFTER 3.2.0
+			i(13518),	-- Recipe: Potion of Petrification [3.2.0+] / Recipe: Flask of Petrification
+			-- #endif
+			i(13492, {	-- Recipe: Purification Potion
+				["timeline"] = { "removed 3.0.1" },
+			}),
 			i(2555),	-- Recipe: Swiftness Potion
 			i(13489),	-- Recipe: Transmute Earth to Life
 			i(13488),	-- Recipe: Transmute Life to Earth
