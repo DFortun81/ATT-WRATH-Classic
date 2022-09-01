@@ -7056,12 +7056,12 @@ itemTooltipHarvesterFields.text = function(t)
 											if skillID then
 												t.info.requireSkill = skillID;
 											else
-												print("Unknown Skill", text);
-												table.insert(requirements, text);
+												print("Unknown Skill '" .. spellName .. "'");
+												table.insert(requirements, spellName);
 											end
 										else
-											print("Unknown Spell", text);
-											table.insert(requirements, text);
+											print("Unknown Spell '" .. spellName .. "'");
+											table.insert(requirements, spellName);
 										end
 									end
 								end
@@ -8402,14 +8402,24 @@ app.GetSpellName = function(spellID, rank)
 		spellName = GetSpellInfo(spellID);
 	end
 	if spellName and spellName ~= "" then
+		if not rawget(app.SpellNameToSpellID, spellName) then
+			rawset(app.SpellNameToSpellID, spellName, spellID);
+			if not rawget(SpellIDToSpellName, spellID) then
+				rawset(SpellIDToSpellName, spellID, spellName);
+			end
+		end
 		if rank then
 			if (rawget(MaxSpellRankPerSpellName, spellName) or 0) < rank then
 				rawset(MaxSpellRankPerSpellName, spellName, rank);
 			end
 			spellName = spellName .. " (" .. RANK .. " " .. rank .. ")";
+			if not rawget(app.SpellNameToSpellID, spellName) then
+				rawset(app.SpellNameToSpellID, spellName, spellID);
+				if not rawget(SpellIDToSpellName, spellID) then
+					rawset(SpellIDToSpellName, spellID, spellName);
+				end
+			end
 		end
-		rawset(SpellIDToSpellName, spellID, spellName);
-		rawset(app.SpellNameToSpellID, spellName, spellID);
 		return spellName;
 	end
 end
@@ -8437,6 +8447,12 @@ app.IsSpellKnown = function(spellID, rank, ignoreHigherRanks)
 end
 app.SpellNameToSpellID = setmetatable(L.ALT_PROFESSION_TEXT_TO_ID, {
 	__index = function(t, key)
+		for _,spellID in pairs(app.SkillIDToSpellID) do
+			app.GetSpellName(spellID);
+		end
+		for specID,spellID in pairs(app.SpecializationSpellIDs) do
+			app.GetSpellName(spellID);
+		end
 		local cache = fieldCache["spellID"];
 		for spellID,g in pairs(cache) do
 			local rank;
@@ -8447,12 +8463,6 @@ app.SpellNameToSpellID = setmetatable(L.ALT_PROFESSION_TEXT_TO_ID, {
 				end
 			end
 			app.GetSpellName(spellID, rank);
-		end
-		for _,spellID in pairs(app.SkillIDToSpellID) do
-			app.GetSpellName(spellID);
-		end
-		for specID,spellID in pairs(app.SpecializationSpellIDs) do
-			app.GetSpellName(spellID);
 		end
 		local numSpellTabs, offset, lastSpellName, currentSpellRank, lastSpellRank = GetNumSpellTabs(), 1, "", 1, 1;
 		for spellTabIndex=1,numSpellTabs do
@@ -8469,7 +8479,9 @@ app.SpellNameToSpellID = setmetatable(L.ALT_PROFESSION_TEXT_TO_ID, {
 					end
 				end
 				app.GetSpellName(spellID, currentSpellRank);
-				rawset(app.SpellNameToSpellID, spellName, spellID);
+				if not rawget(t, spellName) then
+					rawset(t, spellName, spellID);
+				end
 				lastSpellRank = currentSpellRank;
 				offset = offset + 1;
 			end
@@ -13237,7 +13249,7 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 			db.total = 0;
 			db.back = 1;
 			db.currentItemID = 60000;
-			db.minimumItemID = 60000;
+			db.minimumItemID = 0;
 			self.data = db;
 		end
 		self.data.progress = 0;
