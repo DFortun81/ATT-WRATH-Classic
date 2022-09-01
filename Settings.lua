@@ -670,6 +670,44 @@ f:SetATTTooltip("Click this button to copy the url to get to my Twitch Channel.\
 f.copypasta = "twitch.tv/crieve";
 settings.twitch = f;
 
+local currentBuild = select(4, GetBuildInfo());
+local reasons = L["UNOBTAINABLE_ITEM_REASONS"];
+local UnobtainableFilterOnClick = function(self)
+	local checked = self:GetChecked();
+	if checked then
+		-- If the phase is active, fall through to the base setting.
+		if UnobtainableSettingsBase.__index[self.u] then
+			settings:SetUnobtainableFilter(self.u, nil);
+		else
+			settings:SetUnobtainableFilter(self.u, true);
+		end
+	else
+		settings:SetUnobtainableFilter(self.u, false);
+	end
+end;
+local UnobtainableOnRefresh = function(self)
+	if settings:Get("DebugMode") then
+		self:Disable();
+		self:SetAlpha(0.2);
+	else
+		self:SetChecked(settings:GetUnobtainableFilter(self.u));
+
+		local minimumBuild = reasons[self.u][4];
+		if minimumBuild and minimumBuild > currentBuild then
+			self:Disable();
+			self:SetAlpha(0.2);
+		else
+			self:Enable();
+			self:SetAlpha(1);
+			if UnobtainableSettingsBase.__index[self.u] then
+				self.Text:SetTextColor(0.6, 0.7, 1);
+			else
+				self.Text:SetTextColor(1, 1, 1);
+			end
+		end
+	end
+end;
+
 ------------------------------------------
 -- The "General" Tab.					--
 ------------------------------------------
@@ -1457,7 +1495,6 @@ end)();
 ------------------------------------------
 (function()
 local tab = settings:CreateTab("Filters");
-local reasons = L["UNOBTAINABLE_ITEM_REASONS"];
 tab.OnRefresh = function(self)
 	if settings:Get("DebugMode") then
 		PanelTemplates_DisableTab(settings, self:GetID());
@@ -1671,48 +1708,11 @@ end)();
 ------------------------------------------
 (function()
 local tab = settings:CreateTab("Phases");
-local currentBuild = select(4, GetBuildInfo());
-local reasons = L["UNOBTAINABLE_ITEM_REASONS"];
 tab.OnRefresh = function(self)
 	if settings:Get("DebugMode") then
 		PanelTemplates_DisableTab(settings, self:GetID());
 	else
 		PanelTemplates_EnableTab(settings, self:GetID());
-	end
-end;
-local UnobtainableFilterOnClick = function(self)
-	local checked = self:GetChecked();
-	if checked then
-		-- If the phase is active, fall through to the base setting.
-		if UnobtainableSettingsBase.__index[self.u] then
-			settings:SetUnobtainableFilter(self.u, nil);
-		else
-			settings:SetUnobtainableFilter(self.u, true);
-		end
-	else
-		settings:SetUnobtainableFilter(self.u, false);
-	end
-end;
-local UnobtainableOnRefresh = function(self)
-	if settings:Get("DebugMode") then
-		self:Disable();
-		self:SetAlpha(0.2);
-	else
-		self:SetChecked(settings:GetUnobtainableFilter(self.u));
-
-		local minimumBuild = reasons[self.u][4];
-		if minimumBuild and minimumBuild > currentBuild then
-			self:Disable();
-			self:SetAlpha(0.2);
-		else
-			self:Enable();
-			self:SetAlpha(1);
-			if UnobtainableSettingsBase.__index[self.u] then
-				self.Text:SetTextColor(0.6, 0.7, 1);
-			else
-				self.Text:SetTextColor(1, 1, 1);
-			end
-		end
 	end
 end;
 
