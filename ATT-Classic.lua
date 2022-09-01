@@ -6783,7 +6783,9 @@ local itemFields = {
 			-- BOE Rules
 			if GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or app.Settings:GetFilterForRWP(t.f)) then
 				if not ATTAccountWideData.RWP[id] and app.lastMsg then
-					print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
+					if app.Settings:GetTooltipSetting("Report:Collected") then
+						print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
+					end
 					app:PlayFanfare();
 				end
 				app.CurrentCharacter.RWP[id] = 1;
@@ -6798,7 +6800,9 @@ local itemFields = {
 					end
 				end
 				if ATTAccountWideData.RWP[id] then
-					print((t.text or RETRIEVING_DATA) .. " was removed from your collection!");
+					if app.Settings:GetTooltipSetting("Report:Collected") then
+						print((t.text or RETRIEVING_DATA) .. " was removed from your collection!");
+					end
 					ATTAccountWideData.RWP[id] = nil;
 					app:PlayRemoveSound();
 				end
