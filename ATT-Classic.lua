@@ -3157,7 +3157,11 @@ local function UpdateSearchResults(searchResults)
 		end
 		
 		-- If the data is fresh, don't force a refresh.
-		app:RefreshData(fresh, true);
+		if fresh then
+			app:RefreshDataCompletely();
+		else
+			app:RefreshDataQuietly();
+		end
 	end
 end
 app.SearchForLink = SearchForLink;
@@ -3733,19 +3737,10 @@ local function RefreshCollections()
 		while InCombatLockdown() do coroutine.yield(); end
 		app.print("Refreshing collection...");
 		app.events.QUEST_LOG_UPDATE();
-		
-		-- Wait a frame before harvesting item collection status.
 		coroutine.yield();
-		
 		RefreshSkills();
-		
-		-- Harvest Item Collections that are used by the addon.
 		app:GetDataCache();
-		
-		-- Refresh the Collection Windows!
-		app:RefreshData(false, false, true);
-		
-		-- Report success.
+		app:RefreshDataCompletely();
 		app.print("Done refreshing collection.");
 	end);
 end
@@ -3824,7 +3819,7 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
 		ATTAccountWideData.Achievements[achievementID] = 1;
-		if refresh then app:RefreshData(false, true); end
+		if refresh then app:RefreshDataQuietly(); end
 	elseif app.CurrentCharacter.Achievements[achievementID] then
 		app.CurrentCharacter.Achievements[achievementID] = nil;
 		ATTAccountWideData.Achievements[achievementID] = nil;
@@ -3834,7 +3829,7 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 				break;
 			end
 		end
-		if refresh then app:RefreshData(false, true); end
+		if refresh then app:RefreshDataQuietly(); end
 	end
 end
 local fields = {
@@ -4086,6 +4081,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	end
 	app.RefreshAchievementCollection = function()
 		if ATTAccountWideData then
+			app.RefreshAchievementCollection = nil;
 			for achievementID,_ in pairs(fieldCache["achievementID"]) do
 				CheckAchievementCollectionStatus(achievementID);
 			end
@@ -5666,9 +5662,7 @@ else
 					end
 				end
 			end
-			if anythingNew then
-				app:RefreshData(true, true);
-			end
+			if anythingNew then app:RefreshDataQuietly(); end
 		end
 		local meta = { __index = function(t, spellID)
 			RefreshCompanionCollectionStatus();
@@ -6767,7 +6761,7 @@ local itemFields = {
 								end
 							end
 							if any then
-								if not ATTAccountWideData.RWP[id] and app.lastMsg then
+								if not ATTAccountWideData.RWP[id] then
 									print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
 									app:PlayFanfare();
 								end
@@ -6782,7 +6776,7 @@ local itemFields = {
 			
 			-- BOE Rules
 			if GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or app.Settings:GetFilterForRWP(t.f)) then
-				if not ATTAccountWideData.RWP[id] and app.lastMsg then
+				if not ATTAccountWideData.RWP[id] then
 					if app.Settings:GetTooltipSetting("Report:Collected") then
 						print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
 					end
@@ -7639,9 +7633,7 @@ app.events.MAP_EXPLORATION_UPDATED = function(...)
 						end
 					end
 				end
-				if newArea then
-					app:RefreshData(true, true);
-				end
+				if newArea then app:RefreshDataQuietly(); end
 			end
 		end
 	end);
@@ -10745,14 +10737,9 @@ local function UpdateWindowColor(self, suffix)
 	self:SetBackdropColor(0, 0, 0, 1);
 end
 function app:UpdateWindows(force, got)
-	local anyUpdated = false;
 	for name, window in pairs(app.Windows) do
-		if window:Update(force, got) then
-			--print(name .. ": Updated");
-			anyUpdated = true;
-		end
+		window:Update(force, got);
 	end
-	return anyUpdated;
 end
 function app:UpdateWindowColors()
 	for suffix, window in pairs(app.Windows) do
@@ -11044,7 +11031,6 @@ function app:GetDataCache()
 		]]--
 		
 		-- The Main Window's Data
-		app.refreshDataForce = true;
 		BuildGroups(allData, allData.g);
 		app:GetWindow("Prime").data = allData;
 		CacheFields(allData);
@@ -11688,13 +11674,12 @@ function app:GetDataCache()
 	end
 	return allData;
 end
-function app:RefreshData(lazy, got, manual)
-	app.refreshDataForce = app.refreshDataForce or not lazy;
-	app.countdown = manual and 0 or 30;
-	if app.refreshingData then return; end
+function app:RefreshData(lazy, got)
+	app.countdown = app.countdown or 0;
+	if app.currentlyRefreshingData then return; end
 	--print("RefreshData(" .. tostring(lazy or false) .. ", " .. tostring(got or false) .. ")");
 	StartCoroutine("RefreshData", function()
-		app.refreshingData = true;
+		app.currentlyRefreshingData = true;
 		
 		-- While the player is in combat, wait for combat to end.
 		while InCombatLockdown() do coroutine.yield(); end
@@ -11710,8 +11695,8 @@ function app:RefreshData(lazy, got, manual)
 		end
 		
 		-- Send an Update to the Windows to Rebuild their Row Data
-		if app.refreshDataForce then
-			app.refreshDataForce = nil;
+		if app.forceFullDataRefresh then
+			app.forceFullDataRefresh = nil;
 			app:GetDataCache();
 			for i,data in ipairs(app.RawData) do
 				data.progress = 0;
@@ -11728,14 +11713,22 @@ function app:RefreshData(lazy, got, manual)
 		-- Send a message to your party members.
 		local data = app:GetWindow("Prime").data;
 		local msg = "A\t" .. app.Version .. "\t" .. (data.progress or 0) .. "\t" .. (data.total or 0);
-		if app.lastMsg ~= msg then
+		if app.lastProgressUpdateMessage ~= msg then
 			SendGroupMessage(msg);
 			SendGuildMessage(msg);
-			app.lastMsg = msg;
+			app.lastProgressUpdateMessage = msg;
 		end
 		wipe(searchCache);
-		app.refreshingData = nil;
+		app.currentlyRefreshingData = nil;
 	end);
+end
+function app:RefreshDataCompletely()
+	app.forceFullDataRefresh = true;
+	app:RefreshData(true, true);
+end
+function app:RefreshDataQuietly()
+	app.countdown = 30;
+	app:RefreshData(true, true);
 end
 function app:GetWindow(suffix, parent, onUpdate)
 	local window = app.Windows[suffix];
@@ -13027,12 +13020,10 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, got)
 		app.RefreshLocation = RefreshLocation;
 		self:SetScript("OnEvent", function(self, e, ...)
 			RefreshLocation();
-			UpdateWindow(self, true, e == "QUEST_WATCH_UPDATE" or e == "CRITERIA_UPDATE");
+			self:Update(true, true);
 		end);
 		self:RegisterEvent("ZONE_CHANGED");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-		self:RegisterEvent("QUEST_WATCH_UPDATE");
-		self:RegisterEvent("CRITERIA_UPDATE");
 	end
 	if self:IsVisible() then
 		-- Update the window and all of its row data
@@ -14927,9 +14918,9 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 			
 				-- If something new was "learned", then refresh the data.
 				if learned > 0 then
-					app:RefreshData(false, true);
 					app.print("Cached " .. learned .. " known recipes!");
 					wipe(searchCache);
+					app:RefreshDataQuietly();
 				end
 			end
 		end
@@ -15046,10 +15037,10 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 					ATTAccountWideData.Spells[spellID] = 1;
 					if not app.CurrentCharacter.Spells[spellID] then
 						app.CurrentCharacter.Spells[spellID] = 1;
-						app:RefreshData(true, true);
 						if not previousState or not app.Settings:Get("AccountWide:Recipes") then
 							app:PlayFanfare();
 						end
+						app:RefreshDataQuietly();
 					end
 					self:RefreshRecipes();
 				end
@@ -15611,9 +15602,12 @@ app.events.VARIABLES_LOADED = function()
 	wipe(DirtyQuests);
 	app:RegisterEvent("QUEST_LOG_UPDATE");
 	app:RegisterEvent("QUEST_ACCEPTED");
+	app:RegisterEvent("QUEST_REMOVED");
 	app:RegisterEvent("QUEST_TURNED_IN");
+	app:RegisterEvent("QUEST_WATCH_UPDATE");
+	app:RegisterEvent("CRITERIA_UPDATE");
 	StartCoroutine("RefreshSaves", RefreshSaves);
-	app:RefreshData(false);
+	app:RefreshDataCompletely();
 	app:RefreshLocation();
 	
 	if GroupBulletinBoard_Addon then
@@ -15669,9 +15663,8 @@ end
 app.events.PLAYER_DEAD = function()
 	ATTAccountWideData.Deaths = ATTAccountWideData.Deaths + 1;
 	app.CurrentCharacter.Deaths = app.CurrentCharacter.Deaths + 1;
-	app.refreshDataForce = true;
-	app:RefreshData(true, true);
 	app:PlayDeathSound();
+	app:RefreshDataQuietly();
 end
 app.events.ADDON_LOADED = function(addonName)
 	if addonName == "Blizzard_AuctionUI" then
@@ -16408,7 +16401,21 @@ app.events.UPDATE_INSTANCE_INFO = function()
 end
 app.events.QUEST_ACCEPTED = function(questID)
 	wipe(searchCache);
-	app:RefreshData(true, true);
+	app:RefreshDataQuietly();
+end
+app.events.QUEST_LOG_UPDATE = function()
+	GetQuestsCompleted(CompletedQuests);
+	for questID,completed in pairs(DirtyQuests) do
+		app.QuestCompletionHelper(tonumber(questID));
+	end
+	wipe(DirtyQuests);
+	wipe(searchCache);
+	app:RefreshDataQuietly();
+	app:UnregisterEvent("QUEST_LOG_UPDATE");
+end
+app.events.QUEST_REMOVED = function(questID)
+	wipe(searchCache);
+	app:RefreshDataQuietly();
 end
 app.events.QUEST_TURNED_IN = function(questID)
 	if fieldCache.questID[questID] and not fieldCache.questID[questID][1].repeatable then
@@ -16419,15 +16426,13 @@ app.events.QUEST_TURNED_IN = function(questID)
 		wipe(DirtyQuests);
 		wipe(searchCache);
 	end
-	app:RefreshData(true, true);
+	app:RefreshDataQuietly();
 end
-app.events.QUEST_LOG_UPDATE = function()
-	GetQuestsCompleted(CompletedQuests);
-	for questID,completed in pairs(DirtyQuests) do
-		app.QuestCompletionHelper(tonumber(questID));
-	end
-	wipe(DirtyQuests);
+app.events.QUEST_WATCH_UPDATE = function()
 	wipe(searchCache);
-	app:RefreshData(true, true);
-	app:UnregisterEvent("QUEST_LOG_UPDATE");
+	app:RefreshDataQuietly();
+end
+app.events.CRITERIA_UPDATE = function()
+	wipe(searchCache);
+	app:RefreshDataQuietly();
 end
