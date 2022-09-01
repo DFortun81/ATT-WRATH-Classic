@@ -11726,11 +11726,11 @@ function app:RefreshData(fromTrigger)
 end
 function app:RefreshDataCompletely(fromTrigger)
 	app.forceFullDataRefresh = true;
-	app:RefreshData(true, true);
+	app:RefreshData(fromTrigger);
 end
 function app:RefreshDataQuietly()
 	app.countdown = 30;
-	app:RefreshData(true, true);
+	app:RefreshData();
 end
 function app:GetWindow(suffix, parent, onUpdate)
 	local window = app.Windows[suffix];
