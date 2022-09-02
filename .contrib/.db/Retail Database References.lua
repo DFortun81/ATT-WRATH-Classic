@@ -151,6 +151,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 
 -- World Drops
 -- #IMPORT: 03 - World Drops\\03 Classic\\1 - Classic.lua
+-- #IMPORT: 03 - World Drops\\04 Burning Crusade\\2 - Burning Crusade.lua
 -- Can't import Wrath, it's in the wrong format.
 
 -- Holidays
