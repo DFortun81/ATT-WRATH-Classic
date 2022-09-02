@@ -147,12 +147,10 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Zangarmarsh.lua
 
 -- Northrend
--- #IMPORT: 02 - Outdoor Zones\\04 Northrend
+-- #IMPORT: 02 - Outdoor Zones\\04 Northrend\\
 
 -- World Drops
--- #IMPORT: 03 - World Drops\\03 Classic\\1 - Classic.lua
--- #IMPORT: 03 - World Drops\\04 Burning Crusade\\2 - Burning Crusade.lua
--- Can't import Wrath, it's in the wrong format.
+-- #IMPORT: 03 - World Drops\\01 Rooted\\
 
 -- Holidays
 -- #IMPORT: 21 - Holidays\\07 - Brewfest\\Brewfest.lua
