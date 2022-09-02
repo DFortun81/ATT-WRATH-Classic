@@ -2235,6 +2235,7 @@ MainListScaleSlider:SetPoint("LEFT", DebuggingLabel, "LEFT", 0, 0);
 MainListScaleSlider:SetPoint("TOP", ShowRaceRequirementsCheckBox, "BOTTOM", 0, 0);
 table.insert(settings.MostRecentTab.objects, MainListScaleSlider);
 settings.MainListScaleSlider = MainListScaleSlider;
+MainListScaleSlider.currentValue = 0;
 MainListScaleSlider.tooltipText = 'Use this to customize the scale of the Main List.\n\nDefault: 1';
 MainListScaleSlider:SetOrientation('HORIZONTAL');
 MainListScaleSlider:SetWidth(280);
@@ -2249,9 +2250,12 @@ MainListScaleSlider.Label = MainListScaleSlider:CreateFontString(nil, "ARTWORK",
 MainListScaleSlider.Label:SetPoint("TOP", MainListScaleSlider, "BOTTOM", 0, 0);
 MainListScaleSlider.Label:SetText(MainListScaleSlider:GetValue());
 MainListScaleSlider:SetScript("OnValueChanged", function(self, newValue)
-	self.Label:SetText(newValue);
-	settings:SetTooltipSetting("MainListScale", newValue)
-	app:GetWindow("Prime"):SetScale(newValue);
+	if self.currentValue ~= newValue then
+		self.currentValue = newValue;
+		self.Label:SetText(newValue);
+		settings:SetTooltipSetting("MainListScale", newValue)
+		app:GetWindow("Prime"):SetScale(newValue);
+	end
 end);
 
 -- This creates the "Mini List Scale" slider.
@@ -2260,6 +2264,7 @@ MiniListScaleSlider:SetPoint("LEFT", DebuggingLabel, "LEFT", 0, 0);
 MiniListScaleSlider:SetPoint("TOP", MainListScaleSlider, "BOTTOM", 0, -32);
 table.insert(settings.MostRecentTab.objects, MiniListScaleSlider);
 settings.MiniListScaleSlider = MiniListScaleSlider;
+MiniListScaleSlider.currentValue = 0;
 MiniListScaleSlider.tooltipText = 'Use this to customize the scale of all Mini and Bitty Lists.\n\nDefault: 1';
 MiniListScaleSlider:SetOrientation('HORIZONTAL');
 MiniListScaleSlider:SetWidth(280);
@@ -2274,11 +2279,14 @@ MiniListScaleSlider.Label = MiniListScaleSlider:CreateFontString(nil, "ARTWORK",
 MiniListScaleSlider.Label:SetPoint("TOP", MiniListScaleSlider, "BOTTOM", 0, 0);
 MiniListScaleSlider.Label:SetText(MiniListScaleSlider:GetValue());
 MiniListScaleSlider:SetScript("OnValueChanged", function(self, newValue)
-	self.Label:SetText(newValue);
-	settings:SetTooltipSetting("MiniListScale", newValue)
-	for key,window in pairs(app.Windows) do
-		if key ~= "Prime" then
-			window:SetScale(newValue);
+	if self.currentValue ~= newValue then
+		self.currentValue = newValue;
+		self.Label:SetText(newValue);
+		settings:SetTooltipSetting("MiniListScale", newValue)
+		for key,window in pairs(app.Windows) do
+			if key ~= "Prime" then
+				window:SetScale(newValue);
+			end
 		end
 	end
 end);
