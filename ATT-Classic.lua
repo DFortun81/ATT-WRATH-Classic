@@ -7652,6 +7652,17 @@ app:RegisterEvent("ZONE_CHANGED");
 app:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 end)();
 
+-- Music Rolls & Selfie Filter Lib: Music Rolls
+(function()
+-- Neither of these are supported at this time.
+app.CreateMusicRoll = function(questID, t)
+	return nil;
+end
+app.CreateSelfieFilter = function(id, t)
+	return nil;
+end
+end)();
+
 -- NPC Lib
 (function()
 -- NPC Model Harvester (also acquires the displayID)
@@ -10865,6 +10876,15 @@ function app:GetDataCache()
 		flightPathsCategory.icon = app.asset("Category_FlightPaths");
 		flightPathsCategory.text = "Flight Paths";
 		table.insert(g, flightPathsCategory);
+		
+		-- Expansion Features
+		if app.Categories.ExpansionFeatures then
+			db = {};
+			db.text = "Expansion Features";
+			db.icon = app.asset("Category_ExpansionFeatures");
+			db.g = app.Categories.ExpansionFeatures;
+			table.insert(g, db);
+		end
 		
 		-- Holidays
 		if app.Categories.Holidays then

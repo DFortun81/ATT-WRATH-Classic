@@ -167,6 +167,9 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 21 - Holidays\\06 Pirates' Day.lua
 -- #IMPORT: 21 - Holidays\\00b - Stranglethorn Fishing Extravaganza\\Stranglethorn Fishing Extravaganza.lua
 
+-- Expansion Features
+-- #IMPORT: 06 - Expansion Features\\02 Wrath of the Lich King\\Argent Tournament.lua
+
 -- World Events
 -- #IMPORT: 07 - Events\\The Ahn'Qiraj War Effort\\The Ahn'Qiraj War Effort.lua
 -- #IMPORT: 07 - Events\\The Opening of the Dark Portal\\The Opening of the Dark Portal.lua
