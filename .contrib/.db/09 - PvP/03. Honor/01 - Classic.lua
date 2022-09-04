@@ -85,14 +85,21 @@ root("PVP", {
 		["races"] = ALLIANCE_ONLY,
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				ach(907, applyclassicphase(PHASE_TWO, {	-- The Justicar
-					["races"] = ALLIANCE_ONLY,
+				applyclassicphase(PHASE_TWO, ach(907, {	-- The Justicar
 					-- #if BEFORE 3.0.1
+					["description"] = "Raise your reputation values in Warsong Gulch, Arathi Basin and Alterac Valley to Exalted.",
 					["OnClick"] = THE_JUSTICAR_AND_THE_CONQUEROR_OnClick,
 					["OnTooltip"] = THE_JUSTICAR_AND_THE_CONQUEROR_OnTooltip,
 					["OnUpdate"] = THE_JUSTICAR_OnUpdate,
-					["description"] = "Raise your reputation values in Warsong Gulch, Arathi Basin and Alterac Valley to Exalted.",
+					-- #else
+					-- Meta Achievement
+					["sym"] = {{"meta_achievement",
+						709,	-- Hero of the Stormpike Guard
+						711,	-- Knight of Arathor
+						713,	-- Silverwing Sentinel
+					}},
 					-- #endif
+					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						applyclassicphase(TBC_PHASE_ONE, title(	-- Justicar <Name>
 							-- #if BEFORE CATA
@@ -832,14 +839,21 @@ root("PVP", {
 		["races"] = HORDE_ONLY,
 		["groups"] = {
 			n(ACHIEVEMENTS, {
-				ach(714, applyclassicphase(PHASE_TWO, {	-- The Conqueror
-					["races"] = HORDE_ONLY,
+				applyclassicphase(PHASE_TWO, ach(714, {	-- The Conqueror
 					-- #if BEFORE 3.0.1
+					["description"] = "Raise your reputation values in Warsong Gulch, Arathi Basin and Alterac Valley to Exalted.",
 					["OnClick"] = THE_JUSTICAR_AND_THE_CONQUEROR_OnClick,
 					["OnTooltip"] = THE_JUSTICAR_AND_THE_CONQUEROR_OnTooltip,
 					["OnUpdate"] = THE_CONQUEROR_OnUpdate,
-					["description"] = "Raise your reputation values in Warsong Gulch, Arathi Basin and Alterac Valley to Exalted.",
+					-- #else
+					-- Meta Achievement
+					["sym"] = {{"meta_achievement",
+						708,	-- Hero of the Frostwolf Clan
+						710,	-- The Defiler
+						712,	-- Warsong Outrider
+					}},
 					-- #endif
+					["races"] = HORDE_ONLY,
 					["groups"] = {
 						applyclassicphase(TBC_PHASE_ONE, title(	-- Conqueror <Name>
 							-- #if BEFORE CATA
