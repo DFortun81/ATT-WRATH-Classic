@@ -1596,14 +1596,12 @@ ResolveSymbolicLink = function(o)
 						for k,s in ipairs(cache) do
 							local ref = ResolveSymbolicLink(s);
 							if ref then
-								if s.g then
-									for i,m in ipairs(s.g) do
-										table.insert(searchResults, m);
-									end
-								end
+								local cs = CloneData(s);
+								if not cs.g then cs.g = {}; end
 								for i,m in ipairs(ref) do
-									table.insert(searchResults, m);
+									table.insert(cs.g, m);
 								end
+								table.insert(searchResults, cs);
 							else
 								table.insert(searchResults, s);
 							end
