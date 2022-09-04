@@ -1590,7 +1590,7 @@ ResolveSymbolicLink = function(o)
 			elseif cmd == "meta_achievement" then
                 -- Instruction to search the full database for multiple achievementID's
                 local cache;
-				for i=3,#sym do
+				for i=2,#sym do
 					local cache = app.SearchForField("achievementID", sym[i]);
 					if cache then
 						for k,s in ipairs(cache) do
