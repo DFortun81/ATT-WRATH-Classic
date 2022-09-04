@@ -238,6 +238,7 @@ root("PVP", n(-32, {	-- Honor Titles
 -- #IMPORT: 09 - PvP\\Battlegrounds\\04 Eye of the Storm.lua
 -- #IMPORT: 09 - PvP\\Battlegrounds\\01 Warsong Gulch.lua
 -- #IMPORT: 09 - PvP\\02 The Burning Crusade PvP Seasons.lua
+-- #IMPORT: 09 - PvP\\03 Wrath of the Lich King PvP Seasons.lua
 
 -- NYI
 -- #IMPORT: 17 - NYI\\NYI Mounts.lua
