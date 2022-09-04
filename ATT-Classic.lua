@@ -1587,6 +1587,36 @@ ResolveSymbolicLink = function(o)
 						end
 					end
 				end
+			elseif cmd == "meta_achievement" then
+                -- Instruction to search the full database for multiple achievementID's
+                local cache;
+				for i=3,#sym do
+					local cache = app.SearchForField("achievementID", sym[i]);
+					if cache then
+						for k,s in ipairs(cache) do
+							local ref = ResolveSymbolicLink(s);
+							if ref then
+								if s.g then
+									for i,m in ipairs(s.g) do
+										table.insert(searchResults, m);
+									end
+								end
+								for i,m in ipairs(ref) do
+									table.insert(searchResults, m);
+								end
+							else
+								table.insert(searchResults, s);
+							end
+						end
+					else
+						print("Failed to select achievementID", sym[i]);
+					end
+				end
+                -- Remove any Criteria groups associated with those achievements
+                for k=#searchResults,1,-1 do
+                    local s = searchResults[k];
+                    if s.criteriaID then tremove(searchResults, k); end
+                end
 			end
 		end
 		
