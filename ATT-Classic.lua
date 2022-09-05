@@ -8119,10 +8119,17 @@ local questFields = {
 		return rawget(t, "isDaily") or rawget(t, "isWeekly") or rawget(t, "isMonthly") or rawget(t, "isYearly");
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleQuests and ((not t.repeatable and not t.isBreadcrumb) or C_QuestLog.IsOnQuest(t.questID));
+		if C_QuestLog.IsOnQuest(t.questID) then
+			return true;
+		end
+		if t.locked then return app.AccountWideQuests; end
+		return app.CollectibleQuests and (not t.repeatable and not t.isBreadcrumb);
 	end,
 	["collected"] = function(t)
-		return not C_QuestLog.IsOnQuest(t.questID) and IsQuestFlaggedCompletedForObject(t);
+		if C_QuestLog.IsOnQuest(t.questID) then
+			return false;
+		end
+		return IsQuestFlaggedCompletedForObject(t);
 	end,
 	["trackable"] = function(t)
 		return true;
@@ -8154,24 +8161,36 @@ local questFields = {
 		return "|cffcbc3e3" .. t.name .. "|r";
 	end,
 	["collectibleAsReputation"] = function(t)
-		return app.CollectibleQuests and ((not t.repeatable and not t.isBreadcrumb) or C_QuestLog.IsOnQuest(t.questID) or (t.maxReputation and (app.CollectibleReputations or not t.repeatable)));
+		if C_QuestLog.IsOnQuest(t.questID) then
+			return true;
+		end
+		if app.CollectibleQuests then
+			if t.locked then return app.AccountWideQuests; end
+			if t.maxReputation then
+				return true;
+			end
+			return not t.repeatable and not t.isBreadcrumb;
+		end
 	end,
 	["collectedAsReputation"] = function(t)
 		if C_QuestLog.IsOnQuest(t.questID) then
 			return false;
 		end
+		local flag = IsQuestFlaggedCompletedForObject(t);
+		if flag then
+			return flag;
+		end
 		if t.maxReputation then
+			if (select(6, GetFactionInfoByID(t.maxReputation[1])) or 0) >= t.maxReputation[2] then
+				return t.repeatable and 1 or 2;
+			end
 			if app.AccountWideReputations then
 				local faction = SearchForField("factionID", t.maxReputation[1]);
 				if (faction and #faction > 0 and faction[1].collected) then
 					return 2;
 				end
 			end
-			if (select(6, GetFactionInfoByID(t.maxReputation[1])) or 0) >= t.maxReputation[2] then
-				return true;
-			end
 		end
-		return app.CollectibleQuests and IsQuestFlaggedCompletedForObject(t);
 	end,
 };
 app.BaseQuest = app.BaseObjectFields(questFields);
@@ -8186,8 +8205,111 @@ local fields = RawCloneData(questFields);
 fields.collectible = questFields.collectibleAsReputation;
 fields.collected = questFields.collectedAsReputation;
 app.BaseQuestWithReputation = app.BaseObjectFields(fields);
+
+local criteriaFuncs = {
+    ["achID"] = function(achievementID)
+        return app.CurrentCharacter.Achievements[achievementID];
+    end,
+	--[[
+	["label_achID"] = L["LOCK_CRITERIA_ACHIEVEMENT_LABEL"],
+    ["text_achID"] = function(v)
+        return select(2, GetAchievementInfo(v));
+    end,
+	]]--
+
+    ["lvl"] = function(v)
+        return app.Level >= v;
+    end,
+	--[[
+	["label_lvl"] = L["LOCK_CRITERIA_LEVEL_LABEL"],
+    ["text_lvl"] = function(v)
+        return v;
+    end,
+	]]--
+
+    ["questID"] = function(questID)
+		return IsQuestFlaggedCompleted(questID);
+	end,
+	--[[
+	["label_questID"] = L["LOCK_CRITERIA_QUEST_LABEL"],
+    ["text_questID"] = function(v)
+		local questObj = app.SearchForObject("questID", v);
+        return sformat("[%d] %s", v, questObj and questObj.text or "???");
+    end,
+	]]--
+
+    ["spellID"] = function(spellID)
+        return app.CurrentCharacter.Spells[spellID];
+    end,
+	--[[
+	["label_spellID"] = L["LOCK_CRITERIA_SPELL_LABEL"],
+    ["text_spellID"] = function(v)
+        return select(1, GetSpellInfo(v));
+    end,
+	]]--
+
+    ["factionID"] = function(v)
+		-- v = factionID.standingRequiredToLock
+		local factionID = math.floor(v + 0.00001);
+		local lockStanding = math.floor((v - factionID) * 10 + 0.00001);
+        local standing = select(3, GetFactionInfoByID(factionID)) or 4;
+		--app.print("Check Faction", factionID,  "Standing (", standing, ") is locked @ (", lockStanding, ")");
+		return standing >= lockStanding;
+    end,
+	--[[
+	["label_factionID"] = L["LOCK_CRITERIA_FACTION_LABEL"],
+    ["text_factionID"] = function(v)
+		-- v = factionID.standingRequiredToLock
+		local factionID = math.floor(v + 0.00001);
+		local lockStanding = math.floor((v - factionID) * 10 + 0.00001);
+		local name = GetFactionInfoByID(factionID);
+        return string.format(L["LOCK_CRITERIA_FACTION_FORMAT"], app.GetCurrentFactionStandingText(factionID, lockStanding), name, app.GetCurrentFactionStandingText(factionID));
+    end,
+	]]--
+};
+local OnUpdateForLockCriteria = function(t)
+	local lockCriteria = t.lc;
+	if lockCriteria then
+		local criteriaRequired = lockCriteria[1];
+		local critKey, critFunc, nonQuestLock;
+		for i=2,#lockCriteria,2 do
+			critKey = lockCriteria[i];
+			critFunc = criteriaFuncs[critKey];
+			if critFunc then
+				if critFunc(lockCriteria[i + 1]) then
+					if not nonQuestLock and critKey ~= "questID" then
+						nonQuestLock = true;
+					end
+					criteriaRequired = criteriaRequired - 1;
+					if criteriaRequired <= 0 then
+						rawset(t, "locked", true);
+						-- if this was locked due to something other than a Quest specifically, indicate it cannot be done in Party Sync
+						if nonQuestLock then
+							-- app.PrintDebug("Automatic DisablePartySync", app:Linkify(questID, app.Colors.ChatLink, "search:questID:" .. questID))
+							rawset(t, "DisablePartySync", true);
+						end
+						break;
+					end
+				end
+			else
+				app.print("Unknown 'lockCriteria' key:", critKey, lockCriteria[i + 1]);
+			end
+		end
+	end
+end
 app.CreateQuest = function(id, t)
 	if t then
+		if t.lc then
+			print("QUEST LC", id, t.lc, #t.lc);
+			for i=#t.lc,1,-1 do
+				print(i, t.lc[i]);
+			end
+			if t.OnUpdate then
+				print("BRUH ON UPDATE WITH LOCK CRITERIA QUEST ID #", id);
+			else
+				t.OnUpdate = OnUpdateForLockCriteria;
+			end
+		end
 		if rawget(t, "maxReputation") then
 			return setmetatable(constructor(id, t, "questID"), app.BaseQuestWithReputation);
 		elseif rawget(t, "isBreadcrumb") then

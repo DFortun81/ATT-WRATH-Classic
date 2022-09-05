@@ -1,91 +1,7 @@
 -- Dungeons & Raids
--- Classic
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\0.5 Tier 0.5 Sets.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\0.9 World Bosses.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\1.0 Molten Core.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\1.5 Onyxia's Lair.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\1.6 Blackwing Lair.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\1.7 Zul'Gurub.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\2.5 Ruins of Ahn'Qiraj.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\2.6 Temple of Ahn'Qiraj.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\3.0 Naxxramas.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Blackfathom Deeps.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Blackrock Depths.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Lower Blackrock Spire.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Deadmines.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Dire Maul.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Gnomeregan.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Maraudon.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Ragefire Chasm.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Razorfen Downs.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Razorfen Kraul.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Scarlet Halls.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Scarlet Monastery.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Scholomance.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Shadowfang Keep.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Stratholme.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\The Stockade.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\The Temple of Atal'hakkar.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Uldaman.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Wailing Caverns.lua
--- #IMPORT: 01 - Dungeons Raids\\1 - Classic\\Zul'Farrak.lua
-
--- Burning Crusade
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\0 - Metadata.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\0.1 World Bosses.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\1 Karazhan (Raid).lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\2 Gruul's Lair.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\3 Magtheridon's Lair.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\4 Serpentshrine Cavern.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\5 The Eye.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\6 The Battle for Mount Hyjal.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\7 The Black Temple.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\7.5 Zul'Aman.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\8 Sunwell Plateau.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Auchenai Crypts.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Hellfire Ramparts.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Magisters' Terrace.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Mana Tombs.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Old Hillsbrad Foothills.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Sethekk Halls.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\Shadow Labyrinth.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Arcatraz.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Black Morass.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Blood Furnace.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Botanica.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Mechanar.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Shattered Halls.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Slave Pens.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Steamvault.lua
--- #IMPORT: 01 - Dungeons Raids\\2 - Burning Crusade\\The Underbog.lua
-
--- Wrath of the Lich King
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\0 - Metadata.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\1 Vault of Archavon.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\2 Naxxramas.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\3 The Obsidian Sanctum.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\4 The Eye of Eternity.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\5 Ulduar.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\6 Trial of the Crusader.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\8 Icecrown Citadel.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\9 The Ruby Sanctum.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\10 Currency.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Ahn'kahet The Old Kingdom.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Azjol-Nerub.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Drak'Tharon Keep.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Gundrak.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Halls of Lightning.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Halls of Reflection.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Halls of Stone.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Pit of Saron.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\The Culling of Stratholme.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\The Forge of Souls.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\The Nexus.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\The Oculus.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\The Violet Hold (Wrath).lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Trial of the Champion.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Utgarde Keep.lua
--- #IMPORT: 01 - Dungeons Raids\\3 - Wrath of the Lich King\\Utgarde Pinnacle.lua
+-- #IMPORT: 01 - Dungeons Raids\\01 - Classic\\
+-- #IMPORT: 01 - Dungeons Raids\\02 - Burning Crusade\\
+-- #IMPORT: 01 - Dungeons Raids\\03 - Wrath of the Lich King\\
 
 -- Outdoor Zones
 -- Kalimdor
@@ -135,18 +51,8 @@ root("Zones", m(EASTERN_KINGDOMS, {
 	["OnUpdate"] = [[function(t) table.sort(t.g, function (a, b) return string.lower(a.isRaid and (" " .. a.text) or a.text) < string.lower(b.isRaid and (" " .. b.text) or b.text) end)  end]],
 }));
 
--- Outland
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\0 - Metadata.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\1 - Shattrath City.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Blade's Edge Mountains.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Hellfire Peninsula.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Nagrand.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Netherstorm.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Shadowmoon Valley.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Terokkar Forest.lua
--- #IMPORT: 02 - Outdoor Zones\\03 Outland\\Zangarmarsh.lua
-
--- Northrend
+-- Outland & Northrend
+-- #IMPORT: 02 - Outdoor Zones\\03 Outland\\
 -- #IMPORT: 02 - Outdoor Zones\\04 Northrend\\
 
 -- World Drops
