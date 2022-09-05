@@ -10403,6 +10403,22 @@ local function RowOnEnter(self)
 					end
 				end
 				if not found then GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1); end
+				if reference.maps then
+					local description = "Maps: ";
+					for i=1,#reference.maps,1 do
+						if i > 1 then description = description .. ", "; end
+						description = description .. app.GetMapName(reference.maps[i]);
+					end
+					GameTooltip:AddLine(" ", 1, 1, 1, 1);
+					GameTooltip:AddLine(description, 0.4, 0.8, 1, 1);
+				end
+			elseif reference.maps then
+				local description = "Maps: ";
+				for i=1,#reference.maps,1 do
+					if i > 1 then description = description .. ", "; end
+					description = description .. app.GetMapName(reference.maps[i]);
+				end
+				GameTooltip:AddLine(description, 0.4, 0.8, 1, 1);
 			end
 			if reference.awp then
 				local found = false;
@@ -12736,6 +12752,9 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 						else
 							MergeObject(groups, clone);
 						end
+					elseif group.key == "criteriaID" then
+						clone.achievementID = group.achievementID;
+						MergeObject(achievementsHeader.g, clone);
 					elseif group.key == "achievementID" then
 						MergeObject(achievementsHeader.g, clone);
 					elseif group.key == "questID" then
