@@ -449,6 +449,20 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 3,
 				}),
+				q(14088, {	-- Learn to Ride in Durotar
+					["provider"] = { "i", 46883 },	-- Riding Training Pamphlet
+					["description"] = "The pamphlet that starts this quest is sent to Trolls in their Mailbox upon reaching the specified level.",
+					["timeline"] = { "added 3.3.0.10958", "removed 4.0.1.10000" },
+					["lockCriteria"] = { 1,
+						"spellID", 33388,	-- Apprentice Riding
+						"spellID", 33391,	-- Journeyman Riding
+						"spellID", 34090,	-- Expert Riding
+						"spellID", 34091,	-- Artisan Riding
+						"spellID", 90265,	-- Master Riding
+					},
+					["races"] = { TROLL },
+					["lvl"] = lvlsquish(20, 20, 10),
+				}),
 				q(816, {	-- Lost But Not Forgotten
 					["qg"] = 3193,	-- Misha Tor'kren
 					["coord"] = { 43.10, 30.24, DUROTAR },

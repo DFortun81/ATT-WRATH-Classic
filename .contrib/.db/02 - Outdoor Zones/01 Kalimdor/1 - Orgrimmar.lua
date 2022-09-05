@@ -319,6 +319,20 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 15,
 				}),
+				q(14086, {	-- Learn to Ride in Orgrimmar
+					["provider"] = { "i", 46880 },	-- Riding Training Pamphlet
+					["description"] = "The pamphlet that starts this quest is sent to Orcs in their Mailbox upon reaching the specified level.",
+					["timeline"] = { "added 3.3.0", "removed 4.0.3" },
+					["lockCriteria"] = { 1,
+						"spellID", 33388,	-- Apprentice Riding
+						"spellID", 33391,	-- Journeyman Riding
+						"spellID", 34090,	-- Expert Riding
+						"spellID", 34091,	-- Artisan Riding
+						"spellID", 90265,	-- Master Riding
+					},
+					["races"] = { ORC },
+					["lvl"] = lvlsquish(20, 20, 10),
+				}),
 				-- #if ANYCLASSIC
 				q(65601, {	-- Love Hurts
 					["qg"] = 5909,	-- Cazul
