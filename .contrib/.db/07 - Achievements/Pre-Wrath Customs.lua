@@ -1649,6 +1649,7 @@ root("Achievements", {
 				-- #endif
 			}),
 			ach(1225, {	-- Outland Angler
+				["maps"] = { NAGRAND, TEROKKAR_FOREST, ZANGARMARSH },
 				["requireSkill"] = FISHING,
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2095, {	-- Silver in the City

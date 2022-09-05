@@ -8300,10 +8300,6 @@ end
 app.CreateQuest = function(id, t)
 	if t then
 		if t.lc then
-			print("QUEST LC", id, t.lc, #t.lc);
-			for i=#t.lc,1,-1 do
-				print(i, t.lc[i]);
-			end
 			if t.OnUpdate then
 				print("BRUH ON UPDATE WITH LOCK CRITERIA QUEST ID #", id);
 			else
