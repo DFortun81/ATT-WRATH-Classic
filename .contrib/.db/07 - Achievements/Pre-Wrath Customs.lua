@@ -1595,35 +1595,28 @@ root("Achievements", {
 			}),
 			ach(1556, {	-- 25 Fish
 				["requireSkill"] = FISHING,
+				["rank"] = 25,
 			}),
 			ach(1557, {	-- 50 Fish
 				["requireSkill"] = FISHING,
+				["rank"] = 50,
 			}),
 			ach(1558, {	-- 100 Fish
 				["requireSkill"] = FISHING,
+				["rank"] = 100,
 			}),
 			ach(1559, {	-- 250 Fish
 				["requireSkill"] = FISHING,
+				["rank"] = 250,
 			}),
 			ach(1560, {	-- 500 Fish
 				["requireSkill"] = FISHING,
+				["rank"] = 500,
 			}),
 			ach(1561, {	-- 1000 Fish
 				["requireSkill"] = FISHING,
+				["rank"] = 1000,
 			}),
-			applyclassicphase(WRATH_PHASE_ONE, ach(2094, {	-- A Penny For Your Thoughts
-				["requireSkill"] = FISHING,
-				["maps"] = { DALARAN },
-			})),
-			applyclassicphase(WRATH_PHASE_ONE, ach(3217, {	-- Chasing Marcia
-				["requireSkill"] = FISHING,
-				["maps"] = { DALARAN },
-			})),
-			applyclassicphase(WRATH_PHASE_ONE, ach(1958, {	-- I Smell A Giant Rat
-				["provider"] = { "i", 43698 },	-- Giant Sewer Rat
-				["requireSkill"] = FISHING,
-				["maps"] = { DALARAN },
-			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1517, {	-- Northrend Angler
 				["requireSkill"] = FISHING,
 			})),
@@ -1652,10 +1645,6 @@ root("Achievements", {
 				["maps"] = { NAGRAND, TEROKKAR_FOREST, ZANGARMARSH },
 				["requireSkill"] = FISHING,
 			}),
-			applyclassicphase(WRATH_PHASE_ONE, ach(2095, {	-- Silver in the City
-				["requireSkill"] = FISHING,
-				["maps"] = { DALARAN },
-			})),
 			ach(150, {	-- The Fishing Diplomat
 				["requireSkill"] = FISHING,
 				["maps"] = { ORGRIMMAR, STORMWIND_CITY },
@@ -1728,10 +1717,6 @@ root("Achievements", {
 					}),
 				},
 			}),
-			applyclassicphase(WRATH_PHASE_ONE, ach(1957, {	-- There's Gold In That There Fountain
-				["requireSkill"] = FISHING,
-				["maps"] = { DALARAN },
-			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(3218, {	-- Turtles All the Way Down
 				["provider"] = { "i", 46109 },	-- Sea Turtle
 				["requireSkill"] = FISHING,
