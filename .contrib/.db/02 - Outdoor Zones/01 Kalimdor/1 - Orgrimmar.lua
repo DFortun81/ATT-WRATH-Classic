@@ -743,10 +743,16 @@ root("Zones", m(KALIMDOR, {
 							["isLimited"] = true,
 						}),
 						i(16041, {	-- Schematic: Thorium Grenade
+							["timeline"] = { "removed 3.0.1" },	-- Now taught by trainer, schematic removed from the game.
+							-- #if BEFORE 3.0.1
 							["isLimited"] = true,
+							-- #endif
 						}),
 						i(16042, {	-- Schematic: Thorium Widget
+							["timeline"] = { "removed 3.0.1" },	-- Now taught by trainer, schematic removed from the game.
+							-- #if BEFORE 3.0.1
 							["isLimited"] = true,
+							-- #endif
 						}),
 						applyclassicphase(TBC_PHASE_ONE, i(22729, {	-- Schematic: Steam Tonk Controller
 							["isLimited"] = true,
