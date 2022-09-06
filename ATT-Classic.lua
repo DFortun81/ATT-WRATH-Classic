@@ -1569,14 +1569,14 @@ ResolveSymbolicLink = function(o)
 					local cache;
 					for criteriaID=1,GetAchievementNumCriteria(achievementID),1 do
 						local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, id = GetAchievementCriteriaInfo(achievementID, criteriaID);
-						local criteriaObject = app.CreateAchievementCriteria(id);
-						criteriaObject.achievementID = achievementID;
-						tinsert(searchResults, criteriaObject);
 						if criteriaType == 27 then
 							cache = app.SearchForField("questID", assetID);
+						elseif criteriaType == 110 then
+							-- Ignored
 						else
-							print("Unhandled Criteria Type", criteriaType);
+							print("Unhandled Criteria Type", criteriaType, assetID);
 						end
+						local criteriaObject = app.CreateAchievementCriteria(id);
 						if cache then
 							local uniques = {};
 							MergeObjects(uniques, cache);
@@ -1588,6 +1588,9 @@ ResolveSymbolicLink = function(o)
 								rawset(o, "text", criteriaObject.text);
 							end
 						end
+						criteriaObject.achievementID = achievementID;
+						criteriaObject.parent = o;
+						tinsert(searchResults, criteriaObject);
 					end
 				end
 			elseif cmd == "meta_achievement" then
