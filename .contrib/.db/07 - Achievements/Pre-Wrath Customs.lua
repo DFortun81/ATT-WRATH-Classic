@@ -579,7 +579,7 @@ root("Achievements", {
 			-- #endif
 		}),
 		ach(545, {	-- Shave and a Haircut
-			["maps"] = { STORMWIND_CITY, ORGRIMMAR, DALARAN },
+			["maps"] = { STORMWIND_CITY, ORGRIMMAR, NORTHREND_DALARAN },
 		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(1250, {	-- Shop Smart, Shop Pet...Smart
 			["OnClick"] = COMPANIONS_OnClick,
@@ -1448,31 +1448,31 @@ root("Achievements", {
 			applyclassicphase(WRATH_PHASE_ONE, ach(1998, {	-- Dalaran Cooking Award
 				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 1,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1999, {	-- 10 Dalaran Cooking Awards
 				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 10,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2000, {	-- 25 Dalaran Cooking Awards
 				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 25,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2001, {	-- 50 Dalaran Cooking Awards
 				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 50,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2002, {	-- 100 Dalaran Cooking Awards
 				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 100,
 			})),
 			ach(1801, {	-- Captain Rumsey's Lager
@@ -1504,12 +1504,12 @@ root("Achievements", {
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1782, {	-- Our Daily Bread [Alliance]
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["races"] = ALLIANCE_ONLY,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1783, {	-- Our Daily Bread [Horde]
 				["requireSkill"] = COOKING,
-				["maps"] = { DALARAN },
+				["maps"] = { NORTHREND_DALARAN },
 				["races"] = HORDE_ONLY,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1780, {	-- Second That Emotion
