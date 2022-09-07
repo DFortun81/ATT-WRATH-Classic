@@ -5657,7 +5657,7 @@ else
 		return "Interface\\Icons\\INV_Misc_QuestionMark";
 	end
 	speciesFields.name = function(t)
-		return select(1, GetItemInfo(t.itemID));
+		return t.itemID and select(1, GetItemInfo(t.itemID)) or RETRIEVING_DATA;
 	end
 	mountFields.name = function(t)
 		return select(1, GetSpellInfo(t.spellID)) or RETRIEVING_DATA;
@@ -11006,6 +11006,17 @@ function app:GetDataCache()
 			db.icon = app.asset("Category_Professions");
 			db.description = "This section will only show your character's professions outside of Account and Debug Mode.";
 			db.g = app.Categories.Professions;
+			table.insert(g, db);
+		end
+
+		-- In-Game Store
+		if app.Categories.InGameShop then
+			db = {};
+			db.expanded = false;
+			db.text = BATTLE_PET_SOURCE_10;
+			db.icon = app.asset("Category_InGameShop");
+			db.description = "This section will show you things that you could buy in the In-Game Shop in Retail.";
+			db.g = app.Categories.InGameShop;
 			table.insert(g, db);
 		end
 		

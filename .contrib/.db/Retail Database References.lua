@@ -121,6 +121,8 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 12 - Promotions\\Trading Card Game.lua
 -- #IMPORT: 12 - Promotions\\Warcraft Movie.lua
 
+-- #IMPORT: 13 - In-Game Shop\\
+
 -- PvP
 root("PVP", n(-32, {	-- Honor Titles
 	["timeline"] = {
