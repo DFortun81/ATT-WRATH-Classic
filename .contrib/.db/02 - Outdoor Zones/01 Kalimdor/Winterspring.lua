@@ -780,7 +780,7 @@ root("Zones", m(KALIMDOR, {
 						classicAch(3356, {	-- Winterspring Frostsaber
 							["provider"] = { "i", 13086 },	-- Reins of the Winterspring Frostsaber
 							["races"] = ALLIANCE_ONLY,
-							["f"] = 100,
+							["f"] = MOUNTS,
 							-- #if BEFORE WRATH
 							["description"] = "Obtain a Winterspring Frosaber.",
 							["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_ITEM_PROVIDER]],

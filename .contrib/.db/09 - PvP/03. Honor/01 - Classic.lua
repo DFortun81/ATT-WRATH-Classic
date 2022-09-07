@@ -1586,22 +1586,4 @@ root("PVP", {
 			}),
 		},
 	}),
-	n(REWARDS, {
-		applyclassicphase(TBC_PHASE_ONE, i(30609, {	-- Swift Nether Drake
-			["description"] = "Awarded to members of the Arena teams during TBC Season 1 that were in the 0.5% bracket of their battlegroup.",
-			["timeline"] = { "added 2.0.1.6180", "removed 2.3.0.7501" },
-		})),
-		applyclassicphase(TBC_PHASE_TWO, i(34092, {	-- Merciless Nether Drake
-			["description"] = "Awarded to members of the Arena teams during TBC Season 2 that were in the 0.5% bracket of their battlegroup.",
-			["timeline"] = { "added 2.3.0.7501", "removed 2.4.2.8301" },
-		})),
-		applyclassicphase(TBC_PHASE_THREE, i(37676, {	-- Vengeful Nether Drake
-			["description"] = "Awarded to members of the Arena teams during TBC Season 3 that were in the 0.5% bracket of their battlegroup.",
-			["timeline"] = { "added 2.4.2.8301", "removed 2.4.3.8600" },
-		})),
-		applyclassicphase(TBC_PHASE_FIVE, i(43516, {	-- Brutal Nether Drake
-			["description"] = "Awarded to members of the Arena teams during TBC Season 4 that were in the 0.5% bracket of their battlegroup.",
-			["timeline"] = { "added 2.4.3.8600", "removed 3.0.1" },
-		})),
-	}),
 });

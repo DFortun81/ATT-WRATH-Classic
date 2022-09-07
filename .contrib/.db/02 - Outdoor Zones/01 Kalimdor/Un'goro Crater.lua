@@ -426,7 +426,7 @@ root("Zones", m(KALIMDOR, {
 							["provider"] = { "i", 46102 },	-- Whistle of the Venomhide Ravasaur
 							["timeline"] = { "added 3.2.0.10026" },
 							["races"] = HORDE_ONLY,
-							["f"] = 100,
+							["f"] = MOUNTS,
 							-- #if BEFORE WRATH
 							["description"] = "Obtain a Venomhide Ravasaur.",
 							["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_ITEM_PROVIDER]],
