@@ -82,6 +82,11 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 07 - Events\\The Scepter of the Shifting Sands\\The Scepter of the Shifting Sands.lua
 -- #IMPORT: 07 - Events\\The Scourge Invasion\\The Scourge Invasion.lua
 -- #IMPORT: 07 - Events\\The Silithyst Must Flow\\The Silithyst Must Flow.lua
+-- #IMPORT: 07 - Events\\WoW Anniversary\\04th Anniversary.lua
+-- #IMPORT: 07 - Events\\WoW Anniversary\\05th Anniversary.lua
+-- #IMPORT: 07 - Events\\WoW Anniversary\\06th Anniversary.lua
+-- #IMPORT: 07 - Events\\WoW Anniversary\\07th Anniversary.lua
+-- #IMPORT: 07 - Events\\WoW Anniversary\\08th Anniversary.lua
 
 -- Craftables
 -- #IMPORT: 10 - Craftables\\01 - Classic.lua
