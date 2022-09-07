@@ -11612,6 +11612,44 @@ function app:GetDataCache()
 					end
 				end
 			end
+			if GetCategoryList then
+				local unsortedData = app:GetWindow("Unsorted").data;
+				for _,categoryID in ipairs(GetCategoryList()) do
+					local numAchievements = GetCategoryNumAchievements(categoryID);
+					if numAchievements > 0 then
+						for i=1,numAchievements,1 do
+							local achievementID, name = GetAchievementInfo(categoryID, i);
+							if achievementID and not self.achievements[achievementID] then
+								local achievement = app.CreateAchievement(achievementID);
+								self.achievements[i] = achievement;
+								achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
+								achievement.description = "@CRIEVE: This achievement has not been sourced yet.";
+								if not achievement.u or achievement.u ~= 1 then
+									tinsert(achievement.parent.g, achievement);
+								end
+								tinsert(unsortedData, achievement);
+								local numCriteria = GetAchievementNumCriteria(achievementID);
+								if numCriteria > 0 then
+									local g = {};
+									for j=1,numCriteria,1 do
+										local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, j);
+										local criteriaObject = app.CreateAchievementCriteria(criteriaID);
+										criteriaObject.parent = achievement;
+										table.insert(g, criteriaObject);
+									end
+									achievement.g = g;
+								end
+								CacheFields(achievement);
+								
+								-- Put a copy in Unsorted.
+								achievement = app.CreateAchievement(achievementID);
+								achievement.parent = unsortedData;
+								tinsert(unsortedData.g, achievement);
+							end
+						end
+					end
+				end
+			end
 			insertionSort(self.g, achievementSort, true);
 		end
 		achievementsCategory:OnUpdate();
