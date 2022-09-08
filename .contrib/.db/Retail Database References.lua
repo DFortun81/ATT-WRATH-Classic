@@ -107,20 +107,8 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 11 - Professions\\Runeforging\\Runeforging.lua
 -- #IMPORT: 11 - Professions\\Skinning\\Skinning.lua
 
--- Promotions
--- #IMPORT: 12 - Promotions\\BlizzCon.lua
--- #IMPORT: 12 - Promotions\\Collector's Editions.lua
--- #IMPORT: 12 - Promotions\\Diablo 20th Anniversary.lua
--- #IMPORT: 12 - Promotions\\Hearthstone.lua
--- #IMPORT: 12 - Promotions\\Heroes of the Storm.lua
--- #IMPORT: 12 - Promotions\\iCoke.lua
--- #IMPORT: 12 - Promotions\\Miscellaneous.lua
--- #IMPORT: 12 - Promotions\\Recruit A Friend.lua
--- #IMPORT: 12 - Promotions\\Scroll of Resurrection.lua
--- #IMPORT: 12 - Promotions\\Spirit of Competition.lua
--- #IMPORT: 12 - Promotions\\Trading Card Game.lua
--- #IMPORT: 12 - Promotions\\Warcraft Movie.lua
-
+-- Promotions & In-Game Shop
+-- #IMPORT: 12 - Promotions\\
 -- #IMPORT: 13 - In-Game Shop\\
 
 -- PvP

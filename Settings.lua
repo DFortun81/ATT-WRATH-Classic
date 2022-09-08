@@ -486,6 +486,12 @@ settings.UpdateMode = function(self)
 		app.GroupFilter = app.NoFilter;
 		app.SeasonalItemFilter = app.NoFilter;
 		app.VisibilityFilter = app.NoFilter;
+		
+		app.ItemTypeFilter = app.NoFilter;
+		app.ClassRequirementFilter = app.NoFilter;
+		app.RaceRequirementFilter = app.NoFilter;
+		app.RequiredSkillFilter = app.NoFilter;
+		app.RequireFactionFilter = app.NoFilter;
 
 		app.AccountWideAchievements = true;
 		app.AccountWideBattlePets = true;
