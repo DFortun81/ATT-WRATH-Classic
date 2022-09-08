@@ -146,13 +146,7 @@ root("PVP", n(-32, {	-- Honor Titles
 		pvprank(14),	-- Grand Marshal / High Warlord
 	},
 }));
--- #IMPORT: 09 - PvP\\Battlegrounds\\Alterac Valley.lua
--- #IMPORT: 09 - PvP\\Battlegrounds\\Arathi Basin.lua
--- #IMPORT: 09 - PvP\\Battlegrounds\\Eye of the Storm.lua
--- #IMPORT: 09 - PvP\\Battlegrounds\\Isle of Conquest.lua
--- #IMPORT: 09 - PvP\\Battlegrounds\\Strand of the Ancients.lua
--- #IMPORT: 09 - PvP\\Battlegrounds\\Warsong Gulch.lua
--- #IMPORT: 09 - PvP\\Battlegrounds\\Wintergrasp.lua
+-- #IMPORT: 09 - PvP\\Battlegrounds\\
 -- #IMPORT: 09 - PvP\\02 The Burning Crusade PvP Seasons.lua
 -- #IMPORT: 09 - PvP\\03 Wrath of the Lich King PvP Seasons.lua
 
