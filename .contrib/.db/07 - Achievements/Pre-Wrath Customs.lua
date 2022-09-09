@@ -845,6 +845,81 @@ root("Achievements", {
 			ach(1311),	-- Medium Rare
 		}),
 		-- #endif
+		-- #if AFTER 3.0.1
+		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
+			ach(2257, {	-- Frostbitten
+				crit(8100, {	-- Loque'nahak (Sholazar Basin)
+					["_npcs"] = { 32517 },
+				}),
+				crit(8101, {	-- High Thane Jorfus (Icecrown)
+					["_npcs"] = { 32501 },
+				}),
+				crit(8102, {	-- Hildana Deathstealer (Icecrown)
+					["_npcs"] = { 32495 },
+				}),
+				crit(8103, {	-- Old Crystalbark (Borean Tundra)
+					["_npcs"] = { 32357 },
+				}),
+				crit(8104, {	-- Fumblub Gearwind (Borean Tundra)
+					["_npcs"] = { 32358 },
+				}),
+				crit(8105, {	-- Icehorn (Borean Tundra)
+					["_npcs"] = { 32361 },
+				}),
+				crit(8106, {	-- Perobas the Bloodthirster (Howling Fjord)
+					["_npcs"] = { 32377 },
+				}),
+				crit(8107, {	-- Vigdis the War Maiden (Howling Fjord)
+					["_npcs"] = { 32386 },
+				}),
+				crit(8108, {	-- King Ping (Howling Fjord)
+					["_npcs"] = { 32398 },
+				}),
+				crit(8109, {	-- Tukemuth (Dragonblight)
+					["_npcs"] = { 32400 },
+				}),
+				crit(8110, {	-- Crazed Indu'le Survivor (Dragonblight)
+					["_npcs"] = { 32409 },
+				}),
+				crit(8111, {	-- Scarlet Highlord Daion (Dragonblight)
+					["_npcs"] = { 32417 },
+				}),
+				crit(8112, {	-- Grocklar (Grizzly Hills)
+					["_npcs"] = { 32422 },
+				}),
+				crit(8113, {	-- Seething Hate (Grizzly Hills)
+					["_npcs"] = { 32429 },
+				}),
+				crit(8114, {	-- Syreian the Bonecarver (Grizzly Hills)
+					["_npcs"] = { 32438 },
+				}),
+				crit(8115, {	-- Zul'drak Sentinel (Zul'Drak)
+					["_npcs"] = { 32447 },
+				}),
+				crit(8116, {	-- Griegen (Zul'Drak)
+					["_npcs"] = { 32471 },
+				}),
+				crit(8117, {	-- Terror Spinner (Zul'Drak and Storm Peaks)
+					["_npcs"] = { 32475 },
+				}),
+				crit(8118, {	-- Aotona (Sholazar Basin)
+					["_npcs"] = { 32481 },
+				}),
+				crit(8119, {	-- King Krush (Sholazar Basin)
+					["_npcs"] = { 32485 },
+				}),
+				crit(8120, {	-- Vyragosa (The Storm Peaks)
+					["_npcs"] = { 32630 },
+				}),
+				crit(8121, {	-- Dirkee (The Storm Peaks)
+					["_npcs"] = { 32500 },
+				}),
+				crit(8122, {	-- Putridus the Ancient (Icecrown)
+					["_npcs"] = { 32487 },
+				}),
+			}),
+		}),
+		-- #endif
 		classicAch(42, {	-- Explore Eastern Kingdoms
 			-- #if BEFORE WRATH
 			["description"] = "Explore the regions of Eastern Kingdoms.",
