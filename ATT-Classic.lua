@@ -4288,9 +4288,9 @@ end,
 						break;
 					end
 				end
-				if not t.areas then return true; end
+				if not t.areas then return; end
 			else
-				return true;
+				return;
 			end
 		end
 		if useAchievementAPI then return; end

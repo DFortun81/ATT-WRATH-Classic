@@ -839,7 +839,6 @@ root("Achievements", {
 		-- #endif
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_EXPLORATION, {
-		-- #if AFTER 2.0.1
 		applyclassicphase(TBC_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_OUTLAND_EXP, {
 			ach(1312, {	-- Bloody Rare
 				crit(4504, {	-- Ambassador Jerrikar (Shadowmoon Valley)
@@ -905,8 +904,6 @@ root("Achievements", {
 			}),
 			ach(1311),	-- Medium Rare
 		})),
-		-- #endif
-		-- #if AFTER 3.0.1
 		applyclassicphase(WRATH_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
 			ach(2257, {	-- Frostbitten
 				crit(8100, {	-- Loque'nahak (Sholazar Basin)
@@ -981,40 +978,209 @@ root("Achievements", {
 			}),
 			ach(2256),	-- Northern Exposure
 		})),
-		-- #endif
-		classicAch(42, {	-- Explore Eastern Kingdoms
-			-- #if BEFORE WRATH
+		applyclassicphase(BFA_PHASE_ONE, ach(12988, {	-- Battle for Azeroth Explorer
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				12556,	-- Explore Tiragarde Sound
+				12557,	-- Explore Drustvar
+				12558,	-- Explore Stormsong Valley
+				12559,	-- Explore Zuldazar
+				12561,	-- Explore Nazmir
+				12560,	-- Explore Vol'dun
+			}},
+		})),
+		applyclassicphase(LEGION_PHASE_ONE, ach(11188, {	-- Broken Isles Explorer
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				10665,	-- Explore Azsuna
+				10666,	-- Explore Val'sharah
+				10667,	-- Explore Highmountain
+				10668,	-- Explore Stormheim
+				10669,	-- Explore Suramar
+			}},
+		})),
+		applyclassicphase(CATA_PHASE_ONE, ach(4868, {	-- Cataclysm Explorer [7.0.3] / Explore Cataclysm
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				4864,	-- Explore Deepholm
+				4863,	-- Explore Hyjal
+				4866,	-- Explore Twilight Highlands
+				4865,	-- Explore Uldum
+				4825,	-- Explore Vashj'ir
+			}},
+		})),
+		applyclassicphase(WOD_PHASE_ONE, ach(8935, {	-- Draenor Explorer [7.0.3] / Explore Draenor
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				8937,	-- Explore Frostfire Ridge
+				8939,	-- Explore Gorgrond
+				8942,	-- Explore Nagrand
+				8938,	-- Explore Shadowmoon Valley
+				8941,	-- Explore Spires of Arak
+				8940,	-- Explore Talador
+			}},
+		})),
+		classicAch(42, {	-- Eastern Kingdoms Explorer [7.0.3] / Explore Eastern Kingdoms
+			-- #if AFTER WRATH
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				-- #if BEFORE CATA
+				760,	-- Explore Alterac Mountains
+				-- #endif
+				761,	-- Explore Arathi Highlands
+				765,	-- Explore Badlands
+				766,	-- Explore Blasted Lands
+				775,	-- Explore Burning Steppes
+				777,	-- Explore Deadwind Pass
+				627,	-- Explore Dun Morogh
+				778,	-- Explore Duskwood
+				771,	-- Explore Eastern Plaguelands
+				776,	-- Explore Elwynn Forest
+				859,	-- Explore Eversong Woods
+				858,	-- Explore Ghostlands
+				772,	-- Explore Hillsbrad Foothills
+				868,	-- Explore Isle of Quel'Danas
+				779,	-- Explore Loch Modan
+				-- #if AFTER CATA
+				781,	-- Explore Northern Stranglethorn
+				-- #endif
+				780,	-- Explore Redridge Mountains
+				774,	-- Explore Searing Gorge
+				769,	-- Explore Silverpine Forest
+				-- #if BEFORE CATA
+				781,	-- Explore Stranglethorn Vale
+				-- #endif
+				782,	-- Explore Swamp of Sorrows
+				-- #if AFTER CATA
+				4995,	-- Explore the Cape of Stranglethorn
+				-- #endif
+				773,	-- Explore The Hinterlands
+				768,	-- Explore Tirisfal Glades
+				770,	-- Explore Western Plaguelands
+				802,	-- Explore Westfall
+				841,	-- Explore Wetlands
+			}},
+			-- #else
 			["description"] = "Explore the regions of Eastern Kingdoms.",
 			["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_EASTERN_KINGDOMS_EXP .. [[); end]],
 			-- #endif
 		}),
-		classicAch(43, {	-- Explore Kalimdor
-			-- #if BEFORE WRATH
+		classicAch(43, {	-- Kalimdor Explorer [7.0.3] / Explore Kalimdor
+			-- #if AFTER WRATH
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				845,	-- Explore Ashenvale
+				852,	-- Explore Azshara
+				860,	-- Explore Azuremyst Isle
+				861,	-- Explore Bloodmyst Isle
+				844,	-- Explore Darkshore
+				848,	-- Explore Desolace
+				728,	-- Explore Durotar
+				850,	-- Explore Dustwallow Marsh
+				853,	-- Explore Felwood
+				849,	-- Explore Feralas
+				855,	-- Explore Moonglade
+				736,	-- Explore Mulgore
+				-- #if AFTER CATA
+				750,	-- Explore Northern Barrens
+				-- #endif
+				856,	-- Explore Silithus
+				-- #if AFTER CATA
+				4996,	-- Explore Southern Barrens
+				-- #endif
+				847,	-- Explore Stonetalon Mountains
+				851,	-- Explore Tanaris
+				842,	-- Explore Teldrassil
+				-- #if AFTER CATA
+				750,	-- Explore The Barrens
+				-- #endif
+				846,	-- Explore Thousand Needles
+				854,	-- Explore Un'Goro Crater
+				857,	-- Explore Winterspring
+			}},
+			-- #else
 			["description"] = "Explore the regions of Kalimdor.",
 			["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_KALIMDOR_EXP .. [[); end]],
 			-- #endif
 		}),
-		applyclassicphase(TBC_PHASE_ONE, ach(44, {	-- Explore Outland
-			-- #if BEFORE WRATH
+		applyclassicphase(WRATH_PHASE_ONE, ach(45, {	-- Northrend Explorer [7.0.3] / Explore Northrend
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				1264,	-- Explore Borean Tundra
+				1457,	-- Explore Crystalsong Forest
+				1265,	-- Explore Dragonblight
+				1266,	-- Explore Grizzly Hills
+				1263,	-- Explore Howling Fjord
+				1270,	-- Explore Icecrown
+				1268,	-- Explore Sholazar Basin
+				1269,	-- Explore Storm Peaks
+				1267,	-- Explore Zul'Drak
+			}},
+			["groups"] = {
+				i(43348),	-- Tabard of the Explorer
+			},
+		})),
+		applyclassicphase(TBC_PHASE_ONE, ach(44, {	-- Outland Explorer [7.0.3] / Explore Outland
+			-- #if AFTER WRATH
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				865,	-- Explore Blade's Edge Mountains
+				862,	-- Explore Hellfire Peninsula
+				866,	-- Explore Nagrand
+				843,	-- Explore Netherstorm
+				864,	-- Explore Shadowmoon Valley
+				867,	-- Explore Terokkar Forest
+				863,	-- Explore Zangarmarsh
+			}},
+			-- #else
 			["description"] = "Explore the regions of Outland.",
 			["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_OUTLAND_EXP .. [[); end]],
 			-- #endif
 		})),
-		applyclassicphase(WRATH_PHASE_ONE, ach(45, {	-- Explore Northrend
-			i(43348),	-- Tabard of the Explorer
+		applyclassicphase(MOP_PHASE_ONE, ach(6974, {	-- Pandaria Explorer [7.0.3] / Explore Pandaria
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				6978,	-- Explore Dread Wastes
+				6351,	-- Explore Jade Forest
+				6975,	-- Explore Krasarang Wilds
+				6976,	-- Explore Kun-Lai Summit
+				6977,	-- Explore Townlong Steppes
+				6979,	-- Explore Vale of Eternal Blossoms
+				6969,	-- Explore Valley of the Four Winds
+			}},
 		})),
-		applyclassicphase(WRATH_PHASE_ONE, ach(46, {	-- World Explorer
-			-- #if AFTER CATA
-			title(78),	-- % the Explorer
-			-- #else
-			title(47),	-- % the Explorer
-			-- #endif
+		applyclassicphase(WRATH_PHASE_ONE, ach(46, {	-- Universal Explorer [7.0.3] / World Explorer
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				42,	-- Eastern Kingdoms Explorer
+				43,	-- Kalimdor Explorer
+				44,	-- Outland Explorer
+				45,	-- Northrend Explorer
+				-- #if AFTER CATA
+				4868,	-- Cataclysm Explorer
+				-- #endif
+				-- #if AFTER 5.0.4
+				6974,	-- Pandaria Explorer
+				-- #endif
+				-- #if AFTER 6.0.1
+				8935,	-- Draenor Explorer
+				-- #endif
+				-- #if AFTER 7.0.1
+				11188,	-- Broken Isles Explorer
+				-- #endif
+				-- #if AFTER 8.0.1
+				12988,	-- Battle for Azeroth Explorer
+				-- #endif
+			}},
+			["groups"] = {
+				title(47),	-- the Explorer
+			},
 		})),
 	}),
 	pvp(achcat(ACHIEVEMENT_CATEGORY_PVP, {
