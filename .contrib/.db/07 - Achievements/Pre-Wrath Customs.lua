@@ -840,13 +840,74 @@ root("Achievements", {
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_EXPLORATION, {
 		-- #if AFTER 2.0.1
-		achcat(ACHIEVEMENT_CATEGORY_OUTLAND_EXP, {
-			ach(1312),	-- Bloody Rare
+		applyclassicphase(TBC_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_OUTLAND_EXP, {
+			ach(1312, {	-- Bloody Rare
+				crit(4504, {	-- Ambassador Jerrikar (Shadowmoon Valley)
+					["_npcs"] = { 18695 },
+				}),
+				crit(4505, {	-- Bog Lurker (Zangarmarsh)
+					["_npcs"] = { 18682 },
+				}),
+				crit(4506, {	-- Chief Engineer Lorthander (Netherstorm)
+					["_npcs"] = { 18697 },
+				}),
+				crit(4507, {	-- Coilfang Emissary (Zangarmarsh)
+					["_npcs"] = { 18681 },
+				}),
+				crit(4508, {	-- Collidus the Warp-Watcher (Shadowmoon Valley)
+					["_npcs"] = { 18694 },
+				}),
+				crit(4509, {	-- Crippler (Terokkar Forest)
+					["_npcs"] = { 18689 },
+				}),
+				crit(4510, {	-- Doomsayer Jurim (Terokkar Forest)
+					["_npcs"] = { 18686 },
+				}),
+				crit(4511, {	-- Ever-Core the Punisher (Netherstorm)
+					["_npcs"] = { 18698 },
+				}),
+				crit(4512, {	-- Fulgorge (Hellfire Peninsula)
+					["_npcs"] = { 18678 },
+				}),
+				crit(4513, {	-- Goretooth (Nagrand)
+					["_npcs"] = { 17144 },
+				}),
+				crit(4514, {	-- Hemathion (Blade's Edge Mountains)
+					["_npcs"] = { 18692 },
+				}),
+				crit(4515, {	-- Kraator (Shadowmoon Valley)
+					["_npcs"] = { 18696 },
+				}),
+				crit(4516, {	-- Marticar (Zangarmarsh)
+					["_npcs"] = { 18680 },
+				}),
+				crit(4517, {	-- Mekthorg the Wild (Hellfire Peninsula)
+					["_npcs"] = { 18677 },
+				}),
+				crit(4518, {	-- Morcrush (Blade's Edge Mountains)
+					["_npcs"] = { 18690 },
+				}),
+				crit(4519, {	-- Nuramoc (Netherstorm)
+					["_npcs"] = { 20932 },
+				}),
+				crit(4520, {	-- Okrek (Terokkar Forest)
+					["_npcs"] = { 18685 },
+				}),
+				crit(4521, {	-- Speaker Mar'grom (Blade's Edge Mountains)
+					["_npcs"] = { 18693 },
+				}),
+				crit(4522, {	-- Voidhunter Yar (Nagrand)
+					["_npcs"] = { 18683 },
+				}),
+				crit(4523, {	-- Vorakem Doomspeaker (Hellfire Peninsula)
+					["_npcs"] = { 18679 },
+				}),
+			}),
 			ach(1311),	-- Medium Rare
-		}),
+		})),
 		-- #endif
 		-- #if AFTER 3.0.1
-		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
+		applyclassicphase(WRATH_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
 			ach(2257, {	-- Frostbitten
 				crit(8100, {	-- Loque'nahak (Sholazar Basin)
 					["_npcs"] = { 32517 },
@@ -918,7 +979,8 @@ root("Achievements", {
 					["_npcs"] = { 32487 },
 				}),
 			}),
-		}),
+			ach(2256),	-- Northern Exposure
+		})),
 		-- #endif
 		classicAch(42, {	-- Explore Eastern Kingdoms
 			-- #if BEFORE WRATH
