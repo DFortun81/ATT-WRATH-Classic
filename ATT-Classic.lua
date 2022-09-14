@@ -14939,6 +14939,17 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 		self.previousCraftSkillID = 0;
 		self.previousTradeSkillID = 0;
 		self.CacheRecipes = function(self)
+			-- If it's not yours, don't take credit for it.
+			if IsTradeSkillLinked and IsTradeSkillLinked() then
+				return;
+			end
+			if C_TradeSkillUI then
+				if (C_TradeSkillUI.IsTradeSkillLinked and C_TradeSkillUI.IsTradeSkillLinked())
+				or (C_TradeSkillUI.IsTradeSkillGuild and C_TradeSkillUI.IsTradeSkillGuild()) then
+					return;
+				end
+			end
+			
 			-- Cache Learned Spells
 			local skillCache = fieldCache["spellID"];
 			if skillCache then
@@ -15164,6 +15175,7 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 					while not self:IsVisible() do
 						coroutine.yield();
 					end
+					
 					self:CacheRecipes();
 					self:Update();
 					wipe(searchCache);
@@ -15250,6 +15262,16 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 			if e == "TRADE_SKILL_LIST_UPDATE" or e == "SKILL_LINES_CHANGED" then
 				self:Update();
 			elseif e == "TRADE_SKILL_SHOW" or e == "CRAFT_SHOW" then
+				-- If it's not yours, don't take credit for it.
+				if IsTradeSkillLinked and IsTradeSkillLinked() then
+					return;
+				end
+				if C_TradeSkillUI then
+					if (C_TradeSkillUI.IsTradeSkillLinked and C_TradeSkillUI.IsTradeSkillLinked())
+					or (C_TradeSkillUI.IsTradeSkillGuild and C_TradeSkillUI.IsTradeSkillGuild()) then
+						return;
+					end
+				end
 				if self.TSMCraftingVisible == nil then
 					self:SetTSMCraftingVisible(false);
 				end
