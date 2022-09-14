@@ -12603,6 +12603,62 @@ app:GetWindow("Attuned", UIParent, function(self)
 		app.VisibilityFilter = visibilityFilter;
 	end
 end);
+app:GetWindow("Breadcrumbs", UIParent, function(self)
+	if self:IsVisible() then
+		if not self.initialized then
+			self.initialized = true;
+			self.dirty = true;
+			local actions = {
+				['text'] = "Follow the Breadcrumbs",
+				['icon'] = "Interface\\Icons\\INV_Misc_Food_12", 
+				["description"] = "This window shows you all of the breadcrumbs tracked by ATT. Go get 'em!",
+				['visible'] = true, 
+				['expanded'] = true,
+				['back'] = 1,
+				["indent"] = 0,
+				['OnUpdate'] = function(data)
+					--if not self.dirty then return nil; end
+					--self.dirty = nil;
+					
+					local g = {};
+					if not data.results then
+						data.results = app:BuildSearchResponseForField(app:GetWindow("Prime").data.g, "isBreadcrumb");
+					end
+					if #data.results > 0 then
+						for i,result in ipairs(data.results) do
+							table.insert(g, result);
+						end
+					end
+					data.g = g;
+					if #g > 0 then
+						for i,entry in ipairs(g) do
+							entry.indent = nil;
+						end
+						data.progress = 0;
+						data.total = 0;
+						data.indent = 0;
+						data.visible = true;
+						BuildGroups(data, data.g);
+						app.UpdateGroups(data, data.g);
+						if not data.expanded then
+							data.expanded = true;
+							ExpandGroupsRecursively(data, true);
+						end
+					end
+					BuildGroups(self.data, self.data.g);
+					UpdateWindow(self, true);
+				end,
+				['options'] = { },
+				['g'] = { },
+			};
+			self.data = actions;
+		end
+		
+		-- Update the window and all of its row data
+		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
+		UpdateWindow(self, true);
+	end
+end);
 app:GetWindow("CosmicInfuser", UIParent, function(self)
 	if self:IsVisible() then
 		if not self.initialized then
@@ -15457,6 +15513,9 @@ SlashCmdList["ATTC"] = function(cmd)
 			return true;
 		elseif cmd == "rwp" then
 			app:GetWindow("RWP"):Toggle();
+			return true;
+		elseif cmd == "breadcrumbs" then
+			app:GetWindow("Breadcrumbs"):Toggle();
 			return true;
 		else
 			local subcmd = strsub(cmd, 1, 6);
