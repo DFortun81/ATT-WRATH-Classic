@@ -989,6 +989,12 @@ local CompanionPetSpellIDToSpeciesID = {
     [346192] = 3066, -- Lucy
     [346236] = 3067, -- Spriggan Trickster
     [346260] = 3079, -- Winterleaf Spriggan
+	
+	-- #if ANYCLASSIC
+	-- #if AFTER WRATH
+	[384796] = 384796,	-- Pebble
+	-- #endif
+	-- #endif
 };
 local CompanionPetSpeciesIDToSpellID = {};
 for spellID,speciesID in pairs(CompanionPetSpellIDToSpeciesID) do
@@ -2089,3 +2095,13 @@ p(3177, {	-- Drakks (PET!)
 p(3175),	-- Murkastrasza (PET!)
 p(3249, {			-- Lil' Ursoc
 --]]
+
+
+-- #if ANYCLASSIC
+-----------------
+-- CLASSIC WOW --
+-----------------
+-- #if AFTER WRATH
+pet(198665, 384796);	-- Pebble's Pebble
+-- #endif
+-- #endif

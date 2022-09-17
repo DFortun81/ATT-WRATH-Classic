@@ -2974,4 +2974,12 @@ root("ItemSpeciesDB", {
 	[141530] = {
 		["petTypeID"] = 8,
 	},
+	
+	-- #if ANYCLASSIC
+	-- #if AFTER WRATH
+	[198665] = {
+		["petTypeID"] = 9,
+	},
+	-- #endif
+	-- #endif
 });
