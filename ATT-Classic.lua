@@ -3103,7 +3103,7 @@ local function SearchForLink(link)
 		if string.sub(kind,1,2) == "|h" then
 			kind = string.sub(kind,3);
 		end
-		if id then id = tonumber(select(1, strsplit("|[", id)) or id); end
+		if id then id = tonumber(strsplit("|[", id) or id); end
 		--print(kind, id, paramA, paramB);
 		--print(string.gsub(string.gsub(link, "|c", "c"), "|h", "h"));
 		if kind == "itemid" then
@@ -3816,7 +3816,7 @@ app.OpenMainList = OpenMainList;
 					-- We only care about currencies in the addon at the moment.
 					for currencyID, _ in pairs(cache) do
 						-- Compare the name of the currency vs the name of the token
-						if select(1, GetCurrencyInfo(currencyID)) == name then
+						if GetCurrencyInfo(currencyID) == name then
 							if not GameTooltip_SetCurrencyToken then
 								local results = SearchForField("currencyID", currencyID);
 								if results and #results > 0 then
@@ -3904,12 +3904,12 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 					if v[1] == "o" then
 						return app.ObjectNames[v[2]];
 					elseif v[1] == "i" then
-						return select(1, GetItemInfo(v[2]));
+						return GetItemInfo(v[2]);
 					end
 				end
 			end
 		end
-		if t.spellID then return select(1, GetSpellInfo(t.spellID)); end
+		if t.spellID then return GetSpellInfo(t.spellID); end
 	end
 	fields.link = function(t)
 		return GetAchievementLink(t.achievementID);
@@ -4136,12 +4136,12 @@ else
 					if v[1] == "o" then
 						return app.ObjectNames[v[2]];
 					elseif v[1] == "i" then
-						return select(1, GetItemInfo(v[2]));
+						return GetItemInfo(v[2]);
 					end
 				end
 			end
 		end
-		if t.spellID then return select(1, GetSpellInfo(t.spellID)); end
+		if t.spellID then return GetSpellInfo(t.spellID); end
 	end
 	fields.icon = function(t)
 		local data = L.ACHIEVEMENT_DATA[t.achievementID];
@@ -5079,12 +5079,12 @@ app.UpdateSoftReserve = function(app, guid, itemID, timeStamp, silentMode, isCur
 				local searchResults = SearchForLink("itemid:" .. itemID);
 				if searchResults and #searchResults > 0 then
 					if guid ~= UnitGUID("player") then
-						SendGUIDWhisper("SR: Updated to " .. (searchResults[1].link or select(1, GetItemInfo(itemID)) or ("itemid:" .. itemID)), guid);
+						SendGUIDWhisper("SR: Updated to " .. (searchResults[1].link or GetItemInfo(itemID) or ("itemid:" .. itemID)), guid);
 					end
 					if app.IsMasterLooter() then
 						C_ChatInfo.SendAddonMessage("ATTC", "!\tsrml\t" .. guid .. "\t" .. itemID, app.GetGroupType());
 						if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-							SendGroupChatMessage("Updated " .. (app:GetWindow("SoftReserves").GUIDToName(guid) or UnitName(guid) or guid) .. " to " .. (searchResults[1].link or select(1, GetItemInfo(itemID)) or ("itemid:" .. itemID)));
+							SendGroupChatMessage("Updated " .. (app:GetWindow("SoftReserves").GUIDToName(guid) or UnitName(guid) or guid) .. " to " .. (searchResults[1].link or GetItemInfo(itemID) or ("itemid:" .. itemID)));
 						end
 					end
 				end
@@ -5554,7 +5554,7 @@ local mountFields = {
 		return select(3, GetSpellInfo(t.spellID));
 	end,
 	["link"] = function(t)
-		return (t.itemID and select(2, GetItemInfo(t.itemID))) or select(1, GetSpellLink(t.spellID));
+		return (t.itemID and select(2, GetItemInfo(t.itemID))) or GetSpellLink(t.spellID);
 	end,
 	["f"] = function(t)
 		return 100;
@@ -5569,14 +5569,14 @@ local mountFields = {
 		return (t.parent and t.parent.b) or 1;
 	end,
 	["name"] = function(t)
-		return select(1, GetSpellInfo(t.spellID)) or RETRIEVING_DATA;
+		return GetSpellInfo(t.spellID) or RETRIEVING_DATA;
 	end,
 	["tsmForItem"] = function(t)
 		if t.itemID then return string.format("i:%d", t.itemID); end
 		if t.parent and t.parent.itemID then return string.format("i:%d", t.parent.itemID); end
 	end,
 	["linkForItem"] = function(t)
-		return select(2, GetItemInfo(t.itemID)) or select(1, GetSpellLink(t.spellID));
+		return select(2, GetItemInfo(t.itemID)) or GetSpellLink(t.spellID);
 	end,
 };
 
@@ -5585,7 +5585,7 @@ if C_PetJournal then
 		return select(2, C_PetJournal.GetPetInfoBySpeciesID(t.speciesID));
 	end
 	speciesFields.name = function(t)
-		return select(1, C_PetJournal.GetPetInfoBySpeciesID(t.speciesID));
+		return C_PetJournal.GetPetInfoBySpeciesID(t.speciesID);
 	end
 	speciesFields.petTypeID = function(t)
 		return select(3, C_PetJournal.GetPetInfoBySpeciesID(t.speciesID));
@@ -5617,11 +5617,11 @@ if C_PetJournal then
 	mountFields.name = function(t)
 		local mountID = t.mountID;
 		if mountID then return C_MountJournal.GetMountInfoByID(mountID); end
-		return select(1, GetSpellInfo(t.spellID)) or RETRIEVING_DATA;
+		return GetSpellInfo(t.spellID) or RETRIEVING_DATA;
 	end
 	mountFields.displayID = function(t)
 		local mountID = t.mountID;
-		if mountID then return select(1, C_MountJournal.GetMountInfoExtraByID(mountID)); end
+		if mountID then return C_MountJournal.GetMountInfoExtraByID(mountID); end
 	end
 	mountFields.lore = function(t)
 		local mountID = t.mountID;
@@ -5657,10 +5657,10 @@ else
 		return "Interface\\Icons\\INV_Misc_QuestionMark";
 	end
 	speciesFields.name = function(t)
-		return t.itemID and select(1, GetItemInfo(t.itemID)) or RETRIEVING_DATA;
+		return t.itemID and GetItemInfo(t.itemID) or RETRIEVING_DATA;
 	end
 	mountFields.name = function(t)
-		return select(1, GetSpellInfo(t.spellID)) or RETRIEVING_DATA;
+		return GetSpellInfo(t.spellID) or RETRIEVING_DATA;
 	end
 	if GetCompanionInfo then
 		local CollectedBattlePetHelper = {};
@@ -5783,7 +5783,7 @@ local fields = {
 		return "currencyID";
 	end,
 	["text"] = function(t)
-		return t.link or select(1, GetCurrencyInfo(t.currencyID));
+		return t.link or GetCurrencyInfo(t.currencyID);
 	end,
 	["icon"] = function(t)
 		return select(3, GetCurrencyInfo(t.currencyID));
@@ -5804,7 +5804,7 @@ local OnUpdateForDeathTrackerLib = function(t)
 	if app.Settings:Get("Thing:Deaths") then
 		t.visible = app.GroupVisibilityFilter(t);
 		if GetStatistic then
-			local stat = select(1, GetStatistic(60)) or "0";
+			local stat = GetStatistic(60) or "0";
 			if stat == "--" then stat = "0"; end
 			local deaths = tonumber(stat);
 			if deaths > 0 and deaths > app.CurrentCharacter.Deaths then
@@ -5979,7 +5979,7 @@ if EJ_GetEncounterInfo then
 			return "encounterID";
 		end,
 		["name"] = function(t)
-			return select(1, EJ_GetEncounterInfo(t.encounterID));
+			return EJ_GetEncounterInfo(t.encounterID);
 		end,
 		["lore"] = function(t)
 			return select(2, EJ_GetEncounterInfo(t.encounterID));
@@ -6073,7 +6073,7 @@ local StandingByID = {
 	},
 };
 app.FactionNameByID = setmetatable({}, { __index = function(t, id)
-	local name = select(1, GetFactionInfoByID(id));
+	local name = GetFactionInfoByID(id);
 	if name then
 		rawset(t, id, name);
 		rawset(app.FactionIDByName, name, id);
@@ -6595,7 +6595,7 @@ app.ParseItemID = function(itemName)
 			return itemID;
 		else
 			-- The itemID given was actually the name or a link.
-			itemID = select(1, GetItemInfoInstant(itemName));
+			itemID = GetItemInfoInstant(itemName);
 			if itemID then
 				-- Oh good, it was cached by WoW.
 				return itemID;
@@ -7512,7 +7512,7 @@ local fields = {
 		return C_Map_GetMapArtID(t.mapID);
 	end,
 	["lvl"] = function(t)
-		return select(1, C_Map_GetMapLevels(t.mapID));
+		return C_Map_GetMapLevels(t.mapID);
 	end,
 	["locks"] = function(t)
 		local locks = app.CurrentCharacter.Lockouts[t.name];
@@ -7615,7 +7615,7 @@ local instanceFields = {
 		return t.maps and t.maps[1];
 	end,
 	["lvl"] = function(t)
-		return select(1, C_Map_GetMapLevels(t.mapID));
+		return C_Map_GetMapLevels(t.mapID);
 	end,
 	["locks"] = function(t)
 		local locks = app.CurrentCharacter.Lockouts[t.name];
@@ -7836,7 +7836,7 @@ local objectFields = {
 					if v[1] == "o" then
 						return app.ObjectNames[v[2]] or RETRIEVING_DATA;
 					elseif v[1] == "i" then
-						return select(1, GetItemInfo(v[2])) or RETRIEVING_DATA;
+						return GetItemInfo(v[2]) or RETRIEVING_DATA;
 					end
 				end
 			end
@@ -7988,7 +7988,7 @@ local fields = {
 		return "professionID";
 	end,
 	["text"] = function(t)
-		return select(1, GetSpellInfo(t.spellID));
+		return GetSpellInfo(t.spellID);
 	end,
 	["icon"] = function(t)
 		return select(3, GetSpellInfo(t.spellID));
@@ -8250,7 +8250,7 @@ local criteriaFuncs = {
 	--[[
 	["label_spellID"] = L["LOCK_CRITERIA_SPELL_LABEL"],
     ["text_spellID"] = function(v)
-        return select(1, GetSpellInfo(v));
+        return GetSpellInfo(v);
     end,
 	]]--
 
@@ -8383,12 +8383,12 @@ local fields = {
 						if v[1] == "o" then
 							return app.ObjectNames[v[2]] or RETRIEVING_DATA;
 						elseif v[1] == "i" then
-							return select(1, GetItemInfo(v[2])) or RETRIEVING_DATA;
+							return GetItemInfo(v[2]) or RETRIEVING_DATA;
 						end
 					end
 				end
 			end
-			if t.spellID then return select(1, GetSpellInfo(t.spellID)); end
+			if t.spellID then return GetSpellInfo(t.spellID); end
 			return RETRIEVING_DATA;
 		end
 		return "INVALID: Must be relative to a Quest Object.";
@@ -8709,7 +8709,7 @@ local spellFields = {
 		return select(2, GetItemInfo(t.itemID)) or t.linkAsSpell;
 	end,
 	["linkAsSpell"] = function(t)
-		local link = select(1, GetSpellLink(t.spellID));
+		local link = GetSpellLink(t.spellID);
 		if not link then
 			if GetRelativeValue(t, "requireSkill") == 333 then
 				return "|cffffffff|Henchant:" .. t.spellID .. "|h[" .. t.name .. "]|h|r";
@@ -8720,10 +8720,10 @@ local spellFields = {
 		return link;
 	end,
 	["nameAsItem"] = function(t)
-		return select(1, GetItemInfo(t.itemID)) or t.nameAsSpell;
+		return GetItemInfo(t.itemID) or t.nameAsSpell;
 	end,
 	["nameAsSpell"] = function(t)
-		return select(1, GetSpellLink(t.spellID)) or RETRIEVING_DATA;
+		return GetSpellLink(t.spellID) or RETRIEVING_DATA;
 	end,
 	["tsmAsItem"] = function(t)
 		return string.format("i:%d", t.itemID);
@@ -14683,7 +14683,7 @@ app:GetWindow("SoftReserves", UIParent, function(self)
 				local count = GetNumGroupMembers();
 				if count > 0 then
 					for raidIndex = 1, 40, 1 do
-						local name = select(1, GetRaidRosterInfo(raidIndex));
+						local name = GetRaidRosterInfo(raidIndex);
 						if name and UnitGUID(name) == guid then
 							return name;
 						end

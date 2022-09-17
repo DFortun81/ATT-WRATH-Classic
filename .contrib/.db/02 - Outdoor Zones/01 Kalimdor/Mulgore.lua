@@ -79,6 +79,19 @@ root("Zones", m(KALIMDOR, {
 				q(781, {	-- Attack on Camp Narache
 					["provider"] = { "i", 4851 },	-- Dirt-stained Map
 					["coord"] = { 63.3, 82.6, MULGORE },
+					["timeline"] = { "removed 3.3.0" },
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 4850, 1 },	-- Bristleback Attack Plans
+					},
+					["groups"] = {
+						i(4911),	-- Thick Bark Buckler
+					},
+				}),
+				q(24857, {	-- Attack on Camp Narache
+					["provider"] = { "o", 3076 },	-- Dirt-stained Map
+					["coord"] = { 63.3, 82.6, MULGORE },
+					["timeline"] = { "added 3.3.0", "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["cost"] = {
 						{ "i", 4850, 1 },	-- Bristleback Attack Plans
