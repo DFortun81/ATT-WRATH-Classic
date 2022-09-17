@@ -1291,6 +1291,35 @@ local ResolveSymbolicLink;
 (function()
 local subroutines;
 subroutines = {
+	["common_recipes_vendor"] = function(npcID)
+		return {
+			{"select", "creatureID", npcID},	-- Main Vendor
+			{"pop"},	-- Remove Main Vendor and push his children into the processing queue.
+			{"is", "itemID"},	-- Only Items
+			{"exclude", "itemID",
+				-- Borya <Tailoring Supplies> Cataclysm Tailoring
+				6270,	-- Pattern: Blue Linen Vest
+				6274,	-- Pattern: Blue Overalls
+				10314,	-- Pattern: Lavender Mageweave Shirt
+				10317,	-- Pattern: Pink Mageweave Shirt
+				5772,	-- Pattern: Red Woolen Bag
+				-- Sumi <Blacksmithing Supplies> Cataclysm Blacksmithing
+				12162,	-- Plans: Hardened Iron Shortsword
+				-- Tamar <Leatherworking Supplies> Cataclysm Leatherworking
+				18731,	-- Pattern: Heavy Leather Ball
+				-- Kithas <Enchanting Supplies> Cataclysm Enchanting
+				6349,	-- Formula: Enchant 2H Weapon - Lesser Intellect
+				20753,	-- Formula: Lesser Wizard Oil
+				20752,	-- Formula: Minor Mana Oil
+				20758,	-- Formula: Minor Wizard Oil
+				22307,	-- Pattern: Enchanted Mageweave Pouch
+				-- Marith Lazuria <Jewelcrafting Supplies> Cataclysm Jewelcrafting
+				-- Shazdar <Sous Chef> Cataclysm Cooking
+				-- Tiffany Cartier <Jewelcrafting Supplies> Northrend Jewelcrafting
+				-- Timothy Jones <Jewelcrafting Trainer> Northrend Jewelcrafting
+			},
+		};
+	end,
 	["common_vendor"] = function(npcID)
 		return {
 			{"select", "creatureID", npcID},	-- Main Vendor
