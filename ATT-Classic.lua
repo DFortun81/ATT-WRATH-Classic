@@ -15561,9 +15561,6 @@ SLASH_ATTCSR1 = "/attsr";
 SLASH_ATTCSR2 = "/attsoft";
 SLASH_ATTCSR3 = "/attsoftreserve";
 SLASH_ATTCSR4 = "/attsoftreserves";
-SLASH_ATTCSR5 = "/sr";
-SLASH_ATTCSR6 = "/softreserve";
-SLASH_ATTCSR7 = "/softreserves";
 SlashCmdList["ATTCSR"] = function(cmd)
 	if cmd and cmd ~= "" then
 		app:ParseSoftReserve(UnitGUID("player"), cmd, true, true);
@@ -16649,17 +16646,8 @@ app.events.CHAT_MSG_WHISPER = function(text, playerName, _, _, _, _, _, _, _, _,
 	if action == '!' then	-- Send
 		local lowercased = string.lower(text);
 		local cmd = strsub(lowercased, 2, 3);
-		if cmd == "sr" then
+		if cmd == "sr" and not Gargul then
 			app:ParseSoftReserve(guid, strsub(text, 4));
-		elseif cmd == "mc" then
-			GetDataSubMember("GroupQuestsByGUID", guid, {})[7848] = 1;
-		else
-			cmd = strsub(lowercased, 2, 4);
-			if cmd == "ony" then
-				GetDataSubMember("GroupQuestsByGUID", guid, {})[app.FactionID == Enum.FlightPathFaction.Horde and 6602 or 6502] = 1;
-			elseif cmd == "bwl" then
-				GetDataSubMember("GroupQuestsByGUID", guid, {})[7761] = 1;
-			end
 		end
 	elseif action == '?' then	-- Request
 		local lowercased = string.lower(text);
