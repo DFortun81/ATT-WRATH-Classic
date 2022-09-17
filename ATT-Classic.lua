@@ -6700,6 +6700,9 @@ end });
 local BlacklistedRWPItems = {
 	[22736] = true,	-- Andonisus, Reaper of Souls
 };
+local baseGetItemCount = function(t)
+	return GetItemCount(t.itemID, true);
+end;
 app.ParseItemID = function(itemName)
 	if type(itemName) == "number" then
 		return itemName;
@@ -6767,6 +6770,9 @@ local itemFields = {
 	["trackableAsQuest"] = function(t)
 		return true;
 	end,
+	["GetItemCount"] = function(t)
+		return baseGetItemCount;
+	end,
 	["collectible"] = function(t)
 		return t.collectibleAsCost or t.collectibleAsRWP;
 	end,
@@ -6832,17 +6838,18 @@ local itemFields = {
 		local id, partial = t.itemID;
 		local results = app.SearchForField("itemIDAsCost", id, true);
 		if results and #results > 0 then
+			local itemCount = t.GetItemCount(t) or 0;
 			for _,ref in pairs(results) do
 				if ref.itemID ~= id and app.RecursiveGroupRequirementsFilter(ref) then
 					if ref.key == "instanceID" or ((ref.key == "difficultyID" or ref.key == "mapID" or ref.key == "headerID") and (ref.parent and GetRelativeValue(ref.parent, "instanceID"))) then
-						if app.CollectibleQuests and GetItemCount(id, true) == 0 then
+						if app.CollectibleQuests and itemCount == 0 then
 							return false;
 						end
 					elseif ref.collectible and not ref.collected then
 						if ref.cost then
 							for k,v in ipairs(ref.cost) do
 								if v[2] == id and v[1] == "i" then
-									if GetItemCount(id, true) >= (v[3] or 1) then
+									if itemCount >= (v[3] or 1) then
 										partial = true;
 									else
 										return false;
@@ -6853,7 +6860,7 @@ local itemFields = {
 						if ref.providers then
 							for k,v in ipairs(ref.providers) do
 								if v[2] == id and v[1] == "i" then
-									if GetItemCount(id, true) > 0 and (not ref.objectiveID or ref.saved) then
+									if itemCount > 0 and (not ref.objectiveID or ref.saved) then
 										partial = true;
 									else
 										return false;
@@ -6865,7 +6872,7 @@ local itemFields = {
 						if ref.cost then
 							for k,v in ipairs(ref.cost) do
 								if v[2] == id and v[1] == "i" then
-									if GetItemCount(id, true) >= (v[3] or 1) then
+									if itemCount >= (v[3] or 1) then
 										partial = true;
 									else
 										return false;
@@ -6876,7 +6883,7 @@ local itemFields = {
 						if ref.providers then
 							for k,v in ipairs(ref.providers) do
 								if v[2] == id and v[1] == "i" then
-									if GetItemCount(id, true) > 0 then
+									if itemCount > 0 then
 										partial = true;
 									else
 										return false;
