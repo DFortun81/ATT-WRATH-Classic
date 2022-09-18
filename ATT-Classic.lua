@@ -11513,6 +11513,16 @@ function app:GetDataCache()
 						elseif not headerType then
 							headerType = GetDeepestRelativeValue(o, "headerID");
 						end
+						local coords = GetRelativeValue(o, "coords");
+						if coords then
+							if not inst.coords then
+								inst.coords = { unpack(coords) };
+							else
+								for i,coord in ipairs(coords) do
+									tinsert(inst.coords, coord);
+								end
+							end
+						end
 					end
 				end
 			end
@@ -11797,6 +11807,16 @@ function app:GetDataCache()
 						end
 						]]--
 						for key,value in pairs(o) do rawset(battlepet, key, value); end
+						local coords = GetRelativeValue(o, "coords");
+						if coords then
+							if not battlepet.coords then
+								battlepet.coords = { unpack(coords) };
+							else
+								for i,coord in ipairs(coords) do
+									tinsert(battlepet.coords, coord);
+								end
+							end
+						end
 						if o.parent and not o.sourceQuests then
 							local questID = GetRelativeValue(o, "questID");
 							if questID then
