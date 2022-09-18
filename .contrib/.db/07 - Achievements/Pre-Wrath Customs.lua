@@ -2188,7 +2188,7 @@ root("Achievements", {
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 978, 970, 576); end]],
 			["description"] = "Raise your reputation level from unfriendly to exalted with Timbermaw Hold, Sporeggar and the Kurenai.",
 			-- #endif
-			["maps"] = { FERALAS, ZANGARMARSH, NAGRAND },
+			["maps"] = { FELWOOD, ZANGARMARSH, NAGRAND },
 			["races"] = ALLIANCE_ONLY,
 			["groups"] = {
 				-- #if AFTER CATA
@@ -2205,7 +2205,7 @@ root("Achievements", {
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 941, 970, 576); end]],
 			["description"] = "Raise your reputation level from unfriendly to exalted with Timbermaw Hold, Sporeggar and the Mag'har.",
 			-- #endif
-			["maps"] = { FERALAS, ZANGARMARSH, NAGRAND },
+			["maps"] = { FELWOOD, ZANGARMARSH, NAGRAND },
 			["races"] = HORDE_ONLY,
 			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
 				-- #if AFTER CATA
