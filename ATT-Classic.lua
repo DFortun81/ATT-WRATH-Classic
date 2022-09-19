@@ -8294,7 +8294,7 @@ local questFields = {
 		end
 		if app.CollectibleQuests then
 			if t.locked then return app.AccountWideQuests; end
-			if t.maxReputation then
+			if t.maxReputation and app.CollectibleReputations then
 				return true;
 			end
 			return not t.repeatable and not t.isBreadcrumb;
