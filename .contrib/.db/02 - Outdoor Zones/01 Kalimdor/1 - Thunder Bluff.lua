@@ -189,6 +189,33 @@ root("Zones", m(KALIMDOR, {
 						i(4967),	-- Tribal Warrior's Shield
 					},
 				}),
+				q(14100, {	-- Relic of the Earthen Ring
+					["qgs"] = {
+						35068,	-- Gotura Fourwinds <The Earthen Ring>
+						13417,	-- Sagorne Creststrider <Shaman Trainer>
+						3030,	-- Siln Skychaser <Shaman Trainer>
+					},
+					["coords"] = {
+						{ 32.6, 38.8, ORGRIMMAR },
+						{ 38.7, 35.9, ORGRIMMAR },
+						{ 23.0, 20.8, THUNDER_BLUFF },
+					},
+					["timeline"] = { "added 3.3.0.10772", "removed 4.0.3" },
+					["cost"] = {
+						{ "i", 5178, 1 },	-- Air Totem
+						{ "i", 5175, 1 },	-- Earth Totem
+						{ "i", 5176, 1 },	-- Fire Totem
+						{ "i", 5177, 1 },	-- Water Totem
+					},
+					["classes"] = { SHAMAN },
+					["races"] = HORDE_ONLY,
+					["lvl"] = 30,
+					["groups"] = {
+						i(46978, {	-- Totem of the Earthen Ring
+							["timeline"] = { "added 3.3.0.10772", "removed 4.0.3" },
+						}),
+					},
+				}),
 				q(860, {	-- Sergra Darkthorn
 					["qg"] = 3441,	-- Melor Stonehoof
 					["sourceQuest"] = 861,	-- The Hunter's Way
