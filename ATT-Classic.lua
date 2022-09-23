@@ -3862,7 +3862,17 @@ local function RefreshSkills()
 				end
 				activeSkills[spellID] = { skillRank, skillMaxRank };
 			else
-				-- print(skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription);
+				for _,s in pairs(app.SkillIDToSpellID) do
+					if GetSpellInfo(s) == skillName then
+						spellID = s;
+						break;
+					end
+				end
+				if spellID then
+					activeSkills[spellID] = { skillRank, skillMaxRank };
+				else
+					--print(skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription);
+				end
 			end
 		end
 	end
@@ -4284,7 +4294,7 @@ else
 		if t.collectible then
 			local spellID = t.spellID;
 			local collected = app.IsSpellKnown(spellID, t.rank);
-			if collected then
+			if collected or app.CurrentCharacter.ActiveSkills[spellID] then
 				app.CurrentCharacter.Spells[spellID] = 1;
 				ATTAccountWideData.Spells[spellID] = 1;
 			else
@@ -8040,6 +8050,9 @@ app.SkillIDToSpellID = setmetatable({
 	[40] = 2842,	-- Poisons
 	[633] = 1809,	-- Lockpicking
 	
+	-- Riding
+	[762] = 33388,	-- Riding
+	
 	-- Specializations
 	[20219] = 20219,	-- Gnomish Engineering
 	[20222] = 20222,	-- Goblin Engineering
@@ -8367,7 +8380,7 @@ local criteriaFuncs = {
 	]]--
 
     ["spellID"] = function(spellID)
-        return app.CurrentCharacter.Spells[spellID];
+        return app.CurrentCharacter.Spells[spellID] or app.CurrentCharacter.ActiveSkills[spellID];
     end,
 	--[[
 	["label_spellID"] = L["LOCK_CRITERIA_SPELL_LABEL"],
