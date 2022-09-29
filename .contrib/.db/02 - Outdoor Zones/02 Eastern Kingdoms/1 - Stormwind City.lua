@@ -4305,6 +4305,38 @@ root("Zones", m(EASTERN_KINGDOMS, {
 						}),
 					},
 				}),
+				n(34079, {	-- Captain O'Neal <Jewelcrafting Quartermaster>
+					["coord"] = { 75.0, 66.7, STORMWIND_CITY },
+					["timeline"] = { "added 3.0.2.8970", "removed 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						-- #if BEFORE 4.0.3
+						-- Moves to Tiffany in Dalaran
+						i(41563),	-- Design: Durable Huge Citrine [WRATH] / Design: Willful Huge Citrine [CATA+]
+						-- #endif
+						i(41564, {	-- Design: Empowered Huge Citrine [WRATH] / Design: Lucent Huge Citrine [CATA+]
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						-- #if BEFORE 4.0.3
+						-- These move to Tiffany in Dalaran
+						i(41565),	-- Design: Lucent Huge Citrine
+						i(41575),	-- Design: Mysterious Shadow Crystal
+						i(41559),	-- Design: Mystic Sun Crystal
+						-- #endif
+						i(41573, {	-- Design: Opaque Dark Jade [WRATH] / Design: Turbid Dark Jade [CATA+]
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						-- #if BEFORE 4.0.3
+						-- These move to Tiffany in Dalaran
+						i(41566),	-- Design: Resplendent Huge Citrine
+						i(41569),	-- Design: Shattered Dark Jade
+						i(41572),	-- Design: Steady Dark Jade
+						i(41560),	-- Design: Stormy Chalcedony
+						i(41570),	-- Design: Radiant Dark Jade [CATA+] / Design: Tense Dark Jade [WRATH]
+						i(41571),	-- Design: Turbid Dark Jade
+						-- #endif
+					},
+				}),
 				n(5494, {	-- Catherine Leland <Fishing Supplier>
 					["coord"] = { 45.8, 58.5, STORMWIND_CITY },
 					["races"] = ALLIANCE_ONLY,

@@ -632,6 +632,7 @@ root("PVP", {
 				}),
 				n(12782, {	-- Captain O'Neal <Weapons Quartermaster>
 					["description"] = "Found within the Champion's Hall in Stormwind.",
+					["timeline"] = { "removed 3.0.2.8970" },
 					["maps"] = { STORMWIND_CITY },
 					["groups"] = {
 						i(18825),	-- Grand Marshal's Aegis
@@ -958,6 +959,7 @@ root("PVP", {
 				}),
 				n(12792, {	-- Lady Palanseer <Armor Quartermaster>
 					["description"] = "Found within the Champion's Hall in Orgrimmar.",
+					["timeline"] = { "removed 3.0.2.8970" },
 					["maps"] = { ORGRIMMAR },
 					["groups"] = {
 						i(22860, {	-- Blood Guard's Silk Walkers (60)

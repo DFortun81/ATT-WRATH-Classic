@@ -653,7 +653,7 @@ root("Zones", m(KALIMDOR, {
 						i(10314),	-- Pattern: Lavender Mageweave Shirt
 					},
 				}),
-				n(3367,   {	-- Felika <Trade Supplies>
+				n(3367, {	-- Felika <Trade Supplies>
 					["coords"] = {
 						{ 46.5, 36.6, ORGRIMMAR },
 						{ 50.8, 58.7, ORGRIMMAR },
@@ -699,6 +699,37 @@ root("Zones", m(KALIMDOR, {
 					["groups"] = {
 						i(5642),	-- Recipe: Free Action Potion
 						i(13478),	-- Recipe: Elixir of Superior Defense
+					},
+				}),
+				n(34043, {	-- Lady Palanseer <Jewelcrafting Quartermaster>
+					["timeline"] = { "added 3.0.2.8970", "removed 4.0.3" },
+					["races"] = HORDE_ONLY,
+					["groups"] = {
+						-- #if BEFORE 4.0.3
+						-- Moves to Tiffany in Dalaran
+						i(41563),	-- Design: Durable Huge Citrine [WRATH] / Design: Willful Huge Citrine [CATA+]
+						-- #endif
+						i(41564, {	-- Design: Empowered Huge Citrine [WRATH] / Design: Lucent Huge Citrine [CATA+]
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						-- #if BEFORE 4.0.3
+						-- These move to Tiffany in Dalaran
+						i(41565),	-- Design: Lucent Huge Citrine
+						i(41575),	-- Design: Mysterious Shadow Crystal
+						i(41559),	-- Design: Mystic Sun Crystal
+						-- #endif
+						i(41573, {	-- Design: Opaque Dark Jade [WRATH] / Design: Turbid Dark Jade [CATA+]
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						-- #if BEFORE 4.0.3
+						-- These move to Tiffany in Dalaran
+						i(41566),	-- Design: Resplendent Huge Citrine
+						i(41569),	-- Design: Shattered Dark Jade
+						i(41572),	-- Design: Steady Dark Jade
+						i(41560),	-- Design: Stormy Chalcedony
+						i(41570),	-- Design: Radiant Dark Jade [CATA+] / Design: Tense Dark Jade [WRATH]
+						i(41571),	-- Design: Turbid Dark Jade
+						-- #endif
 					},
 				}),
 				n(3362, {	-- Ogunaro Wolfrunner <Kennel Master>
