@@ -2229,6 +2229,10 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			tinsert(info, 1, { left = L.LIMITED_QUANTITY, wrap = true, color = "ff66ccff" });
 		end
 		
+		if group.pvp then
+			tinsert(info, { left = L["REQUIRES_PVP"] });
+		end
+		
 		local showOtherCharacterQuests = app.Settings:GetTooltipSetting("Show:OtherCharacterQuests");
 		if app.Settings:GetTooltipSetting("SummarizeThings") then
 			-- Contents
@@ -10680,6 +10684,7 @@ local function RowOnEnter(self)
 		elseif reference.isMontly then GameTooltip:AddLine("This can be completed monthly.");
 		elseif reference.isYearly then GameTooltip:AddLine("This can be completed yearly.");
 		elseif reference.repeatable then GameTooltip:AddLine("This can be repeated multiple times."); end
+		if reference.pvp then GameTooltip:AddLine(L["REQUIRES_PVP"], 1, 1, 1, 1, true); end
 		if not GameTooltipModel:TrySetModel(reference) then
 			local texture = reference.preview or reference.icon;
 			if texture then

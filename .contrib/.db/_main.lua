@@ -1930,11 +1930,7 @@ profession = function(skillID, t)						-- Create a PROFESSION Container. (NOTE: 
 	return p;
 end
 pvp = function(t)										-- Flag all nested content as requiring PvP gameplay
-	-- #if ANYCLASSIC
-	return t;
-	-- #else
 	return bubbleDown({ ["pvp"] = true }, t);
-	-- #endif
 end
 pvprank = function(id, t)								-- Create a PVP Rank Object.
 	return struct("pvpRankID", id, t);

@@ -803,6 +803,15 @@ root("Achievements", {
 				9977,	-- The Ring of Blood: The Final Challenge
 				12948,	-- The Champion of Anguish
 			},
+			["maps"] = { NAGRAND, ZULDRAK },
+			["groups"] = {
+				crit(5799, {	-- The Champion of Anguish
+					["_quests"] = { 12948 },	-- The Champion of Anguish
+				}),
+				crit(5798, {	-- The Ring of Blood: The Final Challenge
+					["_quests"] = { 9977 },	-- The Ring of Blood: The Final Challenge
+				}),
+			},
 		})),
 		
 		-- #if AFTER 3.0.1
