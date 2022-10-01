@@ -6256,7 +6256,7 @@ app.GetFactionStandingThresholdFromString = function(replevel)
 	end
 end
 app.IsFactionExclusive = function(factionID)
-	return factionID == 934 or factionID == 932;
+	return factionID == 934 or factionID == 932 or factionID == 1104 or factionID == 1105;
 end
 local fields = {
 	["key"] = function(t)
@@ -6382,7 +6382,7 @@ local arrOfNodes = {
 	1944,	-- Hellfire Peninsula (All of Outland)
 	
 	-- TODO:
-	--118,	-- Icecrown (All of Northrend)
+	118,	-- Icecrown (All of Northrend)
 	--422,	-- Dread Wastes (All of Pandaria)
 	--525,	-- Frostfire Ridge (All of Draenor)
 	--630,	-- Azsuna (All of Broken Isles)
@@ -10397,7 +10397,7 @@ local function RowOnEnter(self)
 		if reference.f and reference.f > 0 and app.Settings:GetTooltipSetting("filterID") then GameTooltip:AddDoubleLine(L["FILTER_ID"], tostring(L["FILTER_ID_TYPES"][reference.f])); end
 		if reference.achievementID and app.Settings:GetTooltipSetting("achievementID") then
 			GameTooltip:AddDoubleLine(L["ACHIEVEMENT_ID"], tostring(reference.achievementID));
-			if reference.sourceQuests then
+			if reference.sourceQuests and not (GetCategoryInfo and GetCategoryInfo(92) ~= "") then
 				GameTooltip:AddLine("This achievement has associated quests that can be completed before the introduction of the Achievement system coming with the Wrath Prepatch. Not all achievements can be tracked this way, but for those that can, they will be displayed. All other non-trackable achievements will be activated with the prepatch.", 0.4, 0.8, 1, true);
 			end
 		end
