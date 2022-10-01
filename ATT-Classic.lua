@@ -1886,7 +1886,6 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			if not paramB then
 				local itemString = string.match(paramA, "item[%-?%d:]+");
 				if itemString then
-					if app.Settings:GetTooltipSetting("itemString") then tinsert(info, { left = itemString }); end
 					local itemID2 = select(2, strsplit(":", itemString));
 					if itemID2 then
 						itemID = tonumber(itemID2);
@@ -1926,7 +1925,10 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						end
 					end
 				end
+				local itemName, itemLink = GameTooltip:GetItem();
 				if app.Settings:GetTooltipSetting("itemID") then tinsert(info, { left = L["ITEM_ID"], right = tostring(itemID) }); end
+				if app.Settings:GetTooltipSetting("itemLevel") then tinsert(info, { left = "Item Level", right = select(4, GetItemInfo(itemLink or itemID)) }); end
+				if app.Settings:GetTooltipSetting("itemString") and itemLink then tinsert(info, { left = "Item String", right = string.match(itemLink, "item[%-?%d:]+") }); end
 				
 				-- Show Reservations
 				local reservesForItem = GetTempDataMember("SoftReservesByItemID")[itemID];
