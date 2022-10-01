@@ -1758,33 +1758,28 @@ root("Achievements", {
 				["rank"] = 6,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1998, {	-- Dalaran Cooking Award
-				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
+				["cost"] = {{ "c", 81, 1 }},	-- Epicurean's Award
 				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 1,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1999, {	-- 10 Dalaran Cooking Awards
-				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
+				["cost"] = {{ "c", 81, 10 }},	-- Epicurean's Award
 				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 10,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2000, {	-- 25 Dalaran Cooking Awards
-				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
+				["cost"] = {{ "c", 81, 25 }},	-- Epicurean's Award
 				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 25,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2001, {	-- 50 Dalaran Cooking Awards
-				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
+				["cost"] = {{ "c", 81, 50 }},	-- Epicurean's Award
 				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 50,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2002, {	-- 100 Dalaran Cooking Awards
-				["provider"] = { "i", 43016 },	-- Dalaran Cooking Award
+				["cost"] = {{ "c", 81, 100 }},	-- Epicurean's Award
 				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
 				["rank"] = 100,
 			})),
 			ach(1801, {	-- Captain Rumsey's Lager
@@ -1799,10 +1794,6 @@ root("Achievements", {
 				["requireSkill"] = COOKING,
 				["rank"] = 75,
 			}),
-			applyclassicphase(WRATH_PHASE_ONE, ach(3296, {	-- Cooking with Style
-				["provider"] = { "i", 46349 },	-- Chef's Hat
-				["requireSkill"] = COOKING,
-			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1781, {	-- Critter Gitter
 				["provider"] = { "i", 43004 },	-- Critter Bites
 				["requireSkill"] = COOKING,
@@ -1814,16 +1805,6 @@ root("Achievements", {
 				["requireSkill"] = COOKING,
 				["rank"] = 25,
 			}),
-			applyclassicphase(WRATH_PHASE_ONE, ach(1782, {	-- Our Daily Bread [Alliance]
-				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
-				["races"] = ALLIANCE_ONLY,
-			})),
-			applyclassicphase(WRATH_PHASE_ONE, ach(1783, {	-- Our Daily Bread [Horde]
-				["requireSkill"] = COOKING,
-				["maps"] = { NORTHREND_DALARAN },
-				["races"] = HORDE_ONLY,
-			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1780, {	-- Second That Emotion
 				["providers"] = {
 					{ "i", 43492 },	-- Haunted Herring
