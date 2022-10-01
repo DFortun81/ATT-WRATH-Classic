@@ -11832,7 +11832,7 @@ function app:GetDataCache()
 						if coords then
 							if not battlepet.coords then
 								battlepet.coords = { unpack(coords) };
-							else
+							elseif battlepet.coords ~= coords then
 								for i,coord in ipairs(coords) do
 									tinsert(battlepet.coords, coord);
 								end
