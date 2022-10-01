@@ -15250,11 +15250,11 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 									learned = learned + 1;
 								end
 								if not skillCache[spellID] then
-									app.print("Missing " .. craftName .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
+									--app.print("Missing " .. craftName .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
 									skillCache[spellID] = { {} };
 								end
 							else
-								app.print("Missing " .. craftName .. " spellID in ATT Database. Please report it!");
+								--app.print("Missing " .. craftName .. " spellID in ATT Database. Please report it!");
 							end
 							
 							if craftType ~= "none" then
@@ -15307,11 +15307,11 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 									learned = learned + 1;
 								end
 								if not skillCache[spellID] then
-									app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
+									--app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
 									skillCache[spellID] = { {} };
 								end
 							else
-								app.print("Missing " .. (skillName or "[??]") .. " spellID in ATT Database. Please report it!");
+								--app.print("Missing " .. (skillName or "[??]") .. " spellID in ATT Database. Please report it!");
 							end
 							
 							-- Cache the Reagents used to make this item.
