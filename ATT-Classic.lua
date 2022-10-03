@@ -11136,6 +11136,7 @@ function app:GetDataCache()
 		if app.Categories.Craftables then
 			db = {};
 			db.expanded = false;
+			db.isCraftedCategory = true;
 			db.text = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM;
 			db.icon = app.asset("Category_Crafting");
 			db.DontEnforceSkillRequirements = true;
@@ -11523,18 +11524,14 @@ function app:GetDataCache()
 							headerType = "pvp";
 						elseif GetRelativeValue(o, "isEventCategory") then
 							headerType = "event";
-						elseif o.parent.headerID == 0 or o.parent.headerID == -1 or o.parent.headerID == -82 or GetRelativeValue(o, "isWorldDropCategory") then
+						elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == -1 or o.parent.npcID then
 							headerType = "drop";
-						elseif o.parent.key == "npcID" then
-							if GetRelativeValue(o, "headerID") == -2 then
-								headerType = -2;
-							else
-								headerType = "drop";
-							end
-						elseif o.parent.key == "categoryID" then
+						elseif GetRelativeValue(o, "isCraftedCategory") then
 							headerType = "crafted";
-						elseif not headerType then
-							headerType = GetDeepestRelativeValue(o, "headerID");
+						elseif o.parent.achievementID then
+							headerType = -4;
+						else
+							headerType = GetDeepestRelativeValue(o, "headerID") or "drop";
 						end
 						local coords = GetRelativeValue(o, "coords");
 						if coords then
