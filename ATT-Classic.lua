@@ -11524,8 +11524,10 @@ function app:GetDataCache()
 							headerType = "pvp";
 						elseif GetRelativeValue(o, "isEventCategory") then
 							headerType = "event";
-						elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == -1 or o.parent.npcID then
+						elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == -1 then
 							headerType = "drop";
+						elseif o.parent.npcID then
+							headerType = o.parent.parent.headerID == -2 and -2 or "drop";
 						elseif GetRelativeValue(o, "isCraftedCategory") then
 							headerType = "crafted";
 						elseif o.parent.achievementID then
