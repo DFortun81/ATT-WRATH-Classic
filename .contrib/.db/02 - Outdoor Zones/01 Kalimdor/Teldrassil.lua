@@ -227,6 +227,18 @@ root("Zones", m(KALIMDOR, {
 					["classes"] = { WARRIOR },
 					["lvl"] = 10,
 				}),
+				q(1581, {	-- Elixirs for the Bladeleafs
+					["qg"] = 2083,	-- Syral Bladeleaf
+					["coord"] = { 55.8, 50.4, TELDRASSIL },
+					["description"] = "Available at Skill Level 20.",
+					["requireSkill"] = ALCHEMY,
+					["races"] = ALLIANCE_ONLY,
+					["cost"] = {
+						{ "i", 2454, 6 },	-- Elixir of Lion's Strength
+						{ "i", 5997, 2 },	-- Elixir of Minor Defense
+					},
+					["lvl"] = 4,
+				}),
 				q(3118, {	-- Encrypted Sigil
 					["qg"] = 2079,	-- Conservator Ilthalaine
 					["sourceQuest"] = 457,	-- The Balance of Nature (2/2)
