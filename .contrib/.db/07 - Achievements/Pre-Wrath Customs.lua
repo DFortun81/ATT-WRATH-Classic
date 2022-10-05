@@ -609,7 +609,7 @@ root("Achievements", {
 			["rank"] = 4,
 		})),
 		--ach(1206),	-- To All The Squirrels I've Loved Before
-		ach(2557),	-- To All The Squirrels Who Shared My Life
+		--ach(2557),	-- To All The Squirrels Who Shared My Life
 		-- Traveler's Tundra Mammoth, located in Dalaran.
 		ach(1021, {	-- Twenty-Five Tabards [TODO]
 			["rank"] = 25,
@@ -916,7 +916,7 @@ root("Achievements", {
 			]]--
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
-			ach(2257, {	-- Frostbitten
+			--[[ach(2257, {	-- Frostbitten
 				crit(8100, {	-- Loque'nahak (Sholazar Basin)
 					["_npcs"] = { 32517 },
 				}),
@@ -988,6 +988,7 @@ root("Achievements", {
 				}),
 			}),
 			ach(2256),	-- Northern Exposure
+			--]]
 		})),
 		applyclassicphase(BFA_PHASE_ONE, ach(12988, {	-- Battle for Azeroth Explorer
 			-- Meta Achievement
