@@ -74,6 +74,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 21 - Holidays\\00b - Stranglethorn Fishing Extravaganza\\Stranglethorn Fishing Extravaganza.lua
 
 -- Expansion Features
+-- #IMPORT: 06 - Expansion Features\\01 Burning Crusade\\Achievements.lua
 -- #IMPORT: 06 - Expansion Features\\02 Wrath of the Lich King\\Argent Tournament.lua
 
 -- World Events
