@@ -425,6 +425,17 @@ root("Holidays", bubbleDown({ ["u"] = DARKMOON_FAIRE },
 						i(31859),	-- Darkmoon Card: Madness
 					},
 				})),
+				applyclassicphase(WRATH_PHASE_ONE, q(13326, {	-- Darkmoon Nobles Deck
+					["provider"] = { "i", 44326 },	-- Nobles Deck
+					["maxReputation"] = DECK_MAX_REPUTATION,
+					["repeatable"] = true,
+					["groups"] = {
+						i(44253),	-- Darkmoon Card: Greatness
+						i(44255),	-- Darkmoon Card: Greatness
+						i(42987),	-- Darkmoon Card: Greatness
+						i(44254),	-- Darkmoon Card: Greatness
+					},
+				})),
 				applyclassicphase(PHASE_THREE, q(7927, {	-- Darkmoon Portals Deck
 					["provider"] = { "i", 19277 },  -- Portals Deck
 					["maxReputation"] = DECK_MAX_REPUTATION,
@@ -433,12 +444,28 @@ root("Holidays", bubbleDown({ ["u"] = DARKMOON_FAIRE },
 						i(19290),	-- Darkmoon Card: Twisting Nether
 					},
 				})),
+				applyclassicphase(WRATH_PHASE_ONE, q(13324, {	-- Darkmoon Prisms Deck
+					["provider"] = { "i", 44259 },	-- Prisms Deck
+					["maxReputation"] = DECK_MAX_REPUTATION,
+					["repeatable"] = true,
+					["groups"] = {
+						i(42988),	-- Darkmoon Card: Illusion
+					},
+				})),
 				applyclassicphase(TBC_PHASE_THREE, q(10939, {	-- Darkmoon Storms Deck
 					["provider"] = { "i", 31891 },  -- Storms Deck
 					["maxReputation"] = DECK_MAX_REPUTATION,
 					["repeatable"] = true,
 					["groups"] = {
 						i(31857),	-- Darkmoon Card: Wrath
+					},
+				})),
+				applyclassicphase(WRATH_PHASE_ONE, q(13327, {	-- Darkmoon Undeath Deck
+					["provider"] = { "i", 44294 },	-- Undeath Deck
+					["maxReputation"] = DECK_MAX_REPUTATION,
+					["repeatable"] = true,
+					["groups"] = {
+						i(42990),	-- Darkmoon Card: Death
 					},
 				})),
 				applyclassicphase(PHASE_THREE, q(7928, {	-- Darkmoon Warlords Deck
@@ -1004,6 +1031,18 @@ root("Holidays", bubbleDown({ ["u"] = DARKMOON_FAIRE },
 						{ "i", 31883, 1 },	-- Eight of Blessings
 					},
 				})),
+				applyclassicphase(WRATH_PHASE_ONE, i(44276, {	-- Chaos Deck
+					["cost"] = {
+						{ "i", 44277, 1 },	-- Ace of Chaos
+						{ "i", 44278, 1 },	-- Two of Chaos
+						{ "i", 44279, 1 },	-- Three of Chaos
+						{ "i", 44280, 1 },	-- Four of Chaos
+						{ "i", 44281, 1 },	-- Five of Chaos
+						{ "i", 44282, 1 },	-- Six of Chaos
+						{ "i", 44284, 1 },	-- Seven of Chaos
+						{ "i", 44285, 1 },	-- Eight of Chaos
+					},
+				})),
 				applyclassicphase(WRATH_PHASE_ONE, i(44158, {	-- Demons Deck
 					["cost"] = {
 						{ "i", 44143, 1 },	-- Ace of Demons
@@ -1058,6 +1097,18 @@ root("Holidays", bubbleDown({ ["u"] = DARKMOON_FAIRE },
 						{ "i", 44147, 1 },	-- Five of Mages
 					},
 				})),
+				applyclassicphase(WRATH_PHASE_ONE, i(44326, {	-- Nobles Deck
+					["cost"] = {
+						{ "i", 44268, 1 },	-- Ace of Nobles
+						{ "i", 44269, 1 },	-- Two of Nobles
+						{ "i", 44270, 1 },	-- Three of Nobles
+						{ "i", 44271, 1 },	-- Four of Nobles
+						{ "i", 44272, 1 },	-- Five of Nobles
+						{ "i", 44273, 1 },	-- Six of Nobles
+						{ "i", 44274, 1 },	-- Seven of Nobles
+						{ "i", 44275, 1 },	-- Eight of Nobles
+					},
+				})),
 				applyclassicphase(PHASE_THREE, i(19277, {	-- Portals Deck
 					["cost"] = {
 						{ "i", 19276, 1 },	-- Ace of Portals
@@ -1068,6 +1119,18 @@ root("Holidays", bubbleDown({ ["u"] = DARKMOON_FAIRE },
 						{ "i", 19282, 1 },	-- Six of Portals
 						{ "i", 19283, 1 },	-- Seven of Portals
 						{ "i", 19284, 1 },	-- Eight of Portals
+					},
+				})),
+				applyclassicphase(WRATH_PHASE_ONE, i(44259, {	-- Prisms Deck
+					["cost"] = {
+						{ "i", 44260, 1 },	-- Ace of Prisms
+						{ "i", 44261, 1 },	-- Two of Prisms
+						{ "i", 44262, 1 },	-- Three of Prisms
+						{ "i", 44263, 1 },	-- Four of Prisms
+						{ "i", 44264, 1 },	-- Five of Prisms
+						{ "i", 44265, 1 },	-- Six of Prisms
+						{ "i", 44266, 1 },	-- Seven of Prisms
+						{ "i", 44267, 1 },	-- Eight of Prisms
 					},
 				})),
 				applyclassicphase(WRATH_PHASE_ONE, i(37163, {	-- Rogues Deck
@@ -1095,6 +1158,18 @@ root("Holidays", bubbleDown({ ["u"] = DARKMOON_FAIRE },
 						{ "i", 37147, 1 },	-- Two of Swords
 						{ "i", 37159, 1 },	-- Three of Swords
 						{ "i", 37160, 1 },	-- Four of Swords
+					},
+				})),
+				applyclassicphase(WRATH_PHASE_ONE, i(44294, {	-- Undeath Deck
+					["cost"] = {
+						{ "i", 44286, 1 },	-- Ace of Undeath
+						{ "i", 44287, 1 },	-- Two of Undeath
+						{ "i", 44288, 1 },	-- Three of Undeath
+						{ "i", 44289, 1 },	-- Four of Undeath
+						{ "i", 44290, 1 },	-- Five of Undeath
+						{ "i", 44291, 1 },	-- Six of Undeath
+						{ "i", 44292, 1 },	-- Seven of Undeath
+						{ "i", 44293, 1 },	-- Eight of Undeath
 					},
 				})),
 				applyclassicphase(PHASE_THREE, i(19257, {	-- Warlords Deck
