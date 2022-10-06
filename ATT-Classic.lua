@@ -7079,6 +7079,9 @@ app.CreateItem = function(id, t)
 	return setmetatable(constructor(id, t, "itemID"), app.BaseItem);
 end
 
+-- No difference between an item and an heirloom in classic, yet.
+app.CreateHeirloom = app.CreateItem;
+
 local fields = RawCloneData(itemFields);
 fields.collectible = function(t)
 	return app.CollectibleToys;
