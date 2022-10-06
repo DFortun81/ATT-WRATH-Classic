@@ -108,6 +108,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 11 - Professions\\Poisons\\Poisons.lua
 -- #IMPORT: 11 - Professions\\Runeforging\\Runeforging.lua
 -- #IMPORT: 11 - Professions\\Skinning\\Skinning.lua
+-- #IMPORT: 11 - Professions\\Tailoring\\
 
 -- Promotions & In-Game Shop
 -- #IMPORT: 12 - Promotions\\
