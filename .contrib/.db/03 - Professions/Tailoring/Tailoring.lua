@@ -111,7 +111,8 @@ profession(TAILORING, {
 				}),
 				{
 					["name"] = "Black Silk Pack",
-					["recipeID"] = 6695
+					["recipeID"] = 6695,
+					["timeline"] = { "removed 4.0.3" },
 				},
 				{
 					["name"] = "Bottomless Bag",
@@ -401,20 +402,14 @@ profession(TAILORING, {
 					["name"] = "Felcloth Robe",
 					["recipeID"] = 18451
 				},
-				{
+				applyholiday(LUNAR_FESTIVAL, {
 					["name"] = "Festival Dress",
 					["recipeID"] = 26403,
-					-- #if NOT ANYCLASSIC
-					["u"] = 17,
-					-- #endif
-				},
-				{
+				}),
+				applyholiday(LUNAR_FESTIVAL, {
 					["name"] = "Festival Suit",
 					["recipeID"] = 26407,
-					-- #if NOT ANYCLASSIC
-					["u"] = 17,
-					-- #endif
-				},
+				}),
 				applyclassicphase(PHASE_THREE, {
 					["name"] = "Flarecore Robe",
 					["recipeID"] = 23666
@@ -448,19 +443,16 @@ profession(TAILORING, {
 					["name"] = "Green Silk Armor",
 					["recipeID"] = 8784
 				},
-				applyclassicphase(TBC_PHASE_ONE, {
+				applyholiday(FEAST_OF_WINTER_VEIL, {
 					["name"] = "Green Winter Clothes",
 					["timeline"] = { "added 2.3.0.7382" },
 					["recipeID"] = 44950,
-					-- #if NOT ANYCLASSIC
-					["u"] = 29,
-					-- #endif
 				}),
 				{
 					["name"] = "Green Woolen Vest",
 					["recipeID"] = 2399
 				},
-				applyclassicphase(TBC_PHASE_ONE, {
+				applyholiday(FEAST_OF_WINTER_VEIL, {
 					["name"] = "Haliscan Jacket",
 					["timeline"] = { "added 2.4.2.8301" },
 					["recipeID"] = 50644
@@ -489,13 +481,10 @@ profession(TAILORING, {
 					["name"] = "Red Mageweave Vest",
 					["recipeID"] = 12056
 				},
-				applyclassicphase(TBC_PHASE_ONE, {
+				applyholiday(FEAST_OF_WINTER_VEIL, {
 					["name"] = "Red Winter Clothes",
 					["timeline"] = { "added 2.3.0.7382" },
 					["recipeID"] = 44958,
-					-- #if NOT ANYCLASSIC
-					["u"] = 29,
-					-- #endif
 				}),
 				{
 					["name"] = "Robe of Power",
@@ -1035,13 +1024,10 @@ profession(TAILORING, {
 					["name"] = "Gray Woolen Shirt",
 					["recipeID"] = 2406
 				},
-				{
+				applyholiday(FEAST_OF_WINTER_VEIL, {
 					["name"] = "Green Holiday Shirt",
 					["recipeID"] = 21945,
-					-- #if NOT ANYCLASSIC
-					["u"] = 29,
-					-- #endif
-				},
+				}),
 				{
 					["name"] = "Green Linen Shirt",
 					["recipeID"] = 2396
@@ -1667,10 +1653,10 @@ profession(TAILORING, {
 					["name"] = "Flying Carpet",
 					["recipeID"] = 60969
 				},
-				{
+				applyclassicphase(WRATH_PHASE_FOUR, {
 					["name"] = "Frosty Flying Carpet",
 					["recipeID"] = 75597
-				},
+				}),
 				{
 					["name"] = "Magnificent Flying Carpet",
 					["recipeID"] = 60971
@@ -3275,28 +3261,39 @@ profession(TAILORING, {
 		-- #endif
 		{
 			["name"] = "Battle Standards",
-			["description"] = "Talk to your Garrison Follower to learn these. If they do not immediately cache, try relogging and then talking to them again.\n\n - Crieve",
 			["categoryID"] = 400,
 			["groups"] = {
 				{
 					["name"] = "Fearsome Battle Standard",
 					["races"] = ALLIANCE_ONLY,
 					["recipeID"] = 176314,
+					-- #if NOT ANYCLASSIC
+					["u"] = 15,
+					-- #endif
 				},
 				{
 					["name"] = "Fearsome Battle Standard",
 					["races"] = HORDE_ONLY,
 					["recipeID"] = 176316,
+					-- #if NOT ANYCLASSIC
+					["u"] = 15,
+					-- #endif
 				},
 				{
 					["name"] = "Inspiring Battle Standard",
 					["races"] = HORDE_ONLY,
 					["recipeID"] = 176315,
+					-- #if NOT ANYCLASSIC
+					["u"] = 15,
+					-- #endif
 				},
 				{
 					["name"] = "Inspiring Battle Standard",
 					["races"] = ALLIANCE_ONLY,
 					["recipeID"] = 176313,
+					-- #if NOT ANYCLASSIC
+					["u"] = 15,
+					-- #endif
 				},
 			},
 		},
@@ -4729,34 +4726,34 @@ profession(TAILORING, {
 							["description"] = "This vendor spawns randomly when you close a time rift.",
 							["coords"] = {
 								-- Zuldazar
-								{ 45.0, 39.0, 862 },  -- Ledge right before entrance to Atal'Dazar
-								{ 54.0, 61.0, 862 },  -- On the beach below Mugambala
-								{ 59.0, 75.0, 862 },  -- NW corner of Tuck Isle
-								{ 73.0, 67.0, 862 },  -- East of Seeker's Outpost
-								{ 71.0, 35.0, 862 },  -- Behind Savagelands Devilsaur
+								{ 45.0, 39.0, ZULDAZAR },	-- Ledge right before entrance to Atal'Dazar
+								{ 54.0, 61.0, ZULDAZAR },	-- On the beach below Mugambala
+								{ 59.0, 75.0, ZULDAZAR },	-- NW corner of Tuck Isle
+								{ 73.0, 67.0, ZULDAZAR },	-- East of Seeker's Outpost
+								{ 71.0, 35.0, ZULDAZAR },	-- Behind Savagelands Devilsaur
 								-- Nazmir
-								{ 38.0, 58.0, 863 },  -- Under arch east side of Terrace of Sorrows
-								{ 55.0, 21.0, 863 },  --
-								{ 53.0, 56.0, 863 },  -- NE corner of Heart of Darkness
-								{ 43.0, 29.0, 863 },  -- SE corner of Necropolis
-								{ 38.0, 89.0, 863 },  -- The Shattered River, in front of broken totem
-								{ 29.0, 56.0, 863 },  --
-								{ 26.0, 78.0, 863 },  -- In front of waterfall
+								{ 38.0, 58.0, NAZMIR },	-- Under arch east side of Terrace of Sorrows
+								{ 55.0, 21.0, NAZMIR },
+								{ 53.0, 56.0, NAZMIR },	-- NE corner of Heart of Darkness
+								{ 43.0, 29.0, NAZMIR },	-- SE corner of Necropolis
+								{ 38.0, 89.0, NAZMIR },	-- The Shattered River, in front of broken totem
+								{ 29.0, 56.0, NAZMIR },
+								{ 26.0, 78.0, NAZMIR },	-- In front of waterfall
 								-- Drustvar
-								{ 23.0, 43.0, 896 },  -- Just above Anyport
-								{ 36.0, 72.0, 896 },  --
-								{ 33.0, 23.0, 896 },  --
-								{ 63.0, 35.0, 896 },  --
-								{ 46.0, 38.0, 896 },  -- Highroad Pass, SE of Aroms Stand
+								{ 23.0, 43.0, DRUSTVAR },	-- Just above Anyport
+								{ 36.0, 72.0, DRUSTVAR },
+								{ 33.0, 23.0, DRUSTVAR },
+								{ 63.0, 35.0, DRUSTVAR },
+								{ 46.0, 38.0, DRUSTVAR },	-- Highroad Pass, SE of Aroms Stand
 								-- Voldun
-								{ 54.0, 41.0, 864 },  -- Behind a rock E of Darkwood Shoal
-								{ 50.0, 64.0, 864 },  -- East side of Atul'aman
-								{ 49.0, 84.0, 864 },  -- Redrock Lowlands
-								{ 41.0, 64.0, 864 },  -- West of Goldtusk Inn
-								{ 37.0, 87.0, 864 },  -- On the ledge, N of island off south coast
+								{ 54.0, 41.0, VOLDUN },	-- Behind a rock E of Darkwood Shoal
+								{ 50.0, 64.0, VOLDUN },	-- East side of Atul'aman
+								{ 49.0, 84.0, VOLDUN },	-- Redrock Lowlands
+								{ 41.0, 64.0, VOLDUN },	-- West of Goldtusk Inn
+								{ 37.0, 87.0, VOLDUN },	-- On the ledge, N of island off south coast
 								-- Tiragarde Sound
-								{ 85.0, 77.0, 895 },  -- Dock north of Freehold dungeon
-								{ 40.0, 24.0, 895 },  --
+								{ 85.0, 77.0, TIRAGARDE_SOUND },	-- Dock north of Freehold dungeon
+								{ 40.0, 24.0, TIRAGARDE_SOUND },
 							},
 							["groups"] = TIME_LOST_TRADER_GROUPS,
 						},
@@ -4813,6 +4810,153 @@ profession(TAILORING, {
 					i(162508),	-- Pattern: Emblazoned Deep Sea Gloves
 				},
 			},
+		}),
+		n(QUESTS, {
+			-- Tools of Trade Questline
+			q(53805, {	-- A Friend in Needle (A)
+				["provider"] = { "n", 145022 },	-- Timeweaver Delormi
+				["coord"] = { 76.6, 11.8, BORALUS },
+				["requireSkill"] = TAILORING,
+				["races"] = ALLIANCE_ONLY,
+				["lvl"] = 120,
+			}),
+			q(53938, {	-- A Friend in Needle (H)
+				["provider"] = { "n", 145022 },	-- Timeweaver Delormi
+				["coord"] = { 43.5, 34.8, DAZARALOR },
+				["requireSkill"] = TAILORING,
+				["races"] = HORDE_ONLY,
+				["lvl"] = 120,
+			}),
+			q(53807, {	-- A Stitch in Time (A)
+				["provider"] = { "n", 145022 },	-- Timeweaver Delormi
+				["coord"] = { 76.6, 11.8, BORALUS },
+				["sourceQuest"] = 53805,	-- A Friend in Needle (A)
+				["requireSkill"] = TAILORING,
+				["races"] = ALLIANCE_ONLY,
+				["lvl"] = 120,
+			}),
+			q(53940, {	-- A Stitch in Time (H)
+				["provider"] = { "n", 145022 },	-- Timeweaver Delormi
+				["coord"] = { 43.5, 34.8, DAZARALOR },
+				["sourceQuest"] = 53938,	-- A Friend in Needle (H)
+				["requireSkill"] = TAILORING,
+				["races"] = HORDE_ONLY,
+				["lvl"] = 120,
+			}),
+			q(55177, {	-- Tearing at the Seams (A)
+				["provider"] = { "n", 145022 },	-- Timeweaver Delormi
+				["sourceQuest"] = 53807,	-- A Stitch in Time (A)
+				["requireSkill"] = TAILORING,
+				["races"] = ALLIANCE_ONLY,
+				["lvl"] = 120,
+			}),
+			q(55188, {	-- Tearing at the Seams (H)
+				["provider"] = { "n", 145022 },	-- Timeweaver Delormi
+				["sourceQuest"] = 53940,	-- A Stitch in Time (H)
+				["requireSkill"] = TAILORING,
+				["races"] = HORDE_ONLY,
+				["lvl"] = 120,
+			}),
+			q(53810, {	-- The Severed Thread
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 62.0, 53.9, CAVERNS_OF_TIME },
+				["sourceQuests"] = {
+					55177,	-- Tearing at the Seams (A)
+					55188,	-- Tearing at the Seams (H)
+				},
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(53813, {	-- Rolling Up the Sleeves
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 43.5, 34.8, CAVERNS_OF_TIME },
+				["sourceQuests"] = {
+					55177,	-- Tearing at the Seams (A)
+					55188,	-- Tearing at the Seams (H)
+				},
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(53858, {	-- Step Into Her Shoes
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 39.1, 63.3, CAVERNS_OF_TIME },
+				["sourceQuests"] = {
+					53810,	-- The Severed Thread
+					53813,	-- Rolling Up the Sleeves
+				},
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(53866, {	-- If The Shoe Fits...
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 63.8, 68.8, SURAMAR },
+				["sourceQuest"] = 53858,	-- Step Into Her Shoes
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(55214, {	-- Seam Stress
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 64.2, 69.5, SURAMAR },
+				["sourceQuest"] = 53866,	-- If The Shoe Fits...
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(53868, {	-- Saving Nine
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 7.2, 24.5, STORMSONG_VALLEY },
+				["sourceQuest"] = 55214,	-- Seam Stress
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(54483, {	-- Tailored Training (A)
+				["requireSkill"] = TAILORING,
+				["provider"] = { "n", 136071 },	-- Daniel Brineweaver <Tailoring Trainer>
+				["coord"] = { 76.8, 11.2, BORALUS },
+				["races"] = ALLIANCE_ONLY,
+				["lvl"] = 110,
+				["u"] = REMOVED_FROM_GAME,	-- all introductory quests for new 8.1 recipes appear to now be unobtainable
+			}),
+			q(54484, {	-- Tailored Training (H)
+				["requireSkill"] = TAILORING,
+				["provider"] = { "n", 122700 },	-- Pin'jin the Patient <Tailoring Trainer>
+				["coord"] = { 44.5, 33.9, DAZARALOR },
+				["races"] = HORDE_ONLY,
+				["lvl"] = 110,
+				["u"] = REMOVED_FROM_GAME,	-- all introductory quests for new 8.1 recipes appear to now be unobtainable
+			}),
+			q(53869, {	-- Killing Time
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 71.6, 39.8, DRAGONBLIGHT },
+				["sourceQuest"] = 53868,	-- Saving Nine
+				["requireSkill"] = TAILORING,
+				["lvl"] = 120,
+			}),
+			q(53881, {	-- Cut from the Same Cloth (A)
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 71.6, 39.8, DRAGONBLIGHT },
+				["sourceQuest"] = 53869,	-- Killing Time
+				["requireSkill"] = TAILORING,
+				["races"] = ALLIANCE_ONLY,
+				["lvl"] = 120,
+				["g"] = {
+					recipe(292946, {	-- Recipe: Synchronous Thread
+						["requireSkill"] = TAILORING,
+					}),
+				},
+			}),
+			q(53962, {	-- Cut from the Same Cloth (H)
+				["provider"] = { "n", 151134 },	-- Timeweaver Delormi
+				["coord"] = { 71.6, 39.8, DRAGONBLIGHT },
+				["sourceQuest"] = 53869,	-- Killing Time
+				["requireSkill"] = TAILORING,
+				["races"] = HORDE_ONLY,
+				["lvl"] = 120,
+				["g"] = {
+					recipe(292946, {	-- Recipe: Synchronous Thread
+						["requireSkill"] = TAILORING,
+					}),
+				},
+			}),
 		}),
 	})),
 	applyclassicphase(SHADOWLANDS_PHASE_ONE, tier(SL_TIER, {
@@ -4885,9 +5029,24 @@ profession(TAILORING, {
 					["recipeID"] = 343202
 				},
 				{
+					["name"] = "Crafter's Mark IV",
+					["recipeID"] = 359661,
+					["timeline"] = { "added 9.2.0" },
+				},
+				{
+					["name"] = "Crafter's Mark of the First Ones",
+					["recipeID"] = 359670,
+					["timeline"] = { "added 9.2.0" },
+				},
+				{
 					["name"] = "Novice Crafter's Mark",
 					["recipeID"] = 343659
-				}
+				},
+				{
+					["name"] = "Vestige of the Eternal",
+					["recipeID"] = 359703,
+					["timeline"] = { "added 9.2.0" },
+				},
 			}
 		},
 		{
@@ -5060,11 +5219,11 @@ profession(TAILORING, {
 			["groups"] = {
 				{
 					["name"] = "Pink Party Hat",
-					["recipeID"] = 334499
+					["recipeID"] = 334499,
 				},
 				{
 					["name"] = "Shadowlace Cloak",
-					["recipeID"] = 310898
+					["recipeID"] = 310898,
 				},
 				{
 					["name"] = "Shadowlace Cord",
@@ -5147,6 +5306,10 @@ profession(TAILORING, {
 				{
 					["name"] = "Shrouded Cloth Bandage",
 					["recipeID"] = 310924
+				},
+				{
+					["name"] = "Shrouded Hand Towel",
+					["recipeID"] = 355183,
 				}
 			}
 		},
@@ -5159,7 +5322,7 @@ profession(TAILORING, {
 			["coord"] = { 66.5, 69.3, SHATTRATH_CITY },
 			["maps"] = { ZANGARMARSH },
 			["altQuests"] = {
-				10831,	-- Becoming a Mooncloth Tailor
+				-- 10831,	-- Becoming a Mooncloth Tailor
 				10833,	-- Becoming a Shadoweave Tailor
 				10832,	-- Becoming a Spellfire Tailor
 			},
@@ -5187,14 +5350,14 @@ profession(TAILORING, {
 			["maps"] = { SHADOWMOON_VALLEY },
 			["altQuests"] = {
 				10831,	-- Becoming a Mooncloth Tailor
-				10833,	-- Becoming a Shadoweave Tailor
+				-- 10833,	-- Becoming a Shadoweave Tailor
 				10832,	-- Becoming a Spellfire Tailor
 			},
 			["lvl"] = lvlsquish(60, 20, 60),
 			["groups"] = {
 				objective(1, {	-- Deepen Altar of Shadows Attunement
 					["provider"] = { "i", 31736 },	-- Crystal of Deep Shadows
-					["coord"] = { 58, 71, SHADOWMOON_VALLEY },
+					["coord"] = { 58.0, 71.0, SHADOWMOON_VALLEY },
 				}),
 			},
 		})),
@@ -5207,7 +5370,7 @@ profession(TAILORING, {
 			["altQuests"] = {
 				10831,	-- Becoming a Mooncloth Tailor
 				10833,	-- Becoming a Shadoweave Tailor
-				10832,	-- Becoming a Spellfire Tailor
+				-- 10832,	-- Becoming a Spellfire Tailor
 			},
 			["lvl"] = lvlsquish(60, 20, 60),
 			["groups"] = {
@@ -5292,9 +5455,9 @@ local function cacheRecipes(g)
 end
 cacheRecipes(_.Professions);
 
--- Item Recipe Database
+-- Tailoring Item Recipe Database
 local itemrecipe = function(name, itemID, spellID, phase, timeline)
-	local o = { ["itemID"] = itemID, ["spellID"] = spellID };
+	local o = { ["itemID"] = itemID, ["spellID"] = spellID, ["requireSkill"] = TAILORING, ["f"] = RECIPES };
 	if type(phase) == "string" then
 		timeline = phase;
 		phase = nil;
