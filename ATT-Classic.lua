@@ -10694,7 +10694,7 @@ local function RowOnEnter(self)
 		elseif reference.isMontly then GameTooltip:AddLine("This can be completed monthly.");
 		elseif reference.isYearly then GameTooltip:AddLine("This can be completed yearly.");
 		elseif reference.repeatable then GameTooltip:AddLine("This can be repeated multiple times."); end
-		if reference.pvp then GameTooltip:AddLine(L["REQUIRES_PVP"], 1, 1, 1, 1, true); end
+		if reference.pvp and not reference.itemID then GameTooltip:AddLine(L["REQUIRES_PVP"], 1, 1, 1, 1, true); end
 		if not GameTooltipModel:TrySetModel(reference) then
 			local texture = reference.preview or reference.icon;
 			if texture then
