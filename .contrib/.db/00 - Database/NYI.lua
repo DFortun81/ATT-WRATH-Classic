@@ -47,30 +47,69 @@ root("NeverImplemented", {
 		fp(169),	-- Quest - Netherwing Ledge - Mine Cart Ride - South - Start
 		fp(171),	-- Skettis [as far as I know, there's no Flight Path up there?]
 		fp(209),	-- Quest - Sunwell Daily - Dead Scar Bombing - Start
+		fp(210),	-- Quest - Sunwell Daily - Dead Scar Bombing - End
 		fp(211),	-- Quest - Sunwell Daily - Ship Bombing - Start
 		fp(212),	-- Quest - Sunwell Daily - Ship Bombing - End
 		-- #endif
 		-- #if AFTER WRATH
-		fp(285),	-- Quest - Wintergarde -> Stars' Rest (Start)
-		fp(394),	-- CC Prologue - GT - Battle Flight - Start
-		fp(287),	-- Quest - Valgarde -> Westguard Keep Start
 		fp(36),	-- Generic, World Target 001
-		fp(404),	-- Durotar - ET - CC Prologue Spy Frog Start
-		fp(210),	-- Quest - Sunwell Daily - Dead Scar Bombing - End
-		fp(405),	-- Durotar - ET - CC Prologue Spy Frog End
 		fp(168),	-- Filming
 		fp(172),	-- Ogri'La
-		fp(180),	-- Quest - Dustwallow - Alcaz Survey Start
 		fp(170),	-- Quest - Netherwing Ledge - Mine Cart Ride - South - End
-		fp(438),	-- Durotar - ET - CC Prologue Troll Taxi Bat Start
-		fp(292),	-- Flavor - Stormwind Harbor  - Start
-		fp(392),	-- CC Prologue - GT - Quest - Vent Horizon - Start
 		fp(173),	-- Quest - Yarzill Flight Start
-		fp(439),	-- Durotar - ET - CC Prologue Troll Recruit End
+		fp(180),	-- Quest - Dustwallow - Alcaz Survey Start
 		fp(181),	-- Quest - Dustwallow - Alcaz Survey End
-		fp(393),	-- CC Prologue - GT - Quest - Vent Horizon - End
-		fp(318),	-- Ebon Hold - Death's Breach -> Acherus Start
+		fp(186),	-- Quest - Howling Fjord - Flight to the Windrunner - Start
+		fp(187),	-- Quest - Howling Fjord - Flight to the Windrunner - End
+		fp(188),	-- Quest - Howling Fjord - Test at Sea - Start
+		fp(193),	-- Quest - Howling Fjord - Mission: Plague This! - End
+		fp(194),	-- Quest - Howling Fjord - Mission: Plague This! - Start
+		fp(176),	-- Quest - Howling Fjord Tauren Canoe (Start)
+		fp(177),	-- Quest - Howling Fjord Tauren Canoe (End)
+		fp(199),	-- Quest - Howling Fjord - McGoyver Start
+		fp(200),	-- Quest - Howling Fjord - McGoyver End
+		fp(203),	-- Quest - Stars' Rest -> Wintergarde
+		fp(221),	-- Amber Ledge, Borean (To Beryl)
+		fp(222),	-- Beryl Point, Borean
+		fp(225),	-- Amber Ledge, Borean (to Coldarra)
+		fp(232),	-- Borean Tundra - Warsong Hold Wolf Start
+		fp(234),	-- Coldarra Ledge, Coldarra
+		fp(235),	-- Transitus Shield, Coldarra (NOT USED)
+		fp(236),	-- Coldarra, Keristrasza to Malygos
+		fp(239),	-- Borean Tundra - Quest - Dusk Start
+		fp(240),	-- Borean Tundra - Quest - Dusk - End
+		fp(242),	-- Quest - Dragonblight - Spiritual Vision - Begin
+		fp(261),	-- Quest - Stars' Rest to Wintergarde End
+		fp(262),	-- Grizzly Hills, Alliance Log Ride Start 01
+		fp(267),	-- Grizzly Hills, Alliance Log Ride Start
+		fp(269),	-- Quest - Westguard Keep to Wintergarde Keep Begin
+		fp(270),	-- Quest - Westguard Keep to Wintergarde Keep End
+		fp(271),	-- Grizzly Hills, Horde Log Ride Start
+		fp(273),	-- Wyrmrest Temple - bottom to top, Dragonblight - Begin
+		fp(275),	-- Wyrmrest Temple - top to bottom, Dragonblight - Begin
+		fp(277),	-- Wyrmrest Temple - top to middle, Dragonblight - Begin
+		fp(280),	-- Wyrmrest Temple - middle to top, Dragonblight - Begin
+		fp(282),	-- Wyrmrest Temple - middle to bottom, Dragonblight - Begin
+		fp(284),	-- Wyrmrest Temple - bottom to middle, Dragonblight - Begin
+		fp(285),	-- Quest - Wintergarde -> Stars' Rest (Start)
+		fp(287),	-- Quest - Valgarde -> Westguard Keep Start
+		fp(290),	-- Argent Stand, Zul'Drak
+		fp(292),	-- Flavor - Stormwind Harbor  - Start
+		fp(301),	-- Quest - Borean Tundra - Check In With Bixie - Begin
+		fp(311),	-- Camp Onequah, Grizzly Hills (Quest)
+		fp(313),	-- Westfall Brigade, Grizzly Hills (Quest)
+		fp(314),	-- Zim'Torga, Zul'Drak (Quest)
 		fp(316),	-- Ebon Hold - Acherus -> Death's Breach Start
+		fp(318),	-- Ebon Hold - Death's Breach -> Acherus Start
+		fp(358),	-- Quest - Icecrown - North Sea Kraken Bombing - Start
+		fp(359),	-- Quest - Icecrown - North Sea Kraken Bombing - End
+		fp(392),	-- CC Prologue - GT - Quest - Vent Horizon - Start
+		fp(393),	-- CC Prologue - GT - Quest - Vent Horizon - End
+		fp(394),	-- CC Prologue - GT - Battle Flight - Start
+		fp(404),	-- Durotar - ET - CC Prologue Spy Frog Start
+		fp(405),	-- Durotar - ET - CC Prologue Spy Frog End
+		fp(438),	-- Durotar - ET - CC Prologue Troll Taxi Bat Start
+		fp(439),	-- Durotar - ET - CC Prologue Troll Recruit End
 		-- #endif
 	}),
 	q(63769),	-- Holiday Reset Yearly Quest
