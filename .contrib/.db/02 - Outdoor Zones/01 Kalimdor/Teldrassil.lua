@@ -443,6 +443,19 @@ root("Zones", m(KALIMDOR, {
 						i(5218),	-- Cleansed Timberling Heart
 					},
 				}),
+				q(4161, {	-- Recipe of the Kaldorei
+					["qg"] = 6286,	-- Zarrin
+					["coord"] = { 57, 61.2, TELDRASSIL },
+					["timeline"] = { "removed 4.0.3.2000" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["cost"] = { { "i", 5465, 7 } },	-- Small Spider Leg
+					["groups"] = {
+						i(5482, {	-- Recipe: Kaldorei Spider Kabob
+							["timeline"] = { "removed 4.0.3.2000" },
+						}),
+					},
+				}),
 				q(922, {	-- Rellian Greenspyre
 					["qg"] = 2080,	-- Denalan
 					["sourceQuest"] = 918,	-- Timberling Seeds

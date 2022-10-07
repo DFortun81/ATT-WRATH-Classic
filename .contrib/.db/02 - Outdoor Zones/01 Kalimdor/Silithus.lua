@@ -430,6 +430,16 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 49.2, 34.2, SILITHUS },
 					["lvl"] = 40,
 				}),
+				q(8307, {	-- Desert Recipe
+					["qg"] = 15174,	-- Calandrath <Innkeeper>
+					["requireSkill"] = COOKING,
+					-- #if AFTER CATA
+					["coord"] = { 55.4, 36.6, SILITHUS },
+					-- #else
+					["coord"] = { 51.8, 39, SILITHUS },
+					-- #endif
+					["lvl"] = 40,
+				}),
 				applyclassicphase(PHASE_FIVE, q(8804, {	-- Desert Survival Kits
 					["provider"] = { "i", 21378 },	-- Logistics Task Briefing I
 					["repeatable"] = true,
@@ -762,6 +772,20 @@ root("Zones", m(KALIMDOR, {
 						i(20724),	-- Corrupted Blackwood Staff
 					},
 				}),
+				q(8317, {	-- Kitchen Assistance
+					["qg"] = 15174,	-- Calandrath <Innkeeper>
+					["sourceQuest"] = 8313,	-- Sharing the Knowledge
+					["requireSkill"] = COOKING,
+					-- #if AFTER CATA
+					["coord"] = { 55.4, 36.6, SILITHUS },
+					-- #else
+					["coord"] = { 51.8, 39, SILITHUS },
+					-- #endif
+					["cost"] = {
+						{ "i", 20452, 10 },	-- Smoked Desert Dumplings
+					},
+					["lvl"] = 40,
+				}),
 				q(8341, {	-- Lords of the Council
 					["qg"] = 15282,	-- Aurel Goldleaf
 					["sourceQuest"] = 8343,	-- Goldleaf's Discovery
@@ -899,6 +923,23 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 51.2, 38.3, SILITHUS },
 					["cr"] = 11740,	-- Dredge Striker
 					["lvl"] = 54,
+				}),
+				q(8313, {	-- Sharing the Knowledge
+					["provider"] = { "o", 180503 },	-- Sandy Cookbook
+					["sourceQuest"] = 8307,	-- Desert Recipe
+					["requireSkill"] = COOKING,
+					-- #if AFTER CATA
+					["coord"] = { 43.6, 42.0, SILITHUS },
+					-- #else
+					["coord"] = { 37.9, 45.3, SILITHUS },
+					-- #endif
+					["cost"] = {
+						{ "i", 20467, 1 },	-- Torn Recipe Page
+					},
+					["lvl"] = 40,
+					["groups"] = {
+						recipe(24801),	-- Smoked Desert Dumplings
+					},
 				}),
 				q(8348, {	-- Signet of the Dukes
 					["qg"] = 15306,	-- Bor Wildmane

@@ -345,6 +345,45 @@ root("Zones", m(KALIMDOR, {
                     ["coord"] = { 50.8, 27.0, TANARIS },
                     ["lvl"] = 50,
 				},
+				q(6610, {	-- Clamlette Surprise
+					-- #if AFTER CATA
+					["qg"] = 40589,	-- Dirge Quikcleave
+					["coord"] = { 52.4, 29.0, TANARIS },
+					-- #else
+					["qg"] = 8125,	-- Dirge Quikcleave
+					["coord"] = { 52.63, 28.12, TANARIS },
+					-- #endif
+					["requireSkill"] = COOKING,
+					["altQuests"] = { 13825 },	-- Clamlette Surprise
+					["cost"] = {
+						{ "i", 12207, 12 },	-- Giant Egg
+						{ "i", 7974, 10 },	-- Zesty Clam Meat
+						-- #if AFTER CATA
+						{ "i", 3927, 20 },	-- Fine Aged Cheddar
+						-- #else
+						{ "i", 8932, 20 },	-- Alterac Swiss
+						-- #endif
+					},
+					["lvl"] = 35,
+					["groups"] = {
+						i(16971),	-- Clamlette Surprise
+						-- #if AFTER WRATH
+						recipe(64054),	-- Clamlette Magnifique
+						-- #endif
+					},
+				}),
+				q(13825, {	-- Clamlette Surprise
+					["qg"] = 8125,	-- Dirge Quikcleave
+					["coord"] = { 52.63, 28.12, TANARIS },
+					["timeline"] = { "added 3.1.0.9637", "removed 4.0.3" },
+					["requireSkill"] = COOKING,
+					["groups"] = {
+						i(16971),	-- Clamlette Surprise
+						-- #if AFTER WRATH
+						recipe(64054),	-- Clamlette Magnifique
+						-- #endif
+					},
+				}),
 				q(2882, {	-- Cuergo's Gold
 					["coord"] = { 55.4, 92.2, TANARIS },
 					["provider"] = { "i", 9254 },	-- Cuergo's Treasure Map

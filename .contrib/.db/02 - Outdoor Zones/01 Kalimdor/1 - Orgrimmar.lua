@@ -531,6 +531,18 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["qg"] = 4485,	-- Belgrom Rockmaul
 				}),
+				q(6611, {	-- To Gadgetzan You Go!
+					["qg"] = 3399,	-- Zamja
+					-- #if AFTER CATA
+					["coord"] = { 32.2, 69.4, ORGRIMMAR },
+					-- #else
+					["coord"] = { 57.4, 53.6, ORGRIMMAR },
+					-- #endif
+					["requireSkill"] = COOKING,
+					["races"] = HORDE_ONLY,
+					["isBreadcrumb"] = true,
+					["lvl"] = 35,
+				}),
 				q(1944, {	-- Waters of Xavian
 					["qg"] = 5885,	-- Deino <Mage Trainer>
 					["sourceQuest"] = 1943,	-- Speak with Deino

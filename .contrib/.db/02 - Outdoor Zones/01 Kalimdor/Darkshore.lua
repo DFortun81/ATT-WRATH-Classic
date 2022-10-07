@@ -352,6 +352,19 @@ root("Zones", m(KALIMDOR, {
 						i(6811),	-- Aquadynamic Fish Lens
 					},
 				}),
+				q(2178, {	-- Easy Strider Living
+					["qg"] = 3702,	-- Alanndarian Nightsong
+					["coord"] = { 37.7, 40.7, DARKSHORE },
+					["timeline"] = { "removed 4.0.3.2000" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["cost"] = { { "i", 5469, 5 } },	-- Strider Meat
+					["lvl"] = 9,
+					["groups"] = {
+						i(5486),	-- Recipe: Strider Stew
+						i(5477),	-- Strider Stew
+					},
+				}),
 				q(994, {	-- Escape Through Force
 					["qg"] = 3692,	-- Volcor
 					["sourceQuest"] = 993,	-- A Lost Master
