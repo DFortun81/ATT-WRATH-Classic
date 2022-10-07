@@ -11,55 +11,68 @@ profession(ENGINEERING, {
 				["categoryID"] = 188,
 				["groups"] = {
 					{
+						["name"] = "De-Weaponized Mechanical Companion",
+						["timeline"] = { "added 4.0.3.13287" },
+						["recipeID"] = 84413,
+					},
+					{
 						["name"] = "Gnomish Alarm-o-Bot",
-						["recipeID"] = 23096
+						["recipeID"] = 23096,
 					},
 					{
 						["name"] = "Gnomish Battle Chicken",
-						["recipeID"] = 12906
+						["recipeID"] = 12906,
 					},
 					{
 						["name"] = "Gnomish Death Ray",
-						["recipeID"] = 12759
+						["recipeID"] = 12759,
 					},
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Gnomish Flame Turret",
-						["recipeID"] = 30568
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30568,
 					}),
 					{
+						["name"] = "Gnomish Gravity Well",
+						["timeline"] = { "added 4.0.3.13286" },
+						["recipeID"] = 95705,
+					},
+					{
 						["name"] = "Gnomish Harm Prevention Belt",
-						["recipeID"] = 12903
+						["recipeID"] = 12903,
 					},
 					{
 						["name"] = "Gnomish Mind Control Cap",
-						["recipeID"] = 12907
+						["recipeID"] = 12907,
 					},
 					{
 						["name"] = "Gnomish Net-o-Matic Projector",
-						["recipeID"] = 12902
+						["recipeID"] = 12902,
 					},
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Gnomish Poultryizer",
-						["recipeID"] = 30569
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30569,
 					}),
 					{
 						["name"] = "Gnomish Rocket Boots",
-						["recipeID"] = 12905
+						["recipeID"] = 12905,
 					},
 					{
 						["name"] = "Gnomish Shrink Ray",
-						["recipeID"] = 12899
+						["recipeID"] = 12899,
 					},
 					-- #if BEFORE WRATH
 					{
 						["name"] = "Lil' Smoky",
 						["description"] = "While this recipe does not have a requirement for Gnomish Engineering, you cannot learn this recipe without Gnomish Engineering and switching to Gnomish from Goblin is not possible in Classic.",
-						["recipeID"] = 15633
+						["recipeID"] = 15633,
 					},
 					-- #endif
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Nigh-Invulnerability Belt",
-						["recipeID"] = 30570
+						["timeline"] = { "added 2.1.0.6655" },
+						["recipeID"] = 30570,
 					}),
 					{
 						["name"] = "Ultrasafe Transporter - Gadgetzan",
@@ -67,13 +80,14 @@ profession(ENGINEERING, {
 					},
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Ultrasafe Transporter - Toshley's Station",
+						["timeline"] = { "added 2.0.1.6180" },
 						["recipeID"] = 36955,
 					}),
 					{
 						["name"] = "World Enlarger",
-						["recipeID"] = 23129
-					}
-				}
+						["recipeID"] = 23129,
+					},
+				},
 			},
 			{
 				["name"] = "Goggles",
@@ -81,18 +95,38 @@ profession(ENGINEERING, {
 				["groups"] = {
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Gnomish Battle Goggles",
-						["recipeID"] = 30575
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30575,
 					}),
 					{
 						["name"] = "Gnomish Goggles",
-						["recipeID"] = 12897
+						["recipeID"] = 12897,
 					},
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Gnomish Power Goggles",
-						["recipeID"] = 30574
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30574,
 					}),
-				}
+					{
+						["name"] = "Gnomish X-Ray Specs",
+						["timeline"] = { "added 3.0.1.8820" },
+						["recipeID"] = 56473,
+					},
+				},
 			},
+			-- #if AFTER 5.0.1.15699
+			{
+				["name"] = "Mounts",
+				["categoryID"] = 733,
+				["groups"] = {
+					{
+						["name"] = "Geosynchronous World Spinner",
+						["timeline"] = { "added 5.0.1.15699" },
+						["recipeID"] = 127139,
+					},
+				},
+			},
+			-- #endif
 			{
 				["name"] = "Parts",
 				["categoryID"] = 183,
@@ -100,18 +134,17 @@ profession(ENGINEERING, {
 					{
 						["name"] = "Inlaid Mithril Cylinder Plans",
 						["recipeID"] = 12895,
-					}
-				}
+					},
+				},
 			},
 			n(QUESTS, {
 				q(3645, {	-- Membership Card Renewal
 					["qg"] = 7406,	-- Oglethorpe Obnoticus <Master Gnome Engineer>
 					["sourceQuest"] = 3643,	-- Show Your Work
-					["description"] = "Requires 200 Engineering to start this quest.",
 					["coord"] = { 28.2, 76.2, STRANGLETHORN_VALE },
-					["requireSkill"] = ENGINEERING,
 					["cost"] = { { "g", 20000 } },	-- 2g
 					["timeline"] = { "removed 4.0.3.2000" },
+					["requireSkill"] = ENGINEERING,
 					["races"] = HORDE_ONLY,
 					["repeatable"] = true,
 					["lvl"] = 30,
@@ -122,12 +155,11 @@ profession(ENGINEERING, {
 				q(3647, {	-- Membership Card Renewal
 					["qg"] = 7944,	-- Tinkmaster Overspark <Master Gnome Engineer>
 					["sourceQuest"] = 3641,	-- Show Your Work
-					["description"] = "Requires 200 Engineering to start this quest.",
 					["coord"] = { 69.8, 50.2, IRONFORGE },
-					["requireSkill"] = ENGINEERING,
 					["races"] = ALLIANCE_ONLY,
 					["cost"] = { { "g", 20000 } },	-- 2g
 					["timeline"] = { "removed 4.0.3.2000" },
+					["requireSkill"] = ENGINEERING,
 					["repeatable"] = true,
 					["lvl"] = 30,
 					["groups"] = {
@@ -137,7 +169,7 @@ profession(ENGINEERING, {
 			}),
 			n(REWARDS, {
 				i(11423, {	-- Gnome Engineer's Renewal Gift
-					["description"] = "If you destroy your Gnomish Engineer Membership Card, you can renew your membership for 2 Gold and will receive this gift in the mail in about a day.",
+					["description"] = "If you destroy your Gnome Engineer Membership Card, you can renew your membership for 2 Gold and will receive this gift in the mail in about a day.",
 					["timeline"] = { "removed 4.0.3.2000" },
 					["groups"] = {
 						i(10603),	-- Schematic: Catseye Ultra Goggles
@@ -147,7 +179,7 @@ profession(ENGINEERING, {
 				}),
 			}),
 		},
-	});
+	}),
 });
 
 -- Gnomish Engineering Recipes

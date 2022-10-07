@@ -9,6 +9,7 @@ profession(ENGINEERING, {
 				["groups"] = {
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Dimensional Ripper - Area 52",
+						["timeline"] = { "added 2.0.1.6180" },
 						["recipeID"] = 36954,
 					}),
 					{
@@ -17,20 +18,83 @@ profession(ENGINEERING, {
 					},
 					{
 						["name"] = "Goblin Jumper Cables XL",
-						["recipeID"] = 23078
+						["recipeID"] = 23078,
 					},
+					-- #if AFTER MOP
+					{
+						["name"] = "Goblin Rocket Boots",
+						["recipeID"] = 8895,
+					},
+					-- #endif
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Goblin Rocket Launcher",
-						["recipeID"] = 30563
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30563,
 					}),
+					{
+						["name"] = "Personal World Destroyer",
+						["timeline"] = { "added 4.0.3.13287" },
+						["recipeID"] = 84412,
+					},
 					-- #if BEFORE WRATH
 					{
 						["name"] = "Pet Bombling",
 						["description"] = "While this recipe does not have a requirement for Goblin Engineering, you cannot learn this recipe without Goblin Engineering and switching to Goblin from Gnomish is not possible in Classic.",
-						["recipeID"] = 15628
+						["recipeID"] = 15628,
 					},
 					-- #endif
-				}
+				},
+			},
+			{
+				["name"] = "Explosives",
+				["categoryID"] = 184,
+				["groups"] = {
+					{
+						["name"] = "Big Daddy",
+						["timeline"] = { "added 4.0.1.12941" },
+						["recipeID"] = 95707,
+					},
+					{
+						["name"] = "Goblin Bomb Dispenser",
+						["recipeID"] = 12755,
+					},
+					{
+						["name"] = "Goblin Dragon Gun",
+						["recipeID"] = 12908,
+					},
+					{
+						["name"] = "Goblin Mortar",
+						["recipeID"] = 12716,
+					},
+					{
+						["name"] = "Goblin Sapper Charge",
+						["recipeID"] = 12760,
+					},
+					{
+						["name"] = "Global Thermal Sapper Charge",
+						["timeline"] = { "added 3.0.1.8820" },
+						["recipeID"] = 56514,
+					},
+					applyclassicphase(TBC_PHASE_ONE, {
+						["name"] = "Super Sapper Charge",
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30560,
+					}),
+					{
+						["name"] = "The Big One",
+						["recipeID"] = 12754,
+					},
+					applyclassicphase(TBC_PHASE_ONE, {
+						["name"] = "The Bigger One",
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30558,
+					}),
+					{
+						["name"] = "The Mortar: Reloaded",
+						["timeline"] = { "deleted 4.0.1" },
+						["recipeID"] = 13240,
+					},
+				},
 			},
 			{
 				["name"] = "Goggles",
@@ -38,64 +102,41 @@ profession(ENGINEERING, {
 				["groups"] = {
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Foreman's Enchanted Helmet",
-						["recipeID"] = 30565
+						["timeline"] = { "added 2.1.0.6692" },
+						["recipeID"] = 30565,
 					}),
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Foreman's Reinforced Helmet",
-						["recipeID"] = 30566
+						["timeline"] = { "added 2.0.1.6180" },
+						["recipeID"] = 30566,
 					}),
 					{
 						["name"] = "Goblin Construction Helmet",
-						["recipeID"] = 12718
+						["recipeID"] = 12718,
 					},
 					{
 						["name"] = "Goblin Mining Helmet",
-						["recipeID"] = 12717
+						["recipeID"] = 12717,
 					},
 					{
 						["name"] = "Goblin Rocket Helmet",
-						["recipeID"] = 12758
+						["recipeID"] = 12758,
 					},
-				}
+				},
 			},
+			-- #if AFTER 5.0.1.15699
 			{
-				["name"] = "Explosives",
-				["categoryID"] = 184,
+				["name"] = "Mounts",
+				["categoryID"] = 733,
 				["groups"] = {
 					{
-						["name"] = "Goblin Bomb Dispenser",
-						["recipeID"] = 12755
+						["name"] = "Depleted-Kyparium Rocket",
+						["timeline"] = { "added 5.0.1.15699" },
+						["recipeID"] = 127138,
 					},
-					{
-						["name"] = "Goblin Dragon Gun",
-						["recipeID"] = 12908
-					},
-					{
-						["name"] = "Goblin Mortar",
-						["recipeID"] = 12716
-					},
-					{
-						["name"] = "Goblin Sapper Charge",
-						["recipeID"] = 12760
-					},
-					applyclassicphase(TBC_PHASE_ONE, {
-						["name"] = "Super Sapper Charge",
-						["recipeID"] = 30560
-					}),
-					{
-						["name"] = "The Big One",
-						["recipeID"] = 12754
-					},
-					applyclassicphase(TBC_PHASE_ONE, {
-						["name"] = "The Bigger One",
-						["recipeID"] = 30558
-					}),
-					{
-						["name"] = "The Mortar: Reloaded",
-						["recipeID"] = 13240
-					},
-				}
+				},
 			},
+			-- #endif
 			{
 				["name"] = "Parts",
 				["categoryID"] = 183,
@@ -103,8 +144,8 @@ profession(ENGINEERING, {
 					{
 						["name"] = "Goblin Rocket Fuel Recipe",
 						["recipeID"] = 12715,
-					}
-				}
+					},
+				},
 			},
 			n(QUESTS, {
 				q(3644, {	-- Membership Card Renewal
@@ -148,7 +189,7 @@ profession(ENGINEERING, {
 				}),
 			}),
 		},
-	});
+	}),
 });
 
 -- Goblin Engineering Recipes

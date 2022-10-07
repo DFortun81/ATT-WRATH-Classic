@@ -814,14 +814,26 @@ root("Zones", m(KALIMDOR, {
 				n(11185, {	-- Xizzer Fizzbolt <Engineering Supplies>
 					["coord"] = { 60.8, 38.6, WINTERSPRING },
 					["groups"] = {
-						i(32381, {	-- Schematic: Fused Wiring
+						i(16050, {	-- Schematic: Delicate Arcanite Converter
 							["isLimited"] = true,
 						}),
-						i(16046),	-- Schematic: Masterwork Target Dummy
-						i(16047),	-- Schematic: Thorium Tube
-						i(16050),	-- Schematic: Delicate Arcanite Converter
-						i(18656),	-- Schematic: Powerful Seaforium Charge
-						i(18652),	-- Schematic: Gyrofreeze Ice Reflector
+						i(32381, {	-- Schematic: Fused Wiring
+							["timeline"] = { "added 2.1.0", "removed 5.0.4" },
+							["isLimited"] = true,
+						}),
+						i(18652, {	-- Schematic: Gyrofreeze Ice Reflector
+							["isLimited"] = true,
+						}),
+						i(16046, {	-- Schematic: Masterwork Target Dummy
+							["isLimited"] = true,
+						}),
+						i(18656, {	-- Schematic: Powerful Seaforium Charge
+							["isLimited"] = true,
+						}),
+						i(16047, {	-- Schematic: Thorium Tube
+							["timeline"] = { "removed 2.1.0" },
+							["isLimited"] = true,
+						}),
 					},
 				}),
 				n(14742, {	-- Zap Farflinger
