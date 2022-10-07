@@ -96,6 +96,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 10 - Craftables\\03 - Wrath of the Lich King.lua
 
 -- Professions
+-- #IMPORT: 11 - Professions\\Alchemy\\
 -- #IMPORT: 11 - Professions\\Beast Training\\Beast Training.lua
 -- #IMPORT: 11 - Professions\\Cooking\\Cooking.lua
 -- #IMPORT: 11 - Professions\\First Aid\\First Aid.lua
