@@ -881,9 +881,11 @@ root("Zones", m(KALIMDOR, {
 					["cr"] = 7437,	-- Cobalt Mageweaver
 				}),
 				i(13497, {	-- Recipe: Greater Arcane Protection Potion
+					["timeline"] = { "added 1.11.1.5462", "removed 4.0.3" },
 					["cr"] = 7437,	-- Cobalt Mageweaver
 				}),
 				i(13495, {	-- Recipe: Greater Frost Protection Potion
+					["timeline"] = { "added 1.11.1.5462", "removed 4.0.3" },
 					["cr"] = 7428,	-- Frostmaul Giant
 				}),
 				i(16054, {	-- Schematic: Arcanite Dragonling
