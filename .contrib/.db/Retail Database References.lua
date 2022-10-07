@@ -99,6 +99,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 11 - Professions\\Alchemy\\
 -- #IMPORT: 11 - Professions\\Beast Training\\Beast Training.lua
 -- #IMPORT: 11 - Professions\\Cooking\\Cooking.lua
+-- #IMPORT: 11 - Professions\\Engineering\\
 -- #IMPORT: 11 - Professions\\First Aid\\First Aid.lua
 -- #IMPORT: 11 - Professions\\Fishing\\Fishing.lua
 -- #IMPORT: 11 - Professions\\Herbalism\\Herbalism.lua
