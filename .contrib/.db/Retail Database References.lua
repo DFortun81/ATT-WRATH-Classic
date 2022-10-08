@@ -59,19 +59,19 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 03 - World Drops\\01 Rooted\\
 
 -- Holidays
--- #IMPORT: 21 - Holidays\\07 - Brewfest\\Brewfest.lua
--- #IMPORT: 21 - Holidays\\04 - Children's Week\\Children's Week.lua
--- #IMPORT: 21 - Holidays\\10 - Day of the Dead\\Day of the Dead.lua
--- #IMPORT: 21 - Holidays\\12 - Feast of Winter Veil\\Feast of Winter Veil.lua
--- #IMPORT: 21 - Holidays\\09 - Hallow's End\\Hallow's End.lua
--- #IMPORT: 21 - Holidays\\08 - Harvest Festival\\Harvest Festival.lua
--- #IMPORT: 21 - Holidays\\02 - Love is in the Air\\Love is in the Air.lua
--- #IMPORT: 21 - Holidays\\01 - Lunar Festival\\Lunar Festival.lua
--- #IMPORT: 21 - Holidays\\05 - Midsummer Fire Festival\\Midsummer Fire Festival.lua
--- #IMPORT: 21 - Holidays\\03 - Noblegarden\\Noblegarden.lua
--- #IMPORT: 21 - Holidays\\11 - Pilgrim's Bounty\\Pilgrim's Bounty.lua
+-- #IMPORT: 21 - Holidays\\07 - Brewfest\\
+-- #IMPORT: 21 - Holidays\\04 - Children's Week\\
+-- #IMPORT: 21 - Holidays\\10 - Day of the Dead\\
+-- #IMPORT: 21 - Holidays\\12 - Feast of Winter Veil\\
+-- #IMPORT: 21 - Holidays\\09 - Hallow's End\\
+-- #IMPORT: 21 - Holidays\\08 - Harvest Festival\\
+-- #IMPORT: 21 - Holidays\\02 - Love is in the Air\\
+-- #IMPORT: 21 - Holidays\\01 - Lunar Festival\\
+-- #IMPORT: 21 - Holidays\\05 - Midsummer Fire Festival\\
+-- #IMPORT: 21 - Holidays\\03 - Noblegarden\\
+-- #IMPORT: 21 - Holidays\\11 - Pilgrim's Bounty\\
 -- #IMPORT: 21 - Holidays\\06 Pirates' Day.lua
--- #IMPORT: 21 - Holidays\\00b - Stranglethorn Fishing Extravaganza\\Stranglethorn Fishing Extravaganza.lua
+-- #IMPORT: 21 - Holidays\\00b - Stranglethorn Fishing Extravaganza\\
 
 -- Expansion Features
 -- #IMPORT: 06 - Expansion Features\\01 Burning Crusade\\Achievements.lua
