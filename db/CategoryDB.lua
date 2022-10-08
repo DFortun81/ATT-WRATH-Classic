@@ -63,6 +63,7 @@ select(2, ...).CategoryNames = {
 	[257] = "Pants",
 	[258] = "Boots",
 	[259] = "Cloaks",
+	[260] = "Special",
 	[354] = "Other",
 	[445] = "Ring Enchantments",
 	[625] = "Research",
