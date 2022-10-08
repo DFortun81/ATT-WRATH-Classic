@@ -107,7 +107,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 11 - Professions\\Herbalism\\
 -- #IMPORT: 11 - Professions\\Inscription\\
 -- #IMPORT: 11 - Professions\\Jewelcrafting\\
--- Leatherworking
+-- #IMPORT: 11 - Professions\\Leatherworking\\
 -- #IMPORT: 11 - Professions\\Lockpicking\\
 -- #IMPORT: 11 - Professions\\Mining\\
 -- #IMPORT: 11 - Professions\\Poisons\\
