@@ -97,19 +97,22 @@ root("Zones", m(EASTERN_KINGDOMS, {
 
 -- Professions
 -- #IMPORT: 11 - Professions\\Alchemy\\
--- #IMPORT: 11 - Professions\\Beast Training\\Beast Training.lua
--- #IMPORT: 11 - Professions\\Cooking\\Cooking.lua
+-- #IMPORT: 11 - Professions\\Beast Training\\
+-- Blacksmithing
+-- #IMPORT: 11 - Professions\\Cooking\\
+-- #IMPORT: 11 - Professions\\Enchanting\\
 -- #IMPORT: 11 - Professions\\Engineering\\
--- #IMPORT: 11 - Professions\\First Aid\\First Aid.lua
--- #IMPORT: 11 - Professions\\Fishing\\Fishing.lua
--- #IMPORT: 11 - Professions\\Herbalism\\Herbalism.lua
--- #IMPORT: 11 - Professions\\Inscription\\Inscription.lua
--- #IMPORT: 11 - Professions\\Jewelcrafting\\Jewelcrafting.lua
--- #IMPORT: 11 - Professions\\Lockpicking\\Lockpicking.lua
--- #IMPORT: 11 - Professions\\Mining\\Mining.lua
--- #IMPORT: 11 - Professions\\Poisons\\Poisons.lua
--- #IMPORT: 11 - Professions\\Runeforging\\Runeforging.lua
--- #IMPORT: 11 - Professions\\Skinning\\Skinning.lua
+-- #IMPORT: 11 - Professions\\First Aid\\
+-- #IMPORT: 11 - Professions\\Fishing\\
+-- #IMPORT: 11 - Professions\\Herbalism\\
+-- #IMPORT: 11 - Professions\\Inscription\\
+-- #IMPORT: 11 - Professions\\Jewelcrafting\\
+-- Leatherworking
+-- #IMPORT: 11 - Professions\\Lockpicking\\
+-- #IMPORT: 11 - Professions\\Mining\\
+-- #IMPORT: 11 - Professions\\Poisons\\
+-- #IMPORT: 11 - Professions\\Runeforging\\
+-- #IMPORT: 11 - Professions\\Skinning\\
 -- #IMPORT: 11 - Professions\\Tailoring\\
 
 -- Promotions & In-Game Shop
