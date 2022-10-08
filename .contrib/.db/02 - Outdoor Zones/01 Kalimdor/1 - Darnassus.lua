@@ -236,6 +236,25 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["qg"] = 7740,	-- Gracina Spiritmight
 				}),
+				q(1582, {	-- Moonglow Vest
+					["qg"] = 6034,	-- Lotherias
+					["requireSkill"] = LEATHERWORKING,
+					-- #if AFTER CATA
+					["coord"] = { 60.4, 37.0, DARNASSUS },
+					-- #else
+					["coord"] = { 64.4, 22.2, DARNASSUS },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["cost"] = {
+						{ "i", 2309, 5 },	-- Embossed Leather Boots
+						{ "i", 2310, 5 },	-- Embossed Leather Cloak
+						{ "i", 4239, 1 },	-- Embossed Leather Gloves
+					},
+					["lvl"] = 8,
+					["groups"] = {
+						i(6710),	-- Pattern: Moonglow Vest
+					},
+				}),
 				q(3781, {	-- Morrowgrain Research
 					["lvl"] = 47,
 					["races"] = ALLIANCE_ONLY,

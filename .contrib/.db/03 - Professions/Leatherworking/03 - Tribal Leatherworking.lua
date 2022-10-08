@@ -5,6 +5,7 @@ profession(LEATHERWORKING, {
 			5143,	-- Tribal Leatherworking [Alliance]
 			5148,	-- Tribal Leatherworking [Horde]
 		},
+		["timeline"] = { "removed 4.0.1" },
 		["groups"] = {
 			-- #if AFTER TBC
 			{
@@ -20,6 +21,7 @@ profession(LEATHERWORKING, {
 					-- #endif
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Windhawk Hauberk",
+						["timeline"] = { "removed 4.0.1" },
 						["recipeID"] = 35585,
 						["requireSkill"] = 10660,
 					}),
@@ -31,6 +33,7 @@ profession(LEATHERWORKING, {
 				["groups"] = {
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Windhawk Bracers",
+						["timeline"] = { "removed 4.0.1" },
 						["recipeID"] = 35588,
 						["requireSkill"] = 10660,
 					}),
@@ -42,6 +45,7 @@ profession(LEATHERWORKING, {
 				["groups"] = {
 					applyclassicphase(TBC_PHASE_ONE, {
 						["name"] = "Windhawk Belt",
+						["timeline"] = { "removed 4.0.1" },
 						["recipeID"] = 35587
 					}),
 				},
@@ -66,6 +70,7 @@ profession(LEATHERWORKING, {
 				["groups"] = {
 					{
 						["name"] = "Wolfshead Helm",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 10621,
 						["requireSkill"] = 10660,
 					}
@@ -98,11 +103,13 @@ profession(LEATHERWORKING, {
 					},
 					{
 						["name"] = "Frostsaber Tunic",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 19104,
 						["requireSkill"] = 10660,
 					},
 					{
 						["name"] = "Ironfeather Breastplate",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 19086,
 						["requireSkill"] = 10660,
 					},
@@ -119,6 +126,7 @@ profession(LEATHERWORKING, {
 				["groups"] = {
 					{
 						["name"] = "Chimeric Gloves",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 19053,
 						["requireSkill"] = 10660,
 					},
@@ -129,6 +137,7 @@ profession(LEATHERWORKING, {
 					},
 					{
 						["name"] = "Frostsaber Gloves",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 19087,
 						["requireSkill"] = 10660,
 					},
@@ -161,6 +170,7 @@ profession(LEATHERWORKING, {
 					},
 					{
 						["name"] = "Frostsaber Leggings",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 19074,
 						["requireSkill"] = 10660,
 					},
@@ -198,6 +208,7 @@ profession(LEATHERWORKING, {
 				["groups"] = {
 					applyclassicphase(PHASE_ONE_DIREMAUL, {
 						["name"] = "Hide of the Wild",
+						["timeline"] = { "removed 4.0.3" },
 						["recipeID"] = 22927,
 						["requireSkill"] = 10660,
 					}),

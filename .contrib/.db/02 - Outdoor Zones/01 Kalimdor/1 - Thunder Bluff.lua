@@ -149,6 +149,16 @@ root("Zones", m(KALIMDOR, {
 						i(4962),	-- Double-layered Gloves
 					},
 				}),
+				q(769, {	-- Kodo Hide Bag
+					["qg"] = 3050,	-- Veren Tallstrider
+					["coord"] = { 44, 44.6, THUNDER_BLUFF },
+					["requireSkill"] = LEATHERWORKING,
+					["races"] = HORDE_ONLY,
+					["lvl"] = 5,
+					["groups"] = {
+						i(5083),	-- Pattern: Kodo Hide Bag
+					},
+				}),
 				q(1130, {	-- Melor Sends Word
 					["lvl"] = 20,
 					["races"] = HORDE_ONLY,
