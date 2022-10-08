@@ -1,5 +1,5 @@
 root("Skills", {
-	cl(WARLOCK, {
+	cl(WARLOCK, bubbleDown({ ["timeline"] = { "removed 3.0.2" } }, {
 		["description"] = "Warlocks can teach their demons new tricks. Some of the higher level grimoires can only be purchased from the <Demon Trainer> in your faction's capital cities.",
 		["maps"] = { IRONFORGE, ORGRIMMAR, STORMWIND_CITY, UNDERCITY, ORGRIMMAR },
 		["crs"] = {
@@ -428,7 +428,7 @@ root("Skills", {
 				["rank"] = 7,
 			}),
 		},
-	}),
+	})),
 	{
 		["name"] = "Weapon Skills",
 		["categoryID"] = 71,
@@ -476,8 +476,10 @@ root("Skills", {
 			{
 				["recipeID"] = 15590,	-- Fist Weapons
 				["classes"] = {
+					DEMONHUNTER,
 					DRUID,
 					HUNTER,
+					MONK,
 					ROGUE,
 					SHAMAN,
 					WARRIOR,
@@ -501,7 +503,10 @@ root("Skills", {
 			{
 				["recipeID"] = 196,	-- One-Handed Axes
 				["classes"] = {
+					DEATHKNIGHT,
+					DEMONHUNTER,
 					HUNTER,
+					MONK,
 					PALADIN,
 					-- #if AFTER WRATH
 					ROGUE,
@@ -516,7 +521,9 @@ root("Skills", {
 			{
 				["recipeID"] = 198,	-- One-Handed Maces
 				["classes"] = {
+					DEATHKNIGHT,
 					DRUID,
+					MONK,
 					PALADIN,
 					PRIEST,
 					ROGUE,
@@ -530,8 +537,11 @@ root("Skills", {
 			{
 				["recipeID"] = 201,	-- One-Handed Swords
 				["classes"] = {
+					DEATHKNIGHT,
+					DEMONHUNTER,
 					HUNTER,
 					MAGE,
+					MONK,
 					PALADIN,
 					ROGUE,
 					WARLOCK,
@@ -544,10 +554,12 @@ root("Skills", {
 			{
 				["recipeID"] = 200,	-- Polearms
 				["classes"] = {
+					DEATHKNIGHT,
 					-- #if AFTER WRATH
 					DRUID,
 					-- #endif
 					HUNTER,
+					MONK,
 					PALADIN,
 					WARRIOR,
 				},
@@ -558,6 +570,7 @@ root("Skills", {
 					DRUID,
 					HUNTER,
 					MAGE,
+					MONK,
 					PRIEST,
 					SHAMAN,
 					WARLOCK,
@@ -582,6 +595,7 @@ root("Skills", {
 			{
 				["recipeID"] = 197,	-- Two-Handed Axes
 				["classes"] = {
+					DEATHKNIGHT,
 					HUNTER,
 					PALADIN,
 					SHAMAN,
@@ -602,6 +616,7 @@ root("Skills", {
 			{
 				["recipeID"] = 199,	-- Two-Handed Maces
 				["classes"] = {
+					DEATHKNIGHT,
 					DRUID,
 					PALADIN,
 					SHAMAN,
@@ -622,6 +637,7 @@ root("Skills", {
 			{
 				["recipeID"] = 202,	-- Two-Handed Swords
 				["classes"] = {
+					DEATHKNIGHT,
 					HUNTER,
 					PALADIN,
 					WARRIOR,
