@@ -96,24 +96,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 10 - Craftables\\03 - Wrath of the Lich King.lua
 
 -- Professions
--- #IMPORT: 11 - Professions\\Alchemy\\
--- #IMPORT: 11 - Professions\\Beast Training\\
--- Blacksmithing
--- #IMPORT: 11 - Professions\\Cooking\\
--- #IMPORT: 11 - Professions\\Enchanting\\
--- #IMPORT: 11 - Professions\\Engineering\\
--- #IMPORT: 11 - Professions\\First Aid\\
--- #IMPORT: 11 - Professions\\Fishing\\
--- #IMPORT: 11 - Professions\\Herbalism\\
--- #IMPORT: 11 - Professions\\Inscription\\
--- #IMPORT: 11 - Professions\\Jewelcrafting\\
--- #IMPORT: 11 - Professions\\Leatherworking\\
--- #IMPORT: 11 - Professions\\Lockpicking\\
--- #IMPORT: 11 - Professions\\Mining\\
--- #IMPORT: 11 - Professions\\Poisons\\
--- #IMPORT: 11 - Professions\\Runeforging\\
--- #IMPORT: 11 - Professions\\Skinning\\
--- #IMPORT: 11 - Professions\\Tailoring\\
+-- #IMPORT: 11 - Professions\\
 
 -- Promotions & In-Game Shop
 -- #IMPORT: 12 - Promotions\\
