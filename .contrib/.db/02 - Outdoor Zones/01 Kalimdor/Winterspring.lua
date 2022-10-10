@@ -252,6 +252,33 @@ root("Zones", m(KALIMDOR, {
 					["sourceQuest"] = 4808,	-- Felnok Steelspring
 					["lvl"] = 50,
 				}),
+				q(5307, {	-- Corruption
+					["qg"] = 11193,	-- Seril Scourgebane
+					["coord"] = { 61.2, 37.2, WINTERSPRING },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { STRATHOLME },
+					-- #if BEFORE TBC
+					["requireSkill"] = 9787,	-- Weaponsmith
+					-- #else
+					["requireSkill"] = BLACKSMITHING,
+					-- #endif
+					-- #if BEFORE TBC
+					["altQuests"] = {
+						5306,	-- Snakestone of the Shadow Huntress [Master Axesmith]
+						5305,	-- Sweet Serenity [Master Hammersmith]
+					},
+					-- #endif
+					["lvl"] = 50,
+					["groups"] = {
+						objective(1, {	-- 0/1 Insignia of the Black Guard
+							["provider"] = { "i", 13350 },	-- Insignia of the Black Guard
+							["cr"] = 11121,	-- Black Guard Swordsmith
+						}),
+						i(12825, {	-- Plans: Blazing Rapier (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
+				}),
 				q(6030, {	-- Duke Nicholas Zverenhoff
 					["lvl"] = 50,
 					["qg"] = 10431,	-- Gregor Greystone
@@ -482,6 +509,36 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 61.2, 39, WINTERSPRING },
 					["lvl"] = 50,
 				}),
+				q(5306, {	-- Snakestone of the Shadow Huntress
+					["qg"] = 11192,	-- Kilram
+					-- #if BEFORE TBC
+					["altQuests"] = {
+						5307,	-- Corruption [Master Swordsmith]
+						5305,	-- Sweet Serenity [Master Hammersmith]
+					},
+					-- #endif
+					-- #if BEFORE 4.0.3
+					["description"] = "Upon finishing this quest, you will become a Master Axesmith and be locked out of becoming a Master Hammersmith and Master Swordsmith.",
+					-- #endif
+					["coord"] = { 61.2, 37, WINTERSPRING },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { BLACKROCK_SPIRE },
+					-- #if BEFORE TBC
+					["requireSkill"] = 9787,	-- Weaponsmith
+					-- #else
+					["requireSkill"] = BLACKSMITHING,
+					-- #endif
+					["lvl"] = 50,
+					["groups"] = {
+						objective(1, {	-- 0/1 Vosh'gajin's Snakestone
+							["provider"] = { "i", 13352 },	-- Vosh'gajin's Snakestone
+							["cr"] = 9236,	-- Shadow Hunter Vosh'gajin
+						}),
+						i(12821, {	-- Plans: Dawn's Edge (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
+				}),
 				q(4842, {	-- Strange Sources
 					["lvl"] = 51,
 					["qg"] = 9298,	-- Donova Snowden
@@ -489,6 +546,37 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 31.2, 45.2, WINTERSPRING },
 					["groups"] = {
 						i(15789),	-- Deep River Cloak
+					},
+				}),
+				q(5305, {	-- Sweet Serenity
+					["qg"] = 11191,	-- Lilith the Lithe
+					-- #if BEFORE TBC
+					["altQuests"] = {
+						5306,	-- Snakestone of the Shadow Huntress [Master Axesmith]
+						5307,	-- Corruption [Master Swordsmith]
+						8869,	-- Sweet Serenity (Deprecated?)
+					},
+					-- #endif
+					-- #if BEFORE 4.0.3
+					["description"] = "Upon finishing this quest, you will become a Master Hammersmith and be locked out of becoming a Master Axesmith and Master Swordsmith.",
+					-- #endif
+					["coord"] = { 61.2, 37.2, WINTERSPRING },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { STRATHOLME },
+					-- #if BEFORE TBC
+					["requireSkill"] = 9787,	-- Weaponsmith
+					-- #else
+					["requireSkill"] = BLACKSMITHING,
+					-- #endif
+					["lvl"] = 50,
+					["groups"] = {
+						objective(1, {	-- 0/1 Crimson Hammersmith's Apron
+							["provider"] = { "i", 13351 },	-- Crimson Hammersmith's Apron
+							["cr"] = 11120,	-- Crimson Hammersmith
+						}),
+						i(12824, {	-- Plans: Enchanted Battlehammer (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				q(5253, {	-- The Crystal of Zin-Malor

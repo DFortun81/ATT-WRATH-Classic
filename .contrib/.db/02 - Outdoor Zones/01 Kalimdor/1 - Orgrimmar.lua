@@ -143,6 +143,31 @@ root("Zones", m(KALIMDOR, {
 					["repeatable"] = true,
 					["lvl"] = 50,
 				}),
+				q(2751, {	-- Barbaric Battlements
+					["qg"] = 7790,	-- Orokk Omosh
+					["coords"] = {
+						-- #if AFTER CATA
+						{ 76.2, 37.4, ORGRIMMAR },
+						-- #else
+						{ 79.4, 22.4, ORGRIMMAR },
+						-- #endif
+					},
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 2868, 2 },	-- Patterned Bronze Bracers
+						{ "i", 7957, 2 },	-- Bronze Greatsword
+						{ "i", 5635, 2 },	-- Sharp Claw
+					},
+					["lvl"] = lvlsquish(32, 32, 15),
+					["groups"] = {
+						i(7979, {	-- Plans: Barbaric Iron Breastplate (RECIPE!)
+							-- #if ANYCLASSIC
+							["description"] = "This item can be sold on the Neutral Auction House to Alliance Blacksmiths for a... nominal fee.\n\nOnly naturally accessible to Horde Blacksmiths.",
+							-- #endif
+						}),
+					},
+				}),
 				q(1508, {	-- Blind Cazul
 					["qg"] = 5909,	-- Cazul
 					["sourceQuests"] = {
@@ -162,6 +187,18 @@ root("Zones", m(KALIMDOR, {
 						i(11863),	-- White Bone Shredder
 						i(11864),	-- White Bone Spear
 					},
+				}),
+				q(2757, {	-- Booty Bay or Bust!
+					["providers"] = {
+						{ "n", 7793 },	-- Ox
+						{ "i", 8663 },	-- Mithril Insignia
+					},
+					["sourceQuest"] = 2756,	-- The Old Ways
+					["coord"] = { 80.4, 23.2, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["lvl"] = 40,
 				}),
 				q(4511, {	-- Calm Before the Storm (2/2)
 					["sourceQuest"] = 4509,	-- Calm Before the Storm (1/2)
@@ -307,6 +344,62 @@ root("Zones", m(KALIMDOR, {
 					["classes"] = { ROGUE },
 					["lvl"] = 20,
 				}),
+				q(2754, {	-- Horns of Frenzy
+					["qg"] = 7790,	-- Orokk Omosh
+					["sourceQuest"] = 2753,	-- Trampled Under Foot
+					["coords"] = {
+						-- #if AFTER CATA
+						{ 76.2, 37.4, ORGRIMMAR },
+						-- #else
+						{ 79.4, 22.4, ORGRIMMAR },
+						-- #endif
+					},
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 3851, 2 },	-- Solid Iron Maul
+						{ "i", 3482, 2 },	-- Silvered Bronze Boots
+						{ "i", 3483, 2 },	-- Silvered Bronze Gauntlets
+					},
+					["lvl"] = lvlsquish(32, 32, 15),
+					["groups"] = {
+						i(7980, {	-- Plans: Barbaric Iron Helm (RECIPE!)
+							-- #if ANYCLASSIC
+							["description"] = "This item can be sold on the Neutral Auction House to Alliance Blacksmiths for a... nominal fee.\n\nOnly naturally accessible to Horde Blacksmiths.",
+							-- #endif
+						}),
+					},
+				}),
+				applyclassicphase(TBC_PHASE_ONE, q(10892, {	-- Imperial Plate Armor [H]
+					["qg"] = 11176,	-- Krathok Moltenfist
+					["coord"] = { 80.0, 23.3, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["isBreadcrumb"] = true,
+					["races"] = HORDE_ONLY,
+					["lvl"] = 50,
+				})),
+				q(2755, {	-- Joys of Omosh
+					["qg"] = 7790,	-- Orokk Omosh
+					["sourceQuest"] = 2754,	-- Horns of Frenzy
+					["coords"] = {
+						-- #if AFTER CATA
+						{ 76.2, 37.4, ORGRIMMAR },
+						-- #else
+						{ 79.4, 22.4, ORGRIMMAR },
+						-- #endif
+					},
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["lvl"] = lvlsquish(32, 32, 15),
+					["groups"] = {
+						i(7982, {	-- Plans: Barbaric Iron Gloves (RECIPE!)
+							-- #if ANYCLASSIC
+							["description"] = "This item can be sold on the Neutral Auction House to Alliance Blacksmiths for a... nominal fee.\n\nOnly naturally accessible to Horde Blacksmiths.",
+							-- #endif
+						}),
+					},
+				}),
 				q(1945, {	-- Laughing Sisters
 					["qg"] = 5885,	-- Deino <Mage Trainer>
 					["sourceQuest"] = 1944,	-- Waters of Xavian
@@ -356,6 +449,31 @@ root("Zones", m(KALIMDOR, {
 					["races"] = { ORC, UNDEAD },
 					["lvl"] = 20,
 				}),
+				q(2752, {	-- On Iron Pauldrons
+					["qg"] = 7790,	-- Orokk Omosh
+					["sourceQuest"] = 2751,	-- Barbaric Battlements
+					["coords"] = {
+						-- #if AFTER CATA
+						{ 76.2, 37.4, ORGRIMMAR },
+						-- #else
+						{ 79.4, 22.4, ORGRIMMAR },
+						-- #endif
+					},
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 7958, 4 },	-- Bronze Battle Axe
+						{ "i", 7956, 4 },	-- Bronze Warhammer
+					},
+					["lvl"] = lvlsquish(32, 32, 15),
+					["groups"] = {
+						i(7978, {	-- Plans: Barbaric Iron Shoulders (RECIPE!)
+							-- #if ANYCLASSIC
+							["description"] = "This item can be sold on the Neutral Auction House to Alliance Blacksmiths for a... nominal fee.\n\nOnly naturally accessible to Horde Blacksmiths.",
+							-- #endif
+						}),
+					},
+				}),
 				q(5680, {	-- Shadowguard [Undercity]
 					["qgs"] = {
 						6018,	-- Ur'kyo <Priest Trainer>
@@ -391,6 +509,27 @@ root("Zones", m(KALIMDOR, {
 					["classes"] = { MAGE },
 					["isBreadcrumb"] = true,
 					["lvl"] = 26,
+				}),
+				q(5301, {	-- The Art of the Armorsmith (H)
+					["qg"] = 11177,	-- Okothos Ironrager
+					["altQuests"] = {
+						5283,	-- The Art of the Armorsmith (A)
+						5284,	-- The Way of the Weaponsmith (A)
+						5302,	-- The Way of the Weaponsmith (H)
+					},
+					-- #if BEFORE 4.0.3
+					["description"] = "Upon finishing this quest, you will become a Armorsmith and be locked out of becoming a Weaponsmith.",
+					-- #endif
+					["coord"] = { 79.8, 23.8, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 7937, 4 },	-- Ornate Mithril Helm
+						{ "i", 7936, 2 },	-- Ornate Mithril Boots
+						{ "i", 7935, 1 },	-- Ornate Mithril Breastplate
+					},
+					["lvl"] = 40,
 				}),
 				q(235, {	-- The Ashenvale Hunt
 					["qg"] = 10880,	-- Warcaller Gorlach
@@ -466,6 +605,23 @@ root("Zones", m(KALIMDOR, {
 						-- #endif
 					},
 				}),
+				q(2756, {	-- The Old Ways
+					["qg"] = 7792,	-- Aturk the Anvil
+					["coord"] = { 80.6, 23.2, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 7963, 4 },	-- Steel Breastplate
+						{ "i", 7922, 4 },	-- Steel Plate Helm
+					},
+					["lvl"] = 40,
+					["groups"] = {
+						recipe(9957, {	-- Orcish War Leggings
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
+				}),
 				q(1963, {	-- The Shattered Hand (1/2)
 					["qg"] = 6446,	-- Therzok
 					["sourceQuest"] = 1859,	-- Therzok
@@ -531,6 +687,28 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["qg"] = 4485,	-- Belgrom Rockmaul
 				}),
+				q(5302, {	-- The Way of the Weaponsmith (H)
+					["qg"] = 11178,	-- Borgosh Corebender
+					["altQuests"] = {
+						5283,	-- The Art of the Armorsmith (A)
+						5301,	-- The Art of the Armorsmith (H)
+						5284,	-- The Way of the Weaponsmith (A)
+					},
+					-- #if BEFORE 4.0.3
+					["description"] = "Upon finishing this quest, you will become a Weaponsmith and be locked out of becoming an Armorsmith.",
+					-- #endif
+					["coord"] = { 79.6, 23.6, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 3853, 4 },	-- Moonsteel Broadsword
+						{ "i", 3855, 4 },	-- Massive Iron Axe
+						{ "i", 7941, 2 },	-- Heavy Mithril Axe
+						{ "i", 7945, 2 },	-- Big Black Mace
+					},
+					["lvl"] = 40,
+				}),
 				q(6611, {	-- To Gadgetzan You Go!
 					["qg"] = 3399,	-- Zamja
 					-- #if AFTER CATA
@@ -542,6 +720,32 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 35,
+				}),
+				q(2753, {	-- Trampled Under Foot
+					["qg"] = 7790,	-- Orokk Omosh
+					["sourceQuest"] = 2752,	-- On Iron Pauldrons
+					["coords"] = {
+						-- #if AFTER CATA
+						{ 76.2, 37.4, ORGRIMMAR },
+						-- #else
+						{ 79.4, 22.4, ORGRIMMAR },
+						-- #endif
+					},
+					["requireSkill"] = BLACKSMITHING,
+					["races"] = HORDE_ONLY,
+					["cost"] = {
+						{ "i", 3836, 4 },	-- Green Iron Helm
+						{ "i", 3835, 4 },	-- Green Iron Bracers
+						{ "i", 3842, 2 },	-- Green Iron Leggings
+					},
+					["lvl"] = 32,
+					["groups"] = {
+						i(7981, {	-- Plans: Barbaric Iron Boots (RECIPE!)
+							-- #if ANYCLASSIC
+							["description"] = "This item can be sold on the Neutral Auction House to Alliance Blacksmiths for a... nominal fee.\n\nOnly naturally accessible to Horde Blacksmiths.",
+							-- #endif
+						}),
+					},
 				}),
 				q(1944, {	-- Waters of Xavian
 					["qg"] = 5885,	-- Deino <Mage Trainer>

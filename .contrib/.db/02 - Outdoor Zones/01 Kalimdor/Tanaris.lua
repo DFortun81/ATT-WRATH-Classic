@@ -279,6 +279,22 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 42,
 				}),
+				q(7652, {	-- A Blue Light Bargain
+					["qg"] = 14567,	-- Derotain Mudsipper
+					-- #if AFTER TBC
+					["sourceQuests"] = {
+						10891,	-- Imperial Plate Armor [A]
+						10892,	-- Imperial Plate Armor [H]
+					},
+					-- #endif
+					-- #if BEFORE 4.0.3
+					["description"] = "You need 265 Blacksmithing. Does not require a specialization.",
+					-- #endif
+					["timeline"] = { "added 1.11.1.10772", "removed 4.0.3" },
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["requireSkill"] = BLACKSMITHING,
+					["lvl"] = 50,
+				}),
 				q(2748, {	-- A Fine Egg
 					["qg"] = 7763,	-- Curgle Cranklehop
 					["sourceQuest"] = 2741,	-- The Super Egg-O-Matic
@@ -290,6 +306,23 @@ root("Zones", m(KALIMDOR, {
 					["lvl"] = 42,
 					["groups"] = {
 						i(9540),	-- Box of Spells
+					},
+				}),
+				q(2771, {	-- A Good Head On Your Shoulders
+					["qg"] = 7804,	-- Trenton Lighthammer
+					["sourceQuest"] = 2760,	-- The Mithril Order
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 7931, 2 },	-- Mithril Coif
+						{ "i", 7928, 1 },	-- Ornate Mithril Shoulder
+					},
+					["lvl"] = 40,
+					["groups"] = {
+						recipe(9980, {	-- Ornate Mithril Helm
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				q(2747, {	-- An Extraordinary Egg
@@ -414,6 +447,23 @@ root("Zones", m(KALIMDOR, {
 				q(2661, {	-- Delivery for Marin
 					["lvl"] = 44,
 				}),
+				q(3321, {	-- Did You Lose This?
+					["qg"] = 7804,	-- Trenton Lighthammer
+					["sourceQuests"] = {
+						2771,	-- A Good Head On Your Shoulders
+						2773,	-- The Mithril Kid
+						2772,	-- The World At Your Feet
+					},
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["lvl"] = 40,
+					["groups"] = {
+						i(10418, {	-- Glimmering Mithril Insignia
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
+				}),
 				q(351, {	-- Find OOX-17/TN!
 					["lvl"] = 43,
 					["provider"] = { "i", 8623 },	-- OOX-17/TN Distress Beacon
@@ -438,6 +488,118 @@ root("Zones", m(KALIMDOR, {
 						{ "i", 9507, 1 },	-- A Carefully-packed Crate
 					},
 					["lvl"] = 42,
+				}),
+				q(7653, {	-- Imperial Plate Belt
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 20 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12688, {	-- Plans: Imperial Plate Belt (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
+				}),
+				q(7654, {	-- Imperial Plate Boots
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 40 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12700, {	-- Plans: Imperial Plate Boots (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
+				}),
+				q(7655, {	-- Imperial Plate Bracer
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 20 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12690, {	-- Plans: Imperial Plate Bracer (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
+				}),
+				q(7656, {	-- Imperial Plate Chest
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 60 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12705, {	-- Plans: Imperial Plate Chest (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
+				}),
+				q(7657, {	-- Imperial Plate Helm
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 50 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12701, {	-- Plans: Imperial Plate Helm (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
+				}),
+				q(7658, {	-- Imperial Plate Leggings
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 60 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12715, {	-- Plans: Imperial Plate Leggings (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
+				}),
+				q(7659, {	-- Imperial Plate Shoulders
+					["qg"] = 14567,	-- Derotain Mudsipper
+					["sourceQuest"] = 7652,	-- A Blue Light Bargain
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 12359, 20 },	-- Thorium Bar
+					},
+					["lvl"] = 50,
+					["groups"] = {
+						i(12687, {	-- Plans: Imperial Plate Shoulders (RECIPE!)
+							["timeline"] = { "removed 4.0.3" },	-- Moved to trainer!
+						}),
+					},
 				}),
 				q(2606, {	-- In Good Taste
 					["lvl"] = 44,
@@ -650,6 +812,23 @@ root("Zones", m(KALIMDOR, {
 						i(16739),	-- Rugwood Mantle
 					},
 				}),
+				q(2773, {	-- The Mithril Kid
+					["qg"] = 7804,	-- Trenton Lighthammer
+					["sourceQuest"] = 2760,	-- The Mithril Order
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 7930, 2 },	-- Heavy Mithril Breastplate
+						{ "i", 7927, 1 },	-- Ornate Mithril Gloves
+					},
+					["lvl"] = 40,
+					["groups"] = {
+						recipe(9972, {	-- Ornate Mithril Breastplate
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
+				}),
 				q(3638, {	-- The Pledge of Secrecy
 					["qg"] = 8126,	-- Nixx Sprocketspring <Master Goblin Engineer>
 					["sourceQuests"] = {
@@ -737,6 +916,23 @@ root("Zones", m(KALIMDOR, {
 					["lvl"] = 44,
 					["qg"] = 7564,	-- Marin Noggenfogger
 					["coord"] = { 51.8, 28.6, TANARIS },
+				}),
+				q(2772, {	-- The World At Your Feet
+					["qg"] = 7804,	-- Trenton Lighthammer
+					["sourceQuest"] = 2760,	-- The Mithril Order
+					["coord"] = { 51.4, 28.7, TANARIS },
+					["timeline"] = { "removed 4.0.3" },
+					["requireSkill"] = BLACKSMITHING,
+					["cost"] = {
+						{ "i", 7933, 2 },	-- Heavy Mithril Boots
+						{ "i", 7926, 1 },	-- Ornate Mithril Pants
+					},
+					["lvl"] = 40,
+					["groups"] = {
+						recipe(9979, {	-- Ornate Mithril Boots
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
 				}),
 				q(3362, {	-- Thistleshrub Valley
 					["lvl"] = 45,
