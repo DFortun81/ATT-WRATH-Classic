@@ -745,10 +745,13 @@ root("Zones", m(KALIMDOR, {
 						6609,	-- I Got Nothin' Left!
 						6608,	-- You Too Good.
 					},
-					["requireSkill"] = FISHING,
-					["description"] = "Requires 225 Fishing to start this quest.",
+					-- #if AFTER 3.1.0.9637
+					["altQuests"] = { 13826 },	-- Nat Pagle, Angler Extreme
+					-- #endif
 					["coord"] = { 58.6, 60.0, DUSTWALLOW_MARSH },
+					["description"] = "Requires 225 Fishing to start this quest.",
 					["maps"] = { FERALAS, SWAMP_OF_SORROWS, DESOLACE, STRANGLETHORN_VALE },
+					["requireSkill"] = FISHING,
 					["lvl"] = 35,
 					["groups"] = {
 						objective(1, {	-- 0/1 Feralas Ahi
@@ -771,6 +774,22 @@ root("Zones", m(KALIMDOR, {
 							["coord"] = { 26.3, 67.8, STRANGLETHORN_VALE },
 						}),
 						recipe(18248, { ["rank"] = 4 }),	-- Fishing (Artisan)
+						i(45858, {	-- Nat's Lucky Fishing Pole
+							["timeline"] = { "added 3.1.0.9637" },
+						}),
+					},
+				}),
+				q(13826, {	-- Nat Pagle, Angler Extreme
+					["qg"] = 12919,	-- Nat Pagle
+					["coord"] = { 58.6, 60.2, DUSTWALLOW_MARSH },
+					["description"] = "If you deleted your fishing pole from the old version of the quest, you can get a new one by completing this quest.",
+					["timeline"] = { "added 3.1.0.9637" },
+					["requireSkill"] = FISHING,
+					["lvl"] = 35,
+					["groups"] = {
+						i(45858, {	-- Nat's Lucky Fishing Pole
+							["timeline"] = { "added 3.1.0.9637" },
+						}),
 					},
 				}),
 				applyclassicphase(TBC_PHASE_ONE, q(11210, {	-- Oh, It's Real
