@@ -789,13 +789,20 @@ root("Achievements", {
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 939, 938, 940); end]],
 			-- #else
-			["sym"] = {
-				{"select","achievementID",
-					939,	-- Hills Like White Elekk
-					938,	-- The Snows of Northrend
-					940,	-- The Green Hills of Stranglethorn
-				},
+			["maps"] = {
+				NAGRAND,
+				-- #if AFTER CATA
+				NORTHERN_STRANGLETHORN,
+				-- #else
+				STRANGLETHORN_VALE,
+				-- #endif
+				SHOLAZAR_BASIN,
 			},
+			["sym"] = { {"select","achievementID",
+				939,	-- Hills Like White Elekk
+				938,	-- The Snows of Northrend
+				940,	-- The Green Hills of Stranglethorn
+			}},
 			-- #endif
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(1576, {	-- Of Blood and Anguish
