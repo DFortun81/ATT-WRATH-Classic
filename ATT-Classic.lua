@@ -3431,6 +3431,12 @@ local function AttachTooltip(self)
 							elseif guid == "Player-4372-00006B41" then
 								local leftSide = _G[self:GetName() .. "TextLeft1"];
 								if leftSide then leftSide:SetText("|cffF58CBA" .. UnitName(target) .. " the Huggler|r"); end
+							elseif guid == "Player-4647-031D0890" then
+								local leftSide = _G[self:GetName() .. "TextLeft1"];
+								if leftSide then leftSide:SetText("|cff665a2c" .. UnitName(target) .. " the Time-Loser|r"); end
+								local rightSide = _G[self:GetName() .. "TextRight2"];
+								if rightSide then rightSide:SetText(GetCollectionIcon(0)); end
+								self:AddLine("This scumbag abused an auto-invite addon to steal the Time-Lost Proto Drake from a person that had them on their friends list. ATT has deemed this unacceptable behaviour and will forever stain this player's reputation so long as they remain on the server.", 0.4, 0.8, 1, true);
 							end
 						elseif type == "Creature" or type == "Vehicle" then
 							if app.Settings:GetTooltipSetting("creatureID") then self:AddDoubleLine(L["CREATURE_ID"], tostring(npcID)); end
