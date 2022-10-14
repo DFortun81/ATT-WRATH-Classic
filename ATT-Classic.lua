@@ -4090,7 +4090,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	end
 	local onTooltipForAchievement = function(t)
 		local achievementID = t.achievementID;
-		if achievementID then
+		if achievementID and IsShiftKeyDown() then
 			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
 			GameTooltip:AddLine(" ", 1, 1, 1);
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
