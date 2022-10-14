@@ -13179,6 +13179,19 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 					end
 				end
 				
+				local difficultyID = (IsInInstance() and select(3, GetInstanceInfo())) or (EJ_GetDifficulty and EJ_GetDifficulty()) or 0;
+				if difficultyID ~= 0 then
+					for _,row in ipairs(header.g) do
+						if row.difficultyID or row.difficulties then
+							if (row.difficultyID or -1) == difficultyID or (row.difficulties and containsValue(row.difficulties, difficultyID)) then
+								if not row.expanded then ExpandGroupsRecursively(row, true, true); expanded = true; end
+							elseif row.expanded then
+								ExpandGroupsRecursively(row, false, true);
+							end
+						end
+					end
+				end
+				
 				-- Check to see completion...
 				BuildGroups(self.data, self.data.g);
 				UpdateGroups(self.data, self.data.g);

@@ -1854,6 +1854,23 @@ root("Achievements", {
 		}),
 		achcat(171, {	-- Fishing
 			applyclassicphase(WRATH_PHASE_ONE, ach(1516, {	-- Accomplished Angler
+				-- Meta Achievement
+				["sym"] = {{"meta_achievement",
+					1561,		-- 1000 Fish
+					1243,		-- Fish Don't Leave Footprints
+					130,		-- Grand Master Fisherman / Northrend Fisherman
+					306,		-- Master Angler of Azeroth
+					726,		-- Mr. Pinchy's Magical Crawdad Box
+					1517,		-- Northrend Angler
+					905,		-- Old Man Barlowned
+					878,		-- One That Didn't Get Away
+					1225,		-- Outland Angler
+					2096,		-- The Coin Master
+					150,		-- The Fishing Diplomat
+					144,		-- The Lurker Above
+					153,		-- The Old Gnome and the Sea
+					1257,		-- The Scavenger
+				}},
 				["requireSkill"] = FISHING,
 				["groups"] = {
 					-- #if AFTER CATA
@@ -1921,6 +1938,7 @@ root("Achievements", {
 				["rank"] = 1000,
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1517, {	-- Northrend Angler
+				["maps"] = { BOREAN_TUNDRA, DRAGONBLIGHT, HOWLING_FJORD, GRIZZLY_HILLS, CRYSTALSONG_FOREST, SHOLAZAR_BASIN },
 				["requireSkill"] = FISHING,
 			})),
 			ach(878, {	-- One That Didn't Get Away
