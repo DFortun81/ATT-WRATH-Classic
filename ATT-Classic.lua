@@ -733,6 +733,9 @@ local function BuildSourceText(group, l)
 				end
 				return BuildSourceText(parent, l + 1) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
 			end
+			if parent.difficultyID then
+				return BuildSourceText(parent, l + 1);
+			end
 			if parent.parent then
 				return BuildSourceText(parent, l + 1) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
 			end
@@ -3312,15 +3315,19 @@ local function AttachTooltipRawSearchResults(self, lineNumber, group)
 	if group then
 		-- If there was info text generated for this search result, then display that first.
 		if group.tooltipInfo and #group.tooltipInfo > 0 then
-			local left, right;
-			local name = self:GetName() .. "TextLeft";
+			local left, right, o;
+			local leftname = self:GetName() .. "TextLeft";
+			local rightname = self:GetName() .. "TextRight";
 			for i,entry in ipairs(group.tooltipInfo) do
 				local found = false;
 				left = entry.left;
 				for i=self:NumLines(),1,-1 do
-					if _G[name..i]:GetText() == left then
-						found = true;
-						break;
+					if _G[leftname..i]:GetText() == left then
+						o = _G[rightname..i];
+						if o and o:GetText() == entry.right then
+							found = true;
+							break;
+						end
 					end
 				end
 				if not found then
