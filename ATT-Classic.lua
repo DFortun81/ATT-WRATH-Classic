@@ -3810,8 +3810,18 @@ local function RefreshSaves()
 	for guid,character in pairs(ATTCharacterData) do
 		local locks = character.Lockouts;
 		if locks then
-			for name,lock in pairs(locks) do
-				if serverTime >= lock.reset then
+			for name,instance in pairs(locks) do
+				local count = 0;
+				for difficulty,lock in pairs(instance) do
+					if lock.reset and serverTime >= lock.reset then
+						-- Clean this up.
+						instance[difficulty] = nil;
+					else
+						count = count + 1;
+					end
+				end
+				if count == 0 then
+					-- Clean this up.
 					locks[name] = nil;
 				end
 			end
