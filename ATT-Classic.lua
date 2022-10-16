@@ -3837,21 +3837,77 @@ local function RefreshSaves()
 		local name, id, reset, difficulty, locked, _, _, isRaid, _, _, numEncounters = GetSavedInstanceInfo(instanceIter);
 		if locked then
 			-- Update the name of the instance and cache the lock for this instance
+			difficulty = difficulty or 7;
 			name = converter[name] or name;
 			reset = serverTime + reset;
-			local lock = myLockouts[name];
+			local locks = myLockouts[name];
+			if not locks then
+				locks = {};
+				myLockouts[name] = locks;
+			end
+
+			-- Create the lock for this difficulty
+			local lock = locks[difficulty];
 			if not lock then
 				lock = { ["id"] = id, ["reset"] = reset, ["encounters"] = {}};
-				myLockouts[name] = lock;
+				locks[difficulty] = lock;
+			else
+				lock.id = id;
+				lock.reset = reset;
 			end
 			
-			-- Check Encounter locks
-			for encounterIter=1,numEncounters do
-				local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
-				if not lock.encounters[encounterIter] then
-					table.insert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-				elseif isKilled then
-					lock.encounters[encounterIter].isKilled = true;
+			-- If this is LFR, then don't share.
+			if difficulty == 7 or difficulty == 17 then
+				if #lock.encounters == 0 then
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+					end
+				else
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						if not lock.encounters[encounterIter] then
+							tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+						elseif isKilled then
+							lock.encounters[encounterIter].isKilled = true;
+						end
+					end
+				end
+			else
+				-- Create the pseudo "shared" lock
+				local shared = locks["shared"];
+				if not shared then
+					shared = {};
+					shared.id = id;
+					shared.reset = reset;
+					shared.encounters = {};
+					locks["shared"] = shared;
+
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+
+						-- Shared Encounter is always assigned if this is the first lock seen for this instance
+						tinsert(shared.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+					end
+				else
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						if not lock.encounters[encounterIter] then
+							tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+						elseif isKilled then
+							lock.encounters[encounterIter].isKilled = true;
+						end
+						if not shared.encounters[encounterIter] then
+							tinsert(shared.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+						elseif isKilled then
+							shared.encounters[encounterIter].isKilled = true;
+						end
+					end
 				end
 			end
 		end
