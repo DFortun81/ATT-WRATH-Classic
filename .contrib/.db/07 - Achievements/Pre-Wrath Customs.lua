@@ -1564,16 +1564,16 @@ root("Achievements", {
 				-- #if BEFORE 4.0.1
 				2187,	-- The Undying
 				-- #endif
-				578,	-- The Dedicated Few (10 player)
+				--578,	-- The Dedicated Few (10 player)
 				1858,	-- Arachnophobia (10 player)
 				1856,	-- Make Quick Werk of Him (10 player)
 				1996,	-- The Safety Dance (10 player)
 				1997,	-- Momma Said Knock You Out (10 player)
 				2178,	-- Shocking! (10 player)
-				2180,	-- Subtraction (10 player)
+				--2180,	-- Subtraction (10 player)
 				622,	-- The Spellweaver's Downfall (10 player)
 				1874,	-- You Don't Have an Eternity (10 player)
-				1869,	-- A Poke in the Eye (10 player)
+				--1869,	-- A Poke in the Eye (10 player)
 				2047,	-- Gonna Go When the Volcano Blows (10 player)
 				2051,	-- The Twilight Zone (10 player)
 				2146,	-- The Hundred Club (10 player)
@@ -1603,7 +1603,7 @@ root("Achievements", {
 		applyclassicphase(WRATH_PHASE_ONE, ach(2138, {	-- Glory of the Raider (25 player)
 			-- Meta Achievement
 			["sym"] = {{"meta_achievement",
-				579,	-- The Dedicated Few (25 player)
+				--579,	-- The Dedicated Few (25 player)
 				1859,	-- Arachnophobia (25 player)
 				1857,	-- Make Quick Werk of Him (25 player)
 				-- #if BEFORE 4.0.1
@@ -1613,10 +1613,10 @@ root("Achievements", {
 				2140,	-- Momma Said Knock You Out (25 player)
 				2179,	-- Shocking! (25 player)
 				2177,	-- And They Would All Go Down Together (25 player)
-				2181,	-- Subtraction (25 player)
+				--2181,	-- Subtraction (25 player)
 				623,	-- The Spellweaver's Downfall (25 player)
 				1875,	-- You Don't Have an Eternity (25 player)
-				1870,	-- A Poke in the Eye (25 player)
+				--1870,	-- A Poke in the Eye (25 player)
 				2048,	-- Gonna Go When the Volcano Blows (25 player)
 				2149,	-- Denyin' the Scion (25 player)
 				2054,	-- The Twilight Zone (25 player)
