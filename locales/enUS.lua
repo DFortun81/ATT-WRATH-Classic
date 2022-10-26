@@ -665,6 +665,7 @@ app.L = {
 		[-395] = "Interface\\Icons\\achievement_dungeon_crimsonhall",						-- The Crimson Halls
 		[-396] = "Interface\\Icons\\achievement_dungeon_icecrown_frostwinghalls",			-- The Frostwing Halls
 		[-420] = "Interface\\Icons\\INV_Chest_Plate03",								-- Tier 0.5 Sets
+		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
 		[-531] = "Interface\\Icons\\inv_jewelry_amulet_03",							-- Spirit of Competition
 		[-532] = "Interface\\Icons\\ability_shaman_stormstrike",					-- Heroes of the Storm
 		[-533] = "Interface\\Icons\\Inv_misc_rune_01",								-- Hearthstone
@@ -820,6 +821,7 @@ app.L = {
 		[-423] = "The Four Horsemen",											-- The Four Horsemen
 
 -- Blizzard Events and Anniversaries
+		[-523] = "Elemental Unrest",											-- Elemental Unrest
 		[-531] = "Spirit of Competition",
 		[-532] = "Heroes of the Storm",
 		[-533] = "Hearthstone",
@@ -1206,6 +1208,7 @@ app.L = {
 		[33] = {2, "|CFFAAFFAAThis was not available until Phase 4 of Wrath Classic.|r", "Phase 4", 30400, 30403, "\n \n|CFFFFAAAAIncluded Icecrown Citadel.|r" },
 		[3301] = {2, "|CFFAAFFAAThe wielder of this Axe silently mourns for all the people that don't have it.|r", "Shadowmourne Prio", 30400, 30403, "\n \n|CFFFFAAAADue to the exclusivity of Shadowmourne and how prio isn't always given to collectors over sweaties, Crieve decided it was appropriate for now to provide a filter to reduce guild drama.\n\nThis filter will be defaulted on after cata prepatch.\n\nIf you do actually have Shadowmourne prio, simply turn this on.|r" },
 		[34] = {2, "|CFFAAFFAAThis was not available until Phase 5 of Wrath Classic.|r", "Phase 5", 30400, 30404, "\n \n|CFFFFAAAAIncluded The Ruby Sanctum...?|r" },
+		[35] = {2, "|CFFAAFFAAThis was not available until Phase 6 of Wrath Classic.|r", "Phase 6", 30400, 30404, "\n \n|CFFFFAAAAThe Elemental Unrest Pre-Expansion Event?|r" },
 
 		-- Seasonal Filters
 		[1000] = {4, "|CFF00FFDEThis requires the Brewfest Holiday to be Active.|r", "Brewfest" },

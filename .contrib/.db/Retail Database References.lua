@@ -79,11 +79,12 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 06 - Expansion Features\\02 Wrath of the Lich King\\Argent Tournament.lua
 
 -- World Events
--- #IMPORT: 07 - Events\\The Ahn'Qiraj War Effort\\The Ahn'Qiraj War Effort.lua
--- #IMPORT: 07 - Events\\The Opening of the Dark Portal\\The Opening of the Dark Portal.lua
--- #IMPORT: 07 - Events\\The Scepter of the Shifting Sands\\The Scepter of the Shifting Sands.lua
--- #IMPORT: 07 - Events\\The Scourge Invasion\\The Scourge Invasion.lua
--- #IMPORT: 07 - Events\\The Silithyst Must Flow\\The Silithyst Must Flow.lua
+-- #IMPORT: 07 - Events\\Elemental Unrest\\
+-- #IMPORT: 07 - Events\\The Ahn'Qiraj War Effort\\
+-- #IMPORT: 07 - Events\\The Opening of the Dark Portal\\
+-- #IMPORT: 07 - Events\\The Scepter of the Shifting Sands\\
+-- #IMPORT: 07 - Events\\The Scourge Invasion\\
+-- #IMPORT: 07 - Events\\The Silithyst Must Flow\\
 -- #IMPORT: 07 - Events\\WoW Anniversary\\04th Anniversary.lua
 -- #IMPORT: 07 - Events\\WoW Anniversary\\05th Anniversary.lua
 -- #IMPORT: 07 - Events\\WoW Anniversary\\06th Anniversary.lua
