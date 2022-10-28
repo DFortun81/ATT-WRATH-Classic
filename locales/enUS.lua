@@ -666,6 +666,7 @@ app.L = {
 		[-396] = "Interface\\Icons\\achievement_dungeon_icecrown_frostwinghalls",			-- The Frostwing Halls
 		[-420] = "Interface\\Icons\\INV_Chest_Plate03",								-- Tier 0.5 Sets
 		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
+		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",						-- Operation: Gnomeregan
 		[-531] = "Interface\\Icons\\inv_jewelry_amulet_03",							-- Spirit of Competition
 		[-532] = "Interface\\Icons\\ability_shaman_stormstrike",					-- Heroes of the Storm
 		[-533] = "Interface\\Icons\\Inv_misc_rune_01",								-- Hearthstone
@@ -822,6 +823,7 @@ app.L = {
 
 -- Blizzard Events and Anniversaries
 		[-523] = "Elemental Unrest",											-- Elemental Unrest
+		[-524] = "Operation: Gnomeregan",										-- Operation: Gnomeregan
 		[-531] = "Spirit of Competition",
 		[-532] = "Heroes of the Storm",
 		[-533] = "Hearthstone",
