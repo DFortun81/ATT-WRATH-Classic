@@ -617,6 +617,7 @@ app.L = {
 		[-60] = app.asset("Holiday_Pilgrim"),												-- Pilgrim's Bounty
 		[-61] = app.asset("Holiday_winter_veil"),											-- Feast of Winter Veil
 		[-62] = "Interface\\Icons\\inv_misc_fish_06",										-- Stranglethorn Fishing Extravaganza
+		[-63] = "Interface\\Icons\\inv_fishingpole_03",										-- Kalu'ak Fishing Derby
 		[-69] = "Interface\\Icons\\spell_arcane_portalironforge",							-- Maraudon Purple
 		[-70] = "Interface\\Icons\\INV_Misc_Gem_Opal_01",									-- Orange
 		[-71] = "Interface\\Icons\\INV_Misc_Gem_Amethyst_02",								-- Purple
@@ -769,6 +770,7 @@ app.L = {
 		[-60] = "Pilgrim's Bounty",												-- Pilgrim's Bounty
 		[-61] = "Feast of Winter Veil",											-- Feast of Winter Veil
 		[-62] = "Stranglethorn Fishing Extravaganza",
+		[-63] = "Kalu'ak Fishing Derby",
 		
 		[-69] = "Maraudon Portal",												-- Maraudon Portal
 		[-70] = DUNGEON_FLOOR_DESOLACE22 .. " [Orange]",						-- Foulspore Cavern [Orange]
@@ -1233,5 +1235,6 @@ app.L = {
 		[1015] = {4, "|CFF00FFDEThis requires the Stranglethorn Fishing Extravaganza to be active.|r", "Stranglethorn Fishing"},
 		[1016] = {4, "|CFFFF0000This requires the Timewalking Event to be active.\nOnly dungeon content released during the active Timewalking expansion will be available.|r", "Timewalking"},
 		[1017] = {4, "|CFF00FFDEThis requires the WoW Anniversary Event to be active.|r", "WoW Anniversary"},
+		[1018] = {4, "|CFF00FFDEThis requires the Kalu'ak Fishing Derby to be active.|r", "Kalu'ak Fishing Derby"},
 	};
 };

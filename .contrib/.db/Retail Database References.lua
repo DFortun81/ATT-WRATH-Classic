@@ -72,6 +72,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 21 - Holidays\\11 - Pilgrim's Bounty\\
 -- #IMPORT: 21 - Holidays\\06 Pirates' Day.lua
 -- #IMPORT: 21 - Holidays\\00b - Stranglethorn Fishing Extravaganza\\
+-- #IMPORT: 21 - Holidays\\Kalu'ak Fishing Derby.lua
 
 -- Expansion Features
 -- #IMPORT: 06 - Expansion Features\\01 Burning Crusade\\Achievements.lua
