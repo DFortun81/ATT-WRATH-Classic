@@ -91,6 +91,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 -- #IMPORT: 07 - Events\\WoW Anniversary\\06th Anniversary.lua
 -- #IMPORT: 07 - Events\\WoW Anniversary\\07th Anniversary.lua
 -- #IMPORT: 07 - Events\\WoW Anniversary\\08th Anniversary.lua
+-- #IMPORT: 07 - Events\\Zalazane's Fall\\
 
 -- Craftables
 -- #IMPORT: 10 - Craftables\\01 - Classic.lua

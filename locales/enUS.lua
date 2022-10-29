@@ -665,6 +665,7 @@ app.L = {
 		[-395] = "Interface\\Icons\\achievement_dungeon_crimsonhall",						-- The Crimson Halls
 		[-396] = "Interface\\Icons\\achievement_dungeon_icecrown_frostwinghalls",			-- The Frostwing Halls
 		[-420] = "Interface\\Icons\\INV_Chest_Plate03",								-- Tier 0.5 Sets
+		[-522] = "Interface\\Icons\\inv_misc_tournaments_banner_troll",						-- Zalazane's Fall
 		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
 		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",						-- Operation: Gnomeregan
 		[-531] = "Interface\\Icons\\inv_jewelry_amulet_03",							-- Spirit of Competition
@@ -822,6 +823,7 @@ app.L = {
 		[-423] = "The Four Horsemen",											-- The Four Horsemen
 
 -- Blizzard Events and Anniversaries
+		[-522] = "Zalazane's Fall",												-- Zalazane's Fall
 		[-523] = "Elemental Unrest",											-- Elemental Unrest
 		[-524] = "Operation: Gnomeregan",										-- Operation: Gnomeregan
 		[-531] = "Spirit of Competition",
