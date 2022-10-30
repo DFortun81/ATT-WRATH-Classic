@@ -2277,8 +2277,16 @@ root("Achievements", {
 			},
 		})),
 	}),
+	-- #if AFTER 4.2.0
 	achcat(ACHIEVEMENT_CATEGORY_PET_BATTLES, {
-		
+		petbattle(ach(5875, {	-- Littlest Pet Shop (150)
+			["timeline"] = { "added 4.2.0" },
+			["groups"] = {
+				i(54810, {	-- Celestial Dragon (PET!)
+					["timeline"] = { "created 3.3.0", "added 4.2.0" },
+				}),
+			},
+		})),
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_COLLECTIONS, {
 		
@@ -2286,6 +2294,7 @@ root("Achievements", {
 	achcat(ACHIEVEMENT_CATEGORY_EXPANSION_FEATURES, {
 		
 	}),
+	-- #endif
 	achcat(ACHIEVEMENT_CATEGORY_FEATS_OF_STRENGTH, {
 		classicAch(2358, {	-- Charger
 			["classes"] = { PALADIN },
@@ -2336,7 +2345,17 @@ root("Achievements", {
 			["timeline"] = { "removed 1.4.0" },
 		})),
 	}),
+	-- #if AFTER 4.1.0
 	achcat(ACHIEVEMENT_CATEGORY_LEGACY, {
 		
 	}),
+	-- #endif
 });
+
+-- #if BEFORE 4.2.0
+root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
+	i(54810, {	-- Celestial Dragon (PET!)
+		["timeline"] = { "created 3.3.0", "added 4.2.0" },
+	}),
+}));
+-- #endif
