@@ -1606,7 +1606,7 @@ ResolveSymbolicLink = function(o)
 							cache = app.SearchForField("questID", assetID);
 						elseif criteriaType == 36 or criteriaType == 42 then
 							criteriaObject.providers = {{ "i", assetID }};
-						elseif criteriaType == 110 then
+						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 then
 							-- Ignored
 						else
 							print("Unhandled Criteria Type", criteriaType, assetID);
@@ -4180,7 +4180,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	end
 	local onTooltipForAchievementCriteria = function(t)
 		local achievementID = t.achievementID;
-		if achievementID then
+		if achievementID and IsShiftKeyDown() then
 			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
 			GameTooltip:AddLine(" ", 1, 1, 1);
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);

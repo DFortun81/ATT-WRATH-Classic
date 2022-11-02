@@ -2080,6 +2080,12 @@ root("ItemSpeciesDB", {
 	[69992] = {
 		["petTypeID"] = 6,
 	},
+	[46820] = {
+		["petTypeID"] = 6,
+	},
+	[46821] = {
+		["petTypeID"] = 6,
+	},
 	[163513] = {
 		["petTypeID"] = 9,
 	},
