@@ -1345,14 +1345,26 @@ addObject = function(o, t)
 	table.insert(t, o);
 	return t;
 end
-appendGroups = function(common, groups)
-	if not groups then groups = {}; end
-	if common then
-		for i,o in ipairs(common) do
+appendGroups = function(...)
+	local data = { ... };
+	local count = #data;
+	if count < 2 then
+		-- Clone the group.
+		local groups = {};
+		for i,o in ipairs(data[1]) do
 			table.insert(groups, o);
 		end
+		return groups;
+	else
+		-- The last element is the one to append into.
+		local groups = data[count];
+		for i=1,count-1,1 do
+			for j,o in ipairs(data[i]) do
+				table.insert(groups, o);
+			end
+		end
+		return groups;
 	end
-	return groups;
 end
 -- Simply applies keys from 'data' into 't' where each key does not already exist
 applyData = function(data, t)
