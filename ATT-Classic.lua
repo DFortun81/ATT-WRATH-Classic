@@ -1330,6 +1330,18 @@ subroutines = {
 			{"is", "itemID"},	-- Only Items
 		};
 	end,
+	["pvp_gear_base"] = function(tierID, headerID1, headerID2)
+		local b = {
+			{ "select", "tierID", tierID },	-- Select the Expansion header
+			{ "pop" },	-- Discard the Expansion header and acquire the children.
+			{ "where", "headerID", headerID1 },	-- Select the Season header
+		};
+		if headerID2 then
+			tinsert(b, { "pop" });	-- Discard the Season header and acquire the children.
+			tinsert(b, { "where", "headerID", headerID2 });	-- Select the Set header
+		end
+		return b;
+	end,
 };
 ResolveSymbolicLink = function(o)
 	if o.resolved then return o.resolved; end
