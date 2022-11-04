@@ -9486,7 +9486,7 @@ UpdateGroup = function(parent, group)
 					visible = true;
 				elseif app.ShowIncompleteThings(group) and not group.saved then
 					visible = true;
-				elseif group.itemID and app.CollectibleLoot and group.f then
+				elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
 					visible = true;
 				end
 			else
@@ -9513,7 +9513,7 @@ UpdateGroup = function(parent, group)
 					if app.ShowIncompleteThings(group) and not group.saved then
 						visible = true;
 					end
-				elseif group.itemID and app.CollectibleLoot and group.f then
+				elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
 					visible = true;
 				elseif app.Settings:Get("DebugMode") then
 					visible = true;
@@ -10798,6 +10798,7 @@ local function RowOnEnter(self)
 				local reason = L["UNOBTAINABLE_ITEM_REASONS"][reference.u];
 				if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then GameTooltip:AddLine(reason[2], 1, 1, 1, true); end
 			end
+			if reference.sym then GameTooltip:AddLine("Right click to view more information.", 0.8, 0.8, 1, true); end
 		end
 		if reference.titleID then
 			if app.Settings:GetTooltipSetting("titleID") then GameTooltip:AddDoubleLine(L["TITLE_ID"], tostring(reference.titleID)); end
