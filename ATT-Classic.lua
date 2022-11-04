@@ -7479,6 +7479,28 @@ local C_Map_GetMapLevels = C_Map.GetMapLevels;
 local C_Map_GetBestMapForUnit = C_Map.GetBestMapForUnit;
 local C_MapExplorationInfo_GetExploredMapTextures = C_MapExplorationInfo.GetExploredMapTextures;
 local C_MapExplorationInfo_GetExploredAreaIDsAtPosition = C_MapExplorationInfo.GetExploredAreaIDsAtPosition;
+local mapIDToMapName, mapIDToAreaID = {}, {
+	[126] = { 4560 },	-- The Underbelly
+	[427] = { 132, 800 },	-- Coldridge Valley, Coldridge Pass
+	[465] = { 154 },	-- Deathknell
+	[425] = { 9 },	-- Northshire Valley
+	[467] = { 3431 },	-- Sunstrider Isle
+	[468] = { 3526, 3527, 3560, 3528, 3559, 3529, 3530, 3561 },	-- Ammen Vale, Crash Site, Ammen Fields, Silverline Lake, Nestlewood Hills, Nestlewood Thicket, Shadow Ridge, The Sacred Grove
+	[348] = { 4095 },	-- Magisters' Terrace
+};
+for mapID,area in pairs(mapIDToAreaID) do
+	local info = C_Map.GetAreaInfo(area[1]);
+	if info then
+		mapIDToMapName[mapID] = info;
+		L.ZONE_TEXT_TO_MAP_ID[info] = mapID;
+		if #area > 1 then
+			for i=2,#area,1 do
+				local info = C_Map.GetAreaInfo(area[i]);
+				if info then L.ALT_ZONE_TEXT_TO_MAP_ID[info] = mapID; end
+			end
+		end
+	end
+end
 app.GetCurrentMapID = function()
 	local real = GetRealZoneText();
 	if real then
@@ -7494,16 +7516,17 @@ app.GetCurrentMapID = function()
 end
 app.GetMapName = function(mapID)
 	if mapID and mapID > 0 then
+		if mapIDToMapName[mapID] then return mapIDToMapName[mapID]; end
 		local info = C_Map_GetMapInfo(mapID);
 		if info then
 			return info.name;
 		else
-			for name,m in pairs(L["ZONE_TEXT_TO_MAP_ID"]) do
+			for name,m in pairs(L.ZONE_TEXT_TO_MAP_ID) do
 				if mapID == m then
 					return name;
 				end
 			end
-			for name,m in pairs(L["ALT_ZONE_TEXT_TO_MAP_ID"]) do
+			for name,m in pairs(L.ALT_ZONE_TEXT_TO_MAP_ID) do
 				if mapID == m then
 					return name;
 				end
