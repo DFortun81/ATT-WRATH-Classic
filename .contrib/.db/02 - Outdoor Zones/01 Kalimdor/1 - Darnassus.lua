@@ -35,7 +35,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 14725,	-- Raedon Duskstriker
 					["coord"] = { 64.0, 23.0, DARNASSUS },
 					["cost"] = { { "i", 4338, 60 } },	-- Mageweave Cloth
-					["timeline"] = { "removed 4.0.3.10000"},
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 40,
 				}),
@@ -43,7 +43,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 14725,	-- Raedon Duskstriker
 					["coord"] = { 64.0, 23.0, DARNASSUS },
 					["cost"] = { { "i", 14047, 60 } },	-- Runecloth
-					["timeline"] = { "removed 4.0.3.10000"},
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 50,
 				}),
@@ -57,7 +57,7 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 					["cost"] = { { "i", 4306, 60 } },	-- Silk Cloth
 					["coord"] = { 64.0, 23.0, DARNASSUS },
-					["timeline"] = { "removed 4.0.3.10000"},
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 26,
 				},
@@ -71,7 +71,7 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 					["cost"] = { { "i", 2592, 60 } },	-- Wool Cloth
 					["coord"] = { 64.0, 23.0, DARNASSUS },
-					["timeline"] = { "removed 4.0.3.10000"},
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 12,
 				},
@@ -81,6 +81,7 @@ root("Zones", m(KALIMDOR, {
 					["cost"] = { { "i", 14047, 20 } },	-- Runecloth
 					["maxReputation"] = { 69, EXALTED },	-- Darnassus, Exalted.
 					["coord"] = { 64.0, 23.0, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["repeatable"] = true,
 					["lvl"] = 50,
@@ -88,6 +89,7 @@ root("Zones", m(KALIMDOR, {
 				q(3763, {	-- Assisting Arch Druid Staghelm [Darnassus]
 					["qg"] = 6735,	-- Innkeeper Saelienne
 					["coord"] = { 67.4, 15.7, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 47,
@@ -95,6 +97,7 @@ root("Zones", m(KALIMDOR, {
 				q(3790, {	-- Assisting Arch Druid Staghelm [Ironforge]
 					["qg"] = 5111,	-- Innkeeper Firebrew
 					["coord"] = { 18.1, 51.5, IRONFORGE },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 47,
@@ -102,32 +105,39 @@ root("Zones", m(KALIMDOR, {
 				q(3789, {	-- Assisting Arch Druid Staghelm [Stormwind City]
 					["qg"] = 6740,	-- Innkeeper Allison
 					["coord"] = { 60.4, 75.3, STORMWIND_CITY },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 47,
 				}),
-				-- #if AFTER TBC
-				applyclassicphase(TBC_PHASE_ONE, q(10520, {	-- Assisting Arch Druid Staghelm [The Exodar]
+				q(10520, {	-- Assisting Arch Druid Staghelm [The Exodar]
 					["qg"] = 16739,	-- Caregiver Breel <Innkeeper>
 					["coord"] = { 59.6, 19.4, THE_EXODAR },
+					["timeline"] = { "added 2.0.1", "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 47,
-				})),
-				-- #endif
+				}),
 				q(4510, {	-- Calm Before the Storm (2/2)
-					["qg"] = 7740,	-- Gracina Spiritmight
+					["providers"] = {
+						{ "n", 7740 },	-- Gracina Spiritmight
+						{ "i", 11843 },	-- Bank Voucher
+					},
 					["sourceQuest"] = 4508,	-- Calm Before the Storm (1/2)
 					["coord"] = { 42.0, 85.8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 11843, 1 },	-- Bank Voucher
-					},
 					["lvl"] = 50,
 					["groups"] = {
-						i(11870),	-- Oblivion Orb
-						i(11871),	-- Snarkshaw Spaulders
-						i(11872),	-- Eschewal Greaves
+						i(11870, {	-- Oblivion Orb
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(11871, {	-- Snarkshaw Spaulders
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(11872, {	-- Eschewal Greaves
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				q(2242, {	-- Destiny Calls
@@ -138,18 +148,14 @@ root("Zones", m(KALIMDOR, {
 					["maps"] = { TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
 					["classes"] = { ROGUE },
-					["cost"] = {
-						{ "i", 7737, 1 },	-- Sethir's Journal
-					},
 					["lvl"] = 10,
 					["groups"] = {
-						{
-							["itemID"] = 7737,	-- Sethir's Journal
-							["questID"] = 2242,	-- Destiny Calls
-							["cr"] = 6909,	-- Sethir the Ancient
+						objective(1, {	-- 0/1 Sethir's Journal
+							["provider"] = { "i", 7737 },	-- Sethir's Journal
 							["description"] = "This item can only be pickpocketed.",
 							["coord"] = { 37.6, 22.2, TELDRASSIL },
-						},
+							["cr"] = 6909,	-- Sethir the Ancient
+						}),
 						i(7298, {	-- Blade of Cunning
 							["timeline"] = { "removed 4.0.3" },
 						}),
@@ -187,6 +193,8 @@ root("Zones", m(KALIMDOR, {
 				q(2260, {	-- Erion's Behest
 					["qg"] = 4214,	-- Erion Shadewhisper
 					["sourceQuest"] = 2259,	-- Erion Shadewhisper
+					["coord"] = { 34.6, 25.6, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["classes"] = { ROGUE },
 					["isBreadcrumb"] = true,
@@ -208,13 +216,14 @@ root("Zones", m(KALIMDOR, {
 					["_drop"] = { "g" },
 				}),
 				q(952, {	-- Grove of the Ancients
-					["qg"] = 3516,	-- Arch Druid Fandral Staghelm
+					["providers"] = {
+						{ "n", 3516 },	-- Arch Druid Fandral Staghelm
+						{ "i", 5390 },	-- Fandral's Message
+					},
 					["sourceQuest"] = 940,	-- Teldrassil
 					["coord"] = { 34.8, 8.8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5390, 1 },	-- Fandral's Message
-					},
 					["lvl"] = 6,
 				}),
 				q(14085, {	-- Learn to Ride in Darnassus
@@ -231,19 +240,36 @@ root("Zones", m(KALIMDOR, {
 					["races"] = { NIGHTELF },
 					["lvl"] = lvlsquish(20, 20, 10),
 				}),
-				q(4493, {	-- March of the Silithid
-					["lvl"] = 50,
-					["races"] = ALLIANCE_ONLY,
+				q(4493, {	-- March of the Silithid [A]
 					["qg"] = 7740,	-- Gracina Spiritmight
+					["sourceQuest"] = 162,	-- Rise of the Silithid [A]
+					["coord"] = { 42, 85.8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
+					["lvl"] = 50,
+				}),
+				q(1711, {	-- Mathiel's Armor
+					["qg"] = 6142,	-- Mathiel
+					["sourceQuest"] = 1710,	-- Sunscorched Shells
+					["coord"] = { 59.2, 45.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["classes"] = { WARRIOR },
+					["races"] = ALLIANCE_ONLY,
+					["lvl"] = 20,
+					["groups"] = {
+						i(6973, {	-- Fire hardened Leggings
+							["timeline"] = { "removed 4.0.3" },
+						}),
+					},
 				}),
 				q(1582, {	-- Moonglow Vest
 					["qg"] = 6034,	-- Lotherias
-					["requireSkill"] = LEATHERWORKING,
 					-- #if AFTER CATA
 					["coord"] = { 60.4, 37.0, DARNASSUS },
 					-- #else
 					["coord"] = { 64.4, 22.2, DARNASSUS },
 					-- #endif
+					["requireSkill"] = LEATHERWORKING,
 					["races"] = ALLIANCE_ONLY,
 					["cost"] = {
 						{ "i", 2309, 5 },	-- Embossed Leather Boots
@@ -255,17 +281,26 @@ root("Zones", m(KALIMDOR, {
 						i(6710),	-- Pattern: Moonglow Vest
 					},
 				}),
-				q(3781, {	-- Morrowgrain Research
-					["lvl"] = 47,
+				q(3781, {	-- Morrowgrain Research (1/2)
+					["providers"] = {
+						{ "n", 3516 },	-- Arch Druid Fandral Staghelm
+						{ "i", 11103 },	-- Seed Voucher
+					},
+					["sourceQuest"] = 3764,	-- Un'Goro Soil
+					["coord"] = { 34.8, 8.8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
+					["lvl"] = 47,
 					["groups"] = {
 						i(11022),	-- Packet of Tharlendris Seeds
 					},
 				}),
-				q(3785, {	-- Morrowgrain Research
-					["cost"] = {
-						{ "i", 11040, 10 },	-- Morrowgrain
-					},
+				q(3785, {	-- Morrowgrain Research (2/2)
+					["qg"] = 4217,	-- Mathrengyl Bearwalker
+					["sourceQuest"] = 3781,	-- Morrowgrain Research (1/2)
+					["coord"] = { 35.2, 8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["cost"] = { { "i", 11040, 10 } },	-- Morrowgrain
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 47,
 					["groups"] = {
@@ -273,9 +308,14 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(3803, {	-- Morrowgrain to Darnassus
-					["lvl"] = 47,
+					["qg"] = 4217,	-- Mathrengyl Bearwalker
+					["sourceQuest"] = 3785,	-- Morrowgrain Research (2/2)
+					["coord"] = { 35.2, 8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["cost"] = { { "i", 11040, 10 } },	-- Morrowgrain
 					["races"] = ALLIANCE_ONLY,
 					["repeatable"] = true,
+					["lvl"] = 47,
 					["groups"] = {
 						i(11887),	-- Cenarion Circle Cache
 					},
@@ -283,6 +323,7 @@ root("Zones", m(KALIMDOR, {
 				q(6344, {	-- Nessa Shadowsong
 					["qg"] = 4241,	-- Mydrannul
 					["coord"] = { 70.6, 45.3, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = { NIGHTELF },
 					["isBreadcrumb"] = true,
 					["lvl"] = 10,
@@ -306,55 +347,32 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 7313,	-- Priestess A'moora
 					["sourceQuest"] = 1150,	-- Tears of the Moon
 					["coord"] = { 36.4, 86, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 8155, 1 },	-- Sathrah's Sacrifice
-					},
 					["lvl"] = 5,
 					["groups"] = {
-						i(9600),	-- Lace Pants
-						i(9601),	-- Cushioned Boots
+						objective(1, {	-- Offer the sacrifice at the fountain
+							["provider"] = { "i", 8155 },	-- Sathrah's Sacrifice
+						}),
+						i(9600, {	-- Lace Pants
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(9601, {	-- Cushioned Boots
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				q(1692, {	-- Smith Mathiel
-					["lvl"] = 10,
-					["races"] = ALLIANCE_ONLY,
-					["qg"] = 4088,	-- Elanaria
-					["classes"] = { WARRIOR },
+					["providers"] = {
+						{ "n", 4088 },	-- Elanaria
+						{ "i", 6812 },	-- Case of Elunite
+					},
 					["sourceQuest"] = 1686,	-- The Shade of Elura
-					["cost"] = {
-						{ "i", 6812, 1 },	-- Case of Elunite
-					},
-				}),
-				q(1710, {	-- Klockmort's Creation
-					["lvl"] = 20,
-					["races"] = ALLIANCE_ONLY,
+					["coord"] = { 57.4, 34.8, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["classes"] = { WARRIOR },
-					["qg"] = 6142,	-- Mathiel
-					["sourceQuest"] = 1703,	-- Mathiel
-				}),
-				q(1711, {	-- Mathiel's Armor
-					["lvl"] = 20,
 					["races"] = ALLIANCE_ONLY,
-					["classes"] = { WARRIOR },
-					["qg"] = 6142,	-- Mathiel
-					["sourceQuest"] = 1710,	-- Sunscorched Shells
-					["groups"] = {
-						i(6973),	-- Fire hardened Leggings
-					},
-				}),
-				q(1710, {	-- Sunscorched Shells
-					["qg"] = 6142,	-- Mathiel
-					["sourceQuest"] = 1703,	-- Mathiel
-					["maps"] = { THOUSAND_NEEDLES },
-					["races"] = ALLIANCE_ONLY,
-					["classes"] = { WARRIOR },
-					["lvl"] = 20,
-					["groups"] = {
-						objective(1, {	-- 0/20 Sunscorched Shell
-							["provider"] = { "i", 6849 },	-- Sunscorched Shell
-						}),
-					},
+					["lvl"] = 10,
 				}),
 				q(5627, {	-- Stars of Elune / Returning Home [Darnassus]
 					["qgs"] = {
@@ -396,43 +414,59 @@ root("Zones", m(KALIMDOR, {
 					},
 					-- #endif
 				}),
+				q(1710, {	-- Sunscorched Shells
+					["qg"] = 6142,	-- Mathiel
+					["sourceQuest"] = 1703,	-- Mathiel
+					["coord"] = { 59.2, 45.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { THOUSAND_NEEDLES },
+					["classes"] = { WARRIOR },
+					["races"] = ALLIANCE_ONLY,
+					["lvl"] = 20,
+					["groups"] = {
+						objective(1, {	-- 0/20 Sunscorched Shell
+							["provider"] = { "i", 6849 },	-- Sunscorched Shell
+						}),
+					},
+				}),
 				q(2518, {	-- Tears of the Moon
 					["qg"] = 7313,	-- Priestess A'moora
 					["sourceQuest"] = 2519,	-- The Temple of the Moon
 					["coord"] = { 36.4, 86, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["maps"] = { TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 8344, 1 },	-- Silvery Spinnerets
-					},
 					["lvl"] = 5,
 					["groups"] = {
-						{
-							["itemID"] = 8344,	-- Silvery Spinnerets
-							["questID"] = 2518,	-- Tears of the Moon
+						objective(1, {	-- 0/1 Silvery Spinnerets
+							["provider"] = { "i", 8344 },	-- Silvery Spinnerets
 							["cr"] = 7319,	-- Lady Sathrah
 							["coords"] = {
 								{ 38.8, 26.0, TELDRASSIL },
 								{ 42.0, 25.6, TELDRASSIL },
 								{ 48.0, 25.6, TELDRASSIL },
 							},
-						},
+						}),
 					},
 				}),
 				q(942, {	-- The Absent Minded Prospector (4/5)
-					["qg"] = 2912,	-- Chief Archaeologist Greywhisker
+					["providers"] = {
+						{ "n", 2912 },	-- Chief Archaeologist Greywhisker
+						{ "i", 4654 },	-- Mysterious Fossil
+					},
 					["sourceQuest"] = 741,	-- The Absent Minded Prospector (3/5) (Darkshore)
+					["coord"] = { 31.2, 84.2, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["maps"] = { WETLANDS },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 4654, 1 },	-- Mysterious Fossil
-					},
 					["lvl"] = 15,
 				}),
 				q(1039, {	-- The Barrens Port
 					["qg"] = 8026,	-- Thyn'tel Bladeweaver
 					["sourceQuest"] = 1038,	-- Velinde's Effects
 					["coord"] = { 61.8, 39.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { THE_BARRENS },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 25,
 				}),
@@ -440,32 +474,34 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 4088,	-- Elanaria
 					["sourceQuest"] = 1683,	-- Vorlus Vilehoof
 					["coord"] = { 57.8, 34.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["maps"] = { DARKSHORE },
-					["races"] = ALLIANCE_ONLY,
 					["classes"] = { WARRIOR },
-					["cost"] = {
-						{ "i", 6808, 8 },	-- Elunite Ore
-						{ "i", 6809, 1 },	-- Elura's Medallion
-					},
+					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 10,
 					["groups"] = {
-						{
-							["itemID"] = 6809,	-- Elura's Medallion
-							["questID"] = 1686,	-- The Shade of Elura
+						objective(1, {	-- 0/8 Elunite Ore
+							["provider"] = { "i", 6808 },	-- Elunite Ore
+						}),
+						objective(2, {	-- 0/1 Elura's Medallion
+							["provider"] = { "i", 6809 },	-- Elura's Medallion
 							["coord"] = { 31.6, 44.8, DARKSHORE },
 							["cr"] = 6133,	-- Shade of Elura
-						},
+						}),
 					},
 				}),
 				q(2519, {	-- The Temple of the Moon
-					["lvl"] = 5,
-					["races"] = ALLIANCE_ONLY,
 					["qg"] = 7316,	-- Sister Aquinne
+					["coord"] = { 29, 45.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
+					["lvl"] = 5,
 				}),
 				q(730, {	-- Trouble In Darkshore?
 					["qg"] = 2912,	-- Chief Archaeologist Greywhisker
 					["coord"] = { 31.2, 84.2, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 14,
@@ -481,6 +517,8 @@ root("Zones", m(KALIMDOR, {
 						-- #endif
 					},
 					["coord"] = { 35.2, 9.0, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["cost"] = {{ "i", 11018, 20 }},	-- Un'Goro Soil
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 47,
 				}),
@@ -488,19 +526,18 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 8026,	-- Thyn'tel Bladeweaver
 					["sourceQuest"] = 1037,	-- Velinde Starsong (Ashenvale)
 					["coord"] = { 61.8, 39.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5521, 1 },	-- Velinde's Key
-						{ "i", 5520, 1 },	-- Velinde's Journal
-					},
 					["lvl"] = 25,
 					["groups"] = {
-						{
-							["itemID"] = 5520,	-- Velinde's Journal
-							["questID"] = 1038,	-- Velinde's Effects
-							["provider"] = { "o", 19877 },	-- Velinde's Locker
+						objective(1, {	-- 0/1 Velinde's Journal
+							["providers"] = {
+								{ "i", 5520 },	-- Velinde's Journal
+								{ "o", 19877 },	-- Velinde's Locker
+							},
 							["coord"] = { 62.5, 83.1, DARNASSUS },
-						},
+							["cost"] = {{ "i", 5521, 1 }},	-- Velinde's Key
+						}),
 					},
 				}),
 				q(1683, {	-- Vorlus Vilehoof
@@ -522,13 +559,17 @@ root("Zones", m(KALIMDOR, {
 						--1683,	-- Vorlus Vilehoof
 					},
 					["coord"] = { 57.3, 34.6, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { TELDRASSIL },
 					["classes"] = { WARRIOR },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 6805, 1 }, -- Horn of Vorlus
-					},
 					["lvl"] = 10,
 					["groups"] = {
+						objective(1, {	-- 0/1 Horn of Vorlus
+							["provider"] = { "i", 6805 }, -- Horn of Vorlus
+							["coord"] = { 47.2, 63.6, TELDRASSIL },
+							["cr"] = 6128,	-- Vorlus Vilehoof
+						}),
 						-- #if BEFORE CATA
 						recipe(71),		-- Defensive Stance
 						--recipe(7386),	-- Sunder Armor	[TODO: Users are reporting they can't collect this.]
@@ -537,22 +578,36 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(1693, {	-- Weapons of Elunite
-					["lvl"] = 10,
-					["races"] = ALLIANCE_ONLY,
-					["classes"] = { WARRIOR },
 					["qg"] = 6142,	-- Mathiel
 					["sourceQuest"] = 1692,	-- Smith Mathiel
+					["coord"] = { 59.2, 45.4, DARNASSUS },
+					["timeline"] = { "removed 4.0.3" },
+					["classes"] = { WARRIOR },
+					["races"] = ALLIANCE_ONLY,
+					["lvl"] = 10,
 					["groups"] = {
-						i(6966),	-- Elunite Axe
-						i(6967),	-- Elunite Sword
-						i(6968),	-- Elunite Hammer
-						i(6969),	-- Elunite Dagger
+						i(6966, {	-- Elunite Axe
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(6967, {	-- Elunite Sword
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(6968, {	-- Elunite Hammer
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(6969, {	-- Elunite Dagger
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 			}),
 			n(VENDORS, {
 				n(4168, {	-- Elynna <Tailoring Supplies>
+					-- #if AFTER CATA
+					["coord"] = { 60.4, 36.8, DARNASSUS },
+					-- #else
 					["coord"] = { 64.6, 21.6, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(6272),	-- Pattern: Blue Linen Robe
@@ -561,22 +616,34 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				n(4223, {	-- Fyldan <Cooking Supplier>
+					-- #if AFTER CATA
+					["coord"] = { 49.6, 36.6, DARNASSUS },
+					-- #else
 					["coord"] = { 48.5, 21.6, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
+						i(21219),	-- Recipe: Sagefish Delight
 						i(21099),	-- Recipe: Smoked Sagefish
-						i(21219),	-- Pattern: Orange Martial Shirt
 					},
 				}),
 				n(4232, {	-- Glorandiir <Axe Merchant>
+					-- #if AFTER CATA
+					["coord"] = { 60.2, 62.6, DARNASSUS },
+					-- #else
 					["coord"] = { 64.2, 59.0, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(12249),	-- Merciless Axe
 					},
 				}),
 				n(4173, {	-- Landria <Bow Merchant>
+					-- #if AFTER CATA
+					["coord"] = { 59.6, 67.6, DARNASSUS },
+					-- #else
 					["coord"] = { 63.3, 66.3, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(11303),	-- Fine Shortbow
@@ -610,15 +677,32 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				n(4229, {	-- Mythrin'dir <General Trade Supplier>
+					-- #if AFTER CATA
+					["coord"] = { 58.2, 35.0, DARNASSUS },
+					-- #else
 					["coord"] = { 61.0, 17.7, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(11223),	-- Formula: Enchant Bracer - Deflection
-						i(16217),	-- Formula: Enchant Shield - Greater Stamina
+						-- #if AFTER TBC
+						i(20854, {	-- Design: Amulet of the Moon
+							["isLimited"] = true,
+						}),
+						-- #endif
+						i(11223, {	-- Formula: Enchant Bracer - Dodge (RECIPE!) / Formula: Enchant Bracer - Deflection
+							["isLimited"] = true,
+						}),
+						i(16217, {	-- Formula: Enchant Shield - Greater Stamina (RECIPE!)
+							["isLimited"] = true,
+						}),
 					},
 				}),
 				n(4225, {	-- Saenorion <Leatherworking Supplies>
+					-- #if AFTER CATA
+					["coord"] = { 60.0, 37.2, DARNASSUS },
+					-- #else
 					["coord"] = { 63.7, 22.3, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(7451),	-- Pattern: Green Whelp Bracers
@@ -626,7 +710,11 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				n(8665, {	-- Shylenai <Owl Trainer>
+					-- #if AFTER CATA
+					["coord"] = { 64.0, 53.6, DARNASSUS },
+					-- #else
 					["coord"] = { 69.8, 45.4, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(8500),	-- Great Horned Owl
@@ -634,33 +722,58 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				n(4235, {	-- Turian <Thrown Weapons Merchant>
+					-- #if AFTER CATA
+					["coord"] = { 59.6, 67.4, DARNASSUS },
+					-- #else
 					["coord"] = { 62.7, 65.6, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(12247),	-- Broad Bladed Knife
 					},
 				}),
 				n(4226, {	-- Ulthir <Alchemy Supplies>
+					-- #if AFTER CATA
+					["coord"] = { 54.6, 39.6, DARNASSUS },
+					-- #else
 					["coord"] = { 55.8, 24.5, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(5642),	-- Recipe: Free Action Potion
-						i(5643),	-- Recipe: Great Rage Potion
-						i(13477),	-- Recipe: Superior Mana Potion
+						i(5642, {	-- Recipe: Free Action Potion
+							["isLimited"] = true,
+						}),
+						i(5643, {	-- Recipe: Great Rage Potion
+							["isLimited"] = true,
+						}),
+						i(13477, {	-- Recipe: Superior Mana Potion
+							["timeline"] = { "removed 2.0.1" },	-- Moved to Trainers
+						}),
 					},
 				}),
 				n(4228, {	-- Vaean <Enchanting Supplies>
+					-- #if AFTER CATA
+					["coord"] = { 58.6, 14.6, DARNASSUS },
+					-- #else
 					["coord"] = { 58.6, 14.7, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						-- #if BEFORE CATA
 						i(6342),	-- Formula: Enchant Chest - Minor Mana
 						-- #endif
+						i(20753),	-- Formula: Lesser Wizard Oil (RECIPE!)
+						i(20752),	-- Formula: Minor Mana Oil (RECIPE!)
+						i(20758),	-- Formula: Minor Wizard Oil (RECIPE!)
 						i(22307),	-- Pattern: Enchanted Mageweave Pouch
 					},
 				}),
 				n(4175, {	-- Vinasia <Cloth Armor Merchant>
+					-- #if AFTER CATA
+					["coord"] = { 60.8, 72.6, DARNASSUS },
+					-- #else
 					["coord"] = { 60.7, 72.5, DARNASSUS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(12256),	-- Cindercloth Leggings

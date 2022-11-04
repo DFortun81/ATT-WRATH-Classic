@@ -436,7 +436,7 @@ root("Zones", m(KALIMDOR, {
 					["lvl"] = 20,
 				}),
 				-- #endif
-				q(4494, {	-- March of the Silithid
+				q(4494, {	-- March of the Silithid [H]
 					["lvl"] = 50,
 					["races"] = HORDE_ONLY,
 					["qg"] = 7010,	-- Zilzibin Drumlore
