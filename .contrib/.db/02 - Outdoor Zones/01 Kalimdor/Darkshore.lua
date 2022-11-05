@@ -445,7 +445,7 @@ root("Zones", m(KALIMDOR, {
 				}),
 				q(6123, {	-- Gathering the Cure
 					["qg"] = 3702,	-- Alanndarian Nightsong
-					["sourceQuest"] = 6122,	-- The Principal Source
+					["sourceQuest"] = 6122,	-- The Principal Source [A]
 					["coord"] = { 37.6, 40.6, DARKSHORE },
 					["races"] = ALLIANCE_ONLY,
 					["classes"] = { DRUID },

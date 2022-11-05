@@ -814,7 +814,7 @@ root("Zones", m(KALIMDOR, {
 				}),
 				q(6128, {	-- Gathering the Cure
 					["qg"] = 3448,	-- Tonga Runetotem
-					["sourceQuest"] = 6127,	-- The Principal Source
+					["sourceQuest"] = 6127,	-- The Principal Source [H]
 					["coord"] = { 52.2, 31.8, THE_BARRENS },
 					["races"] = HORDE_ONLY,
 					["classes"] = { DRUID },
