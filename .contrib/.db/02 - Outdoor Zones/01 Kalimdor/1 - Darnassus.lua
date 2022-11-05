@@ -24,6 +24,70 @@ root("Zones", m(KALIMDOR, {
 		-- #endif
 		["isRaid"] = true,
 		["groups"] = {
+			-- #if AFTER 4.2.0
+			n(ACHIEVEMENTS, {
+				ach(5848, {	-- Fish or Cut Bait: Darnassus
+					["timeline"] = { "added 4.2.0" },
+					["races"] = ALLIANCE_ONLY,
+					["requireSkill"] = FISHING,
+					["groups"] = {
+						crit(1, { -- Happy as a Clam Digger
+							["_quests"] = { 29321 },
+						}),
+						crit(2, { -- Stocking Up
+							["_quests"] = { 29323 },
+						}),
+						crit(3, { -- The Sister's Pendant
+							["_quests"] = { 29324 },
+						}),
+						crit(4, { -- A Slippery Snack
+							["_quests"] = { 29325 },
+						}),
+						crit(5, { -- An Old Favorite
+							["_quests"] = { 29359 },
+						}),
+					},
+				}),
+				ach(5842, {	-- Let's Do Lunch: Darnassus
+					["timeline"] = { "added 4.2.0" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						crit(1, { -- The Secret to Perfect Kimchi
+							["_quests"] = { 29313 },
+						}),
+						crit(2, { -- Remembering the Ancestors
+							["_quests"] = { 29314 },
+						}),
+						crit(3, { -- Back to Basics
+							["_quests"] = { 29316 },
+						}),
+						crit(4, { -- Ribs for the Sentinels
+							["_quests"] = { 29318 },
+						}),
+						crit(5, { -- Spice Bread Aplenty
+							["_quests"] = { 29357 },
+						}),
+					},
+				}),
+			}),
+			-- #endif
+			-- #if AFTER MOP
+			petbattle(filter(BATTLE_PETS, {
+				p(479, {	-- Elfin Rabbit
+					["crs"] = { 62178 },	-- Elfin Rabbit
+				}),
+				p(478, {	-- Forest Moth
+					["crs"] = { 62177 },	-- Forest Moth
+				}),
+				p(452, {	-- Red-Tailed Chipmunk
+					["crs"] = { 61757 },	-- Red-Tailed Chipmunk
+				}),
+				p(419, {	-- Small Frog
+					["crs"] = { 61071 },	-- Small Frog
+				}),
+			})),
+			-- #endif
 			n(FACTIONS, {
 				faction(69, {	-- Darnassus
 					["icon"] = asset("Achievement_Character_Nightelf_Female"),
@@ -33,6 +97,16 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 				}),
 			}),
+			-- #if AFTER 4.0.1.12984
+			n(FLIGHT_PATHS, {
+				fp(457, {	-- Darnassus, Teldrassil [Alliance]
+					["cr"] = 40552,	-- Leora <Hippogryph Master>
+					["coord"] = { 36.61, 47.82, DARNASSUS },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+				}),
+			}),
+			-- #endif
 			n(QUESTS, {
 				q(7799, {	-- A Donation of Mageweave
 					["qg"] = 14725,	-- Raedon Duskstriker
@@ -78,6 +152,15 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 12,
 				},
+				q(29325, {	-- A Slippery Snack
+					["qg"] = 4156,	-- Astaia
+					["coord"] = { 49.0, 61.0, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = FISHING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+				}),
 				q(7801, {	-- Additional Runecloth [Darnassus]
 					["qg"] = 14725,	-- Raedon Duskstriker
 					["sourceQuest"] = 7800,	-- A Donation of Runecloth
@@ -89,6 +172,23 @@ root("Zones", m(KALIMDOR, {
 					["repeatable"] = true,
 					["lvl"] = 50,
 				}),
+				q(29359, {	-- An Old Favorite
+					["qg"] = 4156,	-- Astaia
+					["coord"] = { 49.0, 61.0, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = FISHING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+				}),
+				-- #if AFTER CATA
+				q(6342, {	-- An Unexpected Gift [CATA+] / Flight to Auberdine
+					["qg"] = 7316,	-- Sister Aquinne
+					["sourceQuest"] = 6341,	-- To Darnassus
+					["coord"] = { 36.0, 53.4, DARNASSUS },
+					["races"] = { NIGHTELF },
+				}),
+				-- #endif
 				q(3763, {	-- Assisting Arch Druid Staghelm [Darnassus]
 					["qg"] = 6735,	-- Innkeeper Saelienne
 					["coord"] = { 67.4, 15.7, DARNASSUS },
@@ -120,6 +220,32 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["isBreadcrumb"] = true,
 					["lvl"] = 47,
+				}),
+				q(29316, {	-- Back to Basics
+					["qg"] = 4210,	-- Alegorn
+					["coord"] = { 50.0, 36.6, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+					["groups"] = {
+						currency(81),	-- Epicurean's Award
+					},
+				}),
+				q(26383, {	-- Breaking Waves of Change [NON-WORGEN]
+					["qg"] = 42936,	-- Sentinel Cordressa Briarbow
+					["coord"] = { 43.8, 76.2, DARNASSUS },
+					["timeline"] = { "added 4.0.3" },
+					["races"] = exclude(WORGEN, ALLIANCE_ONLY),
+					["isBreadcrumb"] = true,
+				}),
+				q(26385, {	-- Breaking Waves of Change [WORGEN]
+					["qg"] = 48736,	-- Genn Greymane
+					["coord"] = { 48.2, 14.6, DARNASSUS },
+					["timeline"] = { "added 4.0.3" },
+					["races"] = { WORGEN },
+					["isBreadcrumb"] = true,
 				}),
 				q(4510, {	-- Calm Before the Storm (2/2)
 					["providers"] = {
@@ -229,6 +355,30 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 6,
 				}),
+				q(29321, {	-- Happy as a Clam Digger
+					["qg"] = 4156,	-- Astaia
+					["coord"] = { 49.0, 61.0, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = FISHING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+				}),
+				q(32664, {	-- Learn to Ride
+					["description"] = "This quest is available to Night Elves upon reaching level 10.",
+					["timeline"] = { "added 5.2.0.16486" },
+					["DisablePartySync"] = true,
+					["isBreadcrumb"] = true,
+					["lockCriteria"] = { 1,
+						"spellID", 33388,	-- Apprentice Riding
+						"spellID", 33391,	-- Journeyman Riding
+						"spellID", 34090,	-- Expert Riding
+						"spellID", 34091,	-- Artisan Riding
+						"spellID", 90265,	-- Master Riding
+					},
+					["races"] = { NIGHTELF },
+					["lvl"] = lvlsquish(10, 10, 10),
+				}),
 				q(14085, {	-- Learn to Ride in Darnassus
 					["provider"] = { "i", 46876 },	-- Riding Training Pamphlet
 					["description"] = "The pamphlet that starts this quest is sent to Night Elves in their Mailbox upon reaching the specified level.",
@@ -243,9 +393,9 @@ root("Zones", m(KALIMDOR, {
 					["races"] = { NIGHTELF },
 					["lvl"] = lvlsquish(20, 20, 10),
 				}),
-				q(4493, {	-- March of the Silithid [A]
+				q(4493, {	-- March of the Silithid [Alliance]
 					["qg"] = 7740,	-- Gracina Spiritmight
-					["sourceQuest"] = 162,	-- Rise of the Silithid [A]
+					["sourceQuest"] = 162,	-- Rise of the Silithid [Alliance]
 					["coord"] = { 42, 85.8, DARNASSUS },
 					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
@@ -346,6 +496,38 @@ root("Zones", m(KALIMDOR, {
 					["repeatable"] = true,
 					["_drop"] = { "g" },
 				}),
+				q(29314, {	-- Remembering the Ancestors
+					["qg"] = 4210,	-- Alegorn
+					["coord"] = { 50.0, 36.6, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+					["groups"] = {
+						currency(81),	-- Epicurean's Award
+					},
+				}),
+				-- #if AFTER CATA
+				q(6343, {	-- Return to Nyoma [CATA+] / Return to Nessa
+					["qg"] = 40552,	-- Leora
+					["sourceQuest"] = 6342,	-- An Unexpected Gift [CATA+] / Flight to Auberdine
+					["coord"] = { 36.5, 47.8, DARNASSUS },
+					["races"] = { NIGHTELF },
+				}),
+				-- #endif
+				q(29318, {	-- Ribs for the Sentinels
+					["qg"] = 4210,	-- Alegorn
+					["coord"] = { 50.0, 36.6, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+					["groups"] = {
+						currency(81),	-- Epicurean's Award
+					},
+				}),
 				q(2520, {	-- Sathrah's Sacrifice
 					["qg"] = 7313,	-- Priestess A'moora
 					["sourceQuest"] = 1150,	-- Tears of the Moon
@@ -377,6 +559,18 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 10,
 				}),
+				q(29357, {	-- Spice Bread Aplenty
+					["qg"] = 4210,	-- Alegorn
+					["coord"] = { 50.0, 36.6, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+					["groups"] = {
+						currency(81),	-- Epicurean's Award
+					},
+				}),
 				q(5627, {	-- Stars of Elune / Returning Home [Darnassus]
 					["qgs"] = {
 						11401,	-- Priestess Alathea <Priest Trainer>
@@ -403,6 +597,7 @@ root("Zones", m(KALIMDOR, {
 						5633,	-- Returning Home [Ironforge]
 						5631,	-- Returning Home [Stormwind City]
 						5632,	-- Returning Home [Stormwind City]
+						-- NOTE: There is 10534 and 10549 also, but these are for DRAENEI and were never found on TBC Classic, so those two were likely never implemented. Starshards was a Night Elf Priest only spell.
 					},
 					["timeline"] = { "removed 3.0.2" },
 					["classes"] = { PRIEST },
@@ -416,6 +611,15 @@ root("Zones", m(KALIMDOR, {
 						},
 					},
 					-- #endif
+				}),
+				q(29323, {	-- Stocking Up
+					["qg"] = 4156,	-- Astaia
+					["coord"] = { 49.0, 61.0, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = FISHING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
 				}),
 				q(1710, {	-- Sunscorched Shells
 					["qg"] = 6142,	-- Mathiel
@@ -432,11 +636,11 @@ root("Zones", m(KALIMDOR, {
 						}),
 					},
 				}),
+				-- #if BEFORE CATA
 				q(2518, {	-- Tears of the Moon
 					["qg"] = 7313,	-- Priestess A'moora
 					["sourceQuest"] = 2519,	-- The Temple of the Moon
 					["coord"] = { 36.4, 86, DARNASSUS },
-					["timeline"] = { "removed 4.0.3" },
 					["maps"] = { TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 5,
@@ -452,6 +656,7 @@ root("Zones", m(KALIMDOR, {
 						}),
 					},
 				}),
+				-- #endif
 				q(942, {	-- The Absent Minded Prospector (4/5)
 					["providers"] = {
 						{ "n", 2912 },	-- Chief Archaeologist Greywhisker
@@ -473,6 +678,18 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 25,
 				}),
+				q(29313, {	-- The Secret to Perfect Kimchi
+					["qg"] = 4210,	-- Alegorn
+					["coord"] = { 50.0, 36.6, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = COOKING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
+					["groups"] = {
+						currency(81),	-- Epicurean's Award
+					},
+				}),
 				q(1686, {	-- The Shade of Elura
 					["qg"] = 4088,	-- Elanaria
 					["sourceQuest"] = 1683,	-- Vorlus Vilehoof
@@ -492,6 +709,15 @@ root("Zones", m(KALIMDOR, {
 							["cr"] = 6133,	-- Shade of Elura
 						}),
 					},
+				}),
+				q(29324, {	-- The Sister's Pendant
+					["qg"] = 4156,	-- Astaia
+					["coord"] = { 49.0, 61.0, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13875" },
+					["requireSkill"] = FISHING,
+					["races"] = ALLIANCE_ONLY,
+					["isDaily"] = true,
+					["lvl"] = 10,
 				}),
 				q(2519, {	-- The Temple of the Moon
 					["qg"] = 7316,	-- Sister Aquinne
@@ -604,7 +830,57 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 			}),
+			-- #if AFTER 4.0.1.12984
+			n(REWARDS, {
+				i(67414, {	-- Bag of Shiny Things
+					["provider"] = { "n", 4156 },	-- Astaia
+					["sourceQuests"] = {
+						29325, -- A Slippery Snack
+						29359, -- An Old Favorite
+						29321, -- Happy as a Clam Digger
+						29323, -- Stocking Up
+						29324, -- The Sister's Pendant
+					},
+					["description"] = "Fishing Daily Quest Reward",
+					["timeline"] = { "added 4.0.1.12984" },
+					["requireSkill"] = FISHING,
+					["groups"] = {
+						i(44983),	-- Strand Crawler
+						i(33820),	-- Weather-Beaten Fishing Hat
+						i(45991),	-- Bone Fishing Pole
+						i(45992),	-- Jeweled Fishing Pole
+						i(67410),	-- Very Unlucky Rock
+					},
+				}),
+			}),
+			-- #endif
+			-- #if AFTER 6.1.0.19508
+			n(TREASURES, {
+				o(240625, {	-- High Priestess' Reliquary
+					["description"] = "Loot the chest on the top floor of the Temple of the Moon, on the wall opposite Tyrande Whisperwind.",
+					["timeline"] = { "added 6.1.0.19508" },
+					["groups"] = {
+						i(122239, {	-- Music Roll: Shalandis Isle
+							["timeline"] = { "added 6.1.0.19508" },
+						}),
+					},
+				}),
+			}),
+			-- #endif
 			n(VENDORS, {
+				n(55285, {	-- Astrid Langstrump <Mountain Horse Handler>
+					["coord"] = { 48.2, 21.8, DARNASSUS },
+					["timeline"] = { "added 4.3.0.14732" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(73838, {	-- Mountain Horse (MOUNT!)
+							["timeline"] = { "added 4.3.0.14732" },
+						}),
+						i(73839, {	-- Swift Mountain Horse (MOUNT!)
+							["timeline"] = { "added 4.3.0.14732" },
+						}),
+					},
+				}),
 				n(4168, {	-- Elynna <Tailoring Supplies>
 					-- #if AFTER CATA
 					["coord"] = { 60.4, 36.8, DARNASSUS },
@@ -612,19 +888,31 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 64.6, 21.6, DARNASSUS },
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "common_recipes_vendor", 3364}, -- Borya <Tailoring Supplies>
+					},
 					["groups"] = {
-						i(6272),	-- Pattern: Blue Linen Robe
-						i(6275),	-- Pattern: Greater Adept's Robe
-						i(10311),	-- Pattern: Orange Martial Shirt
+						i(6272, {	-- Pattern: Blue Linen Robe
+							["isLimited"] = true,
+						}),
+						i(6275, {	-- Pattern: Greater Adept's Robe
+							["isLimited"] = true,
+						}),
+						i(10311, {	-- Pattern: Orange Martial Shirt
+							["isLimited"] = true,
+						}),
 					},
 				}),
-				n(4223, {	-- Fyldan <Cooking Supplier>
+				n(4223, {	-- Fyldan <Cooking Supplies> [TBC+] / Fyldan <Cooking Supplier>
 					-- #if AFTER CATA
 					["coord"] = { 49.6, 36.6, DARNASSUS },
 					-- #else
 					["coord"] = { 48.5, 21.6, DARNASSUS },
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "common_recipes_vendor", 49737}, -- Shazdar <Sous Chef>
+					},
 					["groups"] = {
 						i(21219),	-- Recipe: Sagefish Delight
 						i(21099),	-- Recipe: Smoked Sagefish
@@ -638,7 +926,9 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(12249),	-- Merciless Axe
+						i(12249, {	-- Merciless Axe
+							["isLimited"] = true,
+						}),
 					},
 				}),
 				n(4173, {	-- Landria <Bow Merchant>
@@ -649,9 +939,28 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(11303),	-- Fine Shortbow
-						i(11306),	-- Sturdy Recurve
-						i(11308),	-- Sylvan Shortbow
+						i(11303, {	-- Fine Shortbow
+							["isLimited"] = true,
+						}),
+						i(11306, {	-- Sturdy Recurve
+							["isLimited"] = true,
+						}),
+						i(11308, {	-- Sylvan Shortbow
+							["isLimited"] = true,
+						}),
+					},
+				}),
+				n(52641, {	-- Layna Karner <Blacksmithing Supplies>
+					["coord"] = { 56.6, 52.6, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13682" },
+					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "common_recipes_vendor", 3356}, -- Sumi <Blacksmithing Supplies>
+					},
+					["groups"] = {
+						i(12162, {	-- Plans: Hardened Iron Shortsword (RECIPE!)
+							["isLimited"] = true,
+						}),
 					},
 				}),
 				n(4730, {	-- Lelanai <Saber Handler>
@@ -679,7 +988,51 @@ root("Zones", m(KALIMDOR, {
 						}),
 					},
 				}),
-				n(4229, {	-- Mythrin'dir <General Trade Supplier>
+				n(50307, {	-- Lord Candren <Gilneas Quartermaster>
+					["coord"] = { 37.1, 47.4, DARNASSUS },
+					["timeline"] = { "added 4.0.3.13277" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(64882, {	-- Gilneas Tabard
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64893, {	-- Cape of Gilneas
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64892, {	-- Mantle of Gilneas
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64894, {	-- Shroud of Gilneas
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(67532, {	-- Gilnean Satchel
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+					},
+				}),
+				n(50305, {	-- Moon Priestess Lasara <Darnassus Quartermaster>
+					["coord"] = { 36.17, 48.49, DARNASSUS },
+					["timeline"] = { "added 4.0.3.13277" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(45579, {	-- Darnassus Tabard
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64887, {	-- Cape of Darnassus
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64888, {	-- Mantle of Darnassus
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64886, {	-- Shroud of Darnassus
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(67526, {	-- Darnassian Satchel
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+					},
+				}),
+				n(4229, {	-- Mythrin'dir <Trade Supplies> [TBC+] / Mythrin'dir <General Trade Supplier>
 					-- #if AFTER CATA
 					["coord"] = { 58.2, 35.0, DARNASSUS },
 					-- #else
@@ -707,9 +1060,27 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 63.7, 22.3, DARNASSUS },
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "common_recipes_vendor", 3366}, -- Tamar <Leatherworking Supplies>
+					},
 					["groups"] = {
-						i(7451),	-- Pattern: Green Whelp Bracers
-						i(18949),	-- Pattern: Barbaric Bracers
+						i(18949, {	-- Pattern: Barbaric Bracers
+							["isLimited"] = true,
+						}),
+						i(7451, {	-- Pattern: Green Whelp Bracers
+							["isLimited"] = true,
+						}),
+					},
+				}),
+				n(5191, {	-- Shalumon <Tabard Vendor>
+					-- #if AFTER CATA
+					["coord"] = { 64.6, 37.8, DARNASSUS },
+					-- #else
+					["coord"] = { 70.4, 23.2, DARNASSUS },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "common_vendor", 5193}, -- Rebecca Laughlin <Tabard Designer>
 					},
 				}),
 				n(8665, {	-- Shylenai <Owl Trainer>
@@ -724,6 +1095,14 @@ root("Zones", m(KALIMDOR, {
 						i(8501),	-- Hawk Owl
 					},
 				}),
+				n(52644, {	-- Tarien Silverdew <Jewelcrafting Supplies>
+					["coord"] = { 54.6, 29.8, DARNASSUS },
+					["timeline"] = { "added 4.1.0.13682" },
+					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "common_recipes_vendor", 50482}, -- Marith Lazuria <Jewelcrafting Supplies>
+					},
+				}),
 				n(4235, {	-- Turian <Thrown Weapons Merchant>
 					-- #if AFTER CATA
 					["coord"] = { 59.6, 67.4, DARNASSUS },
@@ -732,7 +1111,9 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(12247),	-- Broad Bladed Knife
+						i(12247, {	-- Broad Bladed Knife
+							["isLimited"] = true,
+						}),
 					},
 				}),
 				n(4226, {	-- Ulthir <Alchemy Supplies>
@@ -761,6 +1142,7 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 58.6, 14.7, DARNASSUS },
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
+					["sym"] = { { "sub", "common_recipes_vendor", 1318 } }, -- Jessara Cordell <Enchanting Supplies>
 					["groups"] = {
 						-- #if BEFORE CATA
 						i(6342),	-- Formula: Enchant Chest - Minor Mana
@@ -779,7 +1161,9 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(12256),	-- Cindercloth Leggings
+						i(12256, {	-- Cindercloth Leggings
+							["isLimited"] = true,
+						}),
 					},
 				}),
 			}),

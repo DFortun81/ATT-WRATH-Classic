@@ -595,7 +595,8 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 10,
 				}),
-				q(6343, {	-- Return to Nessa
+				-- #if BEFORE CATA
+				q(6343, {	-- Return to Nessa / Return to Nyoma [CATA+]
 					["qg"] = 4200,	-- Laird
 					["sourceQuest"] = 6342,	-- Flight to Auberdine
 					["coord"] = { 36.8, 44.2, DARKSHORE },
@@ -605,6 +606,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 10,
 				}),
+				-- #endif
 				q(950, {	-- Return to Onu
 					["provider"] = { "o", 12666 },	-- Twilight Tome
 					["sourceQuest"] = 949,	-- The Twilight Camp

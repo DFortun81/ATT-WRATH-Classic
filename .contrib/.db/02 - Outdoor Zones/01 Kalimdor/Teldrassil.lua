@@ -317,6 +317,7 @@ root("Zones", m(KALIMDOR, {
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 52,
 				}),
+				-- #if BEFORE CATA
 				q(6342, {	-- Flight to Auberdine
 					["qg"] = 3838,	-- Vesprystus
 					["sourceQuest"] = 6341,	-- The Bounty of Teldrassil
@@ -327,6 +328,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 10,
 				}),
+				-- #endif
 				q(5621, {	-- Garments of the Moon
 					["qg"] = 3600,	-- Laurna Morninglight <Priest Trainer>
 					["sourceQuest"] = 5622,	-- In Favor of Elune
