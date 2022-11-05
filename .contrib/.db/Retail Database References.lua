@@ -11,6 +11,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Azuremyst Isle.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Bloodmyst Isle.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Moonglade.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Stonetalon Mountains.lua
 root("Zones", m(KALIMDOR, {
 	["OnUpdate"] = [[function(t) table.sort(t.g, function (a, b) return string.lower(a.isRaid and (" " .. a.text) or a.text) < string.lower(b.isRaid and (" " .. b.text) or b.text) end)  end]],
 }));
