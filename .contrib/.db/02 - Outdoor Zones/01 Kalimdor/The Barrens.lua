@@ -1265,11 +1265,20 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["lvl"] = 14,
 				}),
-				q(6541, {	-- Report to Kadrak
+				q(6541, {	-- Report to Kadrak (The Barrens)
 					["qg"] = 3429,	-- Thork
 					["coord"] = { 51.50, 30.86, THE_BARRENS },
-					["isBreadcrumb"] = true,
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
+					["isBreadcrumb"] = true,
+					["lvl"] = 17,
+				}),
+				q(6542, {	-- Report to Kadrak (Stonetalon Mountains)
+					["qg"] = 11821,	-- Darn Talongrip
+					["coord"] = { 73.23, 94.91, STONETALON_MOUNTAINS },
+					["timeline"] = { "removed 4.0.3" },
+					["races"] = HORDE_ONLY,
+					["isBreadcrumb"] = true,
 					["lvl"] = 17,
 				}),
 				q(6364, {	-- Return to Jahan

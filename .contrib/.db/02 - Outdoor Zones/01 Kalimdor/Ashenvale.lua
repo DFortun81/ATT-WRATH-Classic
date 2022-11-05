@@ -391,14 +391,6 @@ root("Zones", m(KALIMDOR, {
 						i(24118),	-- Signet of Argas
 					},
 				})),
-				q(1070, {	-- On Guard in Stonetalon
-					["qg"] = 4079,	-- Sentinel Thenysil
-					["coord"] = { 34.9, 49.8, ASHENVALE },
-					["maps"] = { STONETALON_MOUNTAINS },
-					["races"] = ALLIANCE_ONLY,
-					["isBreadcrumb"] = true,
-					["lvl"] = 17,
-				}),
 				q(1020, {	-- Orendil's Cure
 					["qg"] = 3847,	-- Orendil Broadleaf
 					["sourceQuest"] = 1010,	-- Bathran's Hair
@@ -415,10 +407,20 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 34.7, 48.9, ASHENVALE },
 					["maps"] = { STONETALON_MOUNTAINS },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5808, 12 },	-- Pridewing Venom Sac
-					},
 					["lvl"] = 18,
+					["groups"] = {
+						objective(1, {	-- 0/12 Pridewing Venom Sac
+							["provider"] = { "i", 5808 },	-- Pridewing Venom Sac
+							["crs"] = {
+								4014,	-- Pridewing Consort
+								4015,	-- Pridewing Patriarch
+								4013,	-- Pridewing Skyhunter
+								4012,	-- Pridewing Wyvern
+								5928,	-- Sorrow Wing
+								4011,	-- Young Pridewing
+							},
+						}),
+					},
 				}),
 				q(991, {	-- Raene's Cleansing (1)
 					["qg"] = 3691,	-- Raene Wolfrunner
@@ -562,19 +564,6 @@ root("Zones", m(KALIMDOR, {
 						i(5815),	-- Glacial Stone
 						i(17046),	-- Gutterblade
 						i(1116),	-- Ring of Pure Silver
-					},
-				}),
-				q(1081, {	-- Reception from Tyrande
-					["qg"] = 4079,	-- Sentinel Thenysil
-					["sourceQuest"] = 1082,	-- Update for Sentinel Thenysil
-					["maps"] = { STONETALON_MOUNTAINS, DARNASSUS },
-					["races"] = ALLIANCE_ONLY,
-					["lvl"] = 17,
-					["groups"] = {
-						i(7334),	-- Efflorescent Robe
-						i(7335),	-- Grizzly Tunic
-						i(7336),	-- Wildwood Chain
-						i(6678),	-- Band of Elven Grace
 					},
 				}),
 				applyclassicphase(TBC_PHASE_ONE, q(9526, {	-- Reclaiming Felfire Hill
@@ -1187,6 +1176,7 @@ root("Zones", m(KALIMDOR, {
 					["cr"] = 3808,	-- Forsaken Dark Stalker
 				}),
 				i(11151, {	-- Formula: Enchant Gloves - Herbalism
+					["timeline"] = { "removed 4.3.0", "deleted 7.0.1" },	-- Replaced by BOP Version
 					["crs"] = {
 						3834,	-- Crazed Ancient
 						3919,	-- Withered Ancient

@@ -129,7 +129,7 @@ root("Zones", m(KALIMDOR, {
 				}),
 				q(1394, {	-- Final Passage
 					["qg"] = 4488, 	-- Parqual Fintallas
-					["sourceQuest"] = 6628,	-- Test of Lore
+					["sourceQuest"] = 6628,	-- Test of Lore (6/6)
 					["coord"] = { 57.75, 65.39, UNDERCITY },
 					["races"] = HORDE_ONLY,
 					["lvl"] = 25,
@@ -451,37 +451,37 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["lvl"] = 25,
 				}),
-				q(1152, {	-- Test of Lore
+				q(1152, {	-- Test of Lore (1/6)
 					["qg"] = 2986,	-- Dorn Plainstalker
 					["sourceQuest"] = 1151,	-- Test of Strength
 					["coord"] = { 53.94, 41.49, THOUSAND_NEEDLES },
 					["lvl"] = 25,
 					["races"] = HORDE_ONLY,
 				}),
-				q(1154, {	-- Test of Lore
+				q(1154, {	-- Test of Lore (2/6)
 					["qg"] = 4489,	-- Braug Dimspirit
-					["sourceQuest"] = 1152,	-- Test of Lore
+					["sourceQuest"] = 1152,	-- Test of Lore (1/6)
 					["coord"] = { 78.80, 45.68, STONETALON_MOUNTAINS },
 					["races"] = HORDE_ONLY,
 					["lvl"] = 25,
 				}),
-				q(6627, {	-- Test of Lore
+				q(6627, {	-- Test of Lore (3/6)
 					["qg"] = 4489,	-- Braug Dimspirit
-					["sourceQuest"] = 1154,	-- Test of Lore
+					["sourceQuest"] = 1154,	-- Test of Lore (2/6)
 					["coord"] = { 78.80, 45.68, STONETALON_MOUNTAINS },
 					["races"] = HORDE_ONLY,
 					["lvl"] = 25,
 				}),
-				q(1159, {	-- Test of Lore
+				q(1159, {	-- Test of Lore (4/6)
 					["qg"] = 4489,	-- Braug Dimspirit
-					["sourceQuest"] = 6627,	-- Test of Lore
+					["sourceQuest"] = 6627,	-- Test of Lore (3/6)
 					["coord"] = { 78.80, 45.68, STONETALON_MOUNTAINS },
 					["lvl"] = 25,
 					["races"] = HORDE_ONLY,
 				}),
-				q(6628, {	-- Test of Lore
+				q(6628, {	-- Test of Lore (6/6)
 					["qg"] = 4488,	-- Parqual Fintallas
-					["sourceQuest"] = 1160,	-- Test of Lore
+					["sourceQuest"] = 1160,	-- Test of Lore (5/6)
 					["coord"] = { 57.75, 65.39, UNDERCITY },
 					["races"] = HORDE_ONLY,
 					["lvl"] = 25,
