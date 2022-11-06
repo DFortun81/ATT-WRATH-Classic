@@ -127,6 +127,7 @@ root("Zones", m(KALIMDOR, {
 					["lvl"] = 48,
 				}),
 				q(4385, {	-- Crystal Charge
+					["provider"] = { "o", 164955 },	-- Northern Crystal Pylon
 					["repeatable"] = true,
 					["lvl"] = 47,
 					["groups"] = {
@@ -134,6 +135,7 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(4382, {	-- Crystal Force
+					["provider"] = { "o", 164957 },	-- Eastern Crystal Pylon
 					["repeatable"] = true,
 					["lvl"] = 47,
 					["groups"] = {
@@ -141,6 +143,7 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(4381, {	-- Crystal Restore
+					["provider"] = { "o", 164955 },	-- Northern Crystal Pylon
 					["repeatable"] = true,
 					["lvl"] = 47,
 					["groups"] = {
@@ -148,6 +151,7 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(4386, {	-- Crystal Spire
+					["provider"] = { "o", 164957 },	--  Eastern Crystal Pylon
 					["repeatable"] = true,
 					["lvl"] = 47,
 					["groups"] = {
@@ -155,6 +159,7 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(4383, {	-- Crystal Ward
+					["provider"] = { "o", 164956 },	-- Western Crystal Pylon
 					["repeatable"] = true,
 					["lvl"] = 47,
 					["groups"] = {
@@ -162,6 +167,7 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(4384, {	-- Crystal Yield
+					["provider"] = { "o", 164956 },	-- Western Crystal Pylon
 					["repeatable"] = true,
 					["lvl"] = 47,
 					["groups"] = {

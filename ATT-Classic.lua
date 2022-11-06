@@ -61,6 +61,9 @@ local HORDE_ONLY = {
 	35,
 	36,
 };
+function distance( x1, y1, x2, y2 )
+	return math.sqrt( (x2-x1)^2 + (y2-y1)^2 )
+end
 
 -- Coroutine Helper Functions
 app.refreshing = {};
@@ -3072,6 +3075,54 @@ CacheFields = function(group)
 end
 app.CacheField = CacheField;
 app.CacheFields = CacheFields;
+local objectNamesToIDs = {};
+for objectID,name in pairs(app.ObjectNames) do
+	local o = objectNamesToIDs[name];
+	if not o then
+		o = { objectID };
+		objectNamesToIDs[name] = o;
+	else
+		tinsert(o, objectID);
+	end
+end
+app.GetBestObjectIDForName = function(name)
+	local o = objectNamesToIDs[name];
+	if o then
+		if #o > 1 then
+			local mapID = app.GetCurrentMapID();
+			local px, py = GetPlayerMapPosition("player");
+			if px then
+				local closestDistance, closestObjectID, dist = 99999, o[1];
+				for i,objectID in ipairs(o) do
+					local searchResults = app.SearchForField("objectID", objectID);
+					if searchResults and #searchResults > 0 then
+						for j,searchResult in ipairs(searchResults) do
+							if searchResult.coord and searchResult.coord[3] == mapID then
+								dist = distance(px, py, searchResult.coord[1], searchResult.coord[2]);
+								if dist and dist < closestDistance then
+									closestDistance = dist;
+									closestObjectID = objectID;
+								end
+							elseif searchResult.coords then
+								for k,coord in ipairs(searchResult.coords) do
+									if coord[3] == mapID then
+										dist = distance(px, py, coord[1], coord[2]);
+										if dist and dist < closestDistance then
+											closestDistance = dist;
+											closestObjectID = objectID;
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+				return closestObjectID;
+			end
+		end
+		return o[1];
+	end
+end
 end)();
 local function SearchForFieldRecursively(group, field, value)
 	if group.g then
@@ -3485,6 +3536,13 @@ local function AttachTooltip(self)
 				
 				-- If the owner has a ref, it's an ATT row. Ignore it.
 				if owner and owner.ref then return true; end
+				
+				local objectID = app.GetBestObjectIDForName(_G[self:GetName() .. "TextLeft1"]:GetText());
+				if objectID then
+					AttachTooltipSearchResults(self, 1, "objectID:" .. objectID, SearchForField, "objectID", objectID);
+					self:Show();
+					return true;
+				end
 				
 				-- Addons Menu?
 				if numLines == 2 then
@@ -6577,7 +6635,7 @@ app.CacheFlightPathDataForMap = function(mapID, nodes)
 						local coord = node.coords and node.coords[1];
 						if coord then
 							-- Allow for a little bit of leeway.
-							if math.sqrt((coord[1] - px)^2 + (coord[2] - py)^2) < 0.6 then
+							if distance(px, py, coord[1], coord[2]) < 0.6 then
 								nodes[nodeID] = true;
 							end
 						end
@@ -15826,7 +15884,6 @@ WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", ClearTooltip)
 WorldMapTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
 WorldMapTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
 WorldMapTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip:HookScript("OnTooltipCleared", ClearTooltip);
 WorldMapTooltip:HookScript("OnShow", AttachTooltip);
 
 -- Slash Command List
@@ -15961,6 +16018,7 @@ app:RegisterEvent("ADDON_LOADED");
 app:RegisterEvent("BOSS_KILL");
 app:RegisterEvent("CHAT_MSG_ADDON");
 app:RegisterEvent("CHAT_MSG_WHISPER")
+app:RegisterEvent("CURSOR_CHANGED");
 app:RegisterEvent("PLAYER_DEAD");
 app:RegisterEvent("VARIABLES_LOADED");
 app:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
@@ -17014,6 +17072,14 @@ app.events.CHAT_MSG_WHISPER = function(text, playerName, _, _, _, _, _, _, _, _,
 			app:QuerySoftReserve(guid, strsub(text, 4));
 		end
 	end
+end
+app.events.CURSOR_CHANGED = function()
+	StartCoroutine("UpdateTooltip", function()
+		while not GameTooltip:IsShown() do
+			coroutine.yield();
+		end
+		AttachTooltip(GameTooltip);
+	end);
 end
 app.events.PARTY_LOOT_METHOD_CHANGED = function()
 	if GetLootMethod() == "master" then
