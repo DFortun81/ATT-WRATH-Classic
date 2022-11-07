@@ -7544,6 +7544,7 @@ local mapIDToMapName, mapIDToAreaID = {}, {
 	[427] = { 132, 800 },	-- Coldridge Valley, Coldridge Pass
 	[465] = { 154 },	-- Deathknell
 	[425] = { 9 },	-- Northshire Valley
+	[460] = { 188 },	-- Shadowglen
 	[467] = { 3431 },	-- Sunstrider Isle
 	[468] = { 3526, 3527, 3560, 3528, 3559, 3529, 3530, 3561 },	-- Ammen Vale, Crash Site, Ammen Fields, Silverline Lake, Nestlewood Hills, Nestlewood Thicket, Shadow Ridge, The Sacred Grove
 	[348] = { 4095 },	-- Magisters' Terrace

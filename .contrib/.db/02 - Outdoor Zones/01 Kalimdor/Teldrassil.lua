@@ -3,8 +3,44 @@
 ---------------------------------------------------
 root("Zones", m(KALIMDOR, {
 	m(TELDRASSIL, {
-		["lore"] = "In the past few years, the night elves have moved their capital to an island off northwest Kalimdor. Here, the Circle of the Ancients and the wise druids pooled their power to create a great tree akin to the World Tree, but on a smaller scale.\n\nThey called this tree Teldrassil, meaning “Crown of the Earth,” and built their city of Darnassus atop it. The island takes the name of the tree as well, and a twilit forest now covers it.",
+		-- #if AFTER CATA
+		["lore"] = "Teldrassil is the starter zone for the night elves. Players learn how times have changed since Malfurion Stormrage has returned to Darnassus and how Fandrel Staghelm was corrupted. It is a lush spiritual zone, set high on an island that is also a great tree. It is home to the elven capital of Darnassus.",
+		-- #else
+		["lore"] = "In the past few years, the night elves have moved their capital to an island off northwest Kalimdor. Here, the Circle of the Ancients and the wise druids pooled their power to create a great tree akin to the World Tree, but on a smaller scale.\n\nThey called this tree Teldrassil, meaning “Crown of the Earth,” and built their city of Darnassus atop it. The island takes the name of the tree as well, and a twilite forest now covers it.",
+		-- #endif
+		-- #if AFTER WRATH
+		["icon"] = "Interface\\Icons\\achievement_zone_darnassus",
+		-- #endif
+		["maps"] = {
+			59,	-- Fel Rock
+			60,	-- Ban'ethil Barrow Den
+			61,	-- Ban'ethil Barrow Den
+		},
 		["groups"] = {
+			m(SHADOWGLEN, {
+				["lore"] = "Shadowglen is the starting area for night elves in the northeast part of Teldrassil, just north of Starbreeze Village. A small twilight field, bathed in a quiet dusk, the area is dominated by the great tree Aldrassil, which lies at the clearing's center. It has class trainers for all night elf classes. Another notable location is Shadowthread Cave, which lies in the region's extreme northwest. The area is ringed by mountains; the only gap is to the south, where the path headed to Dolanaar parts the mountain range.",
+				-- #if AFTER WRATH
+				["icon"] = "Interface\\Icons\\Achievement_Character_Nightelf_Female",
+				-- #else
+				["icon"] = asset("Achievement_Character_Nightelf_Female"),
+				-- #endif
+				["maps"] = { 58 },	-- Shadowthread Cave
+				["groups"] = {
+					-- #if AFTER MOP
+					petbattle(filter(BATTLE_PETS, {
+						p(507, {	-- Crested Owl
+							["crs"] = { 62242 },	-- Crested Owl
+						}),
+						p(447, {	-- Fawn
+							["crs"] = { 61165 },	-- Fawn
+						}),
+					})),
+					-- #endif
+					n(QUESTS, {
+						
+					}),
+				},
+			}),
 			n(ACHIEVEMENTS, {
 				explorationAch(842, {	-- Explore Teldrassil
 					-- #if BEFORE WRATH
@@ -12,6 +48,28 @@ root("Zones", m(KALIMDOR, {
 					-- #endif
 				}),
 			}),
+			-- #if AFTER MOP
+			petbattle(filter(BATTLE_PETS, {
+				p(507, {	-- Crested Owl
+					["crs"] = { 62242 },	-- Crested Owl
+				}),
+				p(479, {	-- Elfin Rabbit
+					["crs"] = { 62178 },	-- Elfin Rabbit
+				}),
+				p(447, {	-- Fawn
+					["crs"] = { 61165 },	-- Fawn
+				}),
+				p(478, {	-- Forest Moth
+					["crs"] = { 62177 },	-- Forest Moth
+				}),
+				p(452, {	-- Red-Tailed Chipmunk
+					["crs"] = { 61757 },	-- Red-Tailed Chipmunk
+				}),
+				p(419, {	-- Small Frog
+					["crs"] = { 61071 },	-- Small Frog
+				}),
+			})),
+			-- #endif
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({
 				["128:100:494:548"] = 702,	-- Rut'theran Village
@@ -37,9 +95,19 @@ root("Zones", m(KALIMDOR, {
 			})),
 			-- #endif
 			n(FLIGHT_PATHS, {
+				fp(456, {	-- Dolanaar, Teldrassil
+					["cr"] = 40553,	-- Fidelio <Hippogryph Master>
+					["coord"] = { 55.4, 50.4, TELDRASSIL },
+					["timeline"] = { "added 4.0.3.13277" },
+					["races"] = ALLIANCE_ONLY,
+				}),
 				fp(27, {	-- Rut'theran Village, Teldrassil
 					["cr"] = 3838,	-- Vesprystus <Hippogryph Master>
+					-- #if AFTER CATA
+					["coord"] = { 55.4, 88.4, TELDRASSIL },
+					-- #else
 					["coord"] = { 58.4, 94.0, TELDRASSIL },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 				}),
 			}),
@@ -369,12 +437,26 @@ root("Zones", m(KALIMDOR, {
 					["sourceQuest"] = 3519,	-- A Friend in Need
 					["coord"] = { 60.8, 42, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 10639, 7 },	-- Hyacinth Mushroom
-						{ "i", 10641, 4 },	-- Moonpetal Lily
-						{ "i", 10640, 1 },	-- Webwood Ichor
-					},
 					["lvl"] = 2,
+					["groups"] = {
+						objective(1, {	-- 0/7 Hyacinth Mushroom
+							["provider"] = { "i", 10639 },	-- Hyacinth Mushroom
+							["crs"] = {
+								1988,	-- Grell
+								1989,	-- Grellkin
+							},
+						}),
+						objective(2, {	-- 0/4 Moonpetal Lily
+							["providers"] = {
+								{ "i", 10641 },	-- Moonpetal Lily
+								{ "o", 152095 },	-- Moonpetal Lily
+							},
+						}),
+						objective(3, {	-- 0/1 Webwood Ichor
+							["provider"] = { "i", 10640 },	-- Webwood Ichor
+							["cr"] = 1986,	-- Webwood Spider
+						}),
+					},
 				}),
 				q(3522, {	-- Iverron's Antidote
 					["qg"] = 8583,	-- Dirania Silvershine
@@ -459,13 +541,13 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(922, {	-- Rellian Greenspyre
-					["qg"] = 2080,	-- Denalan
+					["providers"] = {
+						{ "n", 2080 },	-- Denalan
+						{ "i", 5168 },	-- Timberling Seed
+					},
 					["sourceQuest"] = 918,	-- Timberling Seeds
 					["coord"] = { 60.8, 68.4, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5168, 1 },	-- Timberling Seed
-					},
 					["lvl"] = 4,
 				}),
 				q(2498, {	-- Return to Denalan
@@ -491,10 +573,15 @@ root("Zones", m(KALIMDOR, {
 					["sourceQuest"] = 488,	-- Zenn's Bidding
 					["coord"] = { 56, 59.4, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 3418, 3 },	-- Fel Cone
-					},
 					["lvl"] = 4,
+					["groups"] = {
+						objective(1, {	-- 0/3 Fel Cone
+							["providers"] = {
+								{ "i", 3418 },	-- Fel Cone
+								{ "o", 1673 },	-- Fel Cone
+							},
+						}),
+					},
 				}),
 				q(3116, {	-- Simple Sigil
 					["qg"] = 2079,	-- Conservator Ilthalaine
@@ -636,13 +723,33 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 3519,	-- Sentinel Arynia Cloudsbreak
 					["coord"] = { 38.2, 34.4, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5204, 6 },	-- Bloodfeather Belt
-					},
 					["lvl"] = 6,
 					["groups"] = {
-						i(5592),	-- Shackled Girdle
+						objective(1, {	-- 0/6 Bloodfeather Belt
+							["provider"] = { "i", 5204 },	-- Bloodfeather Belt
+							["crs"] = {
+								2019,	-- Bloodfeather Fury
+								2015,	-- Bloodfeather Harpy
+								2021,	-- Bloodfeather Matriarch
+								2017,	-- Bloodfeather Rogue
+								2018,	-- Bloodfeather Sorceress
+								2020,	-- Bloodfeather Wind Witch
+								14431,	-- Fury Shelda
+							},
+						}),
 						i(5591),	-- Rain-spotted Cape
+						i(54872, {	-- Shackled Girdle
+							["timeline"] = { "added 4.0.3.13287" },
+						}),
+						i(5592, {	-- Shackled Girdle
+							-- #if ANYCLASSIC
+							["description"] = "This gets completely removed. To be safe, keep this in your bank forever on a leather user.",
+							-- #endif
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(131229, {	-- Shackled Cuffs
+							["timeline"] = { "added 7.0.3.22248" },
+						}),
 					},
 				}),
 				q(930, {	-- The Glowing Fruit
@@ -755,10 +862,13 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 7317,	-- Oben Rageclaw
 					["coord"] = { 45, 61.4, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 8363, 1 },	-- Shaman Voodoo Charm
-					},
 					["lvl"] = 3,
+					["groups"] = {
+						objective(1, {	-- Shaman Voodoo Charm
+							["provider"] = { "i", 8363 },	-- Shaman Voodoo Charm
+							["cr"] = 2009,	-- Gnarlpine Shaman
+						}),
+					},
 				}),
 				q(2399, {	-- The Sprouted Fronds
 					["provider"] = { "o", 7510 },	-- Sprouted Frond
@@ -780,10 +890,14 @@ root("Zones", m(KALIMDOR, {
 					["sourceQuest"] = 458,	-- The Woodland Protector (1/2)
 					["coord"] = { 57.8, 45, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 3297, 8 },	-- Fel Moss
-					},
 					["groups"] = {
+						objective(1, {	-- 0/8 Fel Moss
+							["provider"] = { "i", 3297 },	-- Fel Moss
+							["crs"] = {
+								1988,	-- Grell
+								1989,	-- Grellkin
+							},
+						}),
 						i(5398),	-- Canopy Leggings
 						i(5399),	-- Tracking Boots
 						i(11190),	-- Viny Gloves
@@ -795,11 +909,18 @@ root("Zones", m(KALIMDOR, {
 					["sourceQuest"] = 997,	-- Denalan's Earth
 					["coord"] = { 60.8, 68.4, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5168, 8 },	-- Timberling Seed
-					},
 					["lvl"] = 4,
 					["groups"] = {
+						objective(1, {	-- 0/8 Timberling Seed
+							["provider"] = { "i", 5168 },	-- Timberling Seed
+							["crs"] = {
+								2030,	-- Elder Timberling
+								2166,	-- Oakenscowl
+								2022,	-- Timberling
+								2025,	-- Timberling Bark Ripper
+								2027,	-- Timberling Trampler
+							},
+						}),
 						i(4604),	-- Forest Mushroom Cap
 					},
 				}),
@@ -822,11 +943,16 @@ root("Zones", m(KALIMDOR, {
 					["sourceQuest"] = 922,	-- Rellian Greenspyre
 					["coord"] = { 38.2, 21.6, DARNASSUS },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5170, 5 },	-- Mossy Tumor
-					},
 					["lvl"] = 4,
 					["groups"] = {
+						objective(1, {	-- 0/5 Mossy Tumor
+							["provider"] = { "i", 5170 },	-- Mossy Tumor
+							["crs"] = {
+								2030,	-- Elder Timberling
+								2029,	-- Timberling Mire Beast
+								2027,	-- Timberling Trampler
+							},
+						}),
 						i(5605),	-- Pruning Knife
 					},
 				}),
@@ -909,11 +1035,12 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 2082,	-- Gilshalan Windwalker
 					["coord"] = { 57.8, 41.6, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5166, 10 },	-- Webwood Venom Sac
-					},
 					["lvl"] = 3,
 					["groups"] = {
+						objective(1, {	-- 0/10 Webwood Venom Sac
+							["provider"] = { "i", 5166 },	-- Webwood Venom Sac
+							["cr"] = 1986,	-- Webwood Spider
+						}),
 						i(10544),	-- Thistlewood Maul
 						i(5392),	-- Thistlewood Dagger
 						i(5393),	-- Thistlewood Staff
@@ -936,19 +1063,46 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 2150,	-- Zenn Foulhoof
 					["coord"] = { 60.4, 56.2, TELDRASSIL },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 3409, 3 },	-- Nightsaber Fang
-						{ "i", 3411, 3 },	-- Strigid Owl Feather
-						{ "i", 3412, 3 },	-- Webwood Spider Silk
-					},
 					["lvl"] = 4,
 					["groups"] = {
+						objective(1, {	-- 0/3 Nightsaber Fang
+							["provider"] = { "i", 3409 },	-- Nightsaber Fang
+							["crs"] = {
+								14430,	-- Duskstalker
+								2042,	-- Nightsaber
+								2043,	-- Nightsaber Stalker
+							},
+						}),
+						objective(2, {	-- 0/3 Strigid Owl Feather
+							["provider"] = { "i", 3411 },	-- Strigid Owl Feather
+							["crs"] = {
+								1995,	-- Strigid Owl
+								1996,	-- Strigid Screecher
+							},
+						}),
+						objective(3, {	-- 0/3 Webwood Spider Silk
+							["provider"] = { "i", 3412 },	-- Webwood Spider Silk
+							["crs"] = {
+								1998,	-- Webwood Lurker
+								2000,	-- Webwood Silkspinner
+								1999,	-- Webwood Venomfang
+							},
+						}),
 						i(5457),	-- Severed Voodoo Claw
 					},
 				}),
 			}),
 			n(RARES, {
+				-- #if AFTER CATA
+				n(2162, {	-- Agal
+					-- NOTE: Was not previous a Rare until Cata.
+					["coord"] = { 47.2, 44.8, TELDRASSIL },
+				}),
+				-- #endif
 				n(3535, {	-- Blackmoss the Fetid
+					-- #if AFTER CATA
+					["coord"] = { 52.0, 63.8, TELDRASSIL },
+					-- #else
 					["coords"] = {
 						{ 42.8, 25.8, TELDRASSIL },
 						{ 44.6, 27.6, TELDRASSIL },
@@ -960,16 +1114,23 @@ root("Zones", m(KALIMDOR, {
 						{ 42.8, 38.6, TELDRASSIL },
 						{ 44.0, 39.6, TELDRASSIL },
 					},
+					-- #endif
 					["groups"] = {
-						{
-							["itemID"] = 5179,	-- Moss-twined Heart
-							["questID"] = 927,	-- The Moss-twined Heart
+						i(5179, {	-- Moss-twined Heart
 							["description"] = "This is one of the only drops from a rare spawn in the game that start a quest. Good luck!",
 							["races"] = ALLIANCE_ONLY,
-						},
+						}),
 					},
 				}),
 				n(14430, {	-- Duskstalker
+					-- #if AFTER CATA
+					["coords"] = {
+						{ 52.2, 67.6, TELDRASSIL },
+						{ 54.0, 66.6, TELDRASSIL },
+						{ 57.6, 66.6, TELDRASSIL },
+						{ 59.6, 65.6, TELDRASSIL },
+					},
+					-- #else
 					["coords"] = {
 						{ 51.2, 77.8, TELDRASSIL },
 						{ 53.4, 77.2, TELDRASSIL },
@@ -980,8 +1141,18 @@ root("Zones", m(KALIMDOR, {
 						{ 60.6, 76.2, TELDRASSIL },
 						{ 61.0, 74.4, TELDRASSIL },
 					},
+					-- #endif
 				}),
 				n(14431, {	-- Fury Shelda
+					-- #if AFTER CATA
+					["coords"] = {
+						{ 37.2, 30.6, TELDRASSIL },
+						{ 38.2, 33.4, TELDRASSIL },
+						{ 39.4, 35.2, TELDRASSIL },
+						{ 39.4, 36.4, TELDRASSIL },
+						{ 39.6, 37.4, TELDRASSIL },
+					},
+					-- #else
 					["coords"] = {
 						{ 34.8, 34.4, TELDRASSIL },
 						{ 38.2, 34.8, TELDRASSIL },
@@ -991,27 +1162,43 @@ root("Zones", m(KALIMDOR, {
 						{ 39.0, 41.4, TELDRASSIL },
 						{ 38.0, 44.0, TELDRASSIL },
 					},
+					-- #endif
 					["groups"] = {
-						i(18612),	-- Bloody Chain Boots
+						i(18612, {	-- Bloody Chain Boots
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(14429, {	-- Grimmaw
+					-- #if AFTER CATA
+					["coord"] = { 51.6, 38.6, TELDRASSIL },
+					-- #else
 					["coords"] = {
 						{ 41.6, 78.6, TELDRASSIL },
 						{ 40.2, 80.6, TELDRASSIL },
 					},
+					-- #endif
 				}),
 				n(14432, {	-- Threggil
+					-- #if AFTER CATA
+					["coord"] = { 53.0, 44.6, TELDRASSIL },
+					-- #else
 					["coords"] = {
 						{ 51.2, 50.8, TELDRASSIL },
 						{ 52.0, 50.6, TELDRASSIL },
 						{ 52.6, 52.4, TELDRASSIL },
 					},
+					-- #endif
 					["groups"] = {
-						i(18610),	-- Keen Machete
+						i(18610, {	-- Keen Machete
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(14428, {	-- Uruson
+					-- #if AFTER CATA
+					["coord"] = { 65.6, 51.8, TELDRASSIL },
+					-- #else
 					["coords"] = {
 						{ 63.8, 57.2, TELDRASSIL },
 						{ 65.4, 57.8, TELDRASSIL },
@@ -1020,126 +1207,60 @@ root("Zones", m(KALIMDOR, {
 						{ 67.8, 61.0, TELDRASSIL },
 						{ 69.6, 62.0, TELDRASSIL },
 					},
+					-- #endif
 					["groups"] = {
-						i(18611),	-- Gnarlpine Leggings
+						i(18611, {	-- Gnarlpine Leggings
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 			}),
 			n(VENDORS, {
-				n(10118, {	-- Nessa Shadowsong <Fishing Supplies>
-					["coord"] = { 56.3, 92.4, TELDRASSIL },
+				n(44030, {	-- Draelan <Enchanting Supplies>
+					["coord"] = { 39.0, 30.0, TELDRASSIL },
+					["timeline"] = { "added 4.0.3.13277" },
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(6326),	-- Recipe: Slitherskin Mackerel
+						i(20753),	-- Formula: Lesser Wizard Oil (RECIPE!)
+						i(20752),	-- Formula: Minor Mana Oil (RECIPE!)
+						i(20758),	-- Formula: Minor Wizard Oil (RECIPE!)
+						i(22307),	-- Pattern: Enchanted Mageweave Pouch
+					},
+				}),
+				n(10118, {	-- Nessa Shadowsong <Fishing Supplies>
+					-- #if AFTER CATA
+					["coord"] = { 54.0, 90.0, TELDRASSIL },
+					-- #else
+					["coord"] = { 56.2, 92.4, TELDRASSIL },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
 						i(6368),	-- Recipe: Rainbow Fin Albacore
+						i(6326),	-- Recipe: Slitherskin Mackerel
 					},
 				}),
 				n(4265, {	-- Nyoma <Cooking Supplies>
-					["coord"] = { 57.2, 61.3, TELDRASSIL },
+					-- #if AFTER CATA
+					["coord"] = { 56.6, 53.4, TELDRASSIL },
+					-- #else
+					["coord"] = { 57.2, 61.2, TELDRASSIL },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(6325),	-- Recipe: Brilliant Smallfish
 						i(6328),	-- Recipe: Longjaw Mud Snapper
-						i(21099),	-- Recipe: Smoked Sagefish
 						i(21219),	-- Recipe: Sagefish Delight
+						i(21099),	-- Recipe: Smoked Sagefish
 					},
 				}),
 			}),
 			n(ZONE_DROPS, {
-				i(5204, {	-- Bloodfeather Belt
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						2019,	-- Bloodfeather Fury
-						2015,	-- Bloodfeather Harpy
-						2021,	-- Bloodfeather Matriarch
-						2017,	-- Bloodfeather Rogue
-						2018,	-- Bloodfeather Sorceress
-						2020,	-- Bloodfeather Wind Witch
-						14431,	-- Fury Shelda
-					},
-				}),
 				i(5206, {	-- Bogling Root
 					["cr"] = 3569,	-- Bogling
 				}),
 				i(7094, {	-- Driftwood Branch
+					["timeline"] = { "removed 4.0.3" },
 					["cr"] = 2030,	-- Elder Timberling
-				}),
-				i(3418, {	-- Fel Cone
-					["races"] = ALLIANCE_ONLY,
-				}),
-				i(3297, {	-- Fel Moss
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						1988,	-- Grell
-						1989,	-- Grellkin
-					},
-				}),
-				i(10639, {	-- Hyacinth Mushroom
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						1988,	-- Grell
-						1989,	-- Grellkin
-					},
-				}),
-				i(10641, {	-- Moonpetal Lily
-					["races"] = ALLIANCE_ONLY,
-				}),
-				i(5170, {	-- Mossy Tumor
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						2030,	-- Elder Timberling
-						2029,	-- Timberling Mire Beast
-						2027,	-- Timberling Trampler
-					},
-				}),
-				i(3409, {	-- Nightsaber Fang
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						14430,	-- Duskstalker
-						2042,	-- Nightsaber
-						2043,	-- Nightsaber Stalker
-					},
-				}),
-				i(8363, {	-- Shaman Voodoo Charm
-					["races"] = ALLIANCE_ONLY,
-					["cr"] = 2009,	-- Gnarlpine Shaman
-				}),
-				i(3411, {	-- Strigid Owl Feather
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						1995,	-- Strigid Owl
-						1996,	-- Strigid Screecher
-					},
-				}),
-				i(5168, {	-- Timberling Seed
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						2030,	-- Elder Timberling
-						2166,	-- Oakenscowl
-						2022,	-- Timberling
-						2025,	-- Timberling Bark Ripper
-						2027,	-- Timberling Trampler
-					},
-				}),
-				i(10640, {	-- Webwood Ichor
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						1986,	-- Webwood Spider
-					},
-				}),
-				i(3412, {	-- Webwood Spider Silk
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						1998,	-- Webwood Lurker
-						2000,	-- Webwood Silkspinner
-						1999,	-- Webwood Venomfang
-					},
-				}),
-				i(5166, {	-- Webwood Venom Sac
-					["races"] = ALLIANCE_ONLY,
-					["crs"] = {
-						1986,	-- Webwood Spider
-					},
 				}),
 			}),
 		},
