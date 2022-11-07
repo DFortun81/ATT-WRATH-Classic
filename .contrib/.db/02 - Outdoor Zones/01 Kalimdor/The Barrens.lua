@@ -1781,7 +1781,7 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["lvl"] = 10,
 				}),
-				q(1145, {	-- The Swarm Grows
+				q(1145, {	-- The Swarm Grows (1/3)
 					["qg"] = 3428,	-- Korran
 					["coord"] = { 51.07, 29.62, THE_BARRENS },
 					["races"] = HORDE_ONLY,

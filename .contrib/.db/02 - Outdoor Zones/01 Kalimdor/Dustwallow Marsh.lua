@@ -405,11 +405,17 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 66.5, 45.2, DUSTWALLOW_MARSH },
 					["maps"] = { THOUSAND_NEEDLES },
 					["races"] = ALLIANCE_ONLY,
-					["cost"] = {
-						{ "i", 5809, 10 },	-- Highperch Venom Sac
-					},
 					["lvl"] = 25,
 					["groups"] = {
+						objective(1, {	-- 0/10 Highperch Venom Sac
+							["provider"] = { "i", 5809 },	-- Highperch Venom Sac
+							["crs"] = {
+								5934,	-- Heartrazor
+								4109,	-- Highperch Consort
+								4110,	-- Highperch Patriarch
+								4107,	-- Highperch Wyvern
+							},
+						}),
 						i(6719),	-- Windborne Belt
 					},
 				}),

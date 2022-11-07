@@ -682,10 +682,11 @@ root("Zones", m(KALIMDOR, {
 					["races"] = { ORC, UNDEAD, TROLL },
 					["classes"] = { ROGUE },
 				}),
-				q(1146, {	-- The Swarm Grows
+				q(1146, {	-- The Swarm Grows (2/3)
 					["lvl"] = 29,
 					["races"] = HORDE_ONLY,
 					["qg"] = 4485,	-- Belgrom Rockmaul
+					["sourceQuest"] = 1145,	-- The Swarm Grows (1/3)
 				}),
 				q(5302, {	-- The Way of the Weaponsmith (H)
 					["qg"] = 11178,	-- Borgosh Corebender
