@@ -531,15 +531,6 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 40,
 				}),
-				q(235, {	-- The Ashenvale Hunt
-					["qg"] = 10880,	-- Warcaller Gorlach
-					["coord"] = { 46.6, 64.6, ORGRIMMAR },
-					["races"] = HORDE_ONLY,
-					["altQuests"] = {
-						6383,	-- The Ashenvale Hunt
-					},
-					["lvl"] = 20,
-				}),
 				-- #if ANYCLASSIC
 				q(65604, {	-- The Binding (Incubus) [Orgrimmar]
 					["qg"] = 5875,	-- Gan'rul Bloodeye

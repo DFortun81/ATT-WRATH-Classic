@@ -104,12 +104,6 @@ root("Zones", m(KALIMDOR, {
 				}),
 			}),
 			n(QUESTS, {
-				q(6361, {	-- A Bundle of Hides
-					["qg"] = 3079,	-- Varg Windwhisper
-					["coord"] = { 45.82, 58.69, MULGORE },
-					["races"] = { TAUREN },
-					["lvl"] = 10,
-				}),
 				q(1153, {	-- A New Ore Sample
 					["qg"] = 3433,	-- Tatternack Steelforge
 					["coord"] = { 45.10, 57.69, THE_BARRENS },
@@ -219,11 +213,23 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5878,	-- Thun'grim Firegaze
 					["sourceQuest"] = 1838,	-- Brutal Armor
 					["coord"] = { 57.23, 30.34, THE_BARRENS },
+					["timeline"] = { "removed 4.0.3" },
 					["classes"] = { WARRIOR },
 					["races"] = HORDE_ONLY,
 					["lvl"] = 20,
 					["groups"] = {
-						i(7133),	-- Brutal Hauberk
+						i(7133, {	-- Brutal Hauberk
+							["timeline"] = { "removed 4.0.3" },
+							-- #if ANYCLASSIC
+							["OnUpdate"] = [[function(t)
+								if _.Level >= 40 then
+									t.f = ]] .. PLATE .. [[;
+								else
+									t.f = ]] .. MAIL .. [[;
+								end
+							end]],
+							-- #endif
+						}),
 					},
 				}),
 				q(1522, {	-- Call of Fire (1/5) [Orgrimmar]
@@ -1281,13 +1287,6 @@ root("Zones", m(KALIMDOR, {
 					["isBreadcrumb"] = true,
 					["lvl"] = 17,
 				}),
-				q(6364, {	-- Return to Jahan
-					["qg"] = 2995,	-- Tal
-					["sourceQuest"] = 6363,	-- Tal the Wind Rider Master
-					["coord"] = { 47.00, 49.84, THUNDER_BLUFF },
-					["races"] = { TAUREN },
-					["lvl"] = 10,
-				}),
 				q(6386, {	-- Return to the Crossroads.
 					["qg"] = 3310,	-- Doras
 					["sourceQuest"] = 6385,	-- Doras the Wind Rider Master
@@ -1328,13 +1327,6 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 51.50, 30.34, THE_BARRENS },
 					["lvl"] = 10,
 					["races"] = { ORC, TROLL },
-				}),
-				q(6362, {	-- Ride to Thunder Bluff
-					["qg"] = 3615,	-- Devrak
-					["sourceQuest"] = 6361,	-- A Bundle of Hides
-					["coord"] = { 51.50, 30.34, THE_BARRENS },
-					["races"] = { TAUREN },
-					["lvl"] = 10,
 				}),
 				q(3923, {	-- Rilli Greasygob
 					["qg"] = 9316,	-- Wenikee Boltbucket
@@ -1599,13 +1591,6 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["lvl"] = 9,
 				}),
-				q(6363, {	-- Tal the Wind Rider Master
-					["qg"] = 8359,	-- Ahanu
-					["sourceQuest"] = 6362,	-- Ride to Thunder Bluff
-					["coord"] = { 45.74, 55.86, THUNDER_BLUFF },
-					["races"] = { TAUREN },
-					["lvl"] = 10,
-				}),
 				q(1719, {	-- The Affray
 					["lvl"] = 30,
 					["classes"] = { WARRIOR },
@@ -1621,15 +1606,6 @@ root("Zones", m(KALIMDOR, {
 					["groups"] = {
 						i(5165),	-- Sunscale Feather
 					},
-				}),
-				q(6382, {	-- The Ashenvale Hunt
-					["qg"] = 3387,	-- Jorn Skyseer
-					["coord"] = { 44.86, 59.13, THE_BARRENS },
-					["races"] = HORDE_ONLY,
-					["altQuests"] = {
-						6383,	-- The Ashenvale Hunt
-					},
-					["lvl"] = 20,
 				}),
 				q(886, {	-- The Barrens Oases
 					["qg"] = 5769,	-- Arch Druid Hamuul Runetotem

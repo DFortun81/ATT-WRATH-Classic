@@ -300,13 +300,13 @@ root("Zones", m(KALIMDOR, {
 					["lvl"] = 45,
 				}),
 				q(3562, {	-- Magatha's Payment to Jediga
-					["qg"] = 4046,	-- Magatha Grimtotem
+					["providers"] = {
+						{ "n", 4046 },	-- Magatha Grimtotem
+						{ "i", 10678, 1 },	-- Magatha's Note
+					},
 					["sourceQuest"] = 3518,	-- Delivery to Magatha
 					["coord"] = { 70.2, 30.8, THUNDER_BLUFF },
 					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 10678, 1 },	-- Magatha's Note
-					},
 					["lvl"] = 45,
 				}),
 				applyclassicphase(PHASE_FOUR, q(8250, {	-- Magecraft

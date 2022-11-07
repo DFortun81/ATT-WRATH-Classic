@@ -2104,6 +2104,15 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					["groups"] = {
 						i(6972, {	-- Fire Hardened Hauberk
 							["timeline"] = { "removed 4.0.3" },
+							-- #if ANYCLASSIC
+							["OnUpdate"] = [[function(t)
+								if _.Level >= 40 then
+									t.f = ]] .. PLATE .. [[;
+								else
+									t.f = ]] .. MAIL .. [[;
+								end
+							end]],
+							-- #endif
 						}),
 					},
 				}),
@@ -2260,6 +2269,15 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					["groups"] = {
 						i(6971, {	-- Fire Hardened Coif
 							["timeline"] = { "removed 4.0.3" },
+							-- #if ANYCLASSIC
+							["OnUpdate"] = [[function(t)
+								if _.Level >= 40 then
+									t.f = ]] .. PLATE .. [[;
+								else
+									t.f = ]] .. MAIL .. [[;
+								end
+							end]],
+							-- #endif
 						}),
 					},
 				}),

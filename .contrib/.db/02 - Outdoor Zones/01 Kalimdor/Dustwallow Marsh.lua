@@ -291,21 +291,6 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 30,
 				})),
-				q(1205, {	-- Deadmire
-					["qg"] = 3441,	-- Melor Stonehoof
-					["coord"] = { 61.52, 80.88, THUNDER_BLUFF },
-					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 5945, 1 },	-- Deadmire's Tooth
-					},
-					["lvl"] = 35,
-					["groups"] = {
-						i(5945, {	-- Deadmire's Tooth
-							["cr"] = 4841,	-- Deadmire
-							["coord"] = { 47.6, 56.6, DUSTWALLOW_MARSH },
-						}),
-					},
-				}),
 				applyclassicphase(TBC_PHASE_ONE, q(11137, {	-- Defias in Dustwallow?
 					["qg"] = 5086,	-- Captain Wymor
 					["sourceQuest"] = 11136,	-- A Disturbing Development

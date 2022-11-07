@@ -467,9 +467,6 @@ root("Zones", m(KALIMDOR, {
 						{ "i", 11040, 5 },	-- Morrowgrain
 					},
 					["lvl"] = 47,
-					["groups"] = {
-						i(11022),	-- Packet of Tharlendris Seeds
-					},
 				}),
 				q(3127, {	-- Mountain Giant Muisek
 					["qg"] = 8115,	-- Witch Doctor Uzer'i

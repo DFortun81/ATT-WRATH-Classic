@@ -328,6 +328,15 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 4,
 				}),
+				q(744, {	-- Preparation for Ceremony
+					["qg"] = 2987,	-- Eyahn Eagletalon
+					["races"] = HORDE_ONLY,
+					["lvl"] = 7,
+					["groups"] = {
+						i(4968),	-- Bound Harness
+						i(4967),	-- Tribal Warrior's Shield
+					},
+				}),
 				q(757, {	-- Rite of Strength
 					["qg"] = 2982,	-- Seer Graytongue
 					["sourceQuest"] = 755,	-- Rites of the Earthmother (1/3)

@@ -624,7 +624,7 @@ root("Zones", m(KALIMDOR, {
 				}),
 				q(24, {		-- Shadumbra's Head
 					["provider"] = { "i", 16304 },	-- Shadumbra's Head
-					["sourceQuest"] = 6383,	-- The Ashenvale Hunt
+					["sourceQuest"] = 6383,	-- The Ashenvale Hunt (2/2)
 					["coord"] = { 59.8, 54.6, ASHENVALE },
 					["cr"] = 12677,	-- Shadumbra
 					["races"] = HORDE_ONLY,
@@ -632,7 +632,7 @@ root("Zones", m(KALIMDOR, {
 				}),
 				q(2, {		-- Sharptalon's Claw
 					["provider"] = { "i", 16305 },	-- Sharptalon's Claw
-					["sourceQuest"] = 6383,	-- The Ashenvale Hunt
+					["sourceQuest"] = 6383,	-- The Ashenvale Hunt (2/2)
 					["coord"] = { 75.8, 69.6, ASHENVALE },
 					["cr"] = 12676,	-- Sharptalon
 					["races"] = HORDE_ONLY,
@@ -671,13 +671,34 @@ root("Zones", m(KALIMDOR, {
 						},
 					},
 				}),
-				q(6383, {	-- The Ashenvale Hunt
+				q(235, {	-- The Ashenvale Hunt (1/2) [Orgrimmar]
+					["qg"] = 10880,	-- Warcaller Gorlach
+					["altQuests"] = { 6383 },	-- The Ashenvale Hunt (2/2)
+					["coord"] = { 46.6, 64.6, ORGRIMMAR },
+					["races"] = HORDE_ONLY,
+					["lvl"] = 20,
+				}),
+				q(742, {	-- The Ashenvale Hunt (1/2) [Thunder Bluff]
+					["qg"] = 10881,	-- Bluff Runner Windstrider
+					["altQuests"] = { 6383 },	-- The Ashenvale Hunt (2/2)
+					["coord"] = { 41.4, 54.2, THUNDER_BLUFF },
+					["races"] = HORDE_ONLY,
+					["lvl"] = 20,
+				}),
+				q(6382, {	-- The Ashenvale Hunt (1/2) [The Barrens]
+					["qg"] = 3387,	-- Jorn Skyseer
+					["altQuests"] = { 6383 },	-- The Ashenvale Hunt (2/2)
+					["coord"] = { 44.86, 59.13, THE_BARRENS },
+					["races"] = HORDE_ONLY,
+					["lvl"] = 20,
+				}),
+				q(6383, {	-- The Ashenvale Hunt (2/2)
 					["qg"] = 12696,	-- Senani Thunderheart
 					["coord"] = { 73.78, 61.47, ASHENVALE },
 					["sourceQuests"] = {
-						235,	-- The Ashenvale Hunt [Orgrimmar]
-						742,	-- The Ashenvale Hunt [Thunder Bluff]
-						6382,	-- The Ashenvale Hunt [The Barrens]
+						235,	-- The Ashenvale Hunt (1/2) [Orgrimmar]
+						742,	-- The Ashenvale Hunt (1/2) [Thunder Bluff]
+						6382,	-- The Ashenvale Hunt (1/2) [The Barrens]
 					},
 					["races"] = HORDE_ONLY,
 					["lvl"] = 20,
@@ -887,7 +908,7 @@ root("Zones", m(KALIMDOR, {
 				}),
 				q(23, {		-- Ursangous's Paw
 					["provider"] = { "i", 16303 },	-- Ursangous's Paw
-					["sourceQuest"] = 6383,	-- The Ashenvale Hunt
+					["sourceQuest"] = 6383,	-- The Ashenvale Hunt (2/2)
 					["coord"] = { 41.6, 66.8, ASHENVALE },
 					["cr"] = 12678,	-- Ursangous
 					["races"] = HORDE_ONLY,

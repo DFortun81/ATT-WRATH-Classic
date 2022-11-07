@@ -96,11 +96,23 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 6408,	-- Ula'elek
 					["sourceQuest"] = 1842,	-- Satyr Hooves
 					["coord"] = { 56.2, 74.4, DUROTAR },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { WARRIOR },
 					["lvl"] = 20,
 					["groups"] = {
-						i(7129),	-- Brutal Gauntlets
+						i(7129, {	-- Brutal Gauntlets
+							["timeline"] = { "removed 4.0.3" },
+							-- #if ANYCLASSIC
+							["OnUpdate"] = [[function(t)
+								if _.Level >= 40 then
+									t.f = ]] .. PLATE .. [[;
+								else
+									t.f = ]] .. MAIL .. [[;
+								end
+							end]],
+							-- #endif
+						}),
 					},
 				}),
 				q(794, {	-- Burning Blade Medallion
