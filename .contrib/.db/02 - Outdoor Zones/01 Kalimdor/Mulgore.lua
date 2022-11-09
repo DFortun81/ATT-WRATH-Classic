@@ -494,9 +494,9 @@ root("Zones", m(KALIMDOR, {
 				q(6061, {	-- Taming the Beast (1/3)
 					["qg"] = 3065,	-- Yaw Sharpmane <Hunter Trainer>
 					["sourceQuests"] = {
-						6065,	-- The Hunter's Path
-						6066,	-- The Hunter's Path
-						6067,	-- The Hunter's Path
+						6065,	-- The Hunter's Path [Thunder Bluff]
+						6066,	-- The Hunter's Path [Mulgore]
+						6067,	-- The Hunter's Path [Durotar]
 					},
 					["coord"] = { 47.8, 55.6, MULGORE },
 					["races"] = { TAUREN },
@@ -581,7 +581,7 @@ root("Zones", m(KALIMDOR, {
 						i(4913),	-- Painted Chain Belt
 					},
 				}),
-				q(6065, {	-- The Hunter's Path
+				q(6065, {	-- The Hunter's Path [Thunder Bluff]
 					["qg"] = 3038,	-- Kary Thunderhorn <Hunter Trainer>
 					["coord"] = { 58.4, 88.0, THUNDER_BLUFF },
 					["races"] = { TAUREN },
@@ -589,7 +589,7 @@ root("Zones", m(KALIMDOR, {
 					["isBreadcrumb"] = true,
 					["lvl"] = 10,
 				}),
-				q(6066, {	-- The Hunter's Path
+				q(6066, {	-- The Hunter's Path [Mulgore]
 					["qg"] = 3061,	-- Lanka Farshot <Hunter Trainer>
 					["coord"] = { 44.3, 75.7, MULGORE },
 					["races"] = { TAUREN },
@@ -597,7 +597,7 @@ root("Zones", m(KALIMDOR, {
 					["isBreadcrumb"] = true,
 					["lvl"] = 10,
 				}),
-				q(6067, {	-- The Hunter's Path
+				q(6067, {	-- The Hunter's Path [Durotar]
 					["qg"] = 3171,	-- Thotar <Hunter Trainer>
 					["coord"] = { 51.9, 43.5, DUROTAR },
 					["races"] = { TAUREN },

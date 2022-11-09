@@ -717,9 +717,9 @@ root("Zones", m(KALIMDOR, {
 				q(6062, {	-- Taming the Beast (1/3)
 					["qg"] = 3171,	-- Thotar <Hunter Trainer>
 					["sourceQuests"] = {
-						6068,	-- The Hunter's Path
-						6069,	-- The Hunter's Path
-						6070,	-- The Hunter's Path
+						6068,	-- The Hunter's Path [Orgrimmar]
+						6069,	-- The Hunter's Path [Durotar]
+						6070,	-- The Hunter's Path [Thunder Bluff]
 					},
 					["coord"] = { 51.8, 43.4, DUROTAR },
 					["races"] = { ORC, UNDEAD, TROLL },
@@ -799,7 +799,7 @@ root("Zones", m(KALIMDOR, {
 						i(5420),	-- Banshee Armor
 					},
 				}),
-				q(6068, {	-- The Hunter's Path
+				q(6068, {	-- The Hunter's Path [Orgrimmar]
 					["qg"] = 3407,	-- Sian'dur <Hunter Trainer>
 					["coord"] = { 67.8, 17.8, ORGRIMMAR },
 					["races"] = { ORC, UNDEAD, TROLL },
@@ -807,7 +807,7 @@ root("Zones", m(KALIMDOR, {
 					["isBreadcrumb"] = true,
 					["lvl"] = 10,
 				}),
-				q(6069, {	-- The Hunter's Path
+				q(6069, {	-- The Hunter's Path [Durotar]
 					["qg"] = 11814,	-- Kali Remik
 					["coord"] = { 6.2, 74.2, DUROTAR },
 					["races"] = { ORC, UNDEAD, TROLL },
@@ -815,7 +815,7 @@ root("Zones", m(KALIMDOR, {
 					["isBreadcrumb"] = true,
 					["lvl"] = 10,
 				}),
-				q(6070, {	-- The Hunter's Path
+				q(6070, {	-- The Hunter's Path [Thunder Bluff]
 					["qg"] = 3038,	-- Kary Thunderhorn <Hunter Trainer>
 					["coord"] = { 58.4, 88, THUNDER_BLUFF },
 					["races"] = { ORC, UNDEAD, TROLL },

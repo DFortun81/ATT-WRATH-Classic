@@ -539,6 +539,14 @@ root("Zones", m(KALIMDOR, {
 						}),
 					},
 				}),
+				q(5250, {	-- Starfall
+					["qg"] = 7907,	-- Daryn Lightwind
+					["coord"] = { 55.4, 92.2, TELDRASSIL },
+					["timeline"] = { "removed 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
+					["isBreadcrumb"] = true,
+					["lvl"] = 53,
+				}),
 				q(4842, {	-- Strange Sources
 					["lvl"] = 51,
 					["qg"] = 9298,	-- Donova Snowden
