@@ -637,14 +637,15 @@ root("Zones", m(KALIMDOR, {
 			n(ZONE_DROPS, {
 				-- #if BEFORE CATA
 				-- Originally a zone drop of Azshara, was moved to Winterspring after.
-				applyclassicphase(TBC_PHASE_ONE, i(34535, {	-- Azure Whelpling
+				i(34535, {	-- Azure Whelpling
+					["timeline"] = { "added 2.3.0.7485" },
 					["crs"] = {
 						193,	-- Blue Dragonspawn
 						6130,	-- Blue Scalebane
 						6129,	-- Draconic Magelord
 						6131,	-- Draconic Mageweaver
 					},
-				})),
+				}),
 				-- #endif
 				i(20029, {	-- Enchanted Coral
 					["questID"] = 8252,	-- The Siren's Coral

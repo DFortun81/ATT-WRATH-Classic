@@ -679,17 +679,23 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				q(4883, {	-- Guarding Secrets (2/2)
-					["qg"] = 10306,	-- Trull Failbane
+					["providers"] = {
+						{ "n", 10306 },	-- Trull Failbane
+						{ "i", 12558 },	-- Blue-feathered Necklace
+					},
 					["sourceQuest"] = 4882,	-- Guarding Secrets (1/2)
 					["coord"] = { 34.6, 52.6, FELWOOD },
+					["timeline"] = { "removed 4.0.3" },
+					["maps"] = { THUNDER_BLUFF },
 					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 12558, 1 },	-- Blue-feathered Necklace
-					},
 					["lvl"] = 52,
 					["groups"] = {
-						i(15796),	-- Seaspray Bracers
-						i(15797),	-- Shining Armplates
+						i(15796, {	-- Seaspray Bracers
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(15797, {	-- Shining Armplates
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				q(8420, {	-- Hot and Itchy
@@ -1185,13 +1191,6 @@ root("Zones", m(KALIMDOR, {
 						i(21312),	-- Belt of the Den Watcher
 					},
 				}),
-				q(5249, {	-- To Winterspring!
-					["qg"] = 10924,	-- Ivy Leafrunner
-					["coord"] = { 50.8, 81.6, FELWOOD },
-					["races"] = ALLIANCE_ONLY,
-					["isBreadcrumb"] = true,
-					["lvl"] = 53,
-				}),
 				q(7624, {	-- Ulathek the Traitor
 					["qg"] = 9516,	-- Lord Banehollow
 					["sourceQuest"] = 7623,	-- Lord Banehollow
@@ -1548,10 +1547,6 @@ root("Zones", m(KALIMDOR, {
 					["cost"] = {
 						{ "i", 11511, 1 },	-- Cenarion Beacon
 					},
-				}),
-				i(12822, {	-- Toxic Horror Droplet
-					["questID"] = 5086,	-- Toxic Horrors
-					["cr"] = 7132,	-- Toxic Horror
 				}),
 			}),
 		},

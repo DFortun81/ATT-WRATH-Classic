@@ -978,6 +978,13 @@ root("Zones", m(KALIMDOR, {
 					},
 					["lvl"] = 30,
 				}),
+				q(27292, {    -- Return to Krog
+					["qg"] = 4943,    -- Mosarn
+					["sourceQuest"] = 27258,    -- The Black Shield
+					["coord"] = { 54.3, 80.3, THUNDER_BLUFF },
+					["timeline"] = { "added 4.0.3.13277" },
+					["races"] = HORDE_ONLY,
+				}),
 				applyclassicphase(TBC_PHASE_ONE, q(11204, {	-- Return to Krog
 					["qg"] = 4943,	-- Mosarn
 					["sourceQuest"] = 1276,	-- The Black Shield (5/5)
