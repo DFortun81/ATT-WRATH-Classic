@@ -791,10 +791,14 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 62.4, 35.4, THE_BARRENS },
 					["maps"] = { DESOLACE, DUSTWALLOW_MARSH },
 					["classes"] = { WARLOCK },
-					["cost"] = {
-						{ "i", 7291, 1 },	-- 	Infernal Orb
-					},
 					["lvl"] = 35,
+					["groups"] = {
+						objective(1, {	-- 0/1 Infernal Orb
+							["provider"] = { "i", 7291 },	-- Infernal Orb
+							["coord"] = { 55.0, 77.8, DESOLACE },
+							["cr"] = 4668,	-- Burning Blade Summoner
+						}),
+					},
 				}),
 				q(898, {	-- Free From the Hold
 					["qg"] = 3465,	-- Gilthares Firebough

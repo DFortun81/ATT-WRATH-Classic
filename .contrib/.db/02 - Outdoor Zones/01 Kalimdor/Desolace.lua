@@ -1055,10 +1055,6 @@ root("Zones", m(KALIMDOR, {
 						14225,	-- Prince Kellen
 					},
 				}),
-				i(7291, {	-- Infernal Orb
-					["cr"] = 4668,	-- Burning Blade Summoner
-					["coord"] = { 55.0, 77.8, DESOLACE },
-				}),
 				i(6245, {	-- Karnitol's Satchel
 					["races"] = ALLIANCE_ONLY,
 					["crs"] = {

@@ -484,6 +484,7 @@ root("Zones", m(KALIMDOR, {
 					-- This quest was moved to Darkshore after TBC Prepatch.
 					["qg"] = 4456,	-- Fiora Longears
 					["coord"] = { 33.8, 42.4, DARKSHORE },
+					["timeline"] = { "removed 2.3.0" },
 					["maps"] = { THOUSAND_NEEDLES },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 25,
@@ -497,7 +498,9 @@ root("Zones", m(KALIMDOR, {
 								4107,	-- Highperch Wyvern
 							},
 						}),
-						i(6719),	-- Windborne Belt
+						i(6719, {	-- Windborne Belt
+							["timeline"] = { "removed 2.3.0" },
+						}),
 					},
 				}),
 				-- #endif
@@ -520,6 +523,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 4456,	-- Fiora Longears
 					["sourceQuest"] = 1132,	-- Fiora Longears
 					["coord"] = { 33.8, 42.4, DARKSHORE },
+					["timeline"] = { "removed 3.3.0" },
 					["maps"] = { ASHENVALE },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 18,
