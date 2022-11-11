@@ -11,6 +11,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\4 - Thunder Bluff.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Azuremyst Isle.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Bloodmyst Isle.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Dustwallow Marsh.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Felwood.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Moonglade.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Stonetalon Mountains.lua
