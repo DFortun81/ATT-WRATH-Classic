@@ -17139,7 +17139,8 @@ app.events.QUEST_REMOVED = function(questID)
 	app:RefreshDataQuietly();
 end
 app.events.QUEST_TURNED_IN = function(questID)
-	if fieldCache.questID[questID] and not fieldCache.questID[questID][1].repeatable then
+	local quest = fieldCache.questID[questID];
+	if quest and (not quest[1].repeatable or quest[1].isDaily or quest[1].isYearly) then
 		CompletedQuests[questID] = true;
 		for questID,completed in pairs(DirtyQuests) do
 			app.QuestCompletionHelper(tonumber(questID));

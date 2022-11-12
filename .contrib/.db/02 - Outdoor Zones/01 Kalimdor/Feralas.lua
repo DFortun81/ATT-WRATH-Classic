@@ -879,10 +879,8 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 7775,	-- Gregan Brewspewer
 					["sourceQuest"] = 3909,	-- The Videre Elixir
 					["coord"] = { 45.1, 25.6, FERALAS },
+					["cost"] = {{ "i", 11242, 1 }},	-- Evoroot
 					["repeatable"] = true,
-					["cost"] = {
-						{ "i", 11242, 1 },	-- Evoroot
-					},
 					["lvl"] = 47,
 					["groups"] = {
 						i(11243),	-- Videre Elixir
