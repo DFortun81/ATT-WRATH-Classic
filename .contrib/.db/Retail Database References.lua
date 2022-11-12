@@ -18,6 +18,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Teldrassil.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Thousand Needles.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Winterspring.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Un'goro Crater.lua
 root("Zones", m(KALIMDOR, {
 	["OnUpdate"] = [[function(t) table.sort(t.g, function (a, b) return string.lower(a.isRaid and (" " .. a.text) or a.text) < string.lower(b.isRaid and (" " .. b.text) or b.text) end)  end]],
 }));
