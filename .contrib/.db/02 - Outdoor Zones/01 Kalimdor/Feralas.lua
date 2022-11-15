@@ -3,7 +3,7 @@
 ---------------------------------------------------
 root("Zones", m(KALIMDOR, {
 	m(FERALAS, {
-		["lore"] = "Feralas, unlike the zones that shares a border with it, is a massive rainforest that piques the interest of both the Horde and the Alliance. With the Alliance town of Feathermoon Stronghold in one of the western islands (accessible by taking the Feathermoon Ferry boat on the coast of the island) and the Horde town of Camp Mojache to the east, Alliance and Horde are likely to clash in this lush jungle.",
+		["lore"] = "Feralas is a rainforest surrounded by arid zones in southern Kalimdor. It is known for the mystery surrounding Dire Maul--a former city of the Highborne that remained hermetic and drew upon demonic energy to stay immortal. There is a strong Night Elf presence--both in Feathermoon Stronghold, the base of operations for the Sentinels, and in the numerous ruins scattered around the zones.",
 		["groups"] = {
 			n(ACHIEVEMENTS, {
 				explorationAch(849, {	-- Explore Feralas
@@ -11,7 +11,70 @@ root("Zones", m(KALIMDOR, {
 					["description"] = "Explore Feralas, revealing the covered areas of the world map.",
 					-- #endif
 				}),
+				ach(4932, {	-- Feralas Quests
+					["timeline"] = { "added 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						crit(1, {	-- The Fate of Taerar
+							["sourceQuest"] = 25398,	-- Sealing the Dream
+						}),
+						crit(2, {	-- The Twilight Sermon
+							["sourceQuest"] = 25333,	-- Might of the Sentinels
+						}),
+						crit(3, {	-- Freed
+							["sourceQuest"] = 26401,	-- Return to Vestia
+						}),
+						crit(4, {	-- Forces of Nature
+							["sourceQuest"] = 25468,	-- Forces of Nature: Faerie Dragons
+						}),
+						crit(5, {	-- The Dragons of Nightmare
+							["sourceQuest"] = 25438,	-- Ysondre's Farewell
+						}),
+					},
+				}),
+				ach(4979, {	-- Feralas Quests
+					["timeline"] = { "added 4.0.3" },
+					["races"] = HORDE_ONLY,
+					["groups"] = {
+						crit(1, {	-- The Fate of Taerar
+							["sourceQuest"] = 25250,	-- Sealing the Dream
+						}),
+						crit(2, {	-- The Twilight Sermon
+							["sourceQuest"] = 25329,	-- Might of the Stonemaul
+						}),
+						crit(3, {	-- Muisek
+							["sourceQuest"] = 25391,	-- Weapons of Spirit
+						}),
+						crit(4, {	-- Freed
+							["sourceQuest"] = 25645,	-- Return to Sage Palerunner
+						}),
+						crit(5, {	-- The Dragons of Nightmare
+							["sourceQuest"] = 25383,	-- Ysondre's Farewell
+						}),
+					},
+				}),
 			}),
+			-- #if AFTER MOP
+			petbattle(filter(BATTLE_PETS, {
+				p(557, {	-- Nether Faerie Dragon
+					["crs"] = { 62395 },	-- Nether Faerie Dragon
+					["description"] = "Can be found in the surrounding areas outside of the Dire Maul instance portals in Feralas.",
+				}),
+				p(378, {	-- Rabbit
+					["crs"] = { 61080 },	-- Rabbit
+				}),
+				p(387, {	-- Snake
+					["crs"] = { 61142 },	-- Snake
+				}),
+				p(379, {	-- Squirrel
+					["crs"] = { 61081 },	-- Squirrel
+				}),
+				p(1158, {	-- Stunted Yeti
+					["crs"] = { 68805 },	-- Stunted Yeti
+					["description"] = "Can be found near Feral Scar Yetis south of Dire Maul.",
+				}),
+			})),
+			-- #endif
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({
 				["110:110:493:70"] = 1113,	-- Oneiros
