@@ -4399,7 +4399,6 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	end
 	app.RefreshAchievementCollection = function()
 		if ATTAccountWideData then
-			app.RefreshAchievementCollection = nil;
 			for achievementID,_ in pairs(fieldCache["achievementID"]) do
 				CheckAchievementCollectionStatus(achievementID);
 			end
