@@ -2318,7 +2318,7 @@ root("Achievements", {
 			["OnClick"] = INSANE_IN_THE_MEMBRANE_OnClick,
 			["OnTooltip"] = INSANE_IN_THE_MEMBRANE_OnTooltip,
 			["OnUpdate"] = INSANE_IN_THE_MEMBRANE_OnUpdate,
-			["description"] = "Insane in the Membrane is a Feat of Strength that rewards the title <The Insane>. This feat requires you to become honored with the Bloodsail Buccaneers and exalted with the Steamwheedle Cartel (Booty Bay, Everlook, Gadgetzan, Ratchet), Ravenholdt, Darkmoon Faire, and the Shen'dralar. It does not require that all of these reputation levels be reached at the same time, however, this may not be a thing until the achievement itself is introduced. Raising reputation with these factions is typically very difficult, time-consuming, and costly.",
+			["description"] = "Insane in the Membrane is a Feat of Strength that rewards the title <The Insane>. This feat requires you to become honored with the Bloodsail Buccaneers and exalted with the Steamwheedle Cartel (Booty Bay, Everlook, Gadgetzan, Ratchet), Ravenholdt, Darkmoon Faire, and the Shen'dralar. After Cataclysm it does not require that all of these reputation levels be reached at the same time, however, prior to that you must have them all at the same time. Raising reputation with these factions is typically very difficult, time-consuming, and costly.",
 			["groups"] = {
 				title(112, {	-- the Insane
 					["timeline"] = { "added 3.0.1" },
