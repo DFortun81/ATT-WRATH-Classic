@@ -12354,14 +12354,13 @@ function app:RefreshData(fromTrigger)
 			coroutine.yield();
 		end
 		
-		if app.RefreshAchievementCollection then
-			app.RefreshAchievementCollection();
-		end
-		
 		-- Send an Update to the Windows to Rebuild their Row Data
 		if app.forceFullDataRefresh then
 			app.forceFullDataRefresh = nil;
 			app:GetDataCache();
+			if app.RefreshAchievementCollection then
+				app.RefreshAchievementCollection();
+			end
 			app:UpdateWindows(true, app.refreshFromTrigger);
 		else
 			app:UpdateWindows(nil, app.refreshFromTrigger);
