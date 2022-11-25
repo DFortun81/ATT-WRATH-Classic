@@ -128,6 +128,7 @@ root("PVP", {
 						{ 61.8, 83.8, ASHENVALE },
 						-- #endif
 					},
+					["timeline"] = { "removed 3.3.3" },
 					["races"] = ALLIANCE_ONLY,
 					-- #if AFTER TBC
 					["cost"] = {
@@ -166,6 +167,7 @@ root("PVP", {
 						{ 61.8, 83.8, ASHENVALE },
 						-- #endif
 					},
+					["timeline"] = { "removed 3.3.3" },
 					["races"] = ALLIANCE_ONLY,
 					["repeatable"] = true,
 					-- #if AFTER TBC
@@ -883,6 +885,7 @@ root("PVP", {
 						{ 46.7, 8.4, THE_BARRENS },
 						-- #endif
 					},
+					["timeline"] = { "removed 3.3.3" },
 					["races"] = HORDE_ONLY,
 					-- #if AFTER TBC
 					["cost"] = {
@@ -921,6 +924,7 @@ root("PVP", {
 						{ 46.7, 8.4, THE_BARRENS },
 						-- #endif
 					},
+					["timeline"] = { "removed 3.3.3" },
 					["races"] = HORDE_ONLY,
 					["repeatable"] = true,
 					-- #if AFTER TBC
