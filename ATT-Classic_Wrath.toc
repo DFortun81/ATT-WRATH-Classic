@@ -1,21 +1,22 @@
-## Author: Crieve-Sargeras
-## Interface: 30400
-## X-Curse-Project-ID: 267285
-## Title: ATT-Classic
+## Title: AllTheThings |cfd9b9b9b(Wrath)|r
 ## Name: ATT-Classic
+## Notes: Addon for Tracking Collections & Account Completion
+## Author: Crieve-Sargeras
+## Version: 1.2.5
+## Interface: 30400
+## X-Interface: 30400
+## X-Curse-Project-ID: 267285
 ## SavedVariables: ATTCharacterData, ATTAccountWideData, ATTClassicSettings, ATTClassicAD, ATTClassicAuctionData, ATTClassicDebugData
 ## SavedVariablesPerCharacter: ATTClassicSettingsPerCharacter
-## Notes: Addon for Tracking Collections & Account Completion
-## Version: 1.2.5
 lib\LibStub\LibStub.lua
 lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
 src\base.lua
 db\Presets.lua
-db\CategoryDB.lua
+db\Wrath\CategoryDB.lua
+db\Wrath\ExplorationDB.lua
+db\Wrath\ObjectDB.lua
 db\FlightPathDB.lua
-db\ExplorationDB.lua
-db\ObjectDB.lua
 db\RaceDB.lua
 locales\enUS.lua
 locales\esES.lua
@@ -28,4 +29,4 @@ locales\ruRU.lua
 locales\zhCN.lua
 Settings.lua
 ATT-Classic.lua
-db\Categories.lua
+db\Wrath\Categories.lua

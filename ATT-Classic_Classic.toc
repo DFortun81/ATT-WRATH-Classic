@@ -1,0 +1,32 @@
+## Title: AllTheThings |cfd9b9b9b(Classic)|r
+## Name: ATT-Classic
+## Notes: Addon for Tracking Collections & Account Completion
+## Author: Crieve-Sargeras
+## Version: 1.2.5
+## Interface: 11401
+## X-Interface: 11401
+## X-Curse-Project-ID: 267285
+## SavedVariables: ATTCharacterData, ATTAccountWideData, ATTClassicSettings, ATTClassicAD, ATTClassicAuctionData, ATTClassicDebugData
+## SavedVariablesPerCharacter: ATTClassicSettingsPerCharacter
+lib\LibStub\LibStub.lua
+lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
+lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
+src\base.lua
+db\Presets.lua
+db\Classic\CategoryDB.lua
+db\Classic\ExplorationDB.lua
+db\Classic\ObjectDB.lua
+db\FlightPathDB.lua
+db\RaceDB.lua
+locales\enUS.lua
+locales\esES.lua
+locales\deDE.lua
+locales\frFR.lua
+locales\itIT.lua
+locales\koKR.lua
+locales\ptBR.lua
+locales\ruRU.lua
+locales\zhCN.lua
+Settings.lua
+ATT-Classic.lua
+db\Classic\Categories.lua
