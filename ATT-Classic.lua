@@ -16026,8 +16026,10 @@ end
 app:RegisterEvent("ADDON_LOADED");
 app:RegisterEvent("BOSS_KILL");
 app:RegisterEvent("CHAT_MSG_ADDON");
-app:RegisterEvent("CHAT_MSG_WHISPER")
-app:RegisterEvent("CURSOR_CHANGED");
+app:RegisterEvent("CHAT_MSG_WHISPER");
+if select(4, GetBuildInfo()) > 11403 then
+	app:RegisterEvent("CURSOR_CHANGED");
+end
 app:RegisterEvent("PLAYER_DEAD");
 app:RegisterEvent("VARIABLES_LOADED");
 app:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
