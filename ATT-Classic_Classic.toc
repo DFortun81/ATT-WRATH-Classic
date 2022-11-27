@@ -1,4 +1,4 @@
-## Title: AllTheThings |cfd9b9b9b(Classic)|r
+## Title: ATT-Classic |cfd9b9b9b(Classic)|r
 ## Name: ATT-Classic
 ## Notes: Addon for Tracking Collections & Account Completion
 ## Author: Crieve-Sargeras
