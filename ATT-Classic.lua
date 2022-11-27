@@ -3090,8 +3090,10 @@ app.GetBestObjectIDForName = function(name)
 	if o then
 		if #o > 1 then
 			local mapID = app.GetCurrentMapID();
-			local px, py = C_Map.GetPlayerMapPosition(mapID, "player");
-			if px then
+			local pos = C_Map.GetPlayerMapPosition(mapID, "player");
+			if pos then
+				local px, py = pos:GetXY();
+				px, py = px * 100, py * 100;
 				local closestDistance, closestObjectID, dist = 99999, o[1];
 				for i,objectID in ipairs(o) do
 					local searchResults = app.SearchForField("objectID", objectID);
@@ -6628,8 +6630,7 @@ app.CacheFlightPathDataForMap = function(mapID, nodes)
 				local pos = C_Map.GetPlayerMapPosition(mapID, "player");
 				if pos then
 					local px, py = pos:GetXY();
-					px = px * 100;
-					py = py * 100;
+					px, py = px * 100, py * 100;
 					
 					-- Select the best flight path node.
 					for nodeID,node in pairs(temp) do
@@ -8084,7 +8085,8 @@ app.events.MAP_EXPLORATION_UPDATED = function(...)
 		end
 		local pos = C_Map.GetPlayerMapPosition(mapID, "player");
 		if pos then
-			local x, y = pos:GetXY();
+			local px, py = pos:GetXY();
+			px, py = px * 100, py * 100;
 			local explored = C_MapExplorationInfo_GetExploredAreaIDsAtPosition(app.CurrentMapID, pos);
 			if explored then
 				local newArea = false;
@@ -8094,7 +8096,7 @@ app.events.MAP_EXPLORATION_UPDATED = function(...)
 						ATTAccountWideData.Exploration[areaID] = 1;
 						newArea = true;
 						if not app.ExplorationAreaPositionDB[areaID] then
-							local coord = {x * 100, y * 100, app.CurrentMapID};
+							local coord = {px, py, app.CurrentMapID};
 							print("New Coordinate: ", C_Map.GetAreaInfo(areaID), coord);
 							app.ExplorationAreaPositionDB[areaID] = { coord };
 						end
