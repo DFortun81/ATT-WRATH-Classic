@@ -409,12 +409,13 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 8125,	-- Dirge Quikcleave
 					["coord"] = { 52.63, 28.12, TANARIS },
 					["timeline"] = { "added 3.1.0.9637", "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
+					["lockCriteria"] = { 1, "spellID", 64054 },	-- Clamlette Magnifique
+					-- #endif
 					["requireSkill"] = COOKING,
 					["groups"] = {
 						i(16971),	-- Clamlette Surprise
-						-- #if AFTER WRATH
 						recipe(64054),	-- Clamlette Magnifique
-						-- #endif
 					},
 				}),
 				q(2882, {	-- Cuergo's Gold
