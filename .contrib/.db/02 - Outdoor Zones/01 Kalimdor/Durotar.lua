@@ -149,7 +149,7 @@ root("Zones", m(KALIMDOR, {
 				q(1516, {	-- Call of Earth (1/3)
 					["qg"] = 5887,	-- Canaga Earthcaller
 					["coord"] = { 42.4, 69.0, DUROTAR },
-					["timeline"] = { "removed 4.0.3.10000" },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { SHAMAN },
 					["altQuests"] = {
@@ -164,7 +164,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5887,	-- Canaga Earthcaller
 					["sourceQuest"] = 1516,	-- Call of Earth (1/3)
 					["coord"] = { 42.4, 69.0, DUROTAR },
-					["timeline"] = { "removed 4.0.3.10000" },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { SHAMAN },
 					["altQuests"] = {
@@ -179,7 +179,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5891,	-- Minor Manifestation of Earth
 					["sourceQuest"] = 1517,	-- Call of Earth (2/3)
 					["coord"] = { 44.0, 76.0, DUROTAR },
-					["timeline"] = { "removed 4.0.3.10000" },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { SHAMAN },
 					["altQuests"] = {
@@ -189,12 +189,15 @@ root("Zones", m(KALIMDOR, {
 						{ "i", 6656, 1 },	-- Rough Quartz
 					},
 					["lvl"] = 4,
+					-- #if BEFORE 4.0.3
 					["groups"] = {
 						recipe(8071),	-- Stoneskin Totem
 						i(5175, {	-- Earth Totem
 							["description"] = "You must keep this in your bags forever.",
+							["timeline"] = { "removed 4.0.3" },
 						}),
 					},
+					-- #endif
 				}),
 				q(791, {	-- Carry Your Weight
 					["qg"] = 3147,	-- Furl Scornbrow
@@ -464,7 +467,7 @@ root("Zones", m(KALIMDOR, {
 				q(14088, {	-- Learn to Ride in Durotar
 					["provider"] = { "i", 46883 },	-- Riding Training Pamphlet
 					["description"] = "The pamphlet that starts this quest is sent to Trolls in their Mailbox upon reaching the specified level.",
-					["timeline"] = { "added 3.3.0.10958", "removed 4.0.1.10000" },
+					["timeline"] = { "added 3.3.0.10958", "removed 4.0.1" },
 					["lockCriteria"] = { 1,
 						"spellID", 33388,	-- Apprentice Riding
 						"spellID", 33391,	-- Journeyman Riding

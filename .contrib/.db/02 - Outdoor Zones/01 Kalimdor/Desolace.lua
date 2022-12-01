@@ -672,7 +672,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["coord"] = { 36.2, 79.2, DESOLACE },
 					["minReputation"] = { 92, FRIENDLY },	-- Gelkis Clan Centaur, Friendly.
-					["timeline"] = { "removed 4.0.3.10000" },
+					["timeline"] = { "removed 4.0.3" },
 					["cost"] = {
 						{ "i", 6069, 6 },	-- Crudely Dried Meat
 					},
@@ -688,7 +688,7 @@ root("Zones", m(KALIMDOR, {
 						applyclassicphase(TBC_PHASE_ONE, i(32378, {	-- Silver Star [TBC]
 							["timeline"] = {
 								"added 2.0.1.5678",
-								"removed 4.0.3.10000",
+								"removed 4.0.3",
 							},
 						})),
 						-- #endif
