@@ -9,6 +9,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\1 - Darnassus.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\3 - The Exodar.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\4 - Thunder Bluff.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Azshara.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Azuremyst Isle.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Bloodmyst Isle.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Dustwallow Marsh.lua
