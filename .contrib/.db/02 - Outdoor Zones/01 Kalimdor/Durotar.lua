@@ -264,16 +264,16 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5887,	-- Canaga Earthcaller
 					["sourceQuest"] = 1516,	-- Call of Earth (1/3)
 					["coord"] = { 42.4, 69.0, DUROTAR },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { SHAMAN },
 					["repeatable"] = true,
-					["altQuests"] = {
-						1462, -- Earth Sapta (Mulgore)
-					},
-					["cost"] = {
-						{ "i", 6635, 1 },	-- Earth Sapta
-					},
 					["lvl"] = 4,
+					-- #if BEFORE 4.0.3
+					["groups"] = {
+						i(6635),	-- Earth Sapta
+					},
+					-- #endif
 				}),
 				q(837, {	-- Encroachment
 					["qg"] = 3139,	-- Gar'Thok
