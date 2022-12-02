@@ -16,6 +16,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Felwood.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Feralas.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Moonglade.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Mulgore.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Stonetalon Mountains.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Teldrassil.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Thousand Needles.lua
