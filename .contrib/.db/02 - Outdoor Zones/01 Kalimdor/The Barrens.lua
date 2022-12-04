@@ -286,12 +286,21 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 38.6, 58.8, DUROTAR },
 					["races"] = HORDE_ONLY,
 					["classes"] = { SHAMAN },
-					["cost"] = {
-						{ "i", 5026, 1 },	-- Fire Tar
-						{ "i", 6652, 1 },	-- Reagent Pouch
-					},
 					["lvl"] = 10,
 					["groups"] = {
+						objective(1, {	-- 0/1 Fire Tar
+							["provider"] = { "i", 5026 },	-- Fire Tar
+							["crs"] = {
+								3269,	-- Razormane Geomancer
+								3271,	-- Razormane Mystic
+								3268,	-- Razormane Thornweaver
+								3267,	-- Razormane Water Seeker
+							},
+						}),
+						objective(2, {	-- 0/1 Reagent Pouch
+							["provider"] = { "i", 6652 },	-- Reagent Pouch
+							["cr"] = 3199,	-- Burning Blade Cultist
+						}),
 						{
 							["itemID"] = 6636,	-- Fire Sapta
 							["questID"] = 1526,	-- Call of Fire (4/5)
@@ -1108,7 +1117,10 @@ root("Zones", m(KALIMDOR, {
 					["lvl"] = 9,
 				}),
 				q(6365, {	-- Meats to Orgrimmar
-					["qg"] = 3489,	-- Zargh
+					["providers"] = {
+						{ "n", 3489 },	-- Zargh
+						{ "i", 16306 },	-- Zargh's Meats
+					},
 					["coord"] = { 52.62, 29.84, THE_BARRENS },
 					["races"] = { ORC, TROLL },
 					["lvl"] = 10,
@@ -1805,9 +1817,19 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5810,	-- Uzzek
 					["sourceQuest"] = 1498,	-- Path of Defense
 					["coord"] = { 61.38, 21.11, THE_BARRENS },
+					["maps"] = { DUROTAR },
 					["races"] = HORDE_ONLY,
 					["classes"] = { WARRIOR },
 					["lvl"] = 10,
+					["groups"] = {
+						objective(1, {	-- 0/5 Singed Scale
+							["provider"] = { "i", 6486 },	-- Singed Scale
+							["crs"] = {
+								3131,	-- Lightning Hide
+								3130,	-- Thunder Lizard
+							},
+						}),
+					},
 				}),
 				q(1758, {	-- Tome of the Cabal (1/3 Alliance)
 					["qg"] = 6251,	-- Strahad Farsan
@@ -2449,17 +2471,6 @@ root("Zones", m(KALIMDOR, {
 				i(5051, {	-- Dig Rat
 					["coord"] = { 48.8, 84.8, THE_BARRENS },
 					["cr"] = 3444,	-- Dig Rat
-				}),
-				i(5026, {	-- Fire Tar
-					["questID"] = 1525,	-- Call of Fire (3/5)
-					["races"] = HORDE_ONLY,
-					["classes"] = { SHAMAN },
-					["crs"] = {
-						3269,	-- Razormane Geomancer
-						3271,	-- Razormane Mystic
-						3268,	-- Razormane Thornweaver
-						3267,	-- Razormane Water Seeker
-					},
 				}),
 				i(5055, {	-- Intact Raptor Horn
 					["questID"] = 865,	-- Raptor Horns

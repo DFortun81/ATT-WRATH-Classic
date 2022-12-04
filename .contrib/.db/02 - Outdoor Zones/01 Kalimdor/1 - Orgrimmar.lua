@@ -319,6 +319,10 @@ root("Zones", m(KALIMDOR, {
 					["groups"] = {
 						objective(1, {	-- 0/1 Lieutenant's Insignia
 							["provider"] = { "i", 14544 },	-- Lieutenant's Insignia
+							["crs"] = {
+								3198,	-- Burning Blade Apprentice
+								3197,	-- Burning Blade Fanatic
+							},
 						}),
 					},
 				}),

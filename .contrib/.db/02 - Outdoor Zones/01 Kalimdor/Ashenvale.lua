@@ -1281,25 +1281,6 @@ root("Zones", m(KALIMDOR, {
 						3752,	-- Xavian Rogue
 					},
 				}),
-				i(7128, {	-- Uncloven Satyr Hoof
-					["questID"] = 1842,	-- Satyr Hooves
-					["races"] = HORDE_ONLY,
-					["classes"] = { WARRIOR },
-					["crs"] = {
-						3771,	-- Bleakheart Hellcaller
-						3765,	-- Bleakheart Satyr
-						3770,	-- Bleakheart Shadowstalker
-						3767,	-- Bleakheart Trickster
-						3762,	-- Felmusk Felsworn
-						3759,	-- Felmusk Rogue
-						3758,	-- Felmusk Satyr
-						3763,	-- Felmusk Shadowstalker
-						3754,	-- Xavian Betrayer
-						3755,	-- Xavian Felsworn
-						3757,	-- Xavian Hellcaller
-						3752,	-- Xavian Rogue
-					},
-				}),
 				i(5475, {	-- Wooden Key
 					["races"] = ALLIANCE_ONLY,
 					["crs"] = {
