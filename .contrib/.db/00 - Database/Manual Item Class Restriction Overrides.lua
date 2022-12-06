@@ -52,7 +52,6 @@ i(15108, WARLOCK);	-- Orb of Dar'Orahil
 i(15107, WARLOCK);	-- Orb of Noh'Orahil
 i(6898, WARLOCK);	-- Orb of Soran'ruk
 i(18354, WARLOCK);	-- Pimgib's Collar
-i(14153, WARLOCK);	-- Robe of the Void
 i(22243, WARLOCK);	-- Small Soul Pouch
 i(21340, WARLOCK);	-- Soul Pouch
 i(15106, WARLOCK);	-- Staff of Dar'Orahil
