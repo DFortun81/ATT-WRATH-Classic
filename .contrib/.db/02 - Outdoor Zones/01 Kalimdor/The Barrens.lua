@@ -597,11 +597,25 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 62.4, 35.4, THE_BARRENS },
 					["maps"] = { DESOLACE },
 					["classes"] = { WARLOCK },
-					["cost"] = {
-						{ "i", 6989, 10 },	-- Vial of Hatefury Blood
-						{ "i", 6990, 1 },	-- Lesser Infernal Stone
-					},
 					["lvl"] = 31,
+					["groups"] = {
+						objective(1, {	-- 0/10 Vial of Hatefury Blood
+							["provider"] = { "i", 6989 },	-- Vial of Hatefury Blood
+							["crs"] = {
+								4673,	-- Hatefury Betrayer
+								4672,	-- Hatefury Felsworn
+								4675,	-- Hatefury Hellcaller
+								4670,	-- Hatefury Rogue
+								4674,	-- Hatefury Shadowstalker
+								4671,	-- Hatefury Trickster
+								14225,	-- Prince Kellen
+							},
+						}),
+						objective(2, {	-- 0/1 Lesser Infernal Stone
+							["provider"] = { "i", 6990 },	-- Lesser Infernal Stone
+							["cr"] = 4676,	-- Lesser Infernal
+						}),
+					},
 				}),
 				q(4784, {	-- Components for the Enchanted Gold Bloodrobe (5/5)
 					["qg"] = 6266,	-- Menara Voidrender
