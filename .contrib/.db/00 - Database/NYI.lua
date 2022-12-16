@@ -911,6 +911,7 @@ root("NeverImplemented", {
 		i(25580),	-- QR 9867 Warrior Legs
 		i(25626),	-- QR 9922 Paladin Bracer
 	}),
+	-- #if BEFORE WRATH
 	filter(50, {	-- Miscellaneous
 		i(37892),	-- [ph] Green Brewfest Stein
 		i(37893),	-- [ph] Filled Green Brewfest Stein
@@ -919,6 +920,7 @@ root("NeverImplemented", {
 		i(37896),	-- [PH] Filled Green Brewfest Stein
 		i(37897),	-- [ph] Filled Green Brewfest Stein
 	}),
+	-- #endif
 	filter(53, {	-- Trinkets
 		i(25798),	-- 130 Epic Warrior Trinket
 		i(25801),	-- 130 Test Caster Trinket
