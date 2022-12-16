@@ -411,10 +411,13 @@ root("Zones", m(KALIMDOR, {
 					["maps"] = { ASHENVALE },
 					["races"] = { UNDEAD, TROLL },
 					["classes"] = { MAGE },
-					["cost"] = {
-						{ "i", 7270, 12 },	-- Laughing Sister's Hair
-					},
 					["lvl"] = 15,
+					["groups"] = {
+						objective(1, {	-- 0/12 Laughing Sister's Hair
+							["provider"] = { "i", 7270 },	-- Laughing Sister's Hair
+							["cr"] = 4054,	-- Laughing Sister
+						}),
+					},
 				}),
 				q(14086, {	-- Learn to Ride in Orgrimmar
 					["provider"] = { "i", 46880 },	-- Riding Training Pamphlet
