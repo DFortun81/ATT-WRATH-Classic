@@ -711,6 +711,7 @@ _.ObjectIcons = {
 	[19015] = "Interface/Icons/inv_ore_arcanite_02",
 	[19016] = "Interface/Icons/inv_misc_dust_02",
 	[19021] = "Interface/Icons/inv_box_01",
+	[19024] = "Interface/Icons/inv_enchant_essencemagicsmall",
 	[19027] = "Interface/Icons/INV_Misc_Book_09",
 	[19030] = "Interface/Icons/INV_MISC_DUST_05",
 	[19869] = "Interface/Icons/inv_gizmo_03",
