@@ -1677,6 +1677,12 @@ moh = function(cost, item)								-- Assign a Mark of Honor cost to an item with
 	-- #endif
 	return item;
 end
+vicioussaddle = function(item)							-- Assign a Vicious Saddle cost to an item with proper timeline requirements.
+	-- #if BEFORE 5.4.0.17153
+	applycost(item, { "i", 103533, 1 });	-- Vicious Saddle
+	-- #endif
+	return item;
+end
 venture = function(cost, item)							-- Assign a Venture Coin cost to an item with proper timeline requirements.
 	-- #if BEFORE 4.0.1
 	applycost(item, { "c", 201, cost });	-- Venture Coin
@@ -2179,3 +2185,918 @@ BADGE_OF_JUSTICE = currency(42);	-- Badge of Justice
 -- #else
 BADGE_OF_JUSTICE = i(29434);	-- Badge of Justice
 -- #endif
+
+-- Giant Copy+Paste Sections that need a better solution at some point, but for now, this is the best I've got.
+-- I'm thinking a "World Vendors" section. Stable Master, Cataclysm Blacksmithing Supplies, etc fit into this category.
+-- Use maps to link them. You know, like a sensible person that hates pointless duplication.
+COMMON_CATACLYSM_JEWELCRAFTING_RECIPES = {
+	i(52409, {	-- Design: Accurate Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52419, {	-- Design: Adept Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52421, {	-- Design: Artful Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52437, {	-- Design: Austere Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52461, {	-- Design: Band of Blades
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52381, {	-- Design: Bold Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52362, {	-- Design: Bold Inferno Ruby
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52435, {	-- Design: Bracing Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52464, {	-- Design: Brazen Elementium Medallion
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52449, {	-- Design: Brilliant Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52387, {	-- Design: Brilliant Inferno Ruby
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52434, {	-- Design: Chaotic Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52413, {	-- Design: Deadly Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52401, {	-- Design: Defender's Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52416, {	-- Design: Deft Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52447, {	-- Design: Delicate Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52380, {	-- Design: Delicate Inferno Ruby
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52441, {	-- Design: Destructive Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52438, {	-- Design: Effulgent Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52460, {	-- Design: Elementium Destroyer's Ring
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52467, {	-- Design: Elementium Guardian
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52463, {	-- Design: Elementium Moebius Band
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52439, {	-- Design: Ember Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52443, {	-- Design: Enigmatic Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52465, {	-- Design: Entwined Elementium Choker
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52405, {	-- Design: Etched Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52436, {	-- Design: Eternal Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52466, {	-- Design: Eye of Many Deaths
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52415, {	-- Design: Fierce Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52420, {	-- Design: Fine Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52448, {	-- Design: Flashing Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52384, {	-- Design: Flashing Inferno Ruby
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52433, {	-- Design: Fleet Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52428, {	-- Design: Forceful Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52445, {	-- Design: Forlorn Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52398, {	-- Design: Fractured Amberjewel
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52459, {	-- Design: Fractured Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52406, {	-- Design: Glinting Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52403, {	-- Design: Guardian's Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52444, {	-- Design: Impassive Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52412, {	-- Design: Inscribed Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52425, {	-- Design: Jagged Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52422, {	-- Design: Keen Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52429, {	-- Design: Lightning Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(68360, {	-- Design: Lucent Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52396, {	-- Design: Mystic Amberjewel
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52457, {	-- Design: Mystic Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52424, {	-- Design: Nimble Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52426, {	-- Design: Piercing Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52410, {	-- Design: Polished Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52414, {	-- Design: Potent Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52442, {	-- Design: Powerful Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52450, {	-- Design: Precise Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52389, {	-- Design: Precise Inferno Ruby
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52430, {	-- Design: Puissant Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(69853, {	-- Design: Punisher's Band
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52404, {	-- Design: Purified Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52397, {	-- Design: Quick Amberjewel
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52458, {	-- Design: Quick Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52417, {	-- Design: Reckless Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52423, {	-- Design: Regal Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52411, {	-- Design: Resolute Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(68361, {	-- Design: Resplendent Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52407, {	-- Design: Retaliating Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52440, {	-- Design: Revitalizing Shadowspirit Diamond
+		["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52454, {	-- Design: Rigid Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52393, {	-- Design: Rigid Ocean Sapphire
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52462, {	-- Design: Ring of Warring Elements
+		["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52432, {	-- Design: Sensei's Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52400, {	-- Design: Shifting Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52418, {	-- Design: Skillful Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52395, {	-- Design: Smooth Amberjewel
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52456, {	-- Design: Smooth Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52451, {	-- Design: Solid Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52390, {	-- Design: Solid Ocean Sapphire
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52399, {	-- Design: Sovereign Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52452, {	-- Design: Sparkling Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52391, {	-- Design: Sparkling Ocean Sapphire
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52427, {	-- Design: Steady Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52453, {	-- Design: Stormy Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52392, {	-- Design: Stormy Ocean Sapphire
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52394, {	-- Design: Subtle Amberjewel
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52455, {	-- Design: Subtle Chimera's Eye
+		["cost"] = { { "c", 361, 2 }, },	-- 2x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52402, {	-- Design: Timeless Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52408, {	-- Design: Veiled Demonseye
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(68742, {	-- Design: Vivid Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(68359, {	-- Design: Willful Ember Topaz
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52431, {	-- Design: Zen Dream Emerald
+		["cost"] = { { "c", 361, 3 }, },	-- 3x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+		["f"] = RECIPES,
+	}),
+	i(52196, {	-- Chimera's Eye
+		["cost"] = { { "c", 361, 1 }, },	-- 1x Illustrious Jewelcrafter's Token
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = JEWELCRAFTING,
+	}),
+};
+COMMON_CATACLYSM_LEATHERWORKING_RECIPES = {
+	i(67095, {	-- Pattern: Assassin's Chestplate
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67070, {	-- Pattern: Belt of Nefarious Whispers
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67084, {	-- Pattern: Charscale Leg Armor
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67094, {	-- Pattern: Chestguard of Nature's Fury
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67073, {	-- Pattern: Corded Viper Belt
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67100, {	-- Pattern: Dragonkiller Tunic
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(68193, {	-- Pattern: Dragonscale Leg Armor
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(71721, {	-- Pattern: Drakehide Leg Armor
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67068, {	-- Pattern: Lightning Lash
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67082, {	-- Pattern: Razor-Edged Cloak
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67072, {	-- Pattern: Stormleather Sash
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67083, {	-- Pattern: Twilight Dragonscale Cloak
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67096, {	-- Pattern: Twilight Scale Chestguard
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67064, {	-- Pattern: Vicious Charscale Belt
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67063, {	-- Pattern: Vicious Charscale Boots
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67049, {	-- Pattern: Vicious Charscale Bracers
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67090, {	-- Pattern: Vicious Charscale Chest
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67053, {	-- Pattern: Vicious Charscale Gloves
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67091, {	-- Pattern: Vicious Charscale Helm
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67079, {	-- Pattern: Vicious Charscale Legs
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67078, {	-- Pattern: Vicious Charscale Shoulders
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67080, {	-- Pattern: Vicious Dragonscale Belt
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67065, {	-- Pattern: Vicious Dragonscale Boots
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67054, {	-- Pattern: Vicious Dragonscale Bracers
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67093, {	-- Pattern: Vicious Dragonscale Chest
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67066, {	-- Pattern: Vicious Dragonscale Gloves
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67081, {	-- Pattern: Vicious Dragonscale Helm
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67092, {	-- Pattern: Vicious Dragonscale Legs
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67055, {	-- Pattern: Vicious Dragonscale Shoulders
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67076, {	-- Pattern: Vicious Leather Belt
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67060, {	-- Pattern: Vicious Leather Boots
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67046, {	-- Pattern: Vicious Leather Bracers
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67087, {	-- Pattern: Vicious Leather Chest
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67048, {	-- Pattern: Vicious Leather Gloves
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67077, {	-- Pattern: Vicious Leather Helm
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67089, {	-- Pattern: Vicious Leather Legs
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67062, {	-- Pattern: Vicious Leather Shoulders
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67044, {	-- Pattern: Vicious Wyrmhide Belt
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67058, {	-- Pattern: Vicious Wyrmhide Boots
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67042, {	-- Pattern: Vicious Wyrmhide Bracers
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67075, {	-- Pattern: Vicious Wyrmhide Chest
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67056, {	-- Pattern: Vicious Wyrmhide Gloves
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67086, {	-- Pattern: Vicious Wyrmhide Helm
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67085, {	-- Pattern: Vicious Wyrmhide Legs
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(67074, {	-- Pattern: Vicious Wyrmhide Shoulders
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = LEATHERWORKING,
+		["f"] = RECIPES,
+	}),
+	i(52980, {	-- Pristine Hide
+		["cost"] = { { "i", 56516, 10 }, },	-- 10x Heavy Savage Leather
+		["timeline"] = { "added 4.0.3.13287" },
+	}),
+};
+COMMON_CATACLYSM_TAILORING_RECIPES = {
+	i(54601, {	-- Pattern: Belt of the Depths
+		["cost"] = { { "i", 54440, 1 }, },	-- 1x Dreamcloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(68199, {	-- Pattern: Black Embersilk Gown
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54603, {	-- Pattern: Breeches of Mended Nightmares
+		["cost"] = { { "i", 54440, 1 }, },	-- 1x Dreamcloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54602, {	-- Pattern: Dreamless Belt
+		["cost"] = { { "i", 54440, 1 }, },	-- 1x Dreamcloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54604, {	-- Pattern: Flame-Ascended Pantaloons
+		["cost"] = { { "i", 54440, 1 }, },	-- 1x Dreamcloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54605, {	-- Pattern: Illusionary Bag
+		["cost"] = { { "i", 54440, 1 }, },	-- 1x Dreamcloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54600, {	-- Pattern: Powerful Ghostly Spellthread
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54599, {	-- Pattern: Powerful Enchanted Spellthread
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54593, {	-- Pattern: Vicious Embersilk Cowl
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54594, {	-- Pattern: Vicious Embersilk Pants
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54595, {	-- Pattern: Vicious Embersilk Robe
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54596, {	-- Pattern: Vicious Fireweave Cowl
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54597, {	-- Pattern: Vicious Fireweave Pants
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+	i(54598, {	-- Pattern: Vicious Fireweave Robe
+		["cost"] = { { "i", 53643, 8 }, },	-- 8x Bolt of Embersilk Cloth
+		["timeline"] = { "added 4.0.3.13287" },
+		["requireSkill"] = TAILORING,
+		["f"] = RECIPES,
+	}),
+};
+
+-- Other things to consider adding to that section:
+-- Recipe: Sagefish Delight
+-- Formula: Lesser Wizard Oil
+-- Pattern: Enchanted Mageweave Pouch
+
+--[[
+-- Uncomment to check that I didn't mess up the spellID/itemID pairs.
+for i,o in ipairs(COMMON_CATACLYSM_ENCHANTING_RECIPES) do
+	if o.itemID == o.spellID then
+		print("YA MESSED UP CRIEVE", o.itemID, o.spellID);
+	end
+end
+]]--

@@ -45,7 +45,6 @@ local TIER_THIRTEEN_RAIDFINDER_GROUPS = {	-- Dragon Soul [Tier 13] (Raid Finder)
 		i(78752, {	-- Colossal Dragonplate Battleplate
 			["cost"] = { { "i", 78864, 1 }, },	-- Chest of the Corrupted Protector
 		}),
-		
 		i(78763, {	-- Colossal Dragonplate Gauntlets
 			["cost"] = { { "i", 78867, 1 }, },	-- Gauntlets of the Corrupted Protector
 		}),
@@ -377,7 +376,6 @@ local TIER_THIRTEEN_NORMAL_GROUPS = {	-- Dragon Soul [Tier 13] (Normal)
 		i(76984, {	-- Colossal Dragonplate Battleplate
 			["cost"] = { { "i", 78179, 1 }, },	-- Chest of the Corrupted Protector
 		}),
-		
 		i(76985, {	-- Colossal Dragonplate Gauntlets
 			["cost"] = { { "i", 78178, 1 }, },	-- Gauntlets of the Corrupted Protector
 		}),
@@ -709,7 +707,6 @@ local TIER_THIRTEEN_HEROIC_GROUPS = {	-- Dragon Soul [Tier 13] (Heroic)
 		i(78657, {	-- Colossal Dragonplate Battleplate
 			["cost"] = { { "i", 78848, 1 }, },	-- Chest of the Corrupted Protector
 		}),
-		
 		i(78668, {	-- Colossal Dragonplate Gauntlets
 			["cost"] = { { "i", 78854, 1 }, },	-- Gauntlets of the Corrupted Protector
 		}),
@@ -1113,7 +1110,1479 @@ local TIER_THIRTEEN_GROUPS = applyclassicphase(CATA_PHASE_FIVE,
 	appendGroups(TIER_THIRTEEN_NORMAL_GROUPS,
 	appendGroups(TIER_THIRTEEN_RAIDFINDER_GROUPS, {
 })))));
+
+local TIER_TWELVE_NORMAL_GROUPS = {	-- Firelands [Tier 12] (Normal)
+	cl(WARRIOR, {
+		-- DPS
+		i(71070),	-- Helmet of the Molten Giant
+		i(71072),	-- Pauldrons of the Molten Giant
+		i(71069),	-- Gauntlets of the Molten Giant
+		i(71068),	-- Battleplate of the Molten Giant
+		i(71071),	-- Legplates of the Molten Giant
+
+		-- Protection
+		i(70944),	-- Faceguard of the Molten Giant
+		i(70941),	-- Shoulderguards of the Molten Giant
+		i(70943),	-- Handguards of the Molten Giant
+		i(70945),	-- Chestguard of the Molten Giant
+		i(70942),	-- Legguards of the Molten Giant
+	}),
+	cl(PALADIN, {
+		-- DPS
+		i(71065),	-- Immolation Helmet
+		i(71067),	-- Immolation Pauldrons
+		i(71064),	-- Immolation Gauntlets
+		i(71063),	-- Immolation Battleplate
+		i(71066),	-- Immolation Legplates
+		
+		-- Holy
+		i(71093),	-- Immolation Headguard
+		i(71095),	-- Immolation Mantle
+		i(71092),	-- Immolation Gloves
+		i(71091),	-- Immolation Breastplate
+		i(71094),	-- Immolation Greaves
+		
+		-- Protection
+		i(70948),	-- Immolation Faceguard
+		i(70946),	-- Immolation Shoulderguards
+		i(70949),	-- Immolation Handguards
+		i(70950),	-- Immolation Chestguard
+		i(70947),	-- Immolation Legguards
+	}),
+	cl(DEATHKNIGHT, {
+		-- DPS
+		i(71060),	-- Elementium Deathplate Helmet
+		i(71062),	-- Elementium Deathplate Pauldrons
+		i(71059),	-- Elementium Deathplate Gauntlets
+		i(71058),	-- Elementium Deathplate Breastplate
+		i(71061),	-- Elementium Deathplate Greaves
+
+		-- Protection
+		i(70954),	-- Elementium Deathplate Faceguard
+		i(70951),	-- Elementium Deathplate Shoulderguards
+		i(70953),	-- Elementium Deathplate Handguards
+		i(70955),	-- Elementium Deathplate Chestguard
+		i(70952),	-- Elementium Deathplate Legguards
+	}),
+	cl(HUNTER, {
+		i(71051),	-- Flamewaker's Headguard
+		i(71053),	-- Flamewaker's Spaulders
+		i(71050),	-- Flamewaker's Gloves
+		i(71054),	-- Flamewaker's Tunic
+		i(71052),	-- Flamewaker's Legguards
+	}),
+	cl(ROGUE, {
+		i(71047),	-- Dark Phoenix Helmet
+		i(71049),	-- Dark Phoenix Spaulders
+		i(71046),	-- Dark Phoenix Gloves
+		i(71045),	-- Dark Phoenix Tunic
+		i(71048),	-- Dark Phoenix Legguards
+	}),
+	cl(PRIEST, {
+		-- DPS
+		i(71277),	-- Hood of the Cleansing Flame
+		i(71280),	-- Shoulderwraps of the Cleansing Flame
+		i(71276),	-- Gloves of the Cleansing Flame
+		i(71279),	-- Vestment of the Cleansing Flame
+		i(71278),	-- Leggings of the Cleansing Flame
+		
+		-- Holy
+		i(71272),	-- Cowl of the Cleansing Flame
+		i(71275),	-- Mantle of the Cleansing Flame
+		i(71271),	-- Handwraps of the Cleansing Flame
+		i(71274),	-- Robes of the Cleansing Flame
+		i(71273),	-- Legwraps of the Cleansing Flame
+	}),
+	cl(SHAMAN, {
+		-- Enhance
+		i(71303),	-- Erupting Volcanic Helmet
+		i(71305),	-- Erupting Volcanic Spaulders
+		i(71302),	-- Erupting Volcanic Grips
+		i(71301),	-- Erupting Volcanic Cuirass
+		i(71304),	-- Erupting Volcanic Legguards
+		
+		-- Elemental
+		i(71293),	-- Erupting Volcanic Headpiece
+		i(71295),	-- Erupting Volcanic Shoulderwraps
+		i(71292),	-- Erupting Volcanic Gloves
+		i(71291),	-- Erupting Volcanic Hauberk
+		i(71294),	-- Erupting Volcanic Kilt
+		
+		-- Restoration
+		i(71298),	-- Erupting Volcanic Faceguard
+		i(71300),	-- Erupting Volcanic Mantle
+		i(71297),	-- Erupting Volcanic Handwraps
+		i(71296),	-- Erupting Volcanic Tunic
+		i(71299),	-- Erupting Volcanic Legwraps
+	}),
+	cl(MAGE, {
+		i(71287),	-- Firehawk Hood
+		i(71290),	-- Firehawk Mantle
+		i(71286),	-- Firehawk Gloves
+		i(71289),	-- Firehawk Robes
+		i(71288),	-- Firehawk Leggings
+	}),
+	cl(WARLOCK, {
+		i(71282),	-- Balespider's Hood
+		i(71285),	-- Balespider's Mantle
+		i(71281),	-- Balespider's Handwraps
+		i(71284),	-- Balespider's Robes
+		i(71283),	-- Balespider's Leggings
+	}),
+	cl(DRUID, {
+		-- Boomkin
+		i(71108),	-- Obsidian Arborweave Cover
+		i(71111),	-- Obsidian Arborweave Shoulderwraps
+		i(71107),	-- Obsidian Arborweave Gloves
+		i(71110),	-- Obsidian Arborweave Vestment
+		i(71109),	-- Obsidian Arborweave Leggings
+		
+		-- Feral
+		i(71098),	-- Obsidian Arborweave Headpiece
+		i(71101),	-- Obsidian Arborweave Spaulders
+		i(71097),	-- Obsidian Arborweave Grips
+		i(71100),	-- Obsidian Arborweave Raiment
+		i(71099),	-- Obsidian Arborweave Legguards
+		
+		-- Restoration
+		i(71103),	-- Obsidian Arborweave Helm
+		i(71106),	-- Obsidian Arborweave Mantle
+		i(71102),	-- Obsidian Arborweave Handwraps
+		i(71105),	-- Obsidian Arborweave Tunic
+		i(71104),	-- Obsidian Arborweave Legwraps
+	}),
+};
+local TIER_TWELVE_HEROIC_GROUPS = {	-- Firelands [Tier 12] (Heroic)
+	cl(WARRIOR, {
+		-- DPS
+		i(71599, {	-- Helmet of the Molten Giant
+			["cost"] = { { "i", 71684.05, 1 }, },	-- Crown of the Fiery Protector
+		}),
+		i(71603, {	-- Pauldrons of the Molten Giant
+			["cost"] = { { "i", 71687.05, 1 }, },	-- Shoulders of the Fiery Protector
+		}),
+		i(71601, {	-- Gauntlets of the Molten Giant
+			["cost"] = {
+				{ "i", 71069, 1 },	-- Gauntlets of the Molten Giant
+				{ "i", 71683.05, 1 },	-- Gauntlets of the Fiery Protector
+			},
+		}),
+		i(71600, {	-- Battleplate of the Molten Giant
+			["cost"] = {
+				{ "i", 71068, 1 },	-- Battleplate of the Molten Giant
+				{ "i", 71686.05, 1 },	-- Chest of the Fiery Protector
+			},
+		}),
+		i(71602, {	-- Legplates of the Molten Giant
+			["cost"] = {
+				{ "i", 71071, 1 },	-- Legplates of the Molten Giant
+				{ "i", 71685.05, 1 },	-- Leggings of the Fiery Protector
+			},
+		}),
+
+		-- Protection
+		i(71606, {	-- Faceguard of the Molten Giant
+			["cost"] = { { "i", 71684.05, 1 }, },	-- Crown of the Fiery Protector
+		}),
+		i(71608, {	-- Shoulderguards of the Molten Giant
+			["cost"] = { { "i", 71687.05, 1 }, },	-- Shoulders of the Fiery Protector
+		}),
+		i(71605, {	-- Handguards of the Molten Giant
+			["cost"] = {
+				{ "i", 70943, 1 },	-- Handguards of the Molten Giant
+				{ "i", 71683.05, 1 },	-- Gauntlets of the Fiery Protector
+			},
+		}),
+		i(71604, {	-- Chestguard of the Molten Giant
+			["cost"] = {
+				{ "i", 70945, 1 },	-- Chestguard of the Molten Giant
+				{ "i", 71686.05, 1 },	-- Chest of the Fiery Protector
+			},
+		}),
+		i(71607, {	-- Legguards of the Molten Giant
+			["cost"] = {
+				{ "i", 70942, 1 },	-- Legguards of the Molten Giant
+				{ "i", 71685.05, 1 },	-- Leggings of the Fiery Protector
+			},
+		}),
+	}),
+	cl(PALADIN, {
+		-- DPS
+		i(71514, {	-- Immolation Helmet
+			["cost"] = { { "i", 71677.05, 1 }, },	-- Crown of the Fiery Conqueror
+		}),
+		i(71516, {	-- Immolation Pauldrons
+			["cost"] = { { "i", 71680.05, 1 }, },	-- Shoulders of the Fiery Conqueror
+		}),
+		i(71513, {	-- Immolation Gauntlets
+			["cost"] = {
+				{ "i", 71064, 1 },	-- Immolation Gauntlets
+				{ "i", 71676.05, 1 },	-- Gauntlets of the Fiery Conqueror
+			},
+		}),
+		i(71512, {	-- Immolation Battleplate
+			["cost"] = {
+				{ "i", 71063, 1 },	-- Immolation Battleplate
+				{ "i", 71679.05, 1 },	-- Chest of the Fiery Conqueror
+			},
+		}),
+		i(71515, {	-- Immolation Legplates
+			["cost"] = {
+				{ "i", 71066, 1 },	-- Immolation Legplates
+				{ "i", 71678.05, 1 },	-- Leggings of the Fiery Conqueror
+			},
+		}),
+		
+		-- Holy
+		i(71519, {	-- Immolation Headguard
+			["cost"] = { { "i", 71677.05, 1 }, },	-- Crown of the Fiery Conqueror
+		}),
+		i(71521, {	-- Immolation Mantle
+			["cost"] = { { "i", 71680.05, 1 }, },	-- Shoulders of the Fiery Conqueror
+		}),
+		i(71518, {	-- Immolation Gloves
+			["cost"] = {
+				{ "i", 71092, 1 },	-- Immolation Gloves
+				{ "i", 71676.05, 1 },	-- Gauntlets of the Fiery Conqueror
+			},
+		}),
+		i(71517, {	-- Immolation Breastplate
+			["cost"] = {
+				{ "i", 71091, 1 },	-- Immolation Breastplate
+				{ "i", 71679.05, 1 },	-- Chest of the Fiery Conqueror
+			},
+		}),
+		i(71520, {	-- Immolation Greaves
+			["cost"] = {
+				{ "i", 71094, 1 },	-- Immolation Greaves
+				{ "i", 71678.05, 1 },	-- Leggings of the Fiery Conqueror
+			},
+		}),
+		
+		-- Protection
+		i(71524, {	-- Immolation Faceguard
+			["cost"] = { { "i", 71677.05, 1 }, },	-- Crown of the Fiery Conqueror
+		}),
+		i(71526, {	-- Immolation Shoulderguards
+			["cost"] = { { "i", 71680.05, 1 }, },	-- Shoulders of the Fiery Conqueror
+		}),
+		i(71523, {	-- Immolation Handguards
+			["cost"] = {
+				{ "i", 70949, 1 },	-- Immolation Handguards
+				{ "i", 71676.05, 1 },	-- Gauntlets of the Fiery Conqueror
+			},
+		}),
+		i(71522, {	-- Immolation Chestguard
+			["cost"] = {
+				{ "i", 70950, 1 },	-- Immolation Chestguard
+				{ "i", 71679.05, 1 },	-- Chest of the Fiery Conqueror
+			},
+		}),
+		i(71525, {	-- Immolation Legguards
+			["cost"] = {
+				{ "i", 70947, 1 },	-- Immolation Legguards
+				{ "i", 71678.05, 1 },	-- Leggings of the Fiery Conqueror
+			},
+		}),
+	}),
+	cl(DEATHKNIGHT, {
+		-- DPS
+		i(71478, {	-- Elementium Deathplate Helmet
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71480, {	-- Elementium Deathplate Pauldrons
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71477, {	-- Elementium Deathplate Gauntlets
+			["cost"] = {
+				{ "i", 71059, 1 },	-- Elementium Deathplate Gauntlets
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71476, {	-- Elementium Deathplate Breastplate
+			["cost"] = {
+				{ "i", 71058, 1 },	-- Elementium Deathplate Breastplate
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71479, {	-- Elementium Deathplate Greaves
+			["cost"] = {
+				{ "i", 71061, 1 },	-- Elementium Deathplate Greaves
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+
+		-- Protection
+		i(71483, {	-- Elementium Deathplate Faceguard
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71485, {	-- Elementium Deathplate Shoulderguards
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71482, {	-- Elementium Deathplate Handguards
+			["cost"] = {
+				{ "i", 70953, 1 },	-- Elementium Deathplate Handguards
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71481, {	-- Elementium Deathplate Chestguard
+			["cost"] = {
+				{ "i", 70955, 1 },	-- Elementium Deathplate Chestguard
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71484, {	-- Elementium Deathplate Legguards
+			["cost"] = {
+				{ "i", 70952, 1 },	-- Elementium Deathplate Legguards
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+	}),
+	cl(HUNTER, {
+		i(71503, {	-- Flamewaker's Headguard
+			["cost"] = { { "i", 71684.05, 1 }, },	-- Crown of the Fiery Protector
+		}),
+		i(71505, {	-- Flamewaker's Spaulders
+			["cost"] = { { "i", 71687.05, 1 }, },	-- Shoulders of the Fiery Protector
+		}),
+		i(71502, {	-- Flamewaker's Gloves
+			["cost"] = {
+				{ "i", 71050, 1 },	-- Flamewaker's Gloves
+				{ "i", 71683.05, 1 },	-- Gauntlets of the Fiery Protector
+			},
+		}),
+		i(71501, {	-- Flamewaker's Tunic
+			["cost"] = {
+				{ "i", 71054, 1 },	-- Flamewaker's Tunic
+				{ "i", 71686.05, 1 },	-- Chest of the Fiery Protector
+			},
+		}),
+		i(71504, {	-- Flamewaker's Legguards
+			["cost"] = {
+				{ "i", 71052, 1 },	-- Flamewaker's Legguards
+				{ "i", 71685, 1 },	-- Leggings of the Fiery Protector
+			},
+		}),
+	}),
+	cl(ROGUE, {
+		i(71539, {	-- Dark Phoenix Helmet
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71541, {	-- Dark Phoenix Spaulders
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71538, {	-- Dark Phoenix Gloves
+			["cost"] = {
+				{ "i", 71046, 1 },	-- Dark Phoenix Gloves
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71537, {	-- Dark Phoenix Tunic
+			["cost"] = {
+				{ "i", 71045, 1 },	-- Dark Phoenix Tunic
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71540, {	-- Dark Phoenix Legguards
+			["cost"] = {
+				{ "i", 71048, 1 },	-- Dark Phoenix Legguards
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+	}),
+	cl(PRIEST, {
+		-- DPS
+		i(71533, {	-- Hood of the Cleansing Flame
+			["cost"] = { { "i", 71677.05, 1 }, },	-- Crown of the Fiery Conqueror
+		}),
+		i(71536, {	-- Shoulderwraps of the Cleansing Flame
+			["cost"] = { { "i", 71680.05, 1 }, },	-- Shoulders of the Fiery Conqueror
+		}),
+		i(71532, {	-- Gloves of the Cleansing Flame
+			["cost"] = {
+				{ "i", 71276, 1 },	-- Gloves of the Cleansing Flame
+				{ "i", 71676.05, 1 },	-- Gauntlets of the Fiery Conqueror
+			},
+		}),
+		i(71535, {	-- Vestment of the Cleansing Flame
+			["cost"] = {
+				{ "i", 71279, 1 },	-- Vestment of the Cleansing Flame
+				{ "i", 71679.05, 1 },	-- Chest of the Fiery Conqueror
+			},
+		}),
+		i(71534, {	-- Leggings of the Cleansing Flame
+			["cost"] = {
+				{ "i", 71278, 1 },	-- Leggings of the Cleansing Flame
+				{ "i", 71678.05, 1 },	-- Leggings of the Fiery Conqueror
+			},
+		}),
+		
+		-- Holy
+		i(71528, {	-- Cowl of the Cleansing Flame
+			["cost"] = { { "i", 71677.05, 1 }, },	-- Crown of the Fiery Conqueror
+		}),
+		i(71531, {	-- Mantle of the Cleansing Flame
+			["cost"] = { { "i", 71680.05, 1 }, },	-- Shoulders of the Fiery Conqueror
+		}),
+		i(71527, {	-- Handwraps of the Cleansing Flame
+			["cost"] = {
+				{ "i", 71271, 1 },	-- Handwraps of the Cleansing Flame
+				{ "i", 71676.05, 1 },	-- Gauntlets of the Fiery Conqueror
+			},
+		}),
+		i(71530, {	-- Robes of the Cleansing Flame
+			["cost"] = {
+				{ "i", 71274, 1 },	-- Robes of the Cleansing Flame
+				{ "i", 71679.05, 1 },	-- Chest of the Fiery Conqueror
+			},
+		}),
+		i(71529, {	-- Legwraps of the Cleansing Flame
+			["cost"] = {
+				{ "i", 71273, 1 },	-- Legwraps of the Cleansing Flame
+				{ "i", 71678.05, 1 },	-- Leggings of the Fiery Conqueror
+			},
+		}),
+	}),
+	cl(SHAMAN, {
+		-- Enhance
+		i(71549, {	-- Erupting Volcanic Helmet
+			["cost"] = { { "i", 71684.05, 1 }, },	-- Crown of the Fiery Protector
+		}),
+		i(71551, {	-- Erupting Volcanic Spaulders
+			["cost"] = { { "i", 71687.05, 1 }, },	-- Shoulders of the Fiery Protector
+		}),
+		i(71548, {	-- Erupting Volcanic Grips
+			["cost"] = {
+				{ "i", 71302, 1 },	-- Erupting Volcanic Grips
+				{ "i", 71683.05, 1 },	-- Gauntlets of the Fiery Protector
+			},
+		}),
+		i(71547, {	-- Erupting Volcanic Cuirass
+			["cost"] = {
+				{ "i", 71301, 1 },	-- Erupting Volcanic Cuirass
+				{ "i", 71686.05, 1 },	-- Chest of the Fiery Protector
+			},
+		}),
+		i(71550, {	-- Erupting Volcanic Legguards
+			["cost"] = {
+				{ "i", 71304, 1 },	-- Erupting Volcanic Legguards
+				{ "i", 71685.05, 1 },	-- Leggings of the Fiery Protector
+			},
+		}),
+		
+		-- Elemental
+		i(71554, {	-- Erupting Volcanic Headpiece
+			["cost"] = { { "i", 71684.05, 1 }, },	-- Crown of the Fiery Protector
+		}),
+		i(71556, {	-- Erupting Volcanic Shoulderwraps
+			["cost"] = { { "i", 71687.05, 1 }, },	-- Shoulders of the Fiery Protector
+		}),
+		i(71553, {	-- Erupting Volcanic Gloves
+			["cost"] = {
+				{ "i", 71292, 1 },	-- Erupting Volcanic Gloves
+				{ "i", 71683.05, 1 },	-- Gauntlets of the Fiery Protector
+			},
+		}),
+		i(71552, {	-- Erupting Volcanic Hauberk
+			["cost"] = {
+				{ "i", 71291, 1 },	-- Erupting Volcanic Hauberk
+				{ "i", 71686.05, 1 },	-- Chest of the Fiery Protector
+			},
+		}),
+		i(71555, {	-- Erupting Volcanic Kilt
+			["cost"] = {
+				{ "i", 71294, 1 },	-- Erupting Volcanic Kilt
+				{ "i", 71685.05, 1 },	-- Leggings of the Fiery Protector
+			},
+		}),
+		
+		-- Restoration
+		i(71544, {	-- Erupting Volcanic Faceguard
+			["cost"] = { { "i", 71684.05, 1 }, },	-- Crown of the Fiery Protector
+		}),
+		i(71546, {	-- Erupting Volcanic Mantle
+			["cost"] = { { "i", 71687.05, 1 }, },	-- Shoulders of the Fiery Protector
+		}),
+		i(71543, {	-- Erupting Volcanic Handwraps
+			["cost"] = {
+				{ "i", 71297, 1 },	-- Erupting Volcanic Handwraps
+				{ "i", 71683.05, 1 },	-- Gauntlets of the Fiery Protector
+			},
+		}),
+		i(71542, {	-- Erupting Volcanic Tunic
+			["cost"] = {
+				{ "i", 71296, 1 },	-- Erupting Volcanic Tunic
+				{ "i", 71686.05, 1 },	-- Chest of the Fiery Protector
+			},
+		}),
+		i(71545, {	-- Erupting Volcanic Legwraps
+			["cost"] = {
+				{ "i", 71299, 1 },	-- Erupting Volcanic Legwraps
+				{ "i", 71685.05, 1 },	-- Leggings of the Fiery Protector
+			},
+		}),
+	}),
+	cl(MAGE, {
+		i(71508, {	-- Firehawk Hood
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71511, {	-- Firehawk Mantle
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71507, {	-- Firehawk Gloves
+			["cost"] = {
+				{ "i", 71286, 1 },	-- Firehawk Gloves
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71510, {	-- Firehawk Robes
+			["cost"] = {
+				{ "i", 71289, 1 },	-- Firehawk Robes
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71509, {	-- Firehawk Leggings
+			["cost"] = {
+				{ "i", 71288, 1 },	-- Firehawk Leggings
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+	}),
+	cl(WARLOCK, {
+		i(71595, {	-- Balespider's Hood
+			["cost"] = { { "i", 71677.05, 1 }, },	-- Crown of the Fiery Conqueror
+		}),
+		i(71598, {	-- Balespider's Mantle
+			["cost"] = { { "i", 71680.05, 1 }, },	-- Shoulders of the Fiery Conqueror
+		}),
+		i(71594, {	-- Balespider's Handwraps
+			["cost"] = {
+				{ "i", 71281, 1 },	-- Balespider's Handwraps
+				{ "i", 71676.05, 1 },	-- Gauntlets of the Fiery Conqueror
+			},
+		}),
+		i(71597, {	-- Balespider's Robes
+			["cost"] = {
+				{ "i", 71284, 1 },	-- Balespider's Robes
+				{ "i", 71679.05, 1 },	-- Chest of the Fiery Conqueror
+			},
+		}),
+		i(71596, {	-- Balespider's Leggings
+			["cost"] = {
+				{ "i", 71283, 1 },	-- Balespider's Leggings
+				{ "i", 71678.05, 1 },	-- Leggings of the Fiery Conqueror
+			},
+		}),
+	}),
+	cl(DRUID, {
+		-- Boomkin
+		i(71497, {	-- Obsidian Arborweave Cover
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71500, {	-- Obsidian Arborweave Shoulderwraps
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71496, {	-- Obsidian Arborweave Gloves
+			["cost"] = {
+				{ "i", 71107, 1 },	-- Obsidian Arborweave Gloves
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71499, {	-- Obsidian Arborweave Vestment
+			["cost"] = {
+				{ "i", 71110, 1 },	-- Obsidian Arborweave Vestment
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71498, {	-- Obsidian Arborweave Leggings
+			["cost"] = {
+				{ "i", 71109, 1 },	-- Obsidian Arborweave Leggings
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+		
+		-- Feral
+		i(71488, {	-- Obsidian Arborweave Headpiece
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71490, {	-- Obsidian Arborweave Spaulders
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71487, {	-- Obsidian Arborweave Grips
+			["cost"] = {
+				{ "i", 71097, 1 },	-- Obsidian Arborweave Grips
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71486, {	-- Obsidian Arborweave Raiment
+			["cost"] = {
+				{ "i", 71100, 1 },	-- Obsidian Arborweave Raiment
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71489, {	-- Obsidian Arborweave Legguards
+			["cost"] = {
+				{ "i", 71099, 1 },	-- Obsidian Arborweave Legguards
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+		
+		-- Restoration
+		i(71492, {	-- Obsidian Arborweave Helm
+			["cost"] = { { "i", 71670.05, 1 }, },	-- Crown of the Fiery Vanquisher
+		}),
+		i(71495, {	-- Obsidian Arborweave Mantle
+			["cost"] = { { "i", 71673.05, 1 }, },	-- Shoulders of the Fiery Vanquisher
+		}),
+		i(71491, {	-- Obsidian Arborweave Handwraps
+			["cost"] = {
+				{ "i", 71102, 1 },	-- Obsidian Arborweave Handwraps
+				{ "i", 71669.05, 1 },	-- Gauntlets of the Fiery Vanquisher
+			},
+		}),
+		i(71494, {	-- Obsidian Arborweave Tunic
+			["cost"] = {
+				{ "i", 71105, 1 },	-- Obsidian Arborweave Tunic
+				{ "i", 71672.05, 1 },	-- Chest of the Fiery Vanquisher
+			},
+		}),
+		i(71493, {	-- Obsidian Arborweave Legwraps
+			["cost"] = {
+				{ "i", 71104, 1 },	-- Obsidian Arborweave Legwraps
+				{ "i", 71671.05, 1 },	-- Leggings of the Fiery Vanquisher
+			},
+		}),
+	}),
+};
+local TIER_TWELVE_COMMON_GROUPS = {
+	i(71213),	-- Amulet of Burning Brilliance
+	i(71264),	-- Bracers of Forked Lightning
+	i(71260),	-- Bracers of Imperious Truths
+	i(71263),	-- Bracers of Misting Ash
+	i(70937),	-- Bracers of Regal Force
+	i(71210),	-- Crystalline Brimstone Ring
+	i(70940),	-- Deflecting Brimstone Band
+	i(71265),	-- Emberflame Bracers
+	i(71214),	-- Firemind Pendant
+	i(71266),	-- Firesoul Wristguards
+	i(71130),	-- Flamebinder Bracers
+	i(71261),	-- Gigantiform Bracers
+	i(71129),	-- Necklace of Smoke Signals
+	i(71150),	-- Scorchvine Wand
+	i(71208),	-- Serrated Brimstone Signet
+	i(71262),	-- Smolderskull Bindings
+	i(71211),	-- Soothing Brimstone Circle
+	i(71209),	-- Splintered Brimstone Seal
+	i(71212),	-- Stoneheart Choker
+	i(70935),	-- Stoneheart Necklace
+	i(71151),	-- Trail of Embers
+};
+local TIER_TWELVE_GROUPS = applyclassicphase(CATA_PHASE_FOUR,
+	appendGroups(TIER_TWELVE_COMMON_GROUPS,
+	appendGroups(TIER_TWELVE_HEROIC_GROUPS,
+	appendGroups(TIER_TWELVE_NORMAL_GROUPS, {
+}))));
+
+local TIER_ELEVEN_NORMAL_GROUPS = {	-- Bastion of Twilight [Tier 11] (Normal)
+	cl(WARRIOR, {
+		-- DPS
+		i(60325),	-- Earthen Helmet
+		i(60327),	-- Earthen Pauldrons
+		i(60326),	-- Earthen Gauntlets
+		i(60323),	-- Earthen Battleplate
+		i(60324),	-- Earthen Legplates
+
+		-- Protection
+		i(60328),	-- Earthen Faceguard
+		i(60331),	-- Earthen Shoulderguards
+		i(60332),	-- Earthen Handguards
+		i(60329),	-- Earthen Chestguard
+		i(60330),	-- Earthen Legguards
+	}),
+	cl(PALADIN, {
+		-- DPS
+		i(60346),	-- Reinforced Sapphirium Helmet
+		i(60348),	-- Reinforced Sapphirium Pauldrons
+		i(60345),	-- Reinforced Sapphirium Gauntlets
+		i(60344),	-- Reinforced Sapphirium Battleplate
+		i(60347),	-- Reinforced Sapphirium Legplates
+		
+		-- Holy
+		i(60359),	-- Reinforced Sapphirium Headguard
+		i(60362),	-- Reinforced Sapphirium Mantle
+		i(60363),	-- Reinforced Sapphirium Gloves
+		i(60360),	-- Reinforced Sapphirium Breastplate
+		i(60361),	-- Reinforced Sapphirium Greaves
+		
+		-- Protection
+		i(60356),	-- Reinforced Sapphirium Faceguard
+		i(60358),	-- Reinforced Sapphirium Shoulderguards
+		i(60355),	-- Reinforced Sapphirium Handguards
+		i(60354),	-- Reinforced Sapphirium Chestguard
+		i(60357),	-- Reinforced Sapphirium Legguards
+	}),
+	cl(DEATHKNIGHT, {
+		-- DPS
+		i(60341),	-- Magma Plated Helmet
+		i(60343),	-- Magma Plated Pauldrons
+		i(60340),	-- Magma Plated Gauntlets
+		i(60339),	-- Magma Plated Battleplate
+		i(60342),	-- Magma Plated Legplates
+		
+		-- Protection
+		i(60351),	-- Magma Plated Faceguard
+		i(60353),	-- Magma Plated Shoulderguards
+		i(60350),	-- Magma Plated Handguards
+		i(60349),	-- Magma Plated Chestguard
+		i(60352),	-- Magma Plated Legguards
+	}),
+	cl(HUNTER, {
+		i(60303),	-- Lightning-Charged Headguard
+		i(60306),	-- Lightning-Charged Spaulders
+		i(60307),	-- Lightning-Charged Gloves
+		i(60304),	-- Lightning-Charged Tunic
+		i(60305),	-- Lightning-Charged Legguards
+	}),
+	cl(ROGUE, {
+		i(60299),	-- Wind Dancer's Helmet
+		i(60302),	-- Wind Dancer's Spaulders
+		i(60298),	-- Wind Dancer's Gloves
+		i(60301),	-- Wind Dancer's Tunic
+		i(60300),	-- Wind Dancer's Legguards
+	}),
+	cl(PRIEST, {
+		-- DPS
+		i(60256),	-- Mercurial Hood
+		i(60253),	-- Mercurial Shoulderwraps
+		i(60257),	-- Mercurial Gloves
+		i(60254),	-- Mercurial Vestment
+		i(60255),	-- Mercurial Leggings
+		
+		-- Holy
+		i(60258),	-- Mercurial Cowl
+		i(60262),	-- Mercurial Mantle
+		i(60275),	-- Mercurial Handwraps
+		i(60259),	-- Mercurial Robes
+		i(60261),	-- Mercurial Legwraps
+	}),
+	cl(SHAMAN, {
+		-- Enhance
+		i(60320),	-- Helmet of the Raging Elements
+		i(60322),	-- Spaulders of the Raging Elements
+		i(60319),	-- Grips of the Raging Elements
+		i(60318),	-- Cuirass of the Raging Elements
+		i(60321),	-- Legguards of the Raging Elements
+		
+		-- Elemental
+		i(60315),	-- Headpiece of the Raging Elements
+		i(60317),	-- Shoulderwraps of the Raging Elements
+		i(60314),	-- Gloves of the Raging Elements
+		i(60313),	-- Hauberk of the Raging Elements
+		i(60316),	-- Kilt of the Raging Elements
+		
+		-- Restoration
+		i(60308),	-- Faceguard of the Raging Elements
+		i(60311),	-- Mantle of the Raging Elements
+		i(60312),	-- Handwraps of the Raging Elements
+		i(60309),	-- Tunic of the Raging Elements
+		i(60310),	-- Legwraps of the Raging Elements
+	}),
+	cl(MAGE, {
+		i(60243),	-- Firelord's Hood
+		i(60246),	-- Firelord's Mantle
+		i(60247),	-- Firelord's Gloves
+		i(60244),	-- Firelord's Robes
+		i(60245),	-- Firelord's Leggings
+	}),
+	cl(WARLOCK, {
+		i(60249),	-- Shadowflame Hood
+		i(60252),	-- Shadowflame Mantle
+		i(60248),	-- Shadowflame Handwraps
+		i(60251),	-- Shadowflame Robes
+		i(60250),	-- Shadowflame Leggings
+	}),
+	cl(DRUID, {
+		-- Boomkin
+		i(60282),	-- Stormrider's Cover
+		i(60284),	-- Stormrider's Shoulderwraps
+		i(60285),	-- Stormrider's Gloves
+		i(60281),	-- Stormrider's Vestment
+		i(60283),	-- Stormrider's Leggings
+		
+		-- Feral
+		i(60286),	-- Stormrider's Headpiece
+		i(60289),	-- Stormrider's Spaulders
+		i(60290),	-- Stormrider's Grips
+		i(60287),	-- Stormrider's Raiment
+		i(60288),	-- Stormrider's Legguards
+		
+		-- Restoration
+		i(60277),	-- Stormrider's Helm
+		i(60279),	-- Stormrider's Mantle
+		i(60280),	-- Stormrider's Handwraps
+		i(60276),	-- Stormrider's Robes
+		i(60278),	-- Stormrider's Legwraps
+	}),
+};
+local TIER_ELEVEN_HEROIC_GROUPS = {	-- Bastion of Twilight [Tier 11] (Heroic)
+	cl(WARRIOR, {
+		-- DPS
+		i(65266, {	-- Earthen Helmet
+			["cost"] = { { "i", 65000, 1 }, },	-- Crown of the Forlorn Protector
+		}),
+		i(65268, {	-- Earthen Pauldrons
+			["cost"] = { { "i", 65087, 1 }, },	-- Shoulders of the Forlorn Protector
+		}),
+		i(65265, {	-- Earthen Gauntlets
+			["cost"] = {
+				{ "i", 67430, 1 },	-- Gauntlets of the Forlorn Protector
+				{ "i", 60326, 1 },	-- Earthen Gauntlets
+			},
+		}),
+		i(65264, {	-- Earthen Battleplate
+			["cost"] = {
+				{ "i", 67424, 1 },	-- Chest of the Forlorn Protector
+				{ "i", 60323, 1 },	-- Earthen Battleplate
+			},
+		}),
+		i(65267, {	-- Earthen Legplates
+			["cost"] = {
+				{ "i", 67427, 1 },	-- Leggings of the Forlorn Protector
+				{ "i", 60324, 1 },	-- Earthen Legplates
+			},
+		}),
+
+		-- Protection
+		i(65271, {	-- Earthen Faceguard
+			["cost"] = { { "i", 65000, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65273, {	-- Earthen Shoulderguards
+			["cost"] = { { "i", 65087, 1 }, },	-- Shoulders of the Forlorn Protector
+		}),
+		i(65270, {	-- Earthen Handguards
+			["cost"] = {
+				{ "i", 67430, 1 },	-- Gauntlets of the Forlorn Protector
+				{ "i", 60332, 1 },	-- Earthen Handguards
+			},
+		}),
+		i(65269, {	-- Earthen Chestguard
+			["cost"] = {
+				{ "i", 67424, 1 },	-- Chest of the Forlorn Protector
+				{ "i", 60329, 1 },	-- Earthen Chestguard
+			},
+		}),
+		i(65272, {	-- Earthen Legguards
+			["cost"] = {
+				{ "i", 67427, 1 },	-- Leggings of the Forlorn Protector
+				{ "i", 60330, 1 },	-- Earthen Legguards
+			},
+		}),
+	}),
+	cl(PALADIN, {
+		-- DPS
+		i(65216, {	-- Reinforced Sapphirium Helmet
+			["cost"] = { { "i", 65001, 1 }, },	-- Crown of the Forlorn Conqueror
+		}),
+		i(65218, {	-- Reinforced Sapphirium Pauldrons
+			["cost"] = { { "i", 65088, 1 }, },	-- Shoulders of the Forlorn Conqueror
+		}),
+		i(65215, {	-- Reinforced Sapphirium Gauntlets
+			["cost"] = {
+				{ "i", 67429, 1 },	-- Gauntlets of the Forlorn Conqueror
+				{ "i", 60345, 1 },	-- Reinforced Sapphirium Gauntlets
+			},
+		}),
+		i(65214, {	-- Reinforced Sapphirium Battleplate
+			["cost"] = {
+				{ "i", 67423, 1 },	-- Chest of the Forlorn Conqueror
+				{ "i", 60344, 1 },	-- Reinforced Sapphirium Battleplate
+			},
+		}),
+		i(65217, {	-- Reinforced Sapphirium Legplates
+			["cost"] = {
+				{ "i", 67428, 1 },	-- Leggings of the Forlorn Conqueror
+				{ "i", 60347, 1 },	-- Reinforced Sapphirium Legplates
+			},
+		}),
+		
+		-- Holy
+		i(65221, {	-- Reinforced Sapphirium Headguard
+			["cost"] = { { "i", 65001, 1 }, },	-- Crown of the Forlorn Conqueror
+		}),
+		i(65223, {	-- Reinforced Sapphirium Mantle
+			["cost"] = { { "i", 65088, 1 }, },	-- Shoulders of the Forlorn Conqueror
+		}),
+		i(65220, {	-- Reinforced Sapphirium Gloves
+			["cost"] = {
+				{ "i", 67429, 1 },	-- Gauntlets of the Forlorn Conqueror
+				{ "i", 60363, 1 },	-- Reinforced Sapphirium Gloves
+			},
+		}),
+		i(65219, {	-- Reinforced Sapphirium Breastplate
+			["cost"] = {
+				{ "i", 67423, 1 },	-- Chest of the Forlorn Conqueror
+				{ "i", 60360, 1 },	-- Reinforced Sapphirium Breastplate
+			},
+		}),
+		i(65222, {	-- Reinforced Sapphirium Greaves
+			["cost"] = {
+				{ "i", 67428, 1 },	-- Leggings of the Forlorn Conqueror
+				{ "i", 60361, 1 },	-- Reinforced Sapphirium Greaves
+			},
+		}),
+		
+		-- Protection
+		i(65226, {	-- Reinforced Sapphirium Faceguard
+			["cost"] = { { "i", 65001, 1 }, },	-- Crown of the Forlorn Conqueror
+		}),
+		i(65228, {	-- Reinforced Sapphirium Shoulderguards
+			["cost"] = { { "i", 65088, 1 }, },	-- Shoulders of the Forlorn Conqueror
+		}),
+		i(65225, {	-- Reinforced Sapphirium Handguards
+			["cost"] = {
+				{ "i", 67429, 1 },	-- Gauntlets of the Forlorn Conqueror
+				{ "i", 60355, 1 },	-- Reinforced Sapphirium Handguards
+			},
+		}),
+		i(65224, {	-- Reinforced Sapphirium Chestguard
+			["cost"] = {
+				{ "i", 67423, 1 },	-- Chest of the Forlorn Conqueror
+				{ "i", 60354, 1 },	-- Reinforced Sapphirium Chestguard
+			},
+		}),
+		i(65227, {	-- Reinforced Sapphirium Legguards
+			["cost"] = {
+				{ "i", 67428, 1 },	-- Leggings of the Forlorn Conqueror
+				{ "i", 60357, 1 },	-- Reinforced Sapphirium Legguards
+			},
+		}),
+	}),
+	cl(DEATHKNIGHT, {
+		-- DPS
+		i(65181, {	-- Magma Plated Helmet
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65183, {	-- Magma Plated Pauldrons
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65180, {	-- Magma Plated Gauntlets
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60340, 1 },	-- Magma Plated Gauntlets
+			},
+		}),
+		i(65179, {	-- Magma Plated Battleplate
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60339, 1 },	-- Magma Plated Battleplate
+			},
+		}),
+		i(65182, {	-- Magma Plated Legplates
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60342, 1 },	-- Magma Plated Legplates
+			},
+		}),
+		
+		-- Protection
+		i(65186, {	-- Magma Plated Faceguard
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65188, {	-- Magma Plated Shoulderguards
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65185, {	-- Magma Plated Handguards
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60350, 1 },	-- Magma Plated Handguards
+			},
+		}),
+		i(65184, {	-- Magma Plated Chestguard
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60349, 1 },	-- Magma Plated Chestguard
+			},
+		}),
+		i(65187, {	-- Magma Plated Legguards
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60352, 1 },	-- Magma Plated Legguards
+			},
+		}),
+	}),
+	cl(HUNTER, {
+		i(65206, {	-- Lightning-Charged Headguard
+			["cost"] = { { "i", 65000, 1 }, },	-- Crown of the Forlorn Protector
+		}),
+		i(65208, {	-- Lightning-Charged Spaulders
+			["cost"] = { { "i", 65087, 1 }, },	-- Shoulders of the Forlorn Protector
+		}),
+		i(65205, {	-- Lightning-Charged Gloves
+			["cost"] = {
+				{ "i", 67430, 1 },	-- Gauntlets of the Forlorn Protector
+				{ "i", 60307, 1 },	-- Lightning-Charged Gloves
+			},
+		}),
+		i(65204, {	-- Lightning-Charged Tunic
+			["cost"] = {
+				{ "i", 67424, 1 },	-- Chest of the Forlorn Protector
+				{ "i", 60304, 1 },	-- Lightning-Charged Tunic
+			},
+		}),
+		i(65207, {	-- Lightning-Charged Legguards
+			["cost"] = {
+				{ "i", 67427, 1 },	-- Leggings of the Forlorn Protector
+				{ "i", 60305, 1 },	-- Lightning-Charged Legguards
+			},
+		}),
+	}),
+	cl(ROGUE, {
+		i(65241, {	-- Wind Dancer's Helmet
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65243, {	-- Wind Dancer's Spaulders
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65240, {	-- Wind Dancer's Gloves
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60298, 1 },	-- Wind Dancer's Gloves
+			},
+		}),
+		i(65239, {	-- Wind Dancer's Tunic
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60301, 1 },	-- Wind Dancer's Tunic
+			},
+		}),
+		i(65242, {	-- Wind Dancer's Legguards
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60300, 1 },	-- Wind Dancer's Legguards
+			},
+		}),
+	}),
+	cl(PRIEST, {
+		-- DPS
+		i(65235, {	-- Mercurial Hood
+			["cost"] = { { "i", 65001, 1 }, },	-- Crown of the Forlorn Conqueror
+		}),
+		i(65238, {	-- Mercurial Shoulderwraps
+			["cost"] = { { "i", 65088, 1 }, },	-- Shoulders of the Forlorn Conqueror
+		}),
+		i(65234, {	-- Mercurial Gloves
+			["cost"] = {
+				{ "i", 67429, 1 },	-- Gauntlets of the Forlorn Conqueror
+				{ "i", 60257, 1 },	-- Mercurial Gloves
+			},
+		}),
+		i(65237, {	-- Mercurial Vestment
+			["cost"] = {
+				{ "i", 67423, 1 },	-- Chest of the Forlorn Conqueror
+				{ "i", 60254, 1 },	-- Mercurial Vestment
+			},
+		}),
+		i(65236, {	-- Mercurial Leggings
+			["cost"] = {
+				{ "i", 67428, 1 },	-- Leggings of the Forlorn Conqueror
+				{ "i", 60255, 1 },	-- Mercurial Leggings
+			},
+		}),
+		
+		-- Holy
+		i(65230, {	-- Mercurial Cowl
+			["cost"] = { { "i", 65001, 1 }, },	-- Crown of the Forlorn Conqueror
+		}),
+		i(65233, {	-- Mercurial Mantle
+			["cost"] = { { "i", 65088, 1 }, },	-- Shoulders of the Forlorn Conqueror
+		}),
+		i(65229, {	-- Mercurial Handwraps
+			["cost"] = {
+				{ "i", 67429, 1 },	-- Gauntlets of the Forlorn Conqueror
+				{ "i", 60275, 1 },	-- Mercurial Handwraps
+			},
+		}),
+		i(65232, {	-- Mercurial Robes
+			["cost"] = {
+				{ "i", 67423, 1 },	-- Chest of the Forlorn Conqueror
+				{ "i", 60259, 1 },	-- Mercurial Robes
+			},
+		}),
+		i(65231, {	-- Mercurial Legwraps
+			["cost"] = {
+				{ "i", 67428, 1 },	-- Leggings of the Forlorn Conqueror
+				{ "i", 60261, 1 },	-- Mercurial Legwraps
+			},
+		}),
+	}),
+	cl(SHAMAN, {
+		-- Enhance
+		i(65251, {	-- Helmet of the Raging Elements
+			["cost"] = { { "i", 65000, 1 }, },	-- Crown of the Forlorn Protector
+		}),
+		i(65253, {	-- Spaulders of the Raging Elements
+			["cost"] = { { "i", 65087, 1 }, },	-- Shoulders of the Forlorn Protector
+		}),
+		i(65250, {	-- Grips of the Raging Elements
+			["cost"] = {
+				{ "i", 67430, 1 },	-- Gauntlets of the Forlorn Protector
+				{ "i", 60319, 1 },	-- Grips of the Raging Elements
+			},
+		}),
+		i(65249, {	-- Cuirass of the Raging Elements
+			["cost"] = {
+				{ "i", 67424, 1 },	-- Chest of the Forlorn Protector
+				{ "i", 60318, 1 },	-- Cuirass of the Raging Elements
+			},
+		}),
+		i(65252, {	-- Legguards of the Raging Elements
+			["cost"] = {
+				{ "i", 67427, 1 },	-- Leggings of the Forlorn Protector
+				{ "i", 60321, 1 },	-- Legguards of the Raging Elements
+			},
+		}),
+		
+		-- Elemental
+		i(65256, {	-- Headpiece of the Raging Elements
+			["cost"] = { { "i", 65000, 1 }, },	-- Crown of the Forlorn Protector
+		}),
+		i(65258, {	-- Shoulderwraps of the Raging Elements
+			["cost"] = { { "i", 65087, 1 }, },	-- Shoulders of the Forlorn Protector
+		}),
+		i(65255, {	-- Gloves of the Raging Elements
+			["cost"] = {
+				{ "i", 67430, 1 },	-- Gauntlets of the Forlorn Protector
+				{ "i", 60314, 1 },	-- Gloves of the Raging Elements
+			},
+		}),
+		i(65254, {	-- Hauberk of the Raging Elements
+			["cost"] = {
+				{ "i", 67424, 1 },	-- Chest of the Forlorn Protector
+				{ "i", 60313, 1 },	-- Hauberk of the Raging Elements
+			},
+		}),
+		i(65257, {	-- Kilt of the Raging Elements
+			["cost"] = {
+				{ "i", 67427, 1 },	-- Leggings of the Forlorn Protector
+				{ "i", 60316, 1 },	-- Kilt of the Raging Elements
+			},
+		}),
+		
+		-- Restoration
+		i(65246, {	-- Faceguard of the Raging Elements
+			["cost"] = { { "i", 65000, 1 }, },	-- Crown of the Forlorn Protector
+		}),
+		i(65248, {	-- Mantle of the Raging Elements
+			["cost"] = { { "i", 65087, 1 }, },	-- Shoulders of the Forlorn Protector
+		}),
+		i(65245, {	-- Handwraps of the Raging Elements
+			["cost"] = {
+				{ "i", 67430, 1 },	-- Gauntlets of the Forlorn Protector
+				{ "i", 60312, 1 },	-- Handwraps of the Raging Elements
+			},
+		}),
+		i(65244, {	-- Tunic of the Raging Elements
+			["cost"] = {
+				{ "i", 67424, 1 },	-- Chest of the Forlorn Protector
+				{ "i", 60309, 1 },	-- Tunic of the Raging Elements
+			},
+		}),
+		i(65247, {	-- Legwraps of the Raging Elements
+			["cost"] = {
+				{ "i", 67427, 1 },	-- Leggings of the Forlorn Protector
+				{ "i", 60310, 1 },	-- Legwraps of the Raging Elements
+			},
+		}),
+	}),
+	cl(MAGE, {
+		i(65210, {	-- Firelord's Hood
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65213, {	-- Firelord's Mantle
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65209, {	-- Firelord's Gloves
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60247, 1 },	-- Firelord's Gloves
+			},
+		}),
+		i(65212, {	-- Firelord's Robes
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60244, 1 },	-- Firelord's Robes
+			},
+		}),
+		i(65211, {	-- Firelord's Leggings
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60245, 1 },	-- Firelord's Leggings
+			},
+		}),
+	}),
+	cl(WARLOCK, {
+		i(65260, {	-- Shadowflame Hood
+			["cost"] = { { "i", 65001, 1 }, },	-- Crown of the Forlorn Conqueror
+		}),
+		i(65263, {	-- Shadowflame Mantle
+			["cost"] = { { "i", 65088, 1 }, },	-- Shoulders of the Forlorn Conqueror
+		}),
+		i(65259, {	-- Shadowflame Handwraps
+			["cost"] = {
+				{ "i", 67429, 1 },	-- Gauntlets of the Forlorn Conqueror
+				{ "i", 60248, 1 },	-- Shadowflame Handwraps
+			},
+		}),
+		i(65262, {	-- Shadowflame Robes
+			["cost"] = {
+				{ "i", 67423, 1 },	-- Chest of the Forlorn Conqueror
+				{ "i", 60251, 1 },	-- Shadowflame Robes
+			},
+		}),
+		i(65261, {	-- Shadowflame Leggings
+			["cost"] = {
+				{ "i", 67428, 1 },	-- Leggings of the Forlorn Conqueror
+				{ "i", 60250, 1 },	-- Shadowflame Leggings
+			},
+		}),
+	}),
+	cl(DRUID, {
+		-- Boomkin
+		i(65200, {	-- Stormrider's Cover
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65203, {	-- Stormrider's Shoulderwraps
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65199, {	-- Stormrider's Gloves
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60285, 1 },	-- Stormrider's Gloves
+			},
+		}),
+		i(65202, {	-- Stormrider's Vestment
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60281, 1 },	-- Stormrider's Vestment
+			},
+		}),
+		i(65201, {	-- Stormrider's Leggings
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60283, 1 },	-- Stormrider's Leggings
+			},
+		}),
+		
+		-- Feral
+		i(65190, {	-- Stormrider's Headpiece
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65193, {	-- Stormrider's Spaulders
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65189, {	-- Stormrider's Grips
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60290, 1 },	-- Stormrider's Grips
+			},
+		}),
+		i(65192, {	-- Stormrider's Raiment
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60287, 1 },	-- Stormrider's Raiment
+			},
+		}),
+		i(65191, {	-- Stormrider's Legguards
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60288, 1 },	-- Stormrider's Legguards
+			},
+		}),
+		
+		-- Restoration
+		i(65195, {	-- Stormrider's Helm
+			["cost"] = { { "i", 65002, 1 }, },	-- Crown of the Forlorn Vanquisher
+		}),
+		i(65198, {	-- Stormrider's Mantle
+			["cost"] = { { "i", 65089, 1 }, },	-- Shoulders of the Forlorn Vanquisher
+		}),
+		i(65194, {	-- Stormrider's Handwraps
+			["cost"] = {
+				{ "i", 67431, 1 },	-- Gauntlets of the Forlorn Vanquisher
+				{ "i", 60280, 1 },	-- Stormrider's Handwraps
+			},
+		}),
+		i(65197, {	-- Stormrider's Robes
+			["cost"] = {
+				{ "i", 67425, 1 },	-- Chest of the Forlorn Vanquisher
+				{ "i", 60276, 1 },	-- Stormrider's Robes
+			},
+		}),
+		i(65196, {	-- Stormrider's Legwraps
+			["cost"] = {
+				{ "i", 67426, 1 },	-- Leggings of the Forlorn Vanquisher
+				{ "i", 60278, 1 },	-- Stormrider's Legwraps
+			},
+		}),
+	}),
+};
+local TIER_ELEVEN_COMMON_GROUPS = {
+	i(65001, {	-- Crown of the Forlorn Conqueror
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(65000, {	-- Crown of the Forlorn Protector
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(65002, {	-- Crown of the Forlorn Vanquisher
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(65088, {	-- Shoulders of the Forlorn Conqueror
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(65087, {	-- Shoulders of the Forlorn Protector
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(65089, {	-- Shoulders of the Forlorn Vanquisher
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67429, {	-- Gauntlets of the Forlorn Conqueror
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67430, {	-- Gauntlets of the Forlorn Protector
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67431, {	-- Gauntlets of the Forlorn Vanquisher
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67423, {	-- Chest of the Forlorn Conqueror
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67424, {	-- Chest of the Forlorn Protector
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67425, {	-- Chest of the Forlorn Vanquisher
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67428, {	-- Leggings of the Forlorn Conqueror
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67427, {	-- Leggings of the Forlorn Protector
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(67426, {	-- Leggings of the Forlorn Vanquisher
+		["cost"] = { { "i", 66998, 1 }, },	-- Essence of the Forlorn
+	}),
+	i(57931),	-- Amulet of Dull Dreaming
+	i(57924),	-- Apple-Bent Bough
+	i(58185),	-- Band of Bees
+	i(58188),	-- Band of Secret Names
+	i(58182),	-- Bedrock Talisman
+	i(57913),	-- Beech Green Belt
+	i(57915),	-- Belt of Barred Clouds
+	i(57916),	-- Belt of the Dim Forest
+	i(57922),	-- Belt of the Falling Rain
+	i(57917),	-- Belt of the Still Stream
+	i(58152),	-- Blessed Hands of Elune
+	i(58481),	-- Boots of the Perilous Seas
+	i(58096),	-- Breastplate of Raging Fury
+	i(57934),	-- Celadon Pendant
+	i(58106),	-- Chestguard of Dancing Waves
+	i(58139),	-- Chestguard of Forgetfulness
+	i(58101),	-- Chestplate of the Steadfast
+	i(58150),	-- Cluster of Stars
+	i(58184),	-- Core of Ripeness
+	i(58155),	-- Cowl of Pleasant Gloom
+	i(58108),	-- Crown of the Blazing Sun
+	i(57929),	-- Dawnblaze Blade
+	i(58134),	-- Embrace of the Night
+	i(58198),	-- Eternal Pathfinders
+	i(58484),	-- Fading Violet Sandals
+	i(58190),	-- Floating Web
+	i(58181),	-- Fluid Death
+	i(57914),	-- Girdle of the Mountains
+	i(58130),	-- Gleaning Gloves
+	i(58110),	-- Gloves of Curious Conscience
+	i(58163),	-- Gloves of Purification
+	i(58158),	-- Gloves of the Painless Midnight
+	i(58125),	-- Gloves of the Passing Night
+	i(58192),	-- Gray Hair Cloak
+	i(58097),	-- Greaves of Gallantry
+	i(58102),	-- Greaves of Splendor
+	i(58193),	-- Haunt of Flies
+	i(58194),	-- Heavenly Breeze
+	i(58098),	-- Helm of Easeful Death
+	i(58128),	-- Helm of the Inward Eye
+	i(58103),	-- Helm of the Proud
+	i(57923),	-- Hermit's Lamp
+	i(58122),	-- Hillside Striders
+	i(68812),	-- Hornet-Sting Band
+	i(57921),	-- Incense Infused Cummerbund
+	i(58160),	-- Leggings of Charity
+	i(58140),	-- Leggings of Late Blooms
+	i(58127),	-- Leggings of Soothing Silence
+	i(58132),	-- Leggings of the Burrowing Mole
+	i(58107),	-- Legguards of the Gentle
+	i(58180),	-- License to Slay
+	i(58161),	-- Mask of New Snow
+	i(58133),	-- Mask of Vines
+	i(58157),	-- Meadow Mantle
+	i(58485),	-- Melodious Slippers
+	i(58199),	-- Moccasins of Verdurous Glooms
+	i(58159),	-- Musk Rose Robes
+	i(58105),	-- Numbing Handguards
+	i(58109),	-- Pauldrons of the Forlorn
+	i(58100),	-- Pauldrons of the High Requiem
+	i(57930),	-- Pendant of Quiet Breath
+	i(58154),	-- Pensive Legwraps
+	i(58099),	-- Reaping Gauntlets
+	i(58187),	-- Ring of the Battle Anthem
+	i(58153),	-- Robes of Embalmed Darkness
+	i(58197),	-- Rock Furrow Boots
+	i(57918),	-- Sash of Musing
+	i(58129),	-- Seafoam Mantle
+	i(57926),	-- Shield of the Four Grey Towers
+	i(57925),	-- Shield of the Mists
+	i(58486),	-- Slippers of Moving Waters
+	i(58151),	-- Somber Shawl
+	i(58183),	-- Soul Casket
+	i(58138),	-- Sticky Fingers
+	i(57933),	-- String of Beaded Bubbles
+	i(58162),	-- Summer Song Shoulderwraps
+	i(58104),	-- Sunburnt Pauldrons
+	i(57919),	-- Thatch Eave Vines
+	i(57932),	-- The Lustrous Eye
+	i(57927),	-- Throat Slasher
+	i(58482),	-- Treads of Fleeting Joy
+	i(58131),	-- Tunic of Sinking Envy
+	i(58189),	-- Twined Band of Flowers
+	i(58121),	-- Vest of the True Companion
+	i(58126),	-- Vest of the Waking Dream
+	i(58191),	-- Viewless Wings
+	i(58123),	-- Willow Mask
+	i(57928),	-- Windslicer
+	i(58195),	-- Woe Breeder's Boots
+	i(58124),	-- Wrap of the Valley Glades
+};
+local TIER_ELEVEN_GROUPS = applyclassicphase(CATA_PHASE_ONE,
+	appendGroups(TIER_ELEVEN_COMMON_GROUPS,
+	appendGroups(TIER_ELEVEN_HEROIC_GROUPS,
+	appendGroups(TIER_ELEVEN_NORMAL_GROUPS, {
+}))));
 -- #endif
+
+local PVP_MOUNT_COST = {
+	-- #if AFTER 7.0.3.22248
+	{ "i", 137642, 15 },	-- Mark of Honor
+	-- #elseif AFTER 4.0
+	{ "c", 1901, 2000 },	-- 2000 Honor Points
+	-- #elseif AFTER WRATH
+	{ "c", 1901, 16650 },	-- 16650 Honor Points
+	-- #else
+	{ "i", 20560, 30 },	-- Alterac Valley Mark of Honor
+	{ "i", 20559, 30 },	-- Arathi Basin Mark of Honor
+	{ "i", 20558, 30 },	-- Warsong Gulch Mark of Honor
+	-- #endif
+};
 
 root("Zones", m(EASTERN_KINGDOMS, {
 	m(STORMWIND_CITY, {
@@ -1130,19 +2599,19 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						crit(1, {	-- Hitting a Walleye
-							["sourceQuest"] = 26414,	-- Hitting a Walleye
+							["_quests"] = { 26414 },	-- Hitting a Walleye
 						}),
 						crit(2, {	-- Diggin' For Worms
-							["sourceQuest"] = 26420,	-- Diggin' For Worms
+							["_quests"] = { 26420 },	-- Diggin' For Worms
 						}),
 						crit(3, {	-- Rock Lobster
-							["sourceQuest"] = 26442,	-- Rock Lobster
+							["_quests"] = { 26442 },	-- Rock Lobster
 						}),
 						crit(4, {	-- Big Gulp
-							["sourceQuest"] = 26488,	-- Big Gulp
+							["_quests"] = { 26488 },	-- Big Gulp
 						}),
 						crit(5, {	-- Thunder Falls
-							["sourceQuest"] = 26536,	-- Thunder Falls
+							["_quests"] = { 26536 },	-- Thunder Falls
 						}),
 					},
 				})),
@@ -1376,6 +2845,11 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["lvl"] = 25,
+				}),
+				q(62250, {	-- A New Adventure Awaits
+					["description"] = "This quest is automatically offered upon reaching the specified level.",
+					["timeline"] = { "created 9.0.2", "added 10.0.2" },
+					["races"] = ALLIANCE_ONLY,
 				}),
 				q(47202, {	-- A Personal Message
 					["qg"] = 119357,	-- Anduin Wrynn
@@ -2961,6 +4435,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					-- #else
 					["coord"] = { 37.6, 81.6, STORMWIND_CITY },
 					-- #endif
+					["timeline"] = { "removed 4.0.3" },
 					["maps"] = { DUSKWOOD },
 					["races"] = { HUMAN, GNOME },
 					["classes"] = { MAGE },
@@ -3194,7 +4669,7 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					},
 				}),
 				q(42740, {	-- The Battle for Broken Shore
-					-- CRIEVE NOTE: Perhaps move this and related quests/things to the World Events section?
+					-- CRIEVE NOTE: Perhaps move this and related quests/things to the Expansion Features section?
 					-- Also find the right mapID for the scenario.
 					["qg"] = 108916,	-- Knight Dameron
 					["sourceQuest"] = 42782,	-- To Be Prepared
@@ -4352,23 +5827,358 @@ root("Zones", m(EASTERN_KINGDOMS, {
 				}),
 			}),
 			n(VENDORS, {
-				n(1347, {	-- Alexandra Bolero <Tailoring Supplies>
-					["coord"] = { 43.3, 74.0, STORMWIND_CITY },
+				n(69334, {	-- Adherent Hanjun <Tushui Quartermaster>
+					["coord"] = { 68.0, 17.0, STORMWIND_CITY },
+					["timeline"] = { "added 5.2.0.16577" },
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
+						i(92071, {	-- Tushui Satchel
+							["timeline"] = { "added 5.1.0.16309" },
+						}),
+						i(83079, {	-- Tushui Tabard
+							["timeline"] = { "added 5.0.1.15544" },
+						}),
+					},
+				}),
+				n(1347, {	-- Alexandra Bolero <Tailoring Supplies>
+					-- #if AFTER WRATH
+					["coord"] = { 53.2, 81.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 43.4, 74.0, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = appendGroups(COMMON_CATACLYSM_TAILORING_RECIPES, {
 						i(6274, {	-- Pattern: Blue Overalls
 							["isLimited"] = true,
 						}),
 						i(10325, {	-- Pattern: White Wedding Dress
 							["isLimited"] = true,
 						}),
+					}),
+				}),
+				n(175051, {	-- Alice Fischer <Corrupted Aspirant Vendor>
+					["coord"] = { 75.0, 67.4, STORMWIND_CITY },
+					["timeline"] = { "added 9.0.1.36228" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						n(PVP_ASPIRANT, {
+							n(WEAPONS, {
+								i(172880, {	-- Corrupted Aspirant's Chopper (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(174013, {	-- Corrupted Aspirant's Claw (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172878, {	-- Corrupted Aspirant's Cleaver (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(174015, {	-- Corrupted Aspirant's Decapitator (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172872, {	-- Corrupted Aspirant's Gavel (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172884, {	-- Corrupted Aspirant's Greatsword (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172870, {	-- Corrupted Aspirant's Longbow (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172882, {	-- Corrupted Aspirant's Pike (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172874, {	-- Corrupted Aspirant's Pummeler (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172866, {	-- Corrupted Aspirant's Reprieve (A)
+									["cost"] = { { "c", 1792, 425 } },	-- 425x Honor
+								}),
+								i(174017, {	-- Corrupted Aspirant's Rifle (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172859, {	-- Corrupted Aspirant's Shanker (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172868, {	-- Corrupted Aspirant's Shield Wall (A)
+									["cost"] = { { "c", 1792, 425 } },	-- 425x Honor
+								}),
+								i(172876, {	-- Corrupted Aspirant's Slicer (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(174011, {	-- Corrupted Aspirant's Spellblade (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172858, {	-- Corrupted Aspirant's Stabber (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172864, {	-- Corrupted Aspirant's Staff (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172862, {	-- Corrupted Aspirant's Wand (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(174019, {	-- Corrupted Aspirant's War Staff (A)
+									["cost"] = { { "c", 1792, 1750 } },	-- 1750x Honor
+								}),
+								i(172886, {	-- Corrupted Aspirant's Warglaive (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+							}),
+							filter(CLOTH, {
+								i(172837, {	-- Corrupted Aspirant's Silk Cord (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172840, {	-- Corrupted Aspirant's Silk Cuffs (A)
+									["cost"] = { { "c", 1792, 525 } },	-- 525x Honor
+								}),
+								i(172823, {	-- Corrupted Aspirant's Silk Gloves (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172825, {	-- Corrupted Aspirant's Silk Hood (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172829, {	-- Corrupted Aspirant's Silk Leggings (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172834, {	-- Corrupted Aspirant's Silk Mantle (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172813, {	-- Corrupted Aspirant's Silk Robe (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172818, {	-- Corrupted Aspirant's Silk Treads (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+							}),
+							filter(LEATHER, {
+								i(172839, {	-- Corrupted Aspirant's Leather Belt (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172843, {	-- Corrupted Aspirant's Leather Bindings (A)
+									["cost"] = { { "c", 1792, 525 } },	-- 525x Honor
+								}),
+								i(172820, {	-- Corrupted Aspirant's Leather Boots (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172821, {	-- Corrupted Aspirant's Leather Gloves (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172827, {	-- Corrupted Aspirant's Leather Helm (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172831, {	-- Corrupted Aspirant's Leather Legguards (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172832, {	-- Corrupted Aspirant's Leather Spaulders (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172816, {	-- Corrupted Aspirant's Leather Tunic (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+							}),
+							filter(MAIL, {
+								i(172842, {	-- Corrupted Aspirant's Chain Armbands (A)
+									["cost"] = { { "c", 1792, 525 } },	-- 525x Honor
+								}),
+								i(172815, {	-- Corrupted Aspirant's Chain Armor (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172824, {	-- Corrupted Aspirant's Chain Gauntlets (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172826, {	-- Corrupted Aspirant's Chain Helm (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172830, {	-- Corrupted Aspirant's Chain Leggings (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172819, {	-- Corrupted Aspirant's Chain Sabatons (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172835, {	-- Corrupted Aspirant's Chain Spaulders (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172838, {	-- Corrupted Aspirant's Chain Waistguard (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+							}),
+							filter(PLATE, {
+								i(172841, {	-- Corrupted Aspirant's Plate Armguards (A)
+									["cost"] = { { "c", 1792, 525 } },	-- 525x Honor
+								}),
+								i(172814, {	-- Corrupted Aspirant's Plate Chestpiece (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172822, {	-- Corrupted Aspirant's Plate Gauntlets (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172836, {	-- Corrupted Aspirant's Plate Girdle (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172812, {	-- Corrupted Aspirant's Plate Helm (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172828, {	-- Corrupted Aspirant's Plate Legguards (A)
+									["cost"] = { { "c", 1792, 875 } },	-- 875x Honor
+								}),
+								i(172833, {	-- Corrupted Aspirant's Plate Pauldrons (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172817, {	-- Corrupted Aspirant's Plate Warboots (A)
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+							}),
+							n(FINGER, {
+								i(172845, {	-- Corrupted Aspirant's Band
+									["cost"] = { { "c", 1792, 525 } },	-- 525x Honor
+								}),
+								i(172844, {	-- Corrupted Aspirant's Ring
+									["cost"] = { { "c", 1792, 525 } },	-- 525x Honor
+								}),
+							}),
+							n(-386, {	-- Trinkets
+								i(172849, {	-- Corrupted Aspirant's Badge
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172846, {	-- Corrupted Aspirant's Bauble
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172847, {	-- Corrupted Aspirant's Emblem
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(172848, {	-- Corrupted Aspirant's Insignia
+									["cost"] = { { "c", 1792, 700 } },	-- 700x Honor
+								}),
+								i(184058, {	-- Corrupted Aspirant's Medallion
+									["cost"] = { { "g", 8000000 } },	-- 800g
+								}),
+								i(184059, {	-- Corrupted Aspirant's Relentless Brooch
+									["cost"] = { { "g", 8000000 } },	-- 800g
+								}),
+								i(184060, {	-- Corrupted Aspirant's Sigil of Adaptation
+									["cost"] = { { "g", 8000000 } },	-- 800g
+								}),
+							}),
+						}),
 					},
 				}),
-				n(34079, {	-- Captain O'Neal <Jewelcrafting Quartermaster>
+				-- #if AFTER 8.0.1
+				n(55285, {	-- Astrid Langstrump <Mountain Horse Handler>
+					["description"] = "Appears in Stormwind after War of Thorns.",
+					["coord"] = { 52.4, 8.2, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(73838, {	-- Mountain Horse (MOUNT!)
+							["timeline"] = { "added 4.3.0.14732" },
+						}),
+						i(73839, {	-- Swift Mountain Horse (MOUNT!)
+							["timeline"] = { "added 4.3.0.14732" },
+						}),
+					},
+				}),
+				-- #endif
+				n(69975, {	-- Captain Dirgehammer <Cataclysmic Gladiator>
+					["coord"] = { 75.0, 67.5, STORMWIND_CITY },
+					["timeline"] = { "added 5.2.0.16577" },
+					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "pvp_gear_base", CATA_TIER, SEASON_CATACLYSMIC, PVP_GLADIATOR },{"merge"},
+						{"pop"},	-- Discard the Set header and acquire the children.
+						{"exclude", "headerID", NECK, FINGER, -386 },	-- Exclude Neck, Finger and Trinkets
+					},
+				}),
+				-- 54661: Captain Dirgehammer <Cataclysmic Gladiator> (Cataclysmic?)
+				-- 52546: Captain Dirgehammer <Conquest Quartermaster> (Ruthless?)
+				-- 51254: Captain Dirgehammer <Conquest Quartermaster> (Vicious?)
+				applyclassicphase(WRATH_PHASE_FOUR, n(34075, {	-- Captain Dirgehammer <Apprentice Armor Quartermaster> // Original S8 Vendor // Relentless Gladiator: Season 7 Gladiator Gear
+					["coord"] = { 75.0, 67.4, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_RELENTLESS, PVP_GLADIATOR },{ "pop" }},	-- Relentless Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_THREE, n(34074, {	-- Captain Dirgehammer <Apprentice Armor Quartermaster> // Original S7 Vendor // Furious Gladiator: Season 6 Gladiator Gear
+					["coord"] = { 75.0, 67.4, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_FURIOUS, PVP_GLADIATOR },{ "pop" }},	-- Furious Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_TWO, n(34073, {	-- Captain Dirgehammer <Apprentice Armor Quartermaster> // Original S6 Vendor // Deadly Gladiator: Season 5 Gladiator Gear
+					["coord"] = { 75.0, 67.4, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_DEADLY, PVP_GLADIATOR },{ "pop" }},	-- Deadly Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_ONE, n(32381, {	-- Captain Dirgehammer // Original S5 Vendor // Hateful Gladiator: Season 5 Gladiator Gear
+					["coord"] = { 75.0, 67.4, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_DEADLY, PRE_SEASON_HATEFUL },{ "pop" }},	-- Hateful Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				n(12777, {	-- Captain Dirgehammer <Armor Quartermaster>
+					-- #if BEFORE TBC
+					["description"] = "Found within the Champion's Hall.",
+					-- #else
+					["coord"] = { 75.0, 67.5, STORMWIND_CITY },
+					-- #endif
+					["timeline"] = { "removed 3.0.2.8970" },
+					-- #if BEFORE TBC
+					["sym"] = {	-- Grand Marshal Armor
+						{"sub", "pvp_gear_base", CLASSIC_TIER, FACTION_HEADER_ALLIANCE },
+						{ "pop" },
+						{ "exclude", "headerID", WEAPONS },
+						-- #if BEFORE WRATH
+						{ "exclude", "f", TRINKET_F, NECK_F },
+						-- #endif
+					},
+					-- #elseif BEFORE 3.0.2.8970
+					["sym"] = {
+						{"sub", "pvp_gear_base", TBC_TIER, SEASON_VENGEFUL, PVP_GLADIATOR }, { "finalize" },	-- Vengeful Gladiator's Set
+						{"sub", "pvp_gear_base", TBC_TIER, SEASON_MERCILESS, PVP_GLADIATOR }, { "finalize" },	-- Merciless Gladiator's Set
+						{"sub", "pvp_gear_base", TBC_TIER, SEASON_GLADIATOR, PVP_GLADIATOR }, { "finalize" },	-- Gladiator's Set
+						{"sub", "pvp_gear_base", TBC_TIER, PVP_HONOR, FACTION_HEADER_ALLIANCE },{ "finalize" },	-- Honor Set
+						{"merge"},
+						{"pop"},
+						{ "exclude", "headerID", WEAPONS, BACK },
+						{ "exclude", "filterID", NECK_F, FINGER_F, RELICS, TRINKET_F },
+						{"postprocess"},
+					},
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+				}),
+				n(49877, {	-- Captain Lancy Revshon <Stormwind Quartermaster>
+					["coord"] = { 67.6, 72.8, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.3.13277" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(64902, {	-- Cape of Stormwind
+							["timeline"] = { "added 4.0.1.12941" },
+						}),
+						i(64901, {	-- Mantle of Stormwind
+							["timeline"] = { "added 4.0.1.12941" },
+						}),
+						i(64903, {	-- Shroud of Stormwind
+							["timeline"] = { "added 4.0.1.12941" },
+						}),
+						i(67531, {	-- Stormwind Satchel
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(45574, {	-- Stormwind Tabard
+							["timeline"] = { "added 3.1.0.9626" },
+						}),
+					},
+				}),
+				-- 34081: Captain O'Neal <Jewelcrafting Quartermaster> (Wrath season 4?)
+				-- 34080: Captain O'Neal <Jewelcrafting Quartermaster> (Wrath season 3?)
+				-- 34079: Captain O'Neal <Jewelcrafting Quartermaster> (Wrath season 2?)
+				n(32379, {	-- Captain O'Neal <Jewelcrafting Quartermaster>
 					["coord"] = { 75.0, 66.7, STORMWIND_CITY },
 					["timeline"] = { "added 3.0.2.8970", "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
-					["groups"] = {
+					["groups"] = pvp({
 						-- #if BEFORE 4.0.3
 						-- Moves to Tiffany in Dalaran
 						i(41563),	-- Design: Durable Huge Citrine [WRATH] / Design: Willful Huge Citrine [CATA+]
@@ -4394,10 +6204,66 @@ root("Zones", m(EASTERN_KINGDOMS, {
 						i(41570),	-- Design: Radiant Dark Jade [CATA+] / Design: Tense Dark Jade [WRATH]
 						i(41571),	-- Design: Turbid Dark Jade
 						-- #endif
+						moh(1, i(28118, {	-- Brilliant Ornate Ruby
+							["timeline"] = { "added 2.0.1.6180" },
+						})),
+						moh(1, i(28119, {	-- Smooth Ornate Dawnstone
+							["timeline"] = { "added 2.0.1.6180" },
+						})),
+						moh(1, i(28120, {	-- Gleaming Ornate Dawnstone
+							["timeline"] = { "added 2.0.1.6180", "removed 4.0.1" },
+						})),
+						moh(1, i(28123, {	-- Potent Ornate Topaz
+							["timeline"] = { "added 2.0.1.6180" },
+						})),
+						moh(1, i(28362, {	-- Delicate Ornate Ruby
+							["timeline"] = { "added 2.0.1.6180" },
+						})),
+						moh(1, i(28363, {	-- Deadly Ornate Topaz
+							["timeline"] = { "added 2.0.1.6180" },
+						})),
+					}),
+				}),
+				n(12782, {	-- Captain O'Neal <Weapons Quartermaster>
+					-- #if BEFORE WRATH
+					["description"] = "Found within the Champion's Hall.",
+					-- #endif
+					["timeline"] = { "removed 3.0.2.8970" },
+					-- #if BEFORE 3.0.2.8970
+					["sym"] = {{"sub", "pvp_gear_base", CLASSIC_TIER, FACTION_HEADER_ALLIANCE, WEAPONS },{ "pop" }},	-- Grand Marshal Weapons
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+				}),
+				n(1291, {	-- Carla Granger <Cloth Armor Merchant>
+					-- #if AFTER WRATH
+					["coord"] = { 62.2, 67.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 55.0, 56.0, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(16059),	-- Common Brown Shirt
+						i(3428),	-- Common Grey Shirt
+						i(16060),	-- Common White Shirt
 					},
 				}),
-				n(5494, {	-- Catherine Leland <Fishing Supplier>
+				-- #if AFTER 7.0.3
+				n(30713, {	-- Catarina Stanford <Inscription Trainer>
+					["coord"] = { 49.8, 74.6, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(140566, {	-- Technique: Songs of the Alliance (RECIPE!)
+							["timeline"] = { "added 7.0.3" },
+						}),
+					},
+				}),
+				-- #endif
+				n(5494, {	-- Catherine Leland <Fishing Supplier>
+					-- #if AFTER WRATH
+					["coord"] = { 55.0, 69.6, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 45.8, 58.5, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(6325),	-- Recipe: Brilliant Smallfish
@@ -4406,7 +6272,11 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					},
 				}),
 				n(1307, {	-- Charys Yserian <Arcane Trinkets Vendor>
+					-- #if AFTER WRATH
+					["coord"] = { 44.8, 86.2, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 32.4, 79.9, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(4824, {	-- Blurred Axe
@@ -4415,22 +6285,83 @@ root("Zones", m(EASTERN_KINGDOMS, {
 						i(4825, {	-- Callous Axe
 							["isLimited"] = true,
 						}),
-						i(4826, {	-- Marauder Axe
+						i(4829, {	-- Dreamer's Belt
 							["isLimited"] = true,
 						}),
-						i(4827, {	-- Wizard's Belt
+						i(4826, {	-- Marauder Axe
 							["isLimited"] = true,
 						}),
 						i(4828, {	-- Nightwind Belt
 							["isLimited"] = true,
 						}),
-						i(4829, {	-- Dreamer's Belt
+						i(4827, {	-- Wizard's Belt
 							["isLimited"] = true,
 						}),
 					},
 				}),
+				n(52358, {	-- Craggle Wobbletop <Toys and Novelties>
+					["coords"] = {
+						{ 66.6, 64.4, STORMWIND_CITY },
+						{ 63.6, 61.2, STORMWIND_CITY },
+						{ 56.6, 67.6, STORMWIND_CITY },
+						{ 58.6, 76.8, STORMWIND_CITY },
+					},
+					["timeline"] = { "added 4.1.0.13682" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(54436, {	-- Blue Clockwork Rocket Bot (PET!)
+							["timeline"] = { "added 3.3.3.11573" },
+						}),
+						i(95621, {	-- Warbot Ignition Key (PET!)
+							["timeline"] = { "added 5.2.0.16539" },
+						}),
+						i(54343, {	-- Blue Crashin' Thrashin' Racer Controller (TOY!)
+							["timeline"] = { "added 3.3.3.11573" },
+						}),
+						i(104324, {	-- Foot Ball (TOY!)
+							["timeline"] = { "added 5.4.0.17227" },
+						}),
+						applyholiday(CHILDRENS_WEEK, i(69895, {	-- Green Balloon Toy (TOY!)
+							["timeline"] = { "added 4.1.0.13875" },
+						})),
+						i(137663, {	-- Soft Foam Sword (TOY!)
+							["timeline"] = { "added 7.0.3.22248" },
+						}),
+						i(104323, {	-- The Swineskin (TOY!)
+							["timeline"] = { "added 5.4.0.17227" },
+						}),
+						i(54438, {	-- Tiny Blue Ragdoll (TOY!)
+							["timeline"] = { "added 3.3.3.11573" },
+						}),
+						i(54437, {	-- Tiny Green Ragdoll (TOY!)
+							["timeline"] = { "added 3.3.3.11573" },
+						}),
+						i(44606, {	-- Toy Train Set Toy (TOY!)
+							["timeline"] = { "added 3.0.2.8982" },
+						}),
+						i(45057, {	-- Wind-Up Train Wrecker Toy (TOY!)
+							["timeline"] = { "added 3.1.0.9626" },
+						}),
+						applyholiday(CHILDRENS_WEEK, i(69896, {	-- Yellow Balloon Toy (TOY!)
+							["timeline"] = { "added 4.1.0.13875" },
+						})),
+					},
+				}),
+				n(133411, {	-- Dalia Skyblossom <Cooking Trainer>
+					["coord"] = { 51.4, 18.0, STORMWIND_CITY },
+					["timeline"] = { "added 7.3.5.25716" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(21219),	-- Recipe: Sagefish Delight
+						i(21099),	-- Recipe: Smoked Sagefish
+					},
+				}),
 				n(1304, {	-- Darian Singh <Fireworks Vendor>
+					-- #if AFTER WRATH
+					["coord"] = { 42.6, 76.8, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 29.6, 67.8, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(18649, {	-- Schematic: Blue Firework
@@ -4438,8 +6369,56 @@ root("Zones", m(EASTERN_KINGDOMS, {
 						}),
 					},
 				}),
-				n(1286, {	-- Edna Mullby <Trade Supplies>
+				n(50669, {	-- Dawn Radue <Bag Merchant>
+					["coord"] = { 64.8, 71.6, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(67396, {	-- "Carriage - Christina" Precious Metal Bag
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67389, {	-- "Carriage - Exclusive" Enchanting Evening Purse
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67392, {	-- "Carriage - Exclusive" Gem Studded Clutch
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67393, {	-- "Carriage - Going Green" Herb Tote Bag
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67390, {	-- "Carriage - Maddy" High Tech Bag
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67395, {	-- "Carriage - Meeya" Leather Bag
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67394, {	-- "Carriage - Xandera" Student's Satchel
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+						i(67387, {	-- "Carriage" Signature Bag
+							["timeline"] = { "added 4.0.1.12984" },
+						}),
+					},
+				}),
+				n(52029, {	-- Edlan Halsing <Bloodthirsty Gladiator> [LEGION+] / Edlan Halsing <Honor Trade Goods>
+					["coord"] = { 74.7, 68.2, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.6.13596" },
+					["races"] = ALLIANCE_ONLY,
+					-- #if AFTER 7.0.3
+					["sym"] = {
+						{"sub", "pvp_gear_base", CATA_TIER, SEASON_VICIOUS, PVP_HONOR },{"merge"},
+						{"pop"},	-- Discard the Set header and acquire the children.
+					},
+					-- #else
+					-- Used to just sell trade goods for Cataclysm (Embersilk, Shards, Ore, etc)
+					-- #endif
+				}),
+				n(1286, {	-- Edna Mullby <Trade Supplies> [TBC+] / Edna Mullby <Trade Supplier>
+					-- #if AFTER WRATH
+					["coord"] = { 64.6, 71.6, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 58.2, 60.5, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(20856, {	-- Design: Heavy Golden Necklace of Battle
@@ -4447,12 +6426,39 @@ root("Zones", m(EASTERN_KINGDOMS, {
 						}),
 					},
 				}),
-				n(5483, {	-- Erika Tate <Cooking Supplier>
+				n(5503, {	-- Eldraeith <Herbalism Supplies> [TBC+] / Eldraeith <Herbalism Supplier>
+					-- #if AFTER WRATH
+					["coord"] = { 55.6, 85.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 46.6, 78.8, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(22250),	-- Herb Pouch
+					},
+				}),
+				n(5483, {	-- Erika Tate <Cooking Supplies> [TBC+] / Erika Tate <Cooking Supplier>
+					-- #if AFTER WRATH
+					["coord"] = { 77.6, 53.2, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 76.0, 36.8, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(21219),	-- Recipe: Sagefish Delight
 						i(21099),	-- Recipe: Smoked Sagefish
+					},
+				}),
+				n(164942, {	-- Evelyn Thorn <Warlock Trainer>
+					["coord"] = { 79.4, 69.8, STORMWIND_CITY },
+					["timeline"] = { "added 9.0.1.36228" },
+					["groups"] = {
+						i(189719, {	-- Barbed Collar of the Incubus
+							["timeline"] = { "added 9.0.1.36228" },
+						}),
+						i(189720, {	-- Barbed Collar of the Succubus
+							["timeline"] = { "added 9.0.1.36228" },
+						}),
 					},
 				}),
 				n(44245, {	-- Faldren Tillsdale
@@ -4461,15 +6467,258 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = TIER_THIRTEEN_GROUPS,
 				}),
+				applyclassicphase(CATA_PHASE_FIVE, n(56925, {	-- Farrah Facet <Epic Gem Recipes>
+					["coord"] = { 63.8, 61.6, STORMWIND_CITY },
+					["timeline"] = { "added 4.3.0.14849" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(71928, {	-- Design: Accurate Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71917, {	-- Design: Adept Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71919, {	-- Design: Artful Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71893, {	-- Design: Balanced Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71943, {	-- Design: Bold Queen's Garnet
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71941, {	-- Design: Brilliant Queen's Garnet
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71912, {	-- Design: Champion's Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71906, {	-- Design: Crafty Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71905, {	-- Design: Deadly Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71937, {	-- Design: Defender's Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71913, {	-- Design: Deft Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71939, {	-- Design: Delicate Queen's Garnet
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71898, {	-- Design: Energized Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71931, {	-- Design: Etched Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71916, {	-- Design: Fierce Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71920, {	-- Design: Fine Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71942, {	-- Design: Flashing Queen's Garnet
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71901, {	-- Design: Forceful Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71947, {	-- Design: Fractured Lightstone
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71927, {	-- Design: Glinting Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71935, {	-- Design: Guardian's Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71891, {	-- Design: Infused Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71908, {	-- Design: Inscribed Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71899, {	-- Design: Jagged Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71918, {	-- Design: Keen Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71889, {	-- Design: Lightning Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71922, {	-- Design: Lucent Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71887, {	-- Design: Misty Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71932, {	-- Design: Mysterious Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71948, {	-- Design: Mystic Lightstone
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71902, {	-- Design: Nimble Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71888, {	-- Design: Piercing Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71909, {	-- Design: Polished Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71907, {	-- Design: Potent Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71940, {	-- Design: Precise Queen's Garnet
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71903, {	-- Design: Puissant Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71933, {	-- Design: Purified Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71946, {	-- Design: Quick Lightstone
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71896, {	-- Design: Radiant Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71915, {	-- Design: Reckless Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71900, {	-- Design: Regal Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71910, {	-- Design: Resolute Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71926, {	-- Design: Resplendent Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71930, {	-- Design: Retaliating Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71821, {	-- Design: Rigid Deepholm Iolite
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71890, {	-- Design: Sensei's Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71897, {	-- Design: Shattered Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71934, {	-- Design: Shifting Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71921, {	-- Design: Skillful Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71944, {	-- Design: Smooth Lightstone
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71886, {	-- Design: Solid Deepholm Iolite
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71938, {	-- Design: Sovereign Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71885, {	-- Design: Sparkling Deepholm Iolite
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71925, {	-- Design: Splendid Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71911, {	-- Design: Stalwart Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71904, {	-- Design: Steady Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71884, {	-- Design: Stormy Deepholm Iolite
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71945, {	-- Design: Subtle Lightstone
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71923, {	-- Design: Tenuous Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71936, {	-- Design: Timeless Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71895, {	-- Design: Turbid Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71929, {	-- Design: Veiled Shadow Spinel
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71894, {	-- Design: Vivid Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71914, {	-- Design: Wicked Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71924, {	-- Design: Willful Lava Coral
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71892, {	-- Design: Zen Elven Peridot
+							["cost"] = { { "c", 361, 5 }, },	-- 5x Illustrious Jewelcrafter's Token
+						}),
+						i(71949, {	-- Tome of Burning Jewels
+							["cost"] = { { "c", 361, 4 }, },	-- 4x Illustrious Jewelcrafter's Token
+							["filterID"] = CONSUMABLES,
+							["sym"] = {
+								{"select","creatureID",56925},{"pop"},	-- this NPC
+								{"not","itemID",71949},				-- not this item
+							},
+						}),
+					},
+				})),
 				n(1303, {	-- Felicia Gump <Herbalism Supplier>
+					-- #if AFTER WRATH
 					["coord"] = { 64.2, 60.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 64.2, 60.6, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(2665),	-- Stormwind Seasoning Herbs
 					},
 				}),
+				n(179896, {	-- Finn
+					["coord"] = { 61.0, 65.0, STORMWIND_CITY },
+					["timeline"] = { "added 9.1.0.39226" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(187009, {	-- Dazzling Spectacles
+							["timeline"] = { "added 9.1.0.39226" },
+						}),
+						i(186092, {	-- Historical Perspective Shifters
+							["timeline"] = { "added 9.1.0.39226" },
+						}),
+						i(186091, {	-- Onyx Glare-Reducers
+							["timeline"] = { "added 9.1.0.39226" },
+						}),
+						i(186090, {	-- Simple Glasses
+							["timeline"] = { "added 9.1.0.39226" },
+						}),
+						i(187010, {	-- Tasteful Eyeglasses
+							["timeline"] = { "added 9.1.0.39226" },
+						}),
+					},
+				}),
 				n(1298, {	-- Frederick Stover <Bow & Arrow Merchant>
+					-- #if AFTER WRATH
+					["coord"] = { 58.6, 69.0, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 50.3, 57.7, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(11303, {	-- Fine Shortbow
@@ -4483,66 +6732,578 @@ root("Zones", m(EASTERN_KINGDOMS, {
 						}),
 					},
 				}),
-				n(1318, {	-- Jessara Cordell <Enchanting Supplies>
-					["coord"] = { 43.0, 64.2, STORMWIND_CITY },
+				n(110034, {	-- Historian Llore <The Timewalkers>
+					["coord"] = { 84.6, 25.0, STORMWIND_CITY },
+					["timeline"] = { "added 7.1.0.22810" },
 					["races"] = ALLIANCE_ONLY,
-					["groups"] = {
-						-- #if BEFORE CATA
-						i(6342),	-- Formula: Enchant Chest - Minor Mana
-						-- #endif
-						-- #if NOT CLASSIC
-						i(20753),	-- Formula: Lesser Wizard Oil
-						i(20752),	-- Formula: Minor Mana Oil
-						i(20758),	-- Formula: Minor Wizard Oil
-						-- #endif
-						i(22307),	-- Pattern: Enchanted Mageweave Pouch
+					["u"] = WOW_ANNIVERSARY,
+					["sym"] = {
+						{"select", "headerID", FIFTEENTH_ANNIVERSARY },	-- Select WoW's 15th Anniversary
+						{"pop"},										-- Discard Header and aquire their children
+						{"where", "headerID", VENDORS },				-- Select Vendors
+						{"pop"},										-- Discard Header and aquire their children
+						{"where", "npcID", 158061},						-- Select Historian Ma'di
+						{"pop"},										-- Discard Header and aquire their children
 					},
 				}),
-				n(5512, {	-- Kaita Deepforge <Blacksmithing Supplies>
-					["coord"] = { 56.3, 17.2, STORMWIND_CITY },
+				n(50480, {	-- Isabel Jones <Jewelcrafting Design Vendor>
+					["coord"] = { 63.8, 61.3, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.3.13277" },
+					["sym"] = {{ "sub", "common_recipes_vendor", 50482 }}, -- Marith Lazuria <Jewelcrafting Supplies>
 					["races"] = ALLIANCE_ONLY,
-					["groups"] = {
-						i(12162, {	-- Plans: Hardened Iron Shortsword
+				}),
+				n(1318, {	-- Jessara Cordell <Enchanting Supplies>
+					-- #if AFTER WRATH
+					["coord"] = { 53.0, 74.2, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 43.0, 64.2, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = appendGroups(COMMON_CATACLYSM_ENCHANTING_RECIPES, {
+						-- #if BEFORE CATA
+						i(6342, {	-- Formula: Enchant Chest - Minor Mana (RECIPE!)
 							["isLimited"] = true,
 						}),
+						-- #endif
+						i(20753),	-- Formula: Lesser Wizard Oil (RECIPE!)
+						i(67312, {	-- Formula: Magic Lamp (RECIPE!)
+							["timeline"] = { "added 4.0.3" },
+							["cost"] = { { "i", 52555, 20 }, },	-- 20x Hypnotic Dust
+							["races"] = ALLIANCE_ONLY,
+						}),
+						i(20752),	-- Formula: Minor Mana Oil (RECIPE!)
+						i(20758),	-- Formula: Minor Wizard Oil (RECIPE!)
+						i(22307),	-- Pattern: Enchanted Mageweave Pouch
+					}),
+				}),
+				-- #if AFTER CATA
+				n(5565, {	-- Jillian Tanner <Leatherworking Supplies>
+					["coord"] = { 71.7, 62.8, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = appendGroups(COMMON_CATACLYSM_LEATHERWORKING_RECIPES, {}),
+				}),
+				-- #endif
+				n(49701, {	-- Jon Casper <Sous Chef>
+					["coord"] = { 50.6, 71.6, STORMWIND_CITY },
+					["timeline"] = { "added 4.3.0.14732" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(65426, {	-- Recipe: Baked Rockfish
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65427, {	-- Recipe: Basilisk Liverdog
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65429, {	-- Recipe: Beer-Basted Crocolisk
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65424, {	-- Recipe: Blackbelly Sushi
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65411, {	-- Recipe: Broiled Mountain Trout
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65431, {	-- Recipe: Chocolate Cookie
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65430, {	-- Recipe: Crocolisk Au Gratin
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65422, {	-- Recipe: Delicious Sagefish Tail
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65408, {	-- Recipe: Feathered Lure
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65423, {	-- Recipe: Fish Fry
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65432, {	-- Recipe: Fortune Cookie
+							["cost"] = { { "c", 81, 5 }, },	-- 5x Epicurean's Award
+						}),
+						i(65428, {	-- Recipe: Grilled Dragon
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65418, {	-- Recipe: Hearty Seafood Soup
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65415, {	-- Recipe: Highland Spirits
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65407, {	-- Recipe: Lavascale Fillet
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65409, {	-- Recipe: Lavascale Minestrone
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65412, {	-- Recipe: Lightly Fried Lurker
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65416, {	-- Recipe: Lurker Lunch
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65420, {	-- Recipe: Mushroom Sauce Mudfish
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65417, {	-- Recipe: Pickled Guppy
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65410, {	-- Recipe: Salted Eye
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(68688, {	-- Recipe: Scalding Murglesnout
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65413, {	-- Recipe: Seasoned Crab
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65421, {	-- Recipe: Severed Sagefish Head
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65425, {	-- Recipe: Skewered Eel
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65433, {	-- Recipe: South Island Iced Tea
+							["cost"] = { { "c", 81, 5 }, },	-- 5x Epicurean's Award
+						}),
+						i(65414, {	-- Recipe: Starfire Espresso
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65419, {	-- Recipe: Tender Baked Turtle
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+						i(65406, {	-- Recipe: Whitecrest Gumbo
+							["cost"] = { { "c", 81, 3 }, },	-- 3x Epicurean's Award
+						}),
+					},
+				}),
+				n(55684, {	-- Jordan Smith <Blacksmithing Trainer & Supplies>
+					["coord"] = { 64.8, 48.2, STORMWIND_CITY },
+					["timeline"] = { "added 4.3.0.14732" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = appendGroups(COMMON_CATACLYSM_BLACKSMITHING_RECIPES, {}),
+				}),
+				n(5512, {	-- Kaita Deepforge <Blacksmithing Supplies>
+					-- #if AFTER WRATH
+					["coord"] = { 63.2, 37.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 56.3, 17.2, STORMWIND_CITY },
+					-- #endif
+					["sym"] = {{ "sub", "common_recipes_vendor", 3356 }}, -- Sumi <Blacksmithing Supplies>
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(12162, {	-- Plans: Hardened Iron Shortsword (RECIPE!)
+							["isLimited"] = true,
+						}),
+					},
+				}),
+				n(43694, {	-- Katie Stokx <Horse Breeder>
+					["coord"] = { 77.0, 67.8, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(2411),	-- Black Stallion (MOUNT!)
+						i(5656),	-- Brown Horse (MOUNT!)
+						i(5655),	-- Chestnut Mare (MOUNT!)
+						i(2414),	-- Pinto (MOUNT!)
+						i(18777),	-- Swift Brown Steed (MOUNT!)
+						i(18776),	-- Swift Palomino (MOUNT!)
+						i(18778),	-- Swift White Steed (MOUNT!)
 					},
 				}),
 				n(340, {	-- Kendor Kabonka <Master of Cooking Recipes>
+					-- #if AFTER WRATH
+					["coord"] = { 76.4, 53.0, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 74.6, 36.8, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(728),		-- Recipe: Westfall Stew
-						i(2697),	-- Recipe: Goretusk Liver Pie
-						i(2698),	-- Recipe: Cooked Crab Claw
-						i(2699),	-- Recipe: Redridge Goulash
-						i(2700),	-- Recipe: Succulent Pork Ribs
-						i(2701),	-- Recipe: Seasoned Wolf Kabob
 						i(2889),	-- Recipe: Beer Basted Boar Ribs
-						i(3678),	-- Recipe: Crocolisk Steak
 						i(3679),	-- Recipe: Blood Sausage
-						i(3680),	-- Recipe: Murloc Fin Soup
+						i(2698),	-- Recipe: Cooked Crab Claw
 						i(3681),	-- Recipe: Crocolisk Gumbo
+						i(3678),	-- Recipe: Crocolisk Steak
 						i(3682),	-- Recipe: Curiously Tasty Omelet
 						i(3683),	-- Recipe: Gooey Spider Cake
+						i(2697),	-- Recipe: Goretusk Liver Pie
+						i(3680),	-- Recipe: Murloc Fin Soup
+						i(2699),	-- Recipe: Redridge Goulash
+						i(2701),	-- Recipe: Seasoned Wolf Kabob
+						i(2700),	-- Recipe: Succulent Pork Ribs
+						i(728),		-- Recipe: Westfall Stew
 					},
 				}),
-				n(8666, {	-- Lil Timmy <Boy with kittens>
-					["coord"] = { 64.0, 38.0, STORMWIND_CITY },
+				applyclassicphase(WRATH_PHASE_FOUR, n(34084, {	-- Knight-Lieutenant Moonstrike <Northrend Armor Quartermaster> // Original S8 Vendor // Furious Gladiator: Season 8 Honor Gear
+					["coord"] = { 74.8, 67.3, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_FURIOUS, PVP_GLADIATOR },{ "pop" }},	-- Furious Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_THREE, n(34083, {	-- Knight-Lieutenant Moonstrike <Northrend Armor Quartermaster> // Original S7 Vendor // Deadly Gladiator: Season 7 Honor Gear
+					["coord"] = { 74.8, 67.3, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_DEADLY, PVP_GLADIATOR },{ "pop" }},	-- Deadly Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_TWO, n(34082, {	-- Knight-Lieutenant Moonstrike <Armor Quartermaster> // Original S6 Vendor // Hateful Gladiator: Season 6 Honor Gear
+					["coord"] = { 74.8, 67.3, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_DEADLY, PRE_SEASON_HATEFUL },{ "pop" }},	-- Hateful Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_ONE, n(32834, {	-- Knight-Lieutenant Moonstrike <Armor Quartermaster> // Original S5 Vendor // Savage Gladiator: Season 5 Honor Gear
+					["coord"] = { 74.8, 67.3, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_DEADLY, PVP_HONOR },{ "pop" }},	-- Savage Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				-- #if AFTER CATA
+				-- This is a future Crieve problem, probably a similar thing to Moonstrike.
+				n(69974, {	-- Knight-Lieutenant T'Maire Sydes <Ruthless Gladiator>
+					["coord"] = { 74.8, 67.6, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "pvp_gear_base", CATA_TIER, SEASON_RUTHLESS, PVP_GLADIATOR },{"merge"},
+						{"pop"},	-- Discard the Set header and acquire the children.
+						{"exclude", "headerID", NECK, FINGER, -386 },	-- Exclude Neck, Finger and Trinkets
+					},
+				}),
+				n(40606, {	-- Knight-Lieutenant T'Maire Sydes >S10< Elite Vendor
+					["coord"] = { 74.8, 67.6, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["u"] = REMOVED_FROM_GAME,
+					["groups"] = {
+					},
+				}),
+				-- #endif
+				-- #if AFTER 8.0.1
+				n(4730, {	-- Lelanai <Saber Handler>
+					["description"] = "Appears in Stormwind after War of Thorns.",
+					["coord"] = { 55.0, 12.6, STORMWIND_CITY },
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(8489, {	-- Cat Carrier 'White Kitten'
+						i(8632),	-- Spotted Frostsaber (MOUNT!)
+						i(47100),	-- Striped Dawnsaber (MOUNT!)
+						i(8631),	-- Striped Frostsaber (MOUNT!)
+						i(8629),	-- Striped Nightsaber (MOUNT!)
+						i(18766),	-- Swift Frostsaber (MOUNT!)
+						i(18767),	-- Swift Mistsaber (MOUNT!)
+						i(18902),	-- Swift Stormsaber (MOUNT!)
+					},
+				}),
+				-- #endif
+				-- #if AFTER 5.3.0.16767
+				n(2795, {	-- Lenny "Fingers" McCoy
+					["coord"] = { 72.8, 58.8, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(97921, {	-- Bom'bay's Color-Seein'Sauce (TOY!)
+							["timeline"] = { "added 5.3.0.16767" },
+						}),
+						i(138385, {	-- Lucky Shirt
+							["timeline"] = { "added 7.0.3.22248" },
+						}),
+					},
+				}),
+				-- #endif
+				n(12784, {	-- Lieutenant Jackspring <Legacy Weapon Quartermaster> [WRATH+] / Lieutenant Jackspring <Weapons Quartermaster>
+					-- #if AFTER WRATH
+					["coord"] = { 75.2, 67.2, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 71.9, 55.6, STORMWIND_CITY },
+					-- #endif
+					["timeline"] = { "added 2.0.1" },	-- Prior to TBC, was just a Reagent Vendor.
+					["sym"] = {{"sub", "pvp_gear_base", CLASSIC_TIER, FACTION_HEADER_ALLIANCE, WEAPONS },{ "pop" }},	-- Grand Marshal Weapons
+					["races"] = ALLIANCE_ONLY,
+				}),
+				n(12783, {	-- Lieutenant Karter <War Mount Quartermaster> [WRATH+] / Lieutenant Karter <Mount Vendor>
+					-- #if AFTER WRATH
+					["coord"] = { 76.2, 65.6, STORMWIND_CITY },
+					-- #else
+					["description"] = "Found within the Champion's Hall.",
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = pvp({
+						i(29465, {	-- Black Battlestrider (MOUNT!)
+							["timeline"] = { "added 2.0.1.6180" },
+							["cost"] = PVP_MOUNT_COST,
+						}),
+						i(18243, {	-- Black Battlestrider (MOUNT!)
+							["timeline"] = { "removed 2.0.1.6180" },
+						}),
+						i(35906, {	-- Black War Elekk (MOUNT!)
+							["timeline"] = { "added 2.4.0.7994" },
+							["cost"] = PVP_MOUNT_COST,
+						}),
+						i(29467, {	-- Black War Ram (MOUNT!)
+							["timeline"] = { "added 2.0.1.6180" },
+							["cost"] = PVP_MOUNT_COST,
+						}),
+						i(18244, {	-- Black War Ram (MOUNT!)
+							["timeline"] = { "removed 2.0.1.6180" },
+						}),
+						i(29468, {	-- Black War Steed (MOUNT!)
+							["timeline"] = { "added 2.0.1.6180" },
+							["cost"] = PVP_MOUNT_COST,
+						}),
+						i(18241, {	-- Black War Steed (MOUNT!)
+							["timeline"] = { "removed 2.0.1.6180" },
+						}),
+						i(29471, {	-- Black War Tiger (MOUNT!)
+							["timeline"] = { "added 2.0.1.6180" },
+							["cost"] = PVP_MOUNT_COST,
+						}),
+						i(18242, {	-- Black War Tiger (MOUNT!)
+							["timeline"] = { "removed 2.0.1.6180" },
+						}),
+					}),
+				}),
+				-- #if AFTER CATA
+				-- This is a future Crieve problem, probably a similar thing to the other Tristias.
+				n(54660, {	-- Lieutenant Tristia <Vicious Gladiator>
+					["coord"] = { 75.0, 67.0, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["sym"] = {
+						{"sub", "pvp_gear_base", CATA_TIER, SEASON_VICIOUS, PVP_GLADIATOR },{"merge"},	-- Vicious Gladiator: Season 9 Gladiator Gear
+						{"pop"},	-- Discard the Set header and acquire the children.
+						{"exclude", "headerID", NECK, FINGER, -386 },	-- Exclude Neck, Finger and Trinkets
+						{"finalize"},	-- Push the Set items to the finalized list.
+					},
+				}),
+				n(51255, {	-- Lieutenant Tristia Original CATA S9 ELITE VENDOR Alliance
+					["coord"] = { 75.0, 67.0, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["u"] = REMOVED_FROM_GAME,
+				}),
+				-- #endif
+				applyclassicphase(WRATH_PHASE_FOUR, n(34078, {	-- Lieutenant Tristia <Veteran Armor Quartermaster> // Original S8 Vendor // Wrathful Gladiator: Season 8 Gladiator Gear
+					["coord"] = { 74.7, 67.2, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_WRATHFUL, PVP_GLADIATOR },{ "pop" }},	-- Wrathful Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_THREE, n(34077, {	-- Lieutenant Tristia <Veteran Armor Quartermaster> // Original S7 Vendor // Relentless Gladiator: Season 7 Gladiator Gear
+					["coord"] = { 74.7, 67.2, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_RELENTLESS, PVP_GLADIATOR },{ "pop" }},	-- Relentless Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_TWO, n(34076, {	-- Lieutenant Tristia <Veteran Armor Quartermaster> // Original S6 Vendor // Furious Gladiator: Season 6 Gladiator Gear
+					["coord"] = { 74.7, 67.2, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_FURIOUS, PVP_GLADIATOR },{ "pop" }},	-- Furious Gladiator's Set
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				applyclassicphase(WRATH_PHASE_ONE, n(32380, {	-- Lieutenant Tristia <Veteran Armor Quartermaster> // Original S5 Vendor // Deadly Gladiator: Season 5 Gladiator Gear
+					["coord"] = { 74.7, 67.2, STORMWIND_CITY },
+					-- #if BEFORE 4.0.3.13277
+					["sym"] = {
+						{"sub", "pvp_gear_base", WOTLK_TIER, SEASON_DEADLY, PVP_GLADIATOR },{ "pop" },		-- Deadly Gladiator's Set
+						-- #if ANYCLASSIC
+						{ "select", "itemID", 201993 },	-- Deadly Gladiator's Tabard (Wrath Classic Only)
+						-- #endif
+					},
+					-- #endif
+					["timeline"] = { "removed 4.0.3.13277" },
+				})),
+				-- #if NOT ANYCLASSIC
+				-- Crieve NOTE: This NPC ID wasn't used for TBC Classic, so not sure how this was actually used.
+				n(23446, {	-- Lieutenant Tristia -- BC Vendor for Trinkets
+					-- The NPC ID got reused many times. This is the BC Version, items listed under PvP>BC
+					["coord"] = { 75.0, 67.0, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["u"] = REMOVED_FROM_GAME,
+					["groups"] = {
+					},
+				}),
+				-- #endif
+				n(8666, {	-- Lil Timmy <Boy with kittens>
+					-- #if AFTER WRATH
+					["description"] = "The vendor wanders around Stormwind at random times. He is not always available.",
+					-- #else
+					["coord"] = { 64.0, 38.0, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(8489, {	-- Cat Carrier (White Kitten) (PET!)
 							["isLimited"] = true,
 						}),
 					},
 				}),
+				n(52030, {	-- Liliana Emberfrost <Honor Heirlooms>
+					["coord"] = { 74.4, 67.6, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.6.13596" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						moh(8, i(122375, {	-- Aged Pauldrons of The Five Thunders
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(14, i(122338, {	-- Ancient Heirloom Armor Casing
+							["timeline"] = { "added 6.1.0.19445" },
+							["sym"] = {{ "fill" }},	-- simply fill this item
+						})),
+						moh(14, i(122339, {	-- Ancient Heirloom Scabbard
+							["timeline"] = { "added 6.1.0.19445" },
+							["sym"] = {{ "fill" }},	-- simply fill this item
+						})),
+						moh(12, i(122338, {	-- Ancient Heirloom Armor Casing
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(14, i(122339, {	-- Ancient Heirloom Scabbard
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(10, i(122369, {	-- Battleworn Thrash Blade
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(8, i(122376, {	-- Exceptional Stormshroud Shoulders
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(8, i(122378, {	-- Exquisite Sunderseer Mantle
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(4, i(122530, {	-- Inherited Mark of Tyranny
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(10, i(122368, {	-- Grand Staff of Jordan
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(8, i(122377, {	-- Lasting Feralheart Spaulders
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(8, i(122373, {	-- Pristine Lightforge Spaulders
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(8, i(122374, {	-- Prized Beastmaster's Mantle
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(10, i(122365, {	-- Reforged Truesilver Champion
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(10, i(122364, {	-- Sharpened Scarlet Kris
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(8, i(122372, {	-- Strengthened Stockade Pauldrons
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(10, i(122367, {	-- The Blessed Hammer of Grace
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+						moh(10, i(122366, {	-- Unpgraded Dwarven Hand Cannon
+							["timeline"] = { "added 6.1.0.19445" },
+						})),
+					},
+				}),
+				n(1299, {	-- Lisbeth Schneider <Clothier>
+					-- #if AFTER WRATH
+					["coord"] = { 58.2, 67.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 49.6, 55.0, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(3426),	-- Bold Yellow Shirt
+						i(3428),	-- Common Grey Shirt
+						i(3427),	-- Stylish Black Shirt
+						i(13896),	-- Dark Green Wedding Hanbok
+						i(13898),	-- Royal Dangui
+						i(13897),	-- White Traditional Hanbok
+					},
+				}),
+				-- #if AFTER 8.0.1
+				n(50307, {	-- Lord Candren <Gilneas Quartermaster>
+					["description"] = "Appears in Stormwind after War of Thorns.",
+					["coord"] = { 56.1, 13.2, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(64882, {	-- Gilneas Tabard
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64893, {	-- Cape of Gilneas
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64892, {	-- Mantle of Gilneas
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64894, {	-- Shroud of Gilneas
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(67532, {	-- Gilnean Satchel
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+					},
+				}),
+				-- #endif
+				n(44246, {	-- Magatha Silverton <Justice Quartermaster>
+					-- #if AFTER 9.0.1
+					["coord"] = { 75.5, 66.1, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 74.2, 66.0, STORMWIND_CITY },
+					-- #endif
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = TIER_TWELVE_GROUPS,
+				}),
 				n(1313, {	-- Maria Lumere <Alchemy Supplies>
-					["coord"] = { 46.6, 79.0, STORMWIND_CITY },
+					-- #if AFTER WRATH
+					["coord"] = { 55.6, 85.6, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 46.6, 78.8, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(9301, {	-- Recipe: Elixir of Shadow Power
 							["isLimited"] = true,
 						}),
 					},
+				}),
+				n(12781, {	-- Master Sergeant Biggins <Accessories Quartermaster> [WRATH+] / Master Sergeant Biggins <Officer Accessories Quartermaster>
+					-- #if BEFORE TBC
+					["description"] = "Found within the Champion's Hall.",
+					-- #else
+					["coord"] = { 75.2, 66.8, STORMWIND_CITY },
+					-- #endif
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = pvp({
+						i(18606),	-- Alliance Battle Standard
+						i(18839),	-- Combat Healing Potion
+						i(18841),	-- Combat Mana Potion
+						i(31853, {	-- Major Combat Healing Potion
+							["timeline"] = { "added 2.0.1" },
+						}),
+						i(31855, {	-- Major Combat Mana Potion
+							["timeline"] = { "added 2.0.1" },
+						}),
+						i(32455, {	-- Star's Lament
+							["timeline"] = { "added 2.0.1" },
+						}),
+						i(32453, {	-- Star's Tears
+							["timeline"] = { "added 2.0.1" },
+						}),
+						i(44957, {	-- Greater Inscription of the Gladiator
+							["timeline"] = { "added 3.0.8.9464", "removed 7.0.1" },
+						}),
+						moh(3, i(68772, {	-- Greater Inscription of Vicious Intellect
+							["timeline"] = { "added 4.0.6.13596" },
+						})),
+						moh(3, i(68773, {	-- Greater Inscription of Vicious Strength
+							["timeline"] = { "added 4.0.6.13596" },
+						})),
+						moh(3, i(68774, {	-- Greater Inscription of Vicious Agility
+							["timeline"] = { "added 4.0.6.13596" },
+						})),
+						moh(1, i(15198)),	-- Knight's Colors
+						-- #if AFTER TBC
+						moh(1, i(15196)),	-- Private's Tabard
+						-- #endif
+					}),
 				}),
 				n(28347, {	-- Miles Sidney <Poison Supplies>
 					["coord"] = { 74.2, 58.0, STORMWIND_CITY },
@@ -4551,15 +7312,430 @@ root("Zones", m(EASTERN_KINGDOMS, {
 					["groups"] = {
 						i(38579, {	-- Venomous Tome
 							["timeline"] = { "created 2.4.2", "added 3.0.1.8634" },
+							["isLimited"] = true,
 						}),
 					},
 				}),
-				n(277, {	-- Roberto Pupellyverbos <Merlot Connoisseur>
+				-- #if AFTER 8.0.1
+				n(50305, {	-- Moon Priestess Lasara <Darnassus Quartermaster>
+					["description"] = "Appears in Stormwind after War of Thorns.",
+					["coord"] = { 56.6, 13.2, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(45579, {	-- Darnassus Tabard
+							["timeline"] = { "added 3.1.0.9626" },
+						}),
+						i(64887, {	-- Cape of Darnassus
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64888, {	-- Mantle of Darnassus
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(64886, {	-- Shroud of Darnassus
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+						i(67526, {	-- Darnassian Satchel
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+					},
+				}),
+				-- #endif
+				n(73190, {	-- Necrolord Sipe
+					["coord"] = { 76.8, 65.6, STORMWIND_CITY },
+					["timeline"] = { "added 5.4.0.17161" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = pvp({
+						vicioussaddle(i(70909)),	-- Vicious War Steed (MOUNT!)
+						vicioussaddle(i(102514)),	-- Vicious Kaldorei Warsaber (MOUNT!)
+						vicioussaddle(i(165019)),	-- Vicious Black Warsaber (MOUNT!)
+						vicioussaddle(i(140353)),	-- Vicious Gilnean Warhorse (MOUNT!)
+						vicioussaddle(i(163122)),	-- Vicious War Basilisk (A) (MOUNT!)
+						vicioussaddle(i(142234)),	-- Vicious War Bear (A) (MOUNT!)
+						vicioussaddle(i(140350)),	-- Vicious War Elekk (MOUNT!)
+						vicioussaddle(i(152870)),	-- Vicious War Fox (A) (MOUNT!)
+						vicioussaddle(i(142237)),	-- Vicious War Lion (MOUNT!)
+						vicioussaddle(i(124089)),	-- Vicious War Mechanostrider (MOUNT!)
+						vicioussaddle(i(116777)),	-- Vicious War Ram (MOUNT!)
+						vicioussaddle(i(163123)),	-- Vicious War Riverbeast (MOUNT!)
+						vicioussaddle(i(173714)),	-- Vicious White Warsaber (MOUNT!)
+						vicioussaddle(i(143648)),	-- Vicious War Turtle (A) (MOUNT!)
+					}),
+				}),
+				-- #if ANYCLASSIC
+				-- Crieve NOTE: I haven't confirmed this on Live, so not gonna pop it in until I can check it.
+				n(12805, {	-- Officer Areyn <Accessories Quartermaster>
+					["coord"] = { 73.8, 53.4, STORMWIND_CITY },
+					["timeline"] = { "removed 3.0.1", "added 4.0.1", "removed 7.0.1" },
+					["groups"] = {
+						i(18664),	-- A Treatise on Military Ranks
+						i(15196),	-- Private's Tabard
+						i(18854, {	-- Insignia of the Alliance
+							["classes"] = { WARRIOR },
+						}),
+						i(18857, {	-- Insignia of the Alliance
+							["classes"] = { ROGUE },
+						}),
+						i(18862, {	-- Insignia of the Alliance
+							["classes"] = { PRIEST },
+						}),
+						i(18859, {	-- Insignia of the Alliance
+							["classes"] = { MAGE },
+						}),
+						i(18858, {	-- Insignia of the Alliance
+							["classes"] = { WARLOCK },
+						}),
+						i(18863, {	-- Insignia of the Alliance
+							["classes"] = { DRUID },
+						}),
+						i(18864, {	-- Insignia of the Alliance
+							["classes"] = { PALADIN },
+						}),
+						i(18856, {	-- Insignia of the Alliance
+							["classes"] = { HUNTER },
+						}),
+						i(16342),	-- Sergeant's Cape (58)
+						i(18440),	-- Sergeant's Cape (45)
+						i(18441),	-- Sergeant's Cape (30)
+						i(18443),	-- Master Sergeant's Insignia (58)
+						i(18444),	-- Master Sergeant's Insignia (45)
+						i(18442),	-- Master Sergeant's Insignia (30)
+						i(18449, {	-- Sergeant Major's Chain Armguards (45)
+							["classes"] = { HUNTER },
+						}),
+						i(18455, {	-- Sergeant Major's Dragonhide Armsplints (45)
+							["classes"] = { DRUID },
+						}),
+						i(18453, {	-- Sergeant Major's Leather Armsplints (45)
+							["classes"] = { ROGUE },
+						}),
+						i(18447, {	-- Sergeant Major's Plate Wristguards (45)
+							["classes"] = { PALADIN, WARRIOR },
+						}),
+						i(18457, {	-- Sergeant Major's Silk Cuffs (45)
+							["classes"] = { MAGE, PRIEST, WARLOCK },
+						}),
+						i(18448, {	-- Sergeant Major's Chain Armguards (58)
+							["classes"] = { HUNTER },
+						}),
+						i(18454, {	-- Sergeant Major's Dragonhide Armsplints (58)
+							["classes"] = { DRUID },
+						}),
+						i(18452, {	-- Sergeant Major's Leather Armsplints (58)
+							["classes"] = { ROGUE },
+						}),
+						i(18445, {	-- Sergeant Major's Plate Wristguards (58)
+							["classes"] = { PALADIN, WARRIOR },
+						}),
+						i(18456, {	-- Sergeant Major's Silk Cuffs (58)
+							["classes"] = { MAGE, PRIEST, WARLOCK },
+						}),
+					},
+				}),
+				-- #endif
+				n(65068, {	-- Old Whitenose <Dragon Turtle Breeder>
+					["coord"] = { 67.8, 18.4, STORMWIND_CITY },
+					["timeline"] = { "added 5.0.1.15726" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(87795, {	-- Black Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91008, {	-- Black Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87796, {	-- Blue Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91009, {	-- Blue Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87797, {	-- Brown Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91005, {	-- Brown Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87802, {	-- Great Black Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91011, {	-- Great Black Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87803, {	-- Great Blue Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91013, {	-- Great Blue Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87804, {	-- Great Brown Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91014, {	-- Great Brown Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87801, {	-- Great Green Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91012, {	-- Great Green Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87805, {	-- Great Purple Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91015, {	-- Great Purple Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(82811, {	-- Great Red Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91010, {	-- Great Red Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(82765, {	-- Green Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91004, {	-- Green Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87799, {	-- Purple Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91006, {	-- Purple Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+						i(87800, {	-- Red Dragon Turtle (MOUNT!) (NON-P)
+							["timeline"] = { "added 5.0.1.15699" },
+							["races"] = exclude({ PANDAREN_NEUTRAL, PANDAREN_ALLIANCE, PANDAREN_HORDE }, ALL_RACES),
+						}),
+						i(91007, {	-- Red Dragon Turtle (MOUNT!) (PANDA)
+							["timeline"] = { "added 5.0.4.16004" },
+							["races"] = { PANDAREN_ALLIANCE, PANDAREN_HORDE },
+						}),
+					},
+				}),
+				n(87501, {	-- Paulie
+					["coord"] = { 73.0, 59.3, STORMWIND_CITY },
+					["timeline"] = { "added 6.0.1.18689" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(116789, {	-- Champion's Treadblade (MOUNT!)
+							["timeline"] = { "added 6.0.2.18888" },
+							["cost"] = 1000000000,	-- 100,000g
+						})
+					},
+				}),
+				n(167429, {	-- Quartermaster Richter
+					["description"] = "Only sells items once the achievement |cffebae34Exile's Reach|r [14222] is completed.",
+					["coord"] = { 79.5, 69.0, STORMWIND_CITY },
+					["timeline"] = { "added 9.0.1.36216" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(175173, {  -- Expeditionary Cudgel
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+						i(175172, {  -- Expeditionary Dagger
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+						i(175166, {  -- Expeditionary Greatsword
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+						i(175162, {  -- Expeditionary Longbow
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+						i(175168, {  -- Expeditionary Quarterstaff
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+						i(175170, {  -- Expeditionary Short Sword
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+						i(175167, {  -- Expeditionary Staff
+							["timeline"] = { "added 9.0.1.36216" },
+						}),
+					},
+				}),
+				-- #if NOT ANYCLASSIC
+				-- CRIEVE NOTE: I've never been a fan of Tabard Vendors, they're too all encompassing.
+				-- Not including it in Classic for now, going to use a symlink instead at some point but don't have time right now. Just want this merge to be finished!
+				n(5193, {	-- Rebecca Laughlin <Tabard Designer>
+					["coord"] = { 64.0, 77.2, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(31779),	-- Aldor Tabard
+						i(31804),	-- Cenarion Expedition Tabard
+						i(36941, {	-- Competitor's Tabard
+							["u"] = REMOVED_FROM_GAME,
+							["description"] = "Participated in a battleground during the Beijing 2008 Summer Olympics event.",
+						}),
+						i(31776),	-- Consortium Tabard
+						i(31404, {	-- Green Trophy Tabard of the Illidari
+							["sourceQuests"] = {
+								10781,	-- Battle of the Crimson Watch
+							},
+						}),
+						i(5976),	-- Guild Tabard
+						i(23999, {	-- Honor Hold Tabard
+							["races"] = ALLIANCE_ONLY,
+						}),
+						i(31777),	-- Keepers of Time Tabard
+						i(15198, {	-- Knight's Colors
+							["races"] = ALLIANCE_ONLY,
+							["cost"] = { { "i", 137642, 1 } },	-- 1x Mark of Honor
+						}),
+						i(31774, {	-- Kurenai Tabard
+							["races"] = ALLIANCE_ONLY,
+						}),
+						i(43300),	-- Loremaster's Colors
+						i(31778),	-- Lower City Tabard
+						i(32828, {	-- Ogri'la Tabard
+							["cost"] = { { "i", 32569, 10 } },	-- 10x Apexis Shard
+						}),
+						i(15196, {	-- Private's Tabard
+							["races"] = ALLIANCE_ONLY,
+							["cost"] = { { "i", 137642, 1 } },	-- 1x Mark of Honor
+						}),
+						i(31405, {	-- Purple Trophy Tabard of the Illidari
+							["sourceQuests"] = {
+								10781,	-- Battle of the Crimson Watch
+							},
+						}),
+						i(31780),	-- Scryers Tabard
+						i(31781),	-- Sha'tar Tabard
+						i(19506, {	-- Silverwing Battle Tabard
+							["races"] = ALLIANCE_ONLY,
+							["cost"] = { { "i", 137642, 10 } },	-- 10x Mark of Honor
+						}),
+						i(32445),	-- Skyguard Tabard
+						i(31775, {	-- Sporeggar Tabard
+							["cost"] = { { "i", 24245, 10 }, },	-- 10x Glowcap
+						}),
+						i(19032, {	-- Stormpike Battle Tabard
+							["races"] = ALLIANCE_ONLY,
+							["cost"] = { { "i", 137642, 10 } },	-- 10x Mark of Honor
+						}),
+						pvp(i(43349)),	-- Tabard of Brute Force
+						pvp(i(49052, {	-- Tabard of Conquest [Alliance]
+							["races"] = ALLIANCE_ONLY,
+							["timeline"] = { "added 3.2.0.10192" },
+						})),
+						i(35280, {	-- Tabard of Summer Flames
+							["sourceQuests"] = {
+								11972,	-- Shards of Ahune
+							},
+						}),
+						i(35279, {	-- Tabard of Summer Skies
+							["sourceQuests"] = {
+								11972,	-- Shards of Ahune
+							},
+						}),
+						i(40643),	-- Tabard of the Achiever
+						i(43348),	-- Tabard of the Explorer
+						i(24344, {	-- Tabard of the Hand
+							["sourceQuests"] = {
+								9762,	-- The Unwritten Prophecy
+							},
+							["description"] = "This is from a Draenei only quest, but can used by any Alliance race.",
+							["races"] = ALLIANCE_ONLY,	-- Note!! This is strictly Alliance only as the only thing it converts to for Horde is "Guild Tabard"
+						}),
+						i(35221),	-- Tabard of the Shattered Sun
+					},
+				}),
+				-- #endif
+				n(277, {	-- Roberto Pupellyverbos <Merlot Connoisseur>
+					-- #if AFTER WRATH
+					["coord"] = { 59.4, 77.2, STORMWIND_CITY },
+					-- #else
 					["coord"] = { 52.0, 67.8, STORMWIND_CITY },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
 						i(1941),	-- Cask of Merlot
 					},
+				}),
+				n(12785, {	-- Sergeant Major Clate <Legacy Armor Quartermaster> [WRATH+] / Sergeant Major Clate <Armor Quartermaster>
+					["coord"] = { 75.4, 67.0, STORMWIND_CITY },
+					["timeline"] = { "added 2.0.1" },	-- Prior to TBC, was just a Food Vendor.
+					["sym"] = {	-- Grand Marshal Armor
+						{"sub", "pvp_gear_base", CLASSIC_TIER, FACTION_HEADER_ALLIANCE },
+						{ "pop" },
+						{ "exclude", "headerID", WEAPONS },
+						-- #if BEFORE WRATH
+						{ "exclude", "f", TRINKET_F, NECK_F },
+						-- #endif
+					},
+					["races"] = ALLIANCE_ONLY,
+				}),
+				-- #if AFTER 8.0.1
+				n(8665, {	-- Shylenai
+					["description"] = "Appears in Stormwind after War of Thorns.",
+					["coord"] = { 56.0, 3.22, STORMWIND_CITY },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(8500),	-- Great Horned Owl (PET!)
+						i(8501),	-- Hawk Owl (PET!)
+					},
+				}),
+				-- #endif
+				n(30730, {	-- Stanly McCormick
+					["coord"] = { 49.6, 74.8, STORMWIND_CITY },
+					["timeline"] = { "added 3.0.2.8905" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(39489, {	-- Scribe's Satchel
+							["isLimited"] = true,
+						}),
+					},
+				}),
+				n(43768, {	-- Tannec Stonebeak <Gryphon Keeper>
+					["coord"] = { 71.4, 72.0, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(25471),	-- Ebon Gryphon (MOUNT!)
+						i(25470),	-- Golden Gryphon (MOUNT!)
+						i(25472),	-- Snowy Gryphon (MOUNT!)
+						i(25473),	-- Swift Blue Gryphon (MOUNT!)
+						i(25528),	-- Swift Green Gryphon (MOUNT!)
+						i(25529),	-- Swift Purple Gryphon (MOUNT!)
+						i(25527),	-- Swift Red Gryphon (MOUNT!)
+					},
+				}),
+				n(44583, {	-- Terrance Denman <Jewelcrafting Supplies>
+					["coord"] = { 63.1, 61.5, STORMWIND_CITY },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = appendGroups(COMMON_CATACLYSM_JEWELCRAFTING_RECIPES, {}),
+				}),
+				n(58154, {	-- Toren Landow <Legacy Justice Quartermaster>
+					-- #if AFTER 9.0.1
+					["coord"] = { 75.7, 65.9, STORMWIND_CITY },
+					-- #else
+					["coord"] = { 79.0, 70.1, STORMWIND_CITY },
+					-- #endif
+					["timeline"] = { "added 4.3.0.14890" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = TIER_ELEVEN_GROUPS,
 				}),
 			}),
 		},
