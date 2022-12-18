@@ -2001,6 +2001,7 @@ root("Achievements", {
 				["requireSkill"] = FISHING,
 				["groups"] = {
 					crit(3873, {	-- Bloodsail Wreckage
+						["provider"] = { "o", 180901 },	-- Bloodsail Wreckage
 						["requireSkill"] = FISHING,
 						["maps"] = {
 							-- #if AFTER CATA
@@ -2012,6 +2013,7 @@ root("Achievements", {
 						},
 					}),
 					crit(3876, {	-- Floating Wreckage
+						["provider"] = { "o", 180751 },	-- Floating Wreckage
 						["requireSkill"] = FISHING,
 						["maps"] = {
 							-- #if AFTER CATA
@@ -2028,6 +2030,7 @@ root("Achievements", {
 						},
 					}),
 					crit(3874, {	-- Schooner Wreckage
+						["provider"] = { "o", 180662 },	-- Schooner Wreckage
 						["requireSkill"] = FISHING,
 						["maps"] = {
 							-- #if AFTER CATA
@@ -2040,10 +2043,12 @@ root("Achievements", {
 						},
 					}),
 					crit(3872, {	-- Steam Pump Flotsam
+						["provider"] = { "o", 182952 },	-- Steam Pump Flotsam
 						["requireSkill"] = FISHING,
 						["maps"] = { ZANGARMARSH },
 					}),
 					crit(3875, {	-- Waterlogged Wreckage
+						["provider"] = { "o", 180685 },	-- Waterlogged Wreckage
 						["requireSkill"] = FISHING,
 						["maps"] = {
 							-- #if AFTER CATA
