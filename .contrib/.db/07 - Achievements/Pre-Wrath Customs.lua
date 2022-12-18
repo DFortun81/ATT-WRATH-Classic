@@ -418,7 +418,9 @@ root("Achievements", {
 		classicAch(2142, {	-- Filling Up The Barn
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
+			-- #if BEFORE WRATH
 			["OnUpdate"] = MOUNTS_OnUpdate,
+			-- #endif
 			["rank"] = 25,
 			["f"] = 100,
 		}),
@@ -459,7 +461,9 @@ root("Achievements", {
 		applyclassicphase(TBC_PHASE_ONE, ach(2143, {	-- Leading the Cavalry
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
+			-- #if BEFORE WRATH
 			["OnUpdate"] = MOUNTS_OnUpdate,
+			-- #endif
 			["rank"] = 50,
 			["f"] = 100,
 			["groups"] = {
@@ -533,7 +537,9 @@ root("Achievements", {
 		applyclassicphase(WRATH_PHASE_ONE, ach(2536, {	-- Mountain o' Mounts [A]
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
+			-- #if BEFORE WRATH
 			["OnUpdate"] = MOUNTS_OnUpdate,
+			-- #endif
 			["races"] = ALLIANCE_ONLY,
 			["rank"] = 100,
 			["f"] = 100,
@@ -544,7 +550,9 @@ root("Achievements", {
 		applyclassicphase(WRATH_PHASE_ONE, ach(2537, {	-- Mountain o' Mounts [H]
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
+			-- #if BEFORE WRATH
 			["OnUpdate"] = MOUNTS_OnUpdate,
+			-- #endif
 			["races"] = HORDE_ONLY,
 			["rank"] = 100,
 			["f"] = 100,
@@ -594,7 +602,9 @@ root("Achievements", {
 		classicAch(2141, {	-- Stable Keeper
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
+			-- #if BEFORE WRATH
 			["OnUpdate"] = MOUNTS_OnUpdate,
+			-- #endif
 			["rank"] = 10,
 			["f"] = 100,
 		}),
