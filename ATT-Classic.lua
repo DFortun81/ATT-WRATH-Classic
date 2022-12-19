@@ -2460,16 +2460,48 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 		end
 		
 		-- If the item is a recipe, then show which characters know this recipe.
-		if group.collectible and group.spellID and group.f ~= 100 and app.Settings:GetTooltipSetting("KnownBy") then
-			local knownBy = {};
-			for guid,character in pairs(ATTCharacterData) do
-				if character.Spells and character.Spells[group.spellID] then
-					table.insert(knownBy, character);
+		if group.collectible and app.Settings:GetTooltipSetting("KnownBy") then
+			local knownBy, kind = {}, nil;
+			if group.speciesID then
+				kind = "Owned by ";
+				for guid,character in pairs(ATTCharacterData) do
+					if character.BattlePets and character.BattlePets[group.speciesID] then
+						table.insert(knownBy, character);
+					end
+				end
+			elseif group.spellID then
+				kind = "Known by ";
+				for guid,character in pairs(ATTCharacterData) do
+					if character.Spells and character.Spells[group.spellID] then
+						table.insert(knownBy, character);
+					end
+				end
+			elseif group.itemID then
+				kind = "Owned by ";
+				for guid,character in pairs(ATTCharacterData) do
+					if (character.RWP and character.RWP[group.itemID])
+					or (character.Toys and character.Toys[group.itemID]) then
+						table.insert(knownBy, character);
+					end
+				end
+			elseif group.achievementID then
+				kind = "Completed by ";
+				for guid,character in pairs(ATTCharacterData) do
+					if character.Achievements and character.Achievements[group.achievementID] then
+						table.insert(knownBy, character);
+					end
+				end
+			elseif group.questID then
+				kind = "Completed by ";
+				for guid,character in pairs(ATTCharacterData) do
+					if character.Quests and character.Quests[group.questID] then
+						table.insert(knownBy, character);
+					end
 				end
 			end
-			if #knownBy > 0 then
+			if #knownBy > 0 and kind then
 				insertionSort(knownBy, sortByNameSafely);
-				local desc = "Known by ";
+				local desc = kind;
 				for i,character in ipairs(knownBy) do
 					if i > 1 then desc = desc .. ", "; end
 					desc = desc .. (character.text or "???");
