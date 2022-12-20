@@ -2080,7 +2080,9 @@ root("Zones", m(KALIMDOR, {
 						{ 57.2, 41.6, THE_BARRENS },
 					},
 					["groups"] = {
-						i(7559),	-- Runic Cane
+						i(7559, {	-- Runic Cane
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5827, {	-- Brontus
@@ -2103,7 +2105,9 @@ root("Zones", m(KALIMDOR, {
 				n(5849, {	-- Digger Flameforge <Excavation Specialist>
 					["coord"] = { 47.6, 85.6, THE_BARRENS },
 					["groups"] = {
-						i(4785),	-- Brimstone Belt
+						i(4785, {	-- Brimstone Belt
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5865, {	-- Dishu
@@ -2120,8 +2124,12 @@ root("Zones", m(KALIMDOR, {
 						{ 59.0, 24.6, THE_BARRENS },
 					},
 					["groups"] = {
-						i(4768),	-- Adept's Gloves
-						i(4771),	-- Harvest Cloak
+						i(4768, {	-- Adept's Gloves
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(4771, {	-- Harvest Cloak
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5836, {	-- Engineer Whirleygig
@@ -2139,14 +2147,20 @@ root("Zones", m(KALIMDOR, {
 						{ 45.6, 52.4, THE_BARRENS },
 					},
 					["groups"] = {
-						i(1539),	-- Gnarled Hermit's Staff
+						i(1539, {	-- Gnarled Hermit's Staff
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(3398, {	-- Gesharahan
 					["coord"] = { 46.6, 39.6, THE_BARRENS },
 					["groups"] = {
-						i(5183),	-- Pulsating Hydra Heart
-						i(5182),	-- Shiver Blade
+						i(5183, {	-- Pulsating Hydra Heart
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(5182, {	-- Shiver Blade
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5859, {	-- Hagg Taurenbane <Razormane Champion>
@@ -2161,7 +2175,9 @@ root("Zones", m(KALIMDOR, {
 				n(5847, {	-- Heggin Stonewhisker <Bael'dun Chief Engineer>
 					["coord"] = { 47.0, 83.8, THE_BARRENS },
 					["groups"] = {
-						i(2035),	-- Sword of the Night Sky
+						i(2035, {	-- Sword of the Night Sky
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5828, {	-- Humar the Pridelord
@@ -2173,8 +2189,12 @@ root("Zones", m(KALIMDOR, {
 				n(3470, {	-- Rathorian
 					["coord"] = { 47.6, 19.2, THE_BARRENS },
 					["groups"] = {
-						i(5111),  -- Rathorian's Cape
-						i(5112),  -- Ritual Blade
+						i(5111, {  -- Rathorian's Cape
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(5112, {  -- Ritual Blade
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5841, {	-- Rocklance
@@ -2229,7 +2249,9 @@ root("Zones", m(KALIMDOR, {
 						{ 42.2, 24.6, THE_BARRENS },
 					},
 					["groups"] = {
-						i(1355),	-- Buckskin Cape
+						i(1355, {	-- Buckskin Cape
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(5831, {	-- Swiftmane
@@ -2285,7 +2307,7 @@ root("Zones", m(KALIMDOR, {
 				n(3652, {	-- Trigore the Lasher
 					["description"] = "Inside the pool of water outside the Wailing Caverns dungeon portal.",
 					["groups"] = {
-						i(5425),	-- Runescale Girdle
+						i(5425),	-- RuneChain Girdle [7.0.3+] / Runescale Girdle
 						i(5426),	-- Serpent's Kiss
 					},
 				}),
@@ -2475,8 +2497,16 @@ root("Zones", m(KALIMDOR, {
 			}),
 			n(ZONE_DROPS, {
 				i(5107, {	-- Deckhand's Shirt
+					-- #if BEFORE 4.0.3
+					["description"] = "Incredibly rare drop from Fray Island.",
+					-- #else
+					["description"] = "While technically this shirt does still drop in retail, the drop rate is reduced from fairly common to 1 in 12k with the Cataclysm. For the purposes of collecting, get it now and stock up on extras!",
+					["timeline"] = { "removed 4.0.3" },
+					-- #endif
 					["crs"] = {
+						-- #if BEFORE 4.0.3
 						3381,	-- Southsea Brigand
+						-- #endif
 						3382,	-- Southsea Cannoneer
 						3383,	-- Southsea Cutthroat
 						3384,	-- Southsea Privateer

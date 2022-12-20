@@ -1455,6 +1455,7 @@ root("Zones", m(KALIMDOR, {
 			}),
 			n(RARES, {
 				o(180456, {	-- Lesser Wind Stone
+					["description"] = "Summons one of 4 Abyssal Templars. The ritual requires a Twilight Trappings set. To guarantee that a specific Templar is summoned, a Crest of Beckoning can be used.",
 					["cost"] = {
 						{ "i", 20408, 1 },	-- Twilight Cultist Cowl
 						{ "i", 20406, 1 },	-- Twilight Cultist Mantle
@@ -1470,6 +1471,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["groups"] = {
 						i(20513, {	-- Abyssal Crest
+							["timeline"] = { "removed 4.0.3", "deleted 7.1.5" },
 							["crs"] = {
 								15211,	-- Azure Templar <Abyssal Council>
 								15209,	-- Crimson Templar <Abyssal Council>
@@ -1478,28 +1480,69 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15211, {	-- Azure Templar <Abyssal Council>
-							i(20654),	-- Amethyst War Staff
-							i(20652),	-- Abyssal Cloth Slippers
-							i(20653),	-- Abyssal Plate Gauntlets
+							["cost"] = { "i", 20420, 1 },	-- Crest of Beckoning: Water
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20654, {	-- Amethyst War Staff
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20652, {	-- Abyssal Cloth Slippers
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20653, {	-- Abyssal Plate Gauntlets
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 						n(15209, {	-- Crimson Templar <Abyssal Council>
-							i(20657),	-- Crystal Tipped Stiletto
-							i(20655),	-- Abyssal Cloth Handwraps
-							i(20656),	-- Abyssal Mail Sabatons
+							["cost"] = { "i", 20416, 1 },	-- Crest of Beckoning: Fire
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20657, {	-- Crystal Tipped Stiletto
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20655, {	-- Abyssal Cloth Handwraps
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20656, {	-- Abyssal Mail Sabatons
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 						n(15307, {	-- Earthen Templar <Abyssal Council>
-							i(20663),	-- Deep Strike Bow
-							i(20661),	-- Abyssal Leather Gloves
-							i(20662),	-- Abyssal Plate Greaves
+							["cost"] = { "i", 20419, 1 },	-- Crest of Beckoning: Stone
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20663, {	-- Deep Strike Bow
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20661, {	-- Abyssal Leather Gloves
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20662, {	-- Abyssal Plate Greaves
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 						n(15212, {	-- Hoary Templar <Abyssal Council>
-							i(20660),	-- Stonecutting Glaive
-							i(20658),	-- Abyssal Leather Boots
-							i(20659),	-- Abyssal Mail Handguards
+							["cost"] = { "i", 20418, 1 },	-- Crest of Beckoning: Thunder
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20660, {	-- Stonecutting Glaive
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20658, {	-- Abyssal Leather Boots
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20659, {	-- Abyssal Mail Handguards
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 					},
 				}),
 				o(180461, {	-- Wind Stone
+					["description"] = "Summons one of 4 Abyssal Dukes. The ritual requires a Twilight Trappings set and a medallion of station. To guarantee that a specific Duke is summoned, a Signet of Beckoning can be used.",
 					["cost"] = {
 						{ "i", 20422, 1 },	-- Twilight Cultist Medallion of Station
 						{ "i", 20408, 1 },	-- Twilight Cultist Cowl
@@ -1513,6 +1556,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["groups"] = {
 						i(20514, {	-- Abyssal Signet
+							["timeline"] = { "removed 4.0.3", "deleted 7.1.5" },
 							["crs"] = {
 								15206,	-- The Duke of Cynders <Abyssal Council>
 								15207,	-- The Duke of Fathoms <Abyssal Council>
@@ -1522,40 +1566,71 @@ root("Zones", m(KALIMDOR, {
 						}),
 						n(15206, {	-- The Duke of Cynders <Abyssal Council>
 							["cost"] = { { "i", 20432, 1 } },	-- Signet of Beckoning: Fire
+							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
-								applyclassicphase(PHASE_FIVE, i(21989)),	-- Cinder of Cynders
-								i(20666),	-- Hardened Steel Warhammer
-								i(20664),	-- Abyssal Cloth Sash
-								i(20665),	-- Abyssal Leather Leggings
+								applyclassicphase(PHASE_FIVE, i(21989, {	-- Cinder of Cynders
+									["timeline"] = { "removed 4.0.3" },
+								})),
+								i(20666, {	-- Hardened Steel Warhammer
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20664, {	-- Abyssal Cloth Sash
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20665, {	-- Abyssal Leather Leggings
+									["timeline"] = { "removed 4.0.3" },
+								}),
 							},
 						}),
 						n(15207, {	-- The Duke of Fathoms <Abyssal Council>
 							["cost"] = { { "i", 20436, 1 } },	-- Signet of Beckoning: Water
+							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
-								i(20669),	-- Darkstone Claymore
-								i(20667),	-- Abyssal Leather Belt
-								i(20668),	-- Abyssal Mail Legguards
+								i(20669, {	-- Darkstone Claymore
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20667, {	-- Abyssal Leather Belt
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20668, {	-- Abyssal Mail Legguards
+									["timeline"] = { "removed 4.0.3" },
+								}),
 							},
 						}),
 						n(15208, {	-- The Duke of Shards <Abyssal Council>
 							["cost"] = { { "i", 20435, 1 } },	-- Signet of Beckoning: Stone
+							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
-								i(20672),	-- Sparkling Crystal Wand
-								i(20670),	-- Abyssal Mail Clutch
-								i(20671),	-- Abyssal Plate Legplates
+								i(20672, {	-- Sparkling Crystal Wand
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20670, {	-- Abyssal Mail Clutch
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20671, {	-- Abyssal Plate Legplates
+									["timeline"] = { "removed 4.0.3" },
+								}),
 							},
 						}),
 						n(15220, {	-- The Duke of Zephyrs <Abyssal Council>
 							["cost"] = { { "i", 20433, 1 } },	-- Signet of Beckoning: Thunder
+							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
-								i(20675),	-- Soulrender
-								i(20674),	-- Abyssal Cloth Pants
-								i(20673),	-- Abyssal Plate Girdle
+								i(20675, {	-- Soulrender
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20674, {	-- Abyssal Cloth Pants
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20673, {	-- Abyssal Plate Girdle
+									["timeline"] = { "removed 4.0.3" },
+								}),
 							},
 						}),
 					},
 				}),
 				o(180466, {	-- Greater Wind Stone
+					["description"] = "Summons one of 4 Abyssal High Council bosses. The ritual requires a Twilight Trappings set, a medallion of station, and a ring of lordship. To guarantee that a specific High Council is summoned, a Scepter of Beckoning can be used.",
 					["cost"] = {
 						{ "i", 20451, 1 },	-- Twilight Cultist Ring of Lordship
 						{ "i", 20422, 1 },	-- Twilight Cultist Medallion of Station
@@ -1570,6 +1645,7 @@ root("Zones", m(KALIMDOR, {
 					},
 					["groups"] = {
 						i(20515, {	-- Abyssal Scepter
+							["timeline"] = { "removed 4.0.3", "deleted 7.1.5" },
 							["crs"] = {
 								15205,	-- Baron Kazum <Abyssal High Council>
 								15204,	-- High Marshal Whirlaxis <Abyssal High Council>
@@ -1578,24 +1654,64 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15205, {	-- Baron Kazum <Abyssal High Council>
-							i(20688),	-- Earthen Guard
-							i(20686),	-- Abyssal Cloth Amice
-							i(20687),	-- Abyssal Plate Vambraces
+							["cost"] = { { "i", 20449, 1 } },	-- Scepter of Beckoning: Stone
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20688, {	-- Earthen Guard
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20686, {	-- Abyssal Cloth Amice
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20687, {	-- Abyssal Plate Vambraces
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 						n(15204, {	-- High Marshal Whirlaxis <Abyssal High Council>
-							i(20691),	-- Windshear Cape
-							i(20690),	-- Abyssal Cloth Wristbands
-							i(20689),	-- Abyssal Leather Shoulders
+							["cost"] = { { "i", 20448, 1 } },	-- Scepter of Beckoning: Thunder
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20691, {	-- Windshear Cape
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20690, {	-- Abyssal Cloth Wristbands
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20689, {	-- Abyssal Leather Shoulders
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 						n(15305, {	-- Lord Skwol <Abyssal High Council>
-							i(20685),	-- Wavefront Necklace
-							i(20684),	-- Abyssal Mail Armguards
-							i(20683),	-- Abyssal Plate Epaulets
+							["cost"] = { { "i", 20450, 1 } },	-- Scepter of Beckoning: Water
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20685, {	-- Wavefront Necklace
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20684, {	-- Abyssal Mail Armguards
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20683, {	-- Abyssal Plate Epaulets
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 						n(15203, {	-- Prince Skaldrenox <Abyssal High Council>
-							i(20682),	-- Elemental Focus Band
-							i(20681),	-- Abyssal Leather Bracers
-							i(20680),	-- Abyssal Mail Pauldrons
+							["cost"] = { { "i", 20447, 1 } },	-- Scepter of Beckoning: Fire
+							["timeline"] = { "removed 4.0.3" },
+							["groups"] = {
+								i(20682, {	-- Elemental Focus Band
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20681, {	-- Abyssal Leather Bracers
+									["timeline"] = { "removed 4.0.3" },
+								}),
+								i(20680, {	-- Abyssal Mail Pauldrons
+									["timeline"] = { "removed 4.0.3" },
+								}),
+							},
 						}),
 					},
 				}),
@@ -1671,10 +1787,17 @@ root("Zones", m(KALIMDOR, {
 						{ 31.0, 23.6, SILITHUS },
 						{ 32.2, 17.2, SILITHUS },
 					},
+					["timeline"] = { "removed 4.0.3" },
 					["groups"] = {
-						i(18676),	-- Sash of the Windreaver
-						i(18677),	-- Zephyr Cloak
-						i(21548),	-- Pattern: Stormshroud Gloves
+						i(18676, {	-- Sash of the Windreaver
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(18677, {	-- Zephyr Cloak
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(21548, {	-- Pattern: Stormshroud Gloves
+							["timeline"] = { "removed 4.0.3" },
+						}),
 						applyclassicphase(PHASE_THREE, i(19268)),	-- Ace of Elementals
 					},
 				}),
@@ -1691,14 +1814,32 @@ root("Zones", m(KALIMDOR, {
 				["description"] = "These are rewarded from multiple quests in the zone. Refer to the individual item tooltips for more information.",
 				["groups"] = {
 					i(20603, { 	-- Bag of Spoils
-						i(20694), 	-- Glowing Black Orb
-						i(20693), 	-- Weighted Cloak
-						i(20692),	-- Multicolored Band
+						["timeline"] = { "removed 4.0.3" },
+						["groups"] = {
+							i(20694, {	-- Glowing Black Orb
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20693, {	-- Weighted Cloak
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20692, {	-- Multicolored Band
+								["timeline"] = { "removed 4.0.3" },
+							}),
+						},
 					}),
 					i(20602, { 	-- Chest of Spoils
-						i(20721),	-- Band of the Cultist
-						i(20722), 	-- Crystal Slugthrower
-						i(20720), 	-- Dark Whisper Blade
+						["timeline"] = { "removed 4.0.3" },
+						["groups"] = {
+							i(20721, {	-- Band of the Cultist
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20722, {	-- Crystal Slugthrower
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20720, {	-- Dark Whisper Blade
+								["timeline"] = { "removed 4.0.3" },
+							}), 
+						},
 					}),
 					i(21528),	-- Colossal Bag of Loot
 					i(20808, {	-- Combat Assignment
@@ -1727,9 +1868,7 @@ root("Zones", m(KALIMDOR, {
 							8324,	-- Still Believing
 							8323,	-- True Believers
 						},
-						["cost"] = {
-							{ "i", 20404, 10 },	-- Encrypted Twilight Text
-						},
+						["cost"] = {{ "i", 20404, 10 }},	-- Encrypted Twilight Text
 						["groups"] = {
 							i(20547),	-- Pattern: Runed Stygian Boots
 							i(20548),	-- Pattern: Runed Stygian Belt
@@ -1778,10 +1917,21 @@ root("Zones", m(KALIMDOR, {
 						i(21385),	-- Logistics Task Briefing X
 					}),
 					i(20601, {	-- Sack of Spoils
-						i(20695),	-- Abyssal War Beads
-						i(20696),	-- Crystal Spiked Maul
-						i(20697),	-- Crystalline Threaded Cape
-						i(20698),	-- Elemental Attuned Blade
+						["timeline"] = { "removed 4.0.3" },
+						["groups"] = {
+							i(20695, {	-- Abyssal War Beads
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20696, {	-- Crystal Spiked Maul
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20697, {	-- Crystalline Threaded Cape
+								["timeline"] = { "removed 4.0.3" },
+							}),
+							i(20698, {	-- Elemental Attuned Blade
+								["timeline"] = { "removed 4.0.3" },
+							}),
+						},
 					}),
 					i(20809, {	-- Tactical Assignment
 						i(21245),	-- Tactical Task Briefing I
@@ -1792,8 +1942,10 @@ root("Zones", m(KALIMDOR, {
 					}),
 				},
 			}),
+			-- #if BEFORE 4.3.0
 			prof(SKINNING, {
 				i(20501, {	-- Heavy Silithid Carapace
+					["timeline"] = { "deleted 4.3.0" },
 					["crs"] = {
 						11723,	-- Hive'Ashi Sandstalker
 						11730,	-- Hive'Regal Ambusher
@@ -1803,6 +1955,7 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 				i(20500, {	-- Light Silithid Carapace
+					["timeline"] = { "deleted 4.3.0" },
 					["crs"] = {
 						13136,	-- Hive'Ashi Drone
 						11698,	-- Hive'Ashi Stinger
@@ -1811,8 +1964,11 @@ root("Zones", m(KALIMDOR, {
 						11727,	-- Hive'Zora Wasp
 					},
 				}),
-				i(20498),	-- Silithid Chitin
+				i(20498, {	-- Silithid Chitin
+					["timeline"] = { "deleted 4.3.0" },
+				}),
 			}),
+			-- #endif
 			n(VENDORS, {
 				n(15293, {	-- Aendel Windspear
 					["coord"] = { 62.6, 49.8, SILITHUS },
@@ -2000,9 +2156,15 @@ root("Zones", m(KALIMDOR, {
 				}),
 				
 				-- Twilight Cultist Drops
-				i(20408),	-- Twilight Cultist Cowl
-				i(20406),	-- Twilight Cultist Mantle
-				i(20407),	-- Twilight Cultist Robe
+				i(20408, {	-- Twilight Cultist Cowl
+					["timeline"] = { "removed 7.1.5" },
+				}),
+				i(20406, {	-- Twilight Cultist Mantle
+					["timeline"] = { "removed 7.1.5" },
+				}),
+				i(20407, {	-- Twilight Cultist Robe
+					["timeline"] = { "removed 7.1.5" },
+				}),
 			}),
 		},
 	}),

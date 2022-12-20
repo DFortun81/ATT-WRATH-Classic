@@ -1072,7 +1072,9 @@ root("Zones", m(KALIMDOR, {
 						{ 45.6, 63.6, TANARIS },
 					},
 					["groups"] = {
-						i(17055),	-- Changuk Smasher
+						i(17055, {	-- Changuk Smasher
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(8204, {	-- Soriid the Devourer
@@ -1208,7 +1210,7 @@ root("Zones", m(KALIMDOR, {
 						7858,	-- Southsea Swashbuckler
 					},
 					["groups"] = {
-						i(9359),	-- Wirt's Third Leg
+						i(9359),	-- Southsea Lamp (Renamed from Wirt's Third Leg)
 						i(9250, {	-- Ship Schedule
 							["questID"] = 2876,	-- Ship Schedules
 						}),

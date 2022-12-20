@@ -3,15 +3,76 @@
 ---------------------------------------------------
 root("Zones", m(KALIMDOR, {
 	m(DARKSHORE, {
+		-- #if AFTER CATA
+		["lore"] = "Darkshore, a shadowy forest punctuated by waterfalls, is one of the saddest zones in the game. It underwent many changes and heavy losses in the Cataclysm--invasions by the trolls, Twilight Cultist infiltrations in the south, and most notably, the destruction of Auberdine, viewed by many as one of the most atmospheric towns. Alliance players help rescue and comfort dying NPCs, aid the refugees of Auberdine, and assist Malfurion Stormrage in driving back the threat of the cultists.",
+		-- #else
 		["lore"] = "This rocky area stretches along Kalimdor's north coast. Rains, winds and rocky beaches make the place inhospitable. Old night elf ruins stand crumbling on the cliffs, and murlocs and naga lurk within. The night elf village of Auberdine serves as a friendly trading post.",
+		-- #endif
+		-- #if AFTER WRATH
+		["icon"] = "Interface\\Icons\\Achievement_zone_darkshore_01",
+		-- #endif
 		["groups"] = {
 			n(ACHIEVEMENTS, {
+				ach(4928, {	-- Darkshore Quests
+					["timeline"] = { "added 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						crit(1, {	-- The Great Animal Spirit
+							["sourceQuests"] = {
+								13568,	-- Spirit of the Moonstalker
+								13567,	-- Spirit of the Stag
+								13597,	-- Spirit of the Thistle Bear
+							},
+						}),
+						crit(2, {	-- The Shatterspear
+							["sourceQuest"] = 13515,	-- Ending the Threat
+						}),
+						crit(3, {	-- The Eye of All Storms
+							["sourceQuest"] = 13588,	-- The Eye of All Storms
+						}),
+						crit(4, {	-- The Devourer
+							["sourceQuest"] = 13891,	-- The Devourer of Darkshore
+						}),
+						crit(5, {	-- Consumed by Madness
+							["sourceQuest"] = 13546,	-- The Defiler
+						}),
+						crit(6, {	-- The Battle for Darkshore
+							["sourceQuest"] = 13897,	-- The Battle for Darkshore
+						}),
+					},
+				}),
 				explorationAch(844, {	-- Explore Darkshore
 					-- #if BEFORE WRATH
 					["description"] = "Explore Darkshore, revealing the covered areas of the world map.",
 					-- #endif
 				}),
+				ach(5453, {	-- Ghost in the Dark
+					["sourceQuest"] = 28529,	-- Writings of the Void
+					["timeline"] = { "added 4.0.3" },
+					["races"] = ALLIANCE_ONLY,
+				}),
 			}),
+			-- #if AFTER MOP
+			petbattle(filter(BATTLE_PETS, {
+				p(508, {	-- Darkshore Cub
+					["crs"] = { 62250 },	-- Darkshore Cub
+					["description"] = "Can be found in the woods west of the Grove of the Ancients, usually on the treeline just before the beach.",
+				}),
+				p(378, {	-- Rabbit
+					["crs"] = { 61080 },	-- Rabbit
+				}),
+				p(417, {	-- Rat
+					["crs"] = { 61366 },	-- Rat
+				}),
+				p(493, {	-- Shimmershell Snail
+					["crs"] = { 62246 },	-- Shimmershell Snail
+					["description"] = "Can commonly be found on the beaches of Darkshore.",
+				}),
+				p(379, {	-- Squirrel
+					["crs"] = { 61081 },	-- Squirrel
+				}),
+			})),
+			-- #endif
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({
 				["150:215:318:162"] = 442,	-- Auberdine
@@ -39,9 +100,19 @@ root("Zones", m(KALIMDOR, {
 				i(12238),	-- Darkshore Grouper
 			}),
 			n(FLIGHT_PATHS, {
-				fp(26, {	-- Auberdine, Darkshore
-					["cr"] = 3841,	-- Caylais Moonfeather <Hippogryph Master>
+				fp(339, {	-- Grove of the Ancients, Darkshore
+					["cr"] = 33253,	-- Delanea <Flight Master>
+					["coord"] = { 44.4, 75.4, DARKSHORE },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+				}),
+				fp(26, {	-- Lor'danel, Darkshore [CATA+] / Auberdine, Darkshore
+					["cr"] = 3841,	-- Teldira Moonfeather <Hippogryph Master> [CATA+] / Caylais Moonfeather <Hippogryph Master>
+					-- #if AFTER CATA
+					["coord"] = { 51.6, 17.6, DARKSHORE },
+					-- #else
 					["coord"] = { 36.4, 45.6, DARKSHORE },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 				}),
 			}),
@@ -949,98 +1020,134 @@ root("Zones", m(KALIMDOR, {
 			n(RARES, {
 				n(2186, {	-- Carnivous the Breaker
 					["coords"] = {
-						{ 39.6, 54.0, ASHENVALE },
-						{ 40.0, 78.4, ASHENVALE },
-						{ 43.2, 86.0, ASHENVALE },
+						{ 39.6, 54.0, DARKSHORE },
+						{ 40.0, 78.4, DARKSHORE },
+						{ 43.2, 86.0, DARKSHORE },
 					},
 				}),
 				n(2192, {	-- Firecaller Radison
-					["coord"] = { 39.0, 86.4, ASHENVALE },
+					["coord"] = { 39.0, 86.4, DARKSHORE },
 				}),
 				n(7015, {	-- Flagglemurk the Cruel
 					["coords"] = {
-						{ 37.6, 61.6, ASHENVALE },
-						{ 36.8, 72.0, ASHENVALE },
+						{ 37.6, 61.6, DARKSHORE },
+						{ 36.8, 72.0, DARKSHORE },
 					},
 				}),
 				n(2184, {	-- Lady Moongazer
-					["coord"] = { 43.0, 61.2, ASHENVALE },
+					["coord"] = { 43.0, 61.2, DARKSHORE },
 				}),
 				n(7016, {	-- Lady Vespira
 					["coords"] = {
-						{ 59.8, 15.6, ASHENVALE },
-						{ 58.0, 18.4, ASHENVALE },
-						{ 58.2, 23.8, ASHENVALE },
-						{ 59.8, 23.6, ASHENVALE },
-						{ 61.6, 23.6, ASHENVALE },
-						{ 61.8, 17.8, ASHENVALE },
+						{ 59.8, 15.6, DARKSHORE },
+						{ 58.0, 18.4, DARKSHORE },
+						{ 58.2, 23.8, DARKSHORE },
+						{ 59.8, 23.6, DARKSHORE },
+						{ 61.6, 23.6, DARKSHORE },
+						{ 61.8, 17.8, DARKSHORE },
 					},
 					["groups"] = {
-						i(6332),	-- Black Pearl Ring
-						i(6333),	-- Spikelash Dagger
+						i(6332, {	-- Black Pearl Ring
+							["timeline"] = { "removed 4.0.3" },
+						}),
+						i(6333, {	-- Spikelash Dagger
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				n(2191, {	-- Licillin
-					["coord"] = { 47.0, 38.6, ASHENVALE },
+					["coord"] = { 47.0, 38.6, DARKSHORE },
 				}),
 				n(7017, {	-- Lord Sinslayer
-					["coord"] = { 55.0, 35.4, ASHENVALE },
+					["coord"] = { 55.0, 35.4, DARKSHORE },
 				}),
 				n(2175, {	-- Shadowclaw
 					["coords"] = {
-						{ 39.2, 35.4, ASHENVALE },
-						{ 42.2, 38.2, ASHENVALE },
-						{ 40.2, 41.6, ASHENVALE },
-						{ 39.4, 39.6, ASHENVALE },
+						{ 39.2, 35.4, DARKSHORE },
+						{ 42.2, 38.2, DARKSHORE },
+						{ 40.2, 41.6, DARKSHORE },
+						{ 39.4, 39.6, DARKSHORE },
 					},
 				}),
 				n(2172, {	-- Strider Clutchmother
 					["coords"] = {
-						{ 35.0, 86.0, ASHENVALE },
-						{ 34.4, 89.0, ASHENVALE },
-						{ 36.6, 90.2, ASHENVALE },
-						{ 38.2, 89.4, ASHENVALE },
-						{ 41.2, 90.6, ASHENVALE },
-						{ 40.6, 93.0, ASHENVALE },
-						{ 38.8, 93.8, ASHENVALE },
-						{ 37.0, 91.4, ASHENVALE },
+						{ 35.0, 86.0, DARKSHORE },
+						{ 34.4, 89.0, DARKSHORE },
+						{ 36.6, 90.2, DARKSHORE },
+						{ 38.2, 89.4, DARKSHORE },
+						{ 41.2, 90.6, DARKSHORE },
+						{ 40.6, 93.0, DARKSHORE },
+						{ 38.8, 93.8, DARKSHORE },
+						{ 37.0, 91.4, DARKSHORE },
 					},
 				}),
 			}),
 			n(VENDORS, {
+				n(33980, {	-- Apothecary Furrows
+					["coord"] = { 57.2, 33.8, DARKSHORE },
+					["timeline"] = { "added 4.0.3.13277" },
+					["races"] = HORDE_ONLY,
+					["groups"] = {
+						i(46325, {	-- Withers
+							["timeline"] = { "added 4.0.3.13277" },
+						}),
+					},
+				}),
+				n(43436, {	-- Ceriale Duskwhisper <Clothier>
+					["coord"] = { 50.6, 20.6, DARKSHORE },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
+					["groups"] = {
+						i(3428),	-- Common Grey Shirt
+						i(16059),	-- Common Brown Shirt
+						i(16060),	-- Common White Shirt
+					},
+				}),
 				n(4307, {	-- Heldan Galesong <Fisherman>
 					["coord"] = { 37.0, 56.4, DARKSHORE },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
+					-- #if BEFORE 4.0.3
 					["groups"] = {
 						i(5528),	-- Recipe: Clam Chowder
 						i(6368),	-- Recipe: Rainbow Fin Albacore
 						i(6369),	-- Recipe: Rockscale Cod
 						i(17062),	-- Recipe: Mithril Head Trout
 					},
+					-- #endif
 				}),
 				n(4200, {	-- Laird <Fish Vendor>
 					["coord"] = { 36.8, 44.3, DARKSHORE },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
 					["groups"] = {
-						i(5485),	-- Recipe: Fillet of Frenzy
+						i(5485, {	-- Recipe: Fillet of Frenzy
+							["timeline"] = { "removed 4.0.3" },	-- Added to Trainers
+						}),
 					},
 				}),
 				n(4186, {	-- Mavralyn <Leather Armor & Leatherworking Supplies>
 					["coord"] = { 37.0, 41.2, DARKSHORE },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
+					-- #if BEFORE 4.0.3
 					["groups"] = {
 						i(5786),	-- Pattern: Murloc Scale Belt
 						i(5787),	-- Pattern: Murloc Scale Breastplate
 					},
+					-- #endif
 				}),
 				n(4189, {	-- Valdaron <Tailoring Supplies>
 					["coord"] = { 38.1, 40.6, DARKSHORE },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = ALLIANCE_ONLY,
+					-- #if BEFORE 4.0.3
 					["groups"] = {
-						i(5772),	-- Pattern: Red Woolen Bag
-						i(5771),	-- Pattern: Red Linen Bag
 						i(6270),	-- Pattern: Blue Linen Vest
+						i(5771),	-- Pattern: Red Linen Bag
+						i(5772),	-- Pattern: Red Woolen Bag
 					},
+					-- #endif
 				}),
 			}),
 			n(ZONE_DROPS, {
@@ -1189,3 +1296,11 @@ root("Zones", m(KALIMDOR, {
 		},
 	}),
 }));
+
+-- #if AFTER 8.0.1.27404
+root("HiddenQuestTriggers", {
+	q(52759, {	-- Talked to Zom in Darkshore, which normally has 1 option. But this time had 2 "see past" options.
+		["timeline"] = { "added 8.0.1.27404" },
+	}),
+});
+-- #endif
