@@ -14600,8 +14600,8 @@ app:GetWindow("RWP", UIParent, function(self)
 				['back'] = 1,
 				["indent"] = 0,
 				['OnUpdate'] = function(data)
-					--if not self.dirty then return nil; end
-					--self.dirty = nil;
+					if not self.dirty then return nil; end
+					self.dirty = nil;
 					
 					local g = {};
 					if not data.results then
@@ -14639,7 +14639,7 @@ app:GetWindow("RWP", UIParent, function(self)
 		
 		-- Update the window and all of its row data
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		UpdateWindow(self, true);
+		UpdateWindow(self);
 	end
 end);
 app:GetWindow("SoftReserves", UIParent, function(self)
