@@ -664,18 +664,22 @@ root("Zones", m(KALIMDOR, {
 						i(5299),	-- Gloves of the Moon
 					},
 				}),
-				q(6129, {	-- Curing the Sick
+				q(6129, {	-- Curing the Sick (H)
 					["qg"] = 3448,	-- Tonga Runetotem
 					["sourceQuest"] = 6128,	-- Gathering the Cure
 					["coord"] = { 52.2, 31.8, THE_BARRENS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { DRUID },
-					["cost"] = {
-						{ "i", 15826, 1 },	-- Curative Animal Salve
-					},
 					["lvl"] = 14,
 					["groups"] = {
-						i(15866),	-- Veildust Medicine Bag
+						objective(1, {	-- 0/10 Sickly Gazelle cured
+							["provider"] = { "i", 15826 },	-- Curative Animal Salve
+							["cr"] = 12296,	-- Sickly Gazelle
+						}),
+						i(15866, {	-- Veildust Medicine Bag
+							["timeline"] = { "removed 4.0.3" },
+						}),
 					},
 				}),
 				q(1069, {	-- Deepmoss Spider Eggs
@@ -845,10 +849,11 @@ root("Zones", m(KALIMDOR, {
 					["races"] = HORDE_ONLY,
 					["lvl"] = 17,
 				}),
-				q(6128, {	-- Gathering the Cure
+				q(6128, {	-- Gathering the Cure (H)
 					["qg"] = 3448,	-- Tonga Runetotem
 					["sourceQuest"] = 6127,	-- The Principal Source [H]
 					["coord"] = { 52.2, 31.8, THE_BARRENS },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = HORDE_ONLY,
 					["classes"] = { DRUID },
 					["cost"] = {
@@ -2497,7 +2502,7 @@ root("Zones", m(KALIMDOR, {
 			}),
 			n(ZONE_DROPS, {
 				i(5107, {	-- Deckhand's Shirt
-					-- #if BEFORE 4.0.3
+					-- #if AFTER 4.0.3
 					["description"] = "Incredibly rare drop from Fray Island.",
 					-- #else
 					["description"] = "While technically this shirt does still drop in retail, the drop rate is reduced from fairly common to 1 in 12k with the Cataclysm. For the purposes of collecting, get it now and stock up on extras!",

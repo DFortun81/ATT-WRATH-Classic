@@ -1480,7 +1480,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15211, {	-- Azure Templar <Abyssal Council>
-							["cost"] = { "i", 20420, 1 },	-- Crest of Beckoning: Water
+							["cost"] = {{ "i", 20420, 1 }},	-- Crest of Beckoning: Water
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20654, {	-- Amethyst War Staff
@@ -1495,7 +1495,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15209, {	-- Crimson Templar <Abyssal Council>
-							["cost"] = { "i", 20416, 1 },	-- Crest of Beckoning: Fire
+							["cost"] = {{ "i", 20416, 1 }},	-- Crest of Beckoning: Fire
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20657, {	-- Crystal Tipped Stiletto
@@ -1510,7 +1510,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15307, {	-- Earthen Templar <Abyssal Council>
-							["cost"] = { "i", 20419, 1 },	-- Crest of Beckoning: Stone
+							["cost"] = {{ "i", 20419, 1 }},	-- Crest of Beckoning: Stone
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20663, {	-- Deep Strike Bow
@@ -1525,7 +1525,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15212, {	-- Hoary Templar <Abyssal Council>
-							["cost"] = { "i", 20418, 1 },	-- Crest of Beckoning: Thunder
+							["cost"] = {{ "i", 20418, 1 }},	-- Crest of Beckoning: Thunder
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20660, {	-- Stonecutting Glaive
@@ -1565,7 +1565,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15206, {	-- The Duke of Cynders <Abyssal Council>
-							["cost"] = { { "i", 20432, 1 } },	-- Signet of Beckoning: Fire
+							["cost"] = {{ "i", 20432, 1 }},	-- Signet of Beckoning: Fire
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								applyclassicphase(PHASE_FIVE, i(21989, {	-- Cinder of Cynders
@@ -1583,7 +1583,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15207, {	-- The Duke of Fathoms <Abyssal Council>
-							["cost"] = { { "i", 20436, 1 } },	-- Signet of Beckoning: Water
+							["cost"] = {{ "i", 20436, 1 }},	-- Signet of Beckoning: Water
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20669, {	-- Darkstone Claymore
@@ -1598,7 +1598,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15208, {	-- The Duke of Shards <Abyssal Council>
-							["cost"] = { { "i", 20435, 1 } },	-- Signet of Beckoning: Stone
+							["cost"] = {{ "i", 20435, 1 }},	-- Signet of Beckoning: Stone
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20672, {	-- Sparkling Crystal Wand
@@ -1613,7 +1613,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15220, {	-- The Duke of Zephyrs <Abyssal Council>
-							["cost"] = { { "i", 20433, 1 } },	-- Signet of Beckoning: Thunder
+							["cost"] = {{ "i", 20433, 1 }},	-- Signet of Beckoning: Thunder
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20675, {	-- Soulrender
@@ -1654,7 +1654,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15205, {	-- Baron Kazum <Abyssal High Council>
-							["cost"] = { { "i", 20449, 1 } },	-- Scepter of Beckoning: Stone
+							["cost"] = {{ "i", 20449, 1 }},	-- Scepter of Beckoning: Stone
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20688, {	-- Earthen Guard
@@ -1669,7 +1669,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15204, {	-- High Marshal Whirlaxis <Abyssal High Council>
-							["cost"] = { { "i", 20448, 1 } },	-- Scepter of Beckoning: Thunder
+							["cost"] = {{ "i", 20448, 1 }},	-- Scepter of Beckoning: Thunder
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20691, {	-- Windshear Cape
@@ -1684,7 +1684,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15305, {	-- Lord Skwol <Abyssal High Council>
-							["cost"] = { { "i", 20450, 1 } },	-- Scepter of Beckoning: Water
+							["cost"] = {{ "i", 20450, 1 }},	-- Scepter of Beckoning: Water
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20685, {	-- Wavefront Necklace
@@ -1699,7 +1699,7 @@ root("Zones", m(KALIMDOR, {
 							},
 						}),
 						n(15203, {	-- Prince Skaldrenox <Abyssal High Council>
-							["cost"] = { { "i", 20447, 1 } },	-- Scepter of Beckoning: Fire
+							["cost"] = {{ "i", 20447, 1 }},	-- Scepter of Beckoning: Fire
 							["timeline"] = { "removed 4.0.3" },
 							["groups"] = {
 								i(20682, {	-- Elemental Focus Band
