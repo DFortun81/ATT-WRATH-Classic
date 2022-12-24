@@ -2505,6 +2505,12 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				for i,character in ipairs(knownBy) do
 					if i > 1 then desc = desc .. ", "; end
 					desc = desc .. (character.text or "???");
+					if group.itemID and character == app.CurrentCharacter then
+						local count = GetItemCount(group.itemID, true);
+						if count and count > 1 then
+							desc = desc .. " (x" .. count .. ")";
+						end
+					end
 				end
 				tinsert(info, { left = string.gsub(desc, "-" .. GetRealmName(), ""), wrap = true, color = "ff66ccff" });
 			end
@@ -7058,17 +7064,17 @@ local itemFields = {
 		return t.collectedAsCost or t.collectedAsRWP;
 	end,
 	["collectedAsCost"] = function(t)
-		local id, partial = t.itemID;
+		local id, any, partial = t.itemID;
 		local results = app.SearchForField("itemIDAsCost", id, true);
 		if results and #results > 0 then
 			local itemCount = t.GetItemCount(t) or 0;
 			for _,ref in pairs(results) do
-				if ref.itemID ~= id and app.RecursiveGroupRequirementsFilter(ref) then
+				if ref.itemID ~= id and app.RecursiveDefaultClassAndRaceFilter(ref) then
 					if ref.key == "instanceID" or ((ref.key == "difficultyID" or ref.key == "mapID" or ref.key == "headerID") and (ref.parent and GetRelativeValue(ref.parent, "instanceID"))) then
 						if app.CollectibleQuests and itemCount == 0 then
 							return false;
 						end
-					elseif ref.collectible and not ref.collected then
+					elseif ref.collectible and ref.collected ~= 1 then
 						if ref.cost then
 							for k,v in ipairs(ref.cost) do
 								if v[2] == id and v[1] == "i" then
@@ -7115,9 +7121,22 @@ local itemFields = {
 							end
 						end
 					end
+					any = true;
 				end
 			end
-			return partial and 2 or 1;
+			if any then
+				if not partial and (t.rwp or (t.u and (t.u == 2 or t.u == 3 or t.u == 4))) and app.CollectibleRWP and t.f and app.Settings:GetFilterForRWP(t.f) then
+					if not ATTAccountWideData.RWP[id] then
+						if app.Settings:GetTooltipSetting("Report:Collected") then
+							print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
+						end
+						app:PlayFanfare();
+					end
+					app.CurrentCharacter.RWP[id] = 1;
+					ATTAccountWideData.RWP[id] = 1;
+				end
+				return partial and 2 or 1;
+			end
 		end
 	end,
 	["collectedAsCostAfterFailure"] = function(t)
