@@ -13,6 +13,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Azshara.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Azuremyst Isle.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Bloodmyst Isle.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Caverns of Time.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Darkshore.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Desolace.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Durotar.lua
