@@ -9604,24 +9604,22 @@ UpdateGroup = function(parent, group)
 				group.total = 0;
 			end
 			
+			-- Update the subgroups recursively...
+			visible = UpdateGroups(group, group.g);
+			
 			-- If the 'can equip' filter says true
-			if app.ClassRequirementFilter(group) and app.RaceRequirementFilter(group) then
-				-- Update the subgroups recursively...
-				visible = UpdateGroups(group, group.g);
+			if app.GroupFilter(group) and app.ClassRequirementFilter(group) and app.RaceRequirementFilter(group) then
+				-- Increment the parent group's totals.
+				parent.total = (parent.total or 0) + group.total;
+				parent.progress = (parent.progress or 0) + group.progress;
 				
-				if app.GroupFilter(group) then
-					-- Increment the parent group's totals.
-					parent.total = (parent.total or 0) + group.total;
-					parent.progress = (parent.progress or 0) + group.progress;
-					
-					-- If this group is trackable, then we should show it.
-					if group.total > 0 and app.GroupVisibilityFilter(group) then
-						visible = true;
-					elseif app.ShowIncompleteThings(group) and not group.saved then
-						visible = true;
-					elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
-						visible = true;
-					end
+				-- If this group is trackable, then we should show it.
+				if group.total > 0 and app.GroupVisibilityFilter(group) then
+					visible = true;
+				elseif app.ShowIncompleteThings(group) and not group.saved then
+					visible = true;
+				elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
+					visible = true;
 				end
 			else
 				visible = false;
