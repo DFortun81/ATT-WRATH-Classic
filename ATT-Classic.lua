@@ -4330,12 +4330,6 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 		return setmetatable(constructor(id, t, "achievementID"), app.BaseAchievement);
 	end
 	
-	local onClickForCriteria = function(row, button)
-		if button == "RightButton" then
-			app.CreateMiniListForGroup(app.CreateAchievement(row.ref.achievementID));
-			return true;
-		end
-	end;
 	app.BaseAchievementCriteria = app.BaseObjectFields({
 		["key"] = function(t)
 			return "criteriaID";
@@ -4421,9 +4415,6 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 					end
 				end
 			end
-		end,
-		["OnClick"] = function()
-			return onClickForCriteria;
 		end,
 		["OnTooltip"] = function()
 			return onTooltipForAchievementCriteria;
@@ -9939,7 +9930,28 @@ app.CreateMinimapButton = CreateMinimapButton;
 
 -- Row Helper Functions
 local CreateRow;
-local function CreateMiniListForGroup(group)
+local function CreateMiniListForGroup(group, retried)
+	local achievementID = group.achievementID;
+	if achievementID and not retried then
+		if group.criteriaID or not group.g then
+			local searchResults = SearchForField("achievementID", achievementID);
+			if searchResults and #searchResults > 0 then
+				local bestResult;
+				for i=1,#searchResults,1 do
+					local searchResult = searchResults[i];
+					if searchResult.achievementID == achievementID and not searchResult.criteriaID then
+						if not bestResult or searchResult.g then
+							bestResult = searchResult;
+						end
+					end
+				end
+				if bestResult then
+					return CreateMiniListForGroup(bestResult, true);
+				end
+			end
+		end
+	end
+	
 	-- Pop Out Functionality! :O
 	local suffix = BuildSourceTextForChat(group, 0) .. " > " .. (group.text or "") .. (group.key and group[group.key] or "");
 	local popout = app.Windows[suffix];
@@ -10173,6 +10185,96 @@ local function CreateMiniListForGroup(group)
 		popout.data.indent = 0;
 		popout.data.total = 0;
 		popout.data.progress = 0;
+		
+		-- If this is an achievement, build the criteria within it if possible.
+		if achievementID then
+			local searchResults = SearchForField("achievementID", achievementID);
+			if searchResults and #searchResults > 0 then
+				for i=1,#searchResults,1 do
+					local searchResult = searchResults[i];
+					if searchResult.achievementID == achievementID and searchResult.criteriaID then
+						if not popout.data.g then popout.data.g = {}; end
+						MergeObject(popout.data.g, CloneData(searchResult));
+					end
+				end
+			end
+		end
+		
+		if group.cost and type(group.cost) == "table" then
+			local costGroup = {
+				["text"] = "Cost",
+				["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
+				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+				["OnUpdate"] = app.AlwaysShowUpdate,
+				["g"] = {},
+			};
+			local costItem;
+			for i,c in ipairs(group.cost) do
+				costItem = nil;
+				if c[1] == "c" then
+					costItem = app.CreateCurrencyClass(c[2]);
+				elseif c[1] == "i" then
+					costItem = app.CreateItem(c[2]);
+				end
+				if costItem then
+					costItem = CloneData(costItem);
+					costItem.g = nil;
+					costItem.collectible = false;
+					costItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(costGroup.g, costItem);
+				end
+			end
+			if #costGroup.g > 0 then
+				if not popout.data.g then popout.data.g = {}; end
+				MergeObject(popout.data.g, costGroup, 1);
+			end
+		end
+		
+		if group.providers or group.qgs or group.crs then
+			local sourceGroup = {
+				["text"] = "Sources",
+				["description"] = "The following contains all of the relevant sources.",
+				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+				["OnUpdate"] = app.AlwaysShowUpdate,
+				["g"] = {},
+			};
+			local sourceItem;
+			if group.providers then
+				for _,p in ipairs(group.providers) do
+					sourceItem = nil;
+					if p[1] == "n" then
+						sourceItem = app.CreateNPC(p[2]);
+					elseif p[1] == "o" then
+						sourceItem = app.CreateObject(p[2]);
+					elseif p[1] == "i" then
+						sourceItem = app.CreateItem(p[2]);
+					end
+					if sourceItem then
+						sourceItem.OnUpdate = app.AlwaysShowUpdate;
+						MergeObject(sourceGroup.g, sourceItem);
+					end
+				end
+			end
+			if group.crs then
+				for _,cr in ipairs(group.crs) do
+					sourceItem = app.CreateNPC(cr);
+					sourceItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(sourceGroup.g, sourceItem);
+				end
+			end
+			if group.qgs then
+				for _,qg in ipairs(group.qgs) do
+					sourceItem = app.CreateNPC(qg);
+					sourceItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(sourceGroup.g, sourceItem);
+				end
+			end
+			if #sourceGroup.g > 0 then
+				if not popout.data.g then popout.data.g = {}; end
+				MergeObject(popout.data.g, sourceGroup, 1);
+			end
+		end
+		
 		BuildGroups(popout.data, popout.data.g);
 		UpdateGroups(popout.data, popout.data.g);
 	end
