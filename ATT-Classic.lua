@@ -9604,22 +9604,24 @@ UpdateGroup = function(parent, group)
 				group.total = 0;
 			end
 			
-			-- Update the subgroups recursively...
-			visible = UpdateGroups(group, group.g);
-			
 			-- If the 'can equip' filter says true
-			if app.GroupFilter(group) and app.ClassRequirementFilter(group) and app.RaceRequirementFilter(group) then
-				-- Increment the parent group's totals.
-				parent.total = (parent.total or 0) + group.total;
-				parent.progress = (parent.progress or 0) + group.progress;
+			if app.ClassRequirementFilter(group) and app.RaceRequirementFilter(group) then
+				-- Update the subgroups recursively...
+				visible = UpdateGroups(group, group.g);
 				
-				-- If this group is trackable, then we should show it.
-				if group.total > 0 and app.GroupVisibilityFilter(group) then
-					visible = true;
-				elseif app.ShowIncompleteThings(group) and not group.saved then
-					visible = true;
-				elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
-					visible = true;
+				if app.GroupFilter(group) then
+					-- Increment the parent group's totals.
+					parent.total = (parent.total or 0) + group.total;
+					parent.progress = (parent.progress or 0) + group.progress;
+					
+					-- If this group is trackable, then we should show it.
+					if group.total > 0 and app.GroupVisibilityFilter(group) then
+						visible = true;
+					elseif app.ShowIncompleteThings(group) and not group.saved then
+						visible = true;
+					elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
+						visible = true;
+					end
 				end
 			else
 				visible = false;
@@ -9667,7 +9669,7 @@ UpdateGroups = function(parent, g)
 		local visible = false;
 		for key, group in ipairs(g) do
 			if group.OnUpdate then
-				if not group:OnUpdate() then
+				if not group:OnUpdate(group) then
 					if UpdateGroup(parent, group) then
 						visible = true;
 					end
@@ -10200,78 +10202,82 @@ local function CreateMiniListForGroup(group, retried)
 			end
 		end
 		
-		if group.cost and type(group.cost) == "table" then
-			local costGroup = {
-				["text"] = "Cost",
-				["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
-				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
-				["OnUpdate"] = app.AlwaysShowUpdate,
-				["g"] = {},
-			};
-			local costItem;
-			for i,c in ipairs(group.cost) do
-				costItem = nil;
-				if c[1] == "c" then
-					costItem = app.CreateCurrencyClass(c[2]);
-				elseif c[1] == "i" then
-					costItem = app.CreateItem(c[2]);
-				end
-				if costItem then
-					costItem = CloneData(costItem);
-					costItem.g = nil;
-					costItem.collectible = false;
-					costItem.OnUpdate = app.AlwaysShowUpdate;
-					MergeObject(costGroup.g, costItem);
-				end
-			end
-			if #costGroup.g > 0 then
-				if not popout.data.g then popout.data.g = {}; end
-				MergeObject(popout.data.g, costGroup, 1);
-			end
-		end
-		
-		if group.providers or group.qgs or group.crs then
-			local sourceGroup = {
-				["text"] = "Sources",
-				["description"] = "The following contains all of the relevant sources.",
-				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
-				["OnUpdate"] = app.AlwaysShowUpdate,
-				["g"] = {},
-			};
-			local sourceItem;
-			if group.providers then
-				for _,p in ipairs(group.providers) do
-					sourceItem = nil;
-					if p[1] == "n" then
-						sourceItem = app.CreateNPC(p[2]);
-					elseif p[1] == "o" then
-						sourceItem = app.CreateObject(p[2]);
-					elseif p[1] == "i" then
-						sourceItem = app.CreateItem(p[2]);
+		if popout.data.key then
+			if group.cost and type(group.cost) == "table" then
+				local costGroup = {
+					["text"] = "Cost",
+					["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
+					["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+					["OnUpdate"] = app.AlwaysShowUpdate,
+					["g"] = {},
+				};
+				local costItem;
+				for i,c in ipairs(group.cost) do
+					costItem = nil;
+					if c[1] == "c" then
+						costItem = app.CreateCurrencyClass(c[2]);
+					elseif c[1] == "i" then
+						costItem = app.CreateItem(c[2]);
 					end
-					if sourceItem then
+					if costItem then
+						costItem = CloneData(costItem);
+						costItem.visible = true;
+						costItem.OnUpdate = app.AlwaysShowUpdate;
+						MergeObject(costGroup.g, costItem);
+					end
+				end
+				if #costGroup.g > 0 then
+					if not popout.data.g then popout.data.g = {}; end
+					MergeObject(popout.data.g, costGroup, 1);
+				end
+			end
+			
+			if group.providers or group.qgs or group.crs then
+				local sourceGroup = {
+					["text"] = "Sources",
+					["description"] = "The following contains all of the relevant sources.",
+					["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+					["OnUpdate"] = app.AlwaysShowUpdate,
+					["g"] = {},
+				};
+				local sourceItem;
+				if group.providers then
+					for _,p in ipairs(group.providers) do
+						sourceItem = nil;
+						if p[1] == "n" then
+							sourceItem = app.CreateNPC(p[2]);
+						elseif p[1] == "o" then
+							sourceItem = app.CreateObject(p[2]);
+						elseif p[1] == "i" then
+							sourceItem = app.CreateItem(p[2]);
+						end
+						if sourceItem then
+							sourceItem.visible = true;
+							sourceItem.OnUpdate = app.AlwaysShowUpdate;
+							MergeObject(sourceGroup.g, sourceItem);
+						end
+					end
+				end
+				if group.crs then
+					for _,cr in ipairs(group.crs) do
+						sourceItem = app.CreateNPC(cr);
+						sourceItem.visible = true;
 						sourceItem.OnUpdate = app.AlwaysShowUpdate;
 						MergeObject(sourceGroup.g, sourceItem);
 					end
 				end
-			end
-			if group.crs then
-				for _,cr in ipairs(group.crs) do
-					sourceItem = app.CreateNPC(cr);
-					sourceItem.OnUpdate = app.AlwaysShowUpdate;
-					MergeObject(sourceGroup.g, sourceItem);
+				if group.qgs then
+					for _,qg in ipairs(group.qgs) do
+						sourceItem = app.CreateNPC(qg);
+						sourceItem.visible = true;
+						sourceItem.OnUpdate = app.AlwaysShowUpdate;
+						MergeObject(sourceGroup.g, sourceItem);
+					end
 				end
-			end
-			if group.qgs then
-				for _,qg in ipairs(group.qgs) do
-					sourceItem = app.CreateNPC(qg);
-					sourceItem.OnUpdate = app.AlwaysShowUpdate;
-					MergeObject(sourceGroup.g, sourceItem);
+				if #sourceGroup.g > 0 then
+					if not popout.data.g then popout.data.g = {}; end
+					MergeObject(popout.data.g, sourceGroup, 1);
 				end
-			end
-			if #sourceGroup.g > 0 then
-				if not popout.data.g then popout.data.g = {}; end
-				MergeObject(popout.data.g, sourceGroup, 1);
 			end
 		end
 		
