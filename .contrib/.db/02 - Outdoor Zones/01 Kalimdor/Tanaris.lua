@@ -1,6 +1,8 @@
 ---------------------------------------------------
 --          Z O N E S        M O D U L E         --
 ---------------------------------------------------
+-- #if BEFORE CATA
+-- TODO: Fully implement this for Retail's faction tooltips, also look at cape of stranglethorn.
 local OnTooltipForGadgetzhan = [[function(t)
 	local reputation = t.reputation;
 	if reputation < 42000 then
@@ -26,9 +28,17 @@ local OnTooltipForGadgetzhan = [[function(t)
 		end
 	end
 end]];
+-- #endif
 root("Zones", m(KALIMDOR, {
 	m(TANARIS, {
 		["lore"] = "The Tanaris Desert is vast and unexplored. It is a land of endless sands and cloudless skies. The southern Tanaris Desert is more mountainous than the north, boasting canyons and high bluffs. Numerous tunnels run beneath the sands, purportedly infested with the mysterious silithid. Other creatures in the desert include tallstriders, lions, kodo beasts, drakes and dragons — many the offspring of mighty Nozdormu, who is said to make this land his home.\n\nThe only bit of civilization is Gadgetzhan, a goblin trading post. Many Ironforge prospectors stock up on supplies here before heading out in search of the lost Titan city of Uldum.",
+		-- #if AFTER WRATH
+		["icon"] = "Interface\\Icons\\achievement_zone_tanaris_01",
+		-- #endif
+		["maps"] = {
+			72,	-- The Noxious Lair
+			73,	-- The Gaping Chasm
+		},
 		["groups"] = {
 			n(ACHIEVEMENTS, {
 				explorationAch(851, {	-- Explore Tanaris
@@ -36,7 +46,80 @@ root("Zones", m(KALIMDOR, {
 					["description"] = "Explore Tanaris, revealing the covered areas of the world map.",
 					-- #endif
 				}),
+				ach(4935, {	-- Tanaris Quests
+					["timeline"] = { "added 4.0.3" },
+					["groups"] = {
+						crit(1, {	-- Southsea Pirates
+							["races"] = ALLIANCE_ONLY,
+							["sourceQuest"] = 25166,	-- Captain Dreadbeard
+						}),
+						crit(1, {	-- Southsea Pirates
+							["races"] = HORDE_ONLY,
+							["sourceQuest"] = 24950,	-- Captain Dreadbeard
+						}),
+						crit(2, {	-- Bug Free
+							["sourceQuest"] = 24953,	-- Just Trying to Kill Some Bugs
+						}),
+						crit(3, {	-- Advancing Our Interests
+							["races"] = ALLIANCE_ONLY,
+							["sourceQuest"] = 25065,	-- You Too, Brute?
+						}),
+						crit(3, {	-- Advancing Our Interests
+							["races"] = HORDE_ONLY,
+							["sourceQuest"] = 25001,	-- Sandscraper
+						}),
+						crit(4, {	-- Grudge Match!
+							["races"] = ALLIANCE_ONLY,
+							["sourceQuest"] = 25513,	-- Thunderdrome: Grudge Match!
+						}),
+						crit(4, {	-- Grudge Match!
+							["races"] = HORDE_ONLY,
+							["sourceQuest"] = 25591,	-- THunderdrome: Grudge Match!
+						}),
+						crit(5, {	-- The Titans
+							["races"] = ALLIANCE_ONLY,
+							["sourceQuest"] = 25421,	-- The Grand Goblet
+						}),
+						crit(5, {	-- The Titans
+							["races"] = HORDE_ONLY,
+							["sourceQuest"] = 25107,	-- The Grand Goblet
+						}),
+					},
+				}),
 			}),
+			-- #if AFTER CATA
+			petbattle(filter(BATTLE_PETS, {
+				p(484, {	-- Desert Spider
+					["crs"] = { 62186 },	-- Desert Spider
+				}),
+				p(430, {	-- Gold Beetle
+					["crs"] = { 61438 },	-- Gold Beetle
+				}),
+				p(431, {	-- Rattlesnake
+					["crs"] = { 61439 },	-- Rattlesnake
+				}),
+				p(491, {	-- Sand Kitten
+					["crs"] = { 62257 },	-- Sand Kitten
+				}),
+				p(560, {	-- Sea Gull
+					["crs"] = { 62953 },	-- Sea Gull
+					["description"] = "Most commonly found on beaches or near the ocean.",
+				}),
+				p(511, {	-- Sidewinder
+					["crs"] = { 62523 },	-- Sidewinder
+				}),
+				p(494, {	-- Silithid Hatchling
+					["crs"] = { 62258 },	-- Silithis Hatchling
+					["description"] = "This wild pet can be found in The Gaping Chasm and The Noxious Lair in Tanaris. It only spawns during sandstorms.",
+				}),
+				p(492, {	-- Stinkbug
+					["crs"] = { 62256 },	-- Stinkbug
+				}),
+				p(432, {	-- Stripe-Tailed Scorpid
+					["crs"] = { 61440 },	-- Stripe-Tailed Scorpid
+				}),
+			})),
+			-- #endif
 			-- #if ANYCLASSIC
 			n(EXPLORATION, explorationBatch({
 				["110:140:611:147"] = 986,	-- Zalashji's Den
@@ -71,20 +154,53 @@ root("Zones", m(KALIMDOR, {
 			n(FACTIONS, {
 				faction(369, { 	-- Gadgetzan
 					["icon"] = icon("INV_Misc_Coin_01"),
+					-- #if BEFORE CATA
 					["OnTooltip"] = OnTooltipForGadgetzhan,
-					["maps"] = { THE_BARRENS },
+					-- #endif
+					["maps"] = {
+						-- #if AFTER CATA
+						NORTHERN_BARRENS,
+						-- #else
+						THE_BARRENS,
+						-- #endif
+					},
 				}),
 			}),
 			n(FLIGHT_PATHS, {
+				fp(539, {	-- Bootlegger Outpost, Tanaris
+					["cr"] = 41214,	-- Slick Dropdip <Flight Master>
+					["coord"] = { 55.8, 60.6, TANARIS },
+					["timeline"] = { "added 4.0.3.13277" },
+				}),
+				fp(531, {	-- Dawnrise Expedition, Tanaris
+					["cr"] = 41215,	-- Raina Sunglide <Flight Master>
+					["coord"] = { 33.2, 77.2, TANARIS },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = HORDE_ONLY,
+				}),
 				fp(39, {	-- Gadgetzan, Tanaris
 					["cr"] = 7823,	-- Bera Stonehammer <Gryphon Master>
+					-- #if AFTER CATA
+					["coord"] = { 51.4, 29.4, TANARIS },
+					-- #else
 					["coord"] = { 51.0, 29.2, TANARIS },
+					-- #endif
 					["races"] = ALLIANCE_ONLY,
 				}),
 				fp(40, {	-- Gadgetzan, Tanaris
 					["cr"] = 7824,	-- Bulkrek Ragefist <Wind Rider Master>
+					-- #if AFTER CATA
+					["coord"] = { 52, 27.6, TANARIS },
+					-- #else
 					["coord"] = { 51.6, 26.6, TANARIS },
+					-- #endif
 					["races"] = HORDE_ONLY,
+				}),
+				fp(532, {	-- Gunstan's Dig, Tanaris
+					["cr"] = 40827,	-- Thurda <Flight Master>
+					["coord"] = { 40, 77.4, TANARIS },
+					["timeline"] = { "added 4.0.1.12984" },
+					["races"] = ALLIANCE_ONLY,
 				}),
 			}),
 			n(QUESTS, {
@@ -493,10 +609,22 @@ root("Zones", m(KALIMDOR, {
 				q(8365, {	-- Pirate Hats Ahoy!
 					["qg"] = 15165,	-- Haughty Modiste
 					["coord"] = { 66.6, 22.3, TANARIS },
-					["cost"] = {
-						{ "i", 20519, 20 },	-- Southsea Pirate Hat
-					},
+					["timeline"] = { "removed 4.0.3" },
 					["lvl"] = 40,
+					["groups"] = {
+						objective(1, {	-- 0/20 Southsea Pirate Hat
+							["provider"] = { "i", 20519 },	-- Southsea Pirate Hat
+							["crs"] = {
+								7883,	-- Andre Firebeard
+								8203,	-- Kregg Keelhaul
+								7857,	-- Southsea Dock Worker
+								7856,	-- Southsea Freebooter
+								15685,	-- Southsea Kidnapper
+								7855,	-- Southsea Pirate
+								7858,	-- Southsea Swashbuckler
+							},
+						}),
+					},
 				}),
 				q(648, {	-- Rescue OOX-17/TN!
 					["lvl"] = 43,
@@ -606,22 +734,52 @@ root("Zones", m(KALIMDOR, {
 					["coord"] = { 51.6, 26.8, TANARIS },
 				}),
 				q(654, {	-- Tanaris Field Sampling
-					["provider"] = { "i", 8524 },	-- Model 4711-FTZ Power Source
+					["providers"] = {
+						{ "i", 8524 },	-- Model 4711-FTZ Power Source
+						{ "i", 8523 },	-- Field Testing Kit
+					},
 					["sourceQuests"] = {
 						379,	-- Slake That Thirst
 						841,	-- Another Power Source?
 					},
 					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 8523, 1 },	-- Field Testing Kit
-						{ "i", 9440, 8 },	-- Acceptable Basilisk Sample
-						{ "i", 9441, 8 },	-- Acceptable Hyena Sample
-						{ "i", 9438, 8 },	-- Acceptable Scorpid Sample
-					},
 					["lvl"] = 38,
 					["groups"] = {
-						i(9437),	-- Untested Basilisk Sample
-						i(9439),	-- Untested Hyena Sample
+						objective(1, {	-- 0/8 Acceptable Basilisk Sample
+							["providers"] = {
+								{ "i", 9440 },	-- Acceptable Basilisk Sample
+								{ "i", 9437 },	-- Untested Basilisk Sample
+							},
+							["crs"] = {
+								5419,	-- Glasshide Basilisk
+								5420,	-- Glasshide Gazer
+								5421,	-- Glasshide Petrifier
+							},
+						}),
+						objective(2, {	-- 0/8 Acceptable Hyena Sample
+							["providers"] = {
+								{ "i", 9441 },	-- Acceptable Hyena Sample
+								{ "i", 9439 },	-- Untested Hyena Sample
+							},
+							["crs"] = {
+								5426,	-- Blisterpaw Hyena
+								8208,	-- Murderous Blisterpaw
+								5427,	-- Rabid Blisterpaw
+								5425,	-- Starving Blisterpaw
+							},
+						}),
+						objective(3, {	-- 0/8 Acceptable Scorpid Sample
+							["providers"] = {
+								{ "i", 9438 },	-- Acceptable Scorpid Sample
+								{ "i", 9442 },	-- Untested Scorpid Sample
+							},
+							["crs"] = {
+								7803,	-- Scorpid Duneburrower
+								5424,	-- Scorpid Dunestalker
+								5422,	-- Scorpid Hunter
+								5423,	-- Scorpid Tail Lasher
+							},
+						}),
 					},
 				}),
 				q(5863, {	-- The Dunemaul Compound
@@ -914,6 +1072,22 @@ root("Zones", m(KALIMDOR, {
 					},
 				}),
 			}),
+			n(TREASURES, {
+				o(142184, {	-- Captain's Chest
+					-- #if AFTER CATA
+					["coords"] = {
+						{ 75.3, 45.9, TANARIS },
+						{ 76.4, 45.8, TANARIS },
+					},
+					-- #else
+					["coord"] = { 76.5, 45.8, TANARIS },
+					-- #endif
+					["cost"] = {{ "i", 9249, 1 }},	-- 1x Captain's Key
+					["groups"] = {
+						i(9359),	-- Southsea Lamp (Renamed from Wirt's Third Leg)
+					},
+				}),
+			}),
 			n(VENDORS, {
 				n(5594, {	-- Alchemist Pestlezugg <Alchemy Supplies>
 					["coord"] = { 50.9, 27.0, TANARIS },
@@ -985,40 +1159,88 @@ root("Zones", m(KALIMDOR, {
 				}),
 			}),
 			n(ZONE_DROPS, {
-				i(11206, {	-- Formula: Enchant Cloak - Lesser Agility
+				i(71714, {	-- Formula: Enchant Cloak - Lesser Agility (RECIPE!)
+					["timeline"] = { "added 4.0.3" },
+				}),
+				i(11206, {	-- Formula: Enchant Cloak - Lesser Agility (RECIPE!)
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["crs"] = {
 						5623,	-- Wastewander Assassin
 						7805,	-- Wastewander Scofflaw
 					},
+					-- #endif
+				}),
+				i(72028, {	-- Pattern: Tough Scorpid Boots
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8399, {	-- Pattern: Tough Scorpid Boots
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["cr"] = 5615,	-- Wastewander Rogue
+					-- #endif
+				}),
+				i(72026, {	-- Pattern: Tough Scorpid Bracers
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8397, {	-- Pattern: Tough Scorpid Bracers
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["cr"] = 5617,	-- Wastewander Shadow Mage
+					-- #endif
+				}),
+				i(72029, {	-- Pattern: Tough Scorpid Breastplate
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8395, {	-- Pattern: Tough Scorpid Breastplate
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["cr"] = 5618,	-- Wastewander Bandit
+					-- #endif
+				}),
+				i(72025, {	-- Pattern: Tough Scorpid Gloves
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8398, {	-- Pattern: Tough Scorpid Gloves
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["cr"] = 5616,	-- Wastewander Thief
+					-- #endif
+				}),
+				i(72033, {	-- Pattern: Tough Scorpid Helm
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8402, {	-- Pattern: Tough Scorpid Helm
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["crs"] = {
 						7883,	-- Andre Firebeard
 						5623,	-- Wastewander Assassin
 						7805,	-- Wastewander Scofflaw
 					},
+					-- #endif
+				}),
+				i(72030, {	-- Pattern: Tough Scorpid Leggings
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8401, {	-- Pattern: Tough Scorpid Leggings
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["cr"] = 5615,	-- Wastewander Rogue
+					-- #endif
+				}),
+				i(72027, {	-- Pattern: Tough Scorpid Shoulders
+					["timeline"] = { "added 4.0.3" },
 				}),
 				i(8400, {	-- Pattern: Tough Scorpid Shoulders
+					["timeline"] = { "removed 4.0.3" },
+					-- #if BEFORE 4.0.3
 					["crs"] = {
 						7883,	-- Andre Firebeard
 						5623,	-- Wastewander Assassin
 						7805,	-- Wastewander Scofflaw
 					},
+					-- #endif
 				}),
 				i(9276, {	-- Pirate's Footlocker
 					["crs"] = {
@@ -1031,92 +1253,20 @@ root("Zones", m(KALIMDOR, {
 					["groups"] = {
 						i(9359),	-- Southsea Lamp (Renamed from Wirt's Third Leg)
 						i(9250, {	-- Ship Schedule
-							["questID"] = 2876,	-- Ship Schedules
+							["timeline"] = { "deleted 4.0.3" },
 						}),
 						i(9251, {	-- Upper Map Fragment
-							["questID"] = 2882,	-- Cuergo's Gold
-							["repeatable"] = true,
+							["timeline"] = { "deleted 4.1.0" },
 						}),
 						i(9253, {	-- Middle Map Fragment
-							["questID"] = 2882,	-- Cuergo's Gold
-							["repeatable"] = true,
+							["timeline"] = { "deleted 4.1.0" },
 						}),
 						i(9252, {	-- Lower Map Fragment
-							["questID"] = 2882,	-- Cuergo's Gold
-							["repeatable"] = true,
+							["timeline"] = { "deleted 4.1.0" },
 						}),
 						i(9249, {	-- Captain's Key
 							["description"] = "Unlocks the Captain's Chest located in the ship at the docks.",
-							["coord"] = { 76.5, 45.8, TANARIS },
-							["groups"] = {
-								i(9359),	-- Wirt's Third Leg
-							},
 						}),
-					},
-				}),
-				i(20519, {	-- Southsea Pirate Hat
-					["questID"] = 8365,	-- Pirate Hats Ahoy!
-					["crs"] = {
-						7883,	-- Andre Firebeard
-						8203,	-- Kregg Keelhaul
-						7857,	-- Southsea Dock Worker
-						7856,	-- Southsea Freebooter
-						15685,	-- Southsea Kidnapper
-						7855,	-- Southsea Pirate
-						7858,	-- Southsea Swashbuckler
-					},
-				}),
-				i(9437, {	-- Untested Basilisk Sample
-					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 8523, 1 },	-- Field Testing Kit
-					},
-					["crs"] = {
-						5419,	-- Glasshide Basilisk
-						5420,	-- Glasshide Gazer
-						5421,	-- Glasshide Petrifier
-					},
-					["groups"] = {
-						{
-							["itemID"] = 9440,	-- Acceptable Basilisk Sample
-							["questID"] = 654,	-- Tanaris Field Sampling
-						},
-					},
-				}),
-				i(9439, {	-- Untested Hyena Sample
-					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 8523, 1 },	-- Field Testing Kit
-					},
-					["crs"] = {
-						5426,	-- Blisterpaw Hyena
-						8208,	-- Murderous Blisterpaw
-						5427,	-- Rabid Blisterpaw
-						5425,	-- Starving Blisterpaw
-					},
-					["groups"] = {
-						{
-							["itemID"] = 9441,	-- Acceptable Hyena Sample
-							["questID"] = 654,	-- Tanaris Field Sampling
-						},
-					},
-				}),
-				i(9442, {	-- Untested Scorpid Sample
-					["races"] = HORDE_ONLY,
-					["cost"] = {
-						{ "i", 8523, 1 },	-- Field Testing Kit
-					},
-					["crs"] = {
-						7803,	-- Scorpid Duneburrower
-						5424,	-- Scorpid Dunestalker
-						5422,	-- Scorpid Hunter
-						5423,	-- Scorpid Tail Lasher
-					},
-					["groups"] = {
-						{
-							["itemID"] = 9438,	-- Acceptable Scorpid Sample
-							["questID"] = 654,	-- Tanaris Field Sampling
-						},
 					},
 				}),
 			}),
