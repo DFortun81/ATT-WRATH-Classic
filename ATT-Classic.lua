@@ -7116,7 +7116,7 @@ local itemFields = {
 				end
 			end
 			if any then
-				if not partial and (t.rwp or (t.u and (t.u == 2 or t.u == 3 or t.u == 4))) and app.CollectibleRWP and t.f and app.Settings:GetFilterForRWP(t.f) then
+				if (t.rwp or (t.u and (t.u == 2 or t.u == 3 or t.u == 4))) and app.CollectibleRWP and t.f and app.Settings:GetFilterForRWP(t.f) then
 					if not ATTAccountWideData.RWP[id] then
 						if app.Settings:GetTooltipSetting("Report:Collected") then
 							print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
@@ -10870,6 +10870,7 @@ local function RowOnEnter(self)
 			end
 		end
 		if reference.objectID and app.Settings:GetTooltipSetting("objectID") then GameTooltip:AddDoubleLine(L["OBJECT_ID"], tostring(reference.objectID)); end
+		if reference.speciesID and app.Settings:GetTooltipSetting("speciesID") then GameTooltip:AddDoubleLine(L["SPECIES_ID"], tostring(reference.speciesID)); end
 		if reference.spellID then
 			if app.Settings:GetTooltipSetting("spellID") then GameTooltip:AddDoubleLine(L["SPELL_ID"], tostring(reference.spellID) .. " (" .. (app.GetSpellName(reference.spellID, reference.rank) or "??") .. ")"); end
 			
