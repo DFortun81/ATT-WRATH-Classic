@@ -9052,7 +9052,7 @@ app.GetSpellName = function(spellID, rank)
 	else
 		spellName = GetSpellInfo(spellID);
 	end
-	if spellName and spellName ~= "" then
+	if spellName and spellName ~= "" and spellName ~= RETRIEVING_DATA then
 		if not rawget(app.SpellNameToSpellID, spellName) then
 			rawset(app.SpellNameToSpellID, spellName, spellID);
 			if not rawget(SpellIDToSpellName, spellID) then
@@ -9211,7 +9211,7 @@ local spellFields = {
 		return GetItemInfo(t.itemID) or t.nameAsSpell;
 	end,
 	["nameAsSpell"] = function(t)
-		return GetSpellLink(t.spellID) or RETRIEVING_DATA;
+		return GetSpellLink(t.spellID) or app.GetSpellName(t.spellID) or RETRIEVING_DATA;
 	end,
 	["tsmAsItem"] = function(t)
 		return string.format("i:%d", t.itemID);
@@ -10758,8 +10758,15 @@ local function RowOnEnter(self)
 				local link = reference.link;
 				if link then
 					pcall(GameTooltip.SetHyperlink, GameTooltip, link);
-					if reference.spellID and GetRelativeValue(reference, "requireSkill") == 333 then
-						AttachTooltipSearchResults(GameTooltip, 1, "spellID:" .. reference.spellID, SearchForField, "spellID", reference.spellID);
+					if reference.spellID then
+						local requireSkill = GetRelativeValue(reference, "requireSkill");
+						if requireSkill == 333 then
+							AttachTooltipSearchResults(GameTooltip, 1, "spellID:" .. reference.spellID, SearchForField, "spellID", reference.spellID);
+						elseif requireSkill == 960 then
+							GameTooltip:AddLine(GameTooltipTextLeft1:GetText(), 1, 1, 1, true);
+							GameTooltipTextLeft1:SetText(reference.name);
+							GameTooltip:Show();
+						end
 					end
 				end
 			end
@@ -10870,7 +10877,7 @@ local function RowOnEnter(self)
 			if not reference.collectible and app.Settings:GetTooltipSetting("KnownBy") then
 				local knownBy = {};
 				for _,character in pairs(ATTCharacterData) do
-					if character.ActiveSkills then
+					if character.ActiveSkills and not character.ignored then
 						local skills = character.ActiveSkills[reference.spellID];
 						if skills then table.insert(knownBy, { character, skills[1], skills[2] }); end
 					end
