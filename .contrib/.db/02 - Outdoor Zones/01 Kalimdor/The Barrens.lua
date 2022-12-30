@@ -952,18 +952,15 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 6244,	-- Takar the Seer
 					["sourceQuest"] = 1716,	-- Devourer of Souls [Stormwind City]
 					["coord"] = { 49.2, 57.0, THE_BARRENS },
+					["maps"] = { ASHENVALE },
 					["races"] = { HUMAN, GNOME },
 					["classes"] = { WARLOCK },
-					["cost"] = {
-						{ "i", 6912, 1 },	-- Heartswood
-					},
 					["lvl"] = 20,
 					["groups"] = {
-						{
-							["itemID"] = 6912,	-- Heartswood
-							["questID"] = 1738,	-- Heartswood
+						objective(1, {	-- 0/1 Heartswood
+							["provider"] = { "i", 6912 },	-- Heartswood
 							["coord"] = { 31, 31, ASHENVALE },
-						},
+						}),
 					},
 				}),
 				q(852, {	-- Hezrul Bloodmark
