@@ -985,6 +985,15 @@ CURRENT_TIER = TBC_TIER;
 CURRENT_TIER = CLASSIC_TIER;
 -- #endif
 
+-- Difficulties
+NORMAL_DUNGEON = 1;
+HEROIC_DUNGEON = 2;
+MYTHIC_DUNGEON = 23;
+LFR_RAID = 17;
+NORMAL_RAID = 14;
+HEROIC_RAID = 15;
+MYTHIC_RAID = 16;
+
 -- Unobtainable Filters
 NEVER_IMPLEMENTED = 1;
 REMOVED_FROM_GAME = 2;
@@ -1064,11 +1073,43 @@ SHADOWLANDS_PHASE_ONE = 90;
 -- Done defining Phases for Classic
 -- #endif
 
--- TEMPORARY SHADOWLANDS TIMELINE (BLIZZARD DECIDE TO BREAK UP 9.2.5 and Season 4 Release)
-ADDED_SLS4 = "added 9.2.5.44908";
-REMOVED_SLS4 = "removed 9.2.5.44908";
-REMOVED_DFPRE = "removed 10.0";
-REMOVED_DFREL = "removed 10.0.2";
+-- Timelines
+ADDED_BFA_REL = "added 8.0.1";							-- Battle for Azeroth Launch on August 14th, 2018
+ADDED_BFA_S2 = "added 8.1.0";							-- Battle for Azeroth Season 2 Start on December 11th, 2018
+REMOVED_BFA_S2 = "removed 8.1.0";						-- Battle for Azeroth Season 2 Start on December 11th, 2018
+ADDED_BFA_1_5 = "added 8.1.5";							-- Battle for Azeroth 8.1.5 Start on March 19th, 2019
+REMOVED_BFA_1_5 = "removed 8.1.5";						-- Battle for Azeroth 8.1.5 Start on March 19th, 2019
+ADDED_BFA_S3 = "added 8.2.0";							-- Battle for Azeroth Season 3 Start on June 25th, 2019
+REMOVED_BFA_S3 = "removed 8.2.0";						-- Battle for Azeroth Season 3 Start on June 25th, 2019
+ADDED_BFA_2_5 = "added 8.2.5";							-- Battle for Azeroth 8.2.5 Start on September 24th, 2019
+REMOVED_BFA_2_5 = "removed 8.2.5";						-- Battle for Azeroth 8.2.5 Start on September 24th, 2019
+ADDED_BFA_S4 = "added 8.3.0";							-- Battle for Azeroth Season 4 Start on January 14th, 2020
+REMOVED_BFA_S4 = "removed 8.3.0";						-- Battle for Azeroth Season 4 Start on January 14th, 2020
+--
+ADDED_SL_PRE = "added 9.0.1";							-- Shadowlands Pre-Patch on October 13th, 2020
+REMOVED_SL_PRE = "removed 9.0.1";						-- Shadowlands Pre-Patch on October 13th, 2020
+ADDED_SL_REL = "added 9.0.2";							-- Shadowlands Launch on November 23rd, 2020
+ADDED_SL_0_5 = "added 9.0.5";							-- Shadowlands 9.0.5 Start on March 9th, 2021
+ADDED_SL_S2 = "added 9.1.0.39185";						-- Shadowlands Season 2 Start on June 29th, 2021
+REMOVED_SL_S2 = "removed 9.1.0";						-- Shadowlands Season 2 Start on June 29th, 2021
+ADDED_SL_1_5 = "added 9.1.5";							-- Shadowlands 9.1.5 Start on November 2nd, 2021
+ADDED_SL_S3 = "added 9.2.0";							-- Shadowlands Season 3 Start on February 22nd, 2022
+REMOVED_SL_S3 = "added 9.2.0.42488";					-- Shadowlands Season 3 Start on February 22nd, 2022
+ADDED_SL_S4 = "added 9.2.5.44908";						-- Shadowlands Season 4 Start on May 31, 2022
+REMOVED_SL_S4 = "removed 9.2.5.44908";					-- Shadowlands Season 4 Start on May 31, 2022
+ADDED_SL_2_7 = "added 9.2.7";							-- Shadowlands 9.2.7 Start on August 16, 2022
+--
+CREATED_DF_PRE = "created 10.0.0";						-- First phase of Dragonflight pre-patch on October 25th, 2022
+ADDED_DF_PRE = "added 10.0.0";							-- First phase of Dragonflight pre-patch on October 25th, 2022
+REMOVED_DF_PRE = "removed 10.0.0";						-- First phase of Dragonflight pre-patch on October 25th, 2022
+ADDED_DF_PRE2 = "added 10.0.2"							-- Second phase of Dragonflight pre-patch on November 15th, 2022
+TIMELINE_DF_PRE2 = { CREATED_DF_PRE, ADDED_DF_PRE2 };	-- Second phase of Dragonflight pre-patch on November 15th, 2022
+REMOVED_DF_PRE2 = "removed 10.0.2";						-- Second phase of Dragonflight pre-patch on November 15th, 2022
+ADDED_DF_REL = "added 10.0.2.46801";					-- Dragonflight Launch on November 28th, 2022
+TIMELINE_DF_REL = { CREATED_DF_PRE, ADDED_DF_REL };		-- Dragonflight Launch on November 28th, 2022
+REMOVED_DF_REL = "removed 10.0.2.46801";				-- Dragonflight Launch on November 28th, 2022
+ADDED_DF_S2 = "added 10.1.0";							-- Dragonflight Season 2 Start on
+REMOVED_DF_S2 = "removed 10.1.0";						-- Dragonflight Season 2 Start on
 
 -- Holiday Filters
 BREWFEST = 1000;
