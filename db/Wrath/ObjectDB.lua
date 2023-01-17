@@ -693,6 +693,7 @@ _.ObjectNames = {
 	[330168] = "Contained Alemental",
 	[330169] = "Direbrew Cog",
 	[330170] = "Hozen Totem",
+	[357515] = "Sack of Oats",
 	[369893] = "Urgent Missive",
 };
 _.ObjectIcons = {
