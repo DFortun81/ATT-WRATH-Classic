@@ -311,7 +311,9 @@ for i=1,MAX_CREATURES_PER_ENCOUNTER do
 	model:SetFacing(MODELFRAME_DEFAULT_ROTATION);
 	fi = math.floor(i / 2);
 	model:SetPosition(fi * -0.1, (fi * (i % 2 == 0 and -1 or 1)) * ((MAX_CREATURES_PER_ENCOUNTER - i) * 0.1), fi * 0.2 - 0.3);
-	model:SetDepth(i);
+	if model.SetDepth then
+		model:SetDepth(i);
+	end
 	model:Hide();
 	tinsert(GameTooltipModel.Models, model);
 end
@@ -12589,7 +12591,11 @@ function app:GetWindow(suffix, parent, onUpdate)
 		window:SetMovable(true);
 		window:SetResizable(true);
 		window:SetPoint("CENTER");
-		window:SetMinResize(32, 32);
+		if window.SetResizeBounds then
+			window:SetResizeBounds(96, 32);
+		else
+			window:SetMinResize(96, 32);
+		end
 		window:SetSize(300, 300);
 		window:SetUserPlaced(true);
 		window.data = {
