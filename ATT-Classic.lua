@@ -2883,6 +2883,7 @@ end
 fieldCache["achievementID"] = {};
 fieldCache["creatureID"] = {};
 fieldCache["currencyID"] = {};
+fieldCache["currencyIDAsCost"] = {};
 fieldCache["explorationID"] = {};
 fieldCache["factionID"] = {};
 fieldCache["flightPathID"] = {};
@@ -3033,7 +3034,7 @@ fieldConverters = {
 				elseif v[1] == "o" and v[2] > 0 then
 					cacheObjectID(group, v[2]);
 				elseif v[1] == "c" and v[2] > 0 then
-					CacheField(group, "currencyID", v[2]);
+					CacheField(group, "currencyIDAsCost", v[2]);
 				end
 			end
 		end
@@ -6130,11 +6131,91 @@ local fields = {
 	["link"] = function(t)
 		return GetCurrencyLink(t.currencyID, 1);
 	end,
+	["collectible"] = function(t)
+		return t.collectibleAsCost;
+	end,
+	["collectibleAsCost"] = function(t)
+		local id = t.currencyID;
+		local results = app.SearchForField("currencyIDAsCost", id, true);
+		if results and #results > 0 then
+			if not t.parent or not t.parent.saved then
+				for _,ref in pairs(results) do
+					if ref.currencyID ~= id and app.RecursiveGroupRequirementsFilter(ref) then
+						if ref.collectible and not ref.collected then
+							return true;
+						elseif ref.total and ref.total > 0 then
+							return true;
+						end
+					end
+				end
+			end
+			return false;
+		elseif t.metaAfterFailure then
+			setmetatable(t, t.metaAfterFailure);
+			return false;
+		end
+	end,
+	["collectibleAsCostAfterFailure"] = function(t)
+		return false;
+	end,
+	["collected"] = function(t)
+		return t.collectedAsCost;
+	end,
+	["collectedAsCost"] = function(t)
+		local id, any, partial = t.currencyID;
+		local results = app.SearchForField("currencyIDAsCost", id, true);
+		if results and #results > 0 then
+			local count = select(2, GetCurrencyInfo(id)) or 0;
+			for _,ref in pairs(results) do
+				if ref.currencyID ~= id and app.RecursiveDefaultClassAndRaceFilter(ref) then
+					if ref.collectible and ref.collected ~= 1 then
+						if ref.cost then
+							for k,v in ipairs(ref.cost) do
+								if v[2] == id and v[1] == "c" then
+									if count >= (v[3] or 1) then
+										partial = true;
+									else
+										return false;
+									end
+								end
+							end
+						end
+					elseif (ref.total and ref.total > 0 and not GetRelativeField(t, "parent", ref) and ref.progress < ref.total) then
+						if ref.cost then
+							for k,v in ipairs(ref.cost) do
+								if v[2] == id and v[1] == "c" then
+									if count >= (v[3] or 1) then
+										partial = true;
+									else
+										return false;
+									end
+								end
+							end
+						end
+					end
+					any = true;
+				end
+			end
+			if any then
+				return partial and 2 or 1;
+			end
+		end
+	end,
+	["collectedAsCostAfterFailure"] = function(t)
+		
+	end,
 };
 app.BaseCurrencyClass = app.BaseObjectFields(fields);
 app.CreateCurrencyClass = function(id, t)
 	return setmetatable(constructor(id, t, "currencyID"), app.BaseCurrencyClass);
 end
+(function()
+local fieldsAfterFailure = RawCloneData(fields);
+fieldsAfterFailure.collectibleAsCost = fields.collectibleAsCostAfterFailure;
+fieldsAfterFailure.collectedAsCost = fields.collectedAsCostAfterFailure;
+local newMeta = app.BaseObjectFields(fieldsAfterFailure);
+fields.metaAfterFailure = function(t) return newMeta; end;
+end)();
 end)();
 
 -- Death Tracker Lib
