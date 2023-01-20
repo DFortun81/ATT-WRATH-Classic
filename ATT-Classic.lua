@@ -4627,7 +4627,7 @@ end,
 ["EXPLORATION_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
-		local clone = app.CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.areas)).data;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.areas)).data;
 		clone.description = t.description;
 		return true;
 	end
@@ -4660,7 +4660,7 @@ end,
 ["EXALTED_REP_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
-		local clone = app.CreateMiniListForGroup(app.CreateAchievement(t[t.key], { t.rep })).data;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], { t.rep })).data;
 		clone.description = t.description;
 		return true;
 	end
@@ -4726,7 +4726,7 @@ end,
 ["EXALTED_REPS_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
-		local clone = app.CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.reps)).data;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.reps)).data;
 		clone.description = t.description;
 		return true;
 	end
@@ -4887,7 +4887,7 @@ end,
 ["LOREMASTER_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
-		local clone = app.CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.quests)).data;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.quests)).data;
 		clone.description = t.description;
 		return true;
 	end
@@ -4895,7 +4895,7 @@ end,
 ["LOREMASTER_CONTINENT_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
-		local clone = app.CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.structures)).data;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.structures)).data;
 		clone.description = t.description;
 		return true;
 	end
@@ -4959,7 +4959,7 @@ end,
 ["META_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
-		local clone = app.CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.achievements)).data;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.achievements)).data;
 		clone.description = t.description;
 		return true;
 	end
@@ -10014,7 +10014,7 @@ app.CreateMinimapButton = CreateMinimapButton;
 
 -- Row Helper Functions
 local CreateRow;
-local function CreateMiniListForGroup(group, retried)
+function app:CreateMiniListForGroup(group, retried)
 	local achievementID = group.achievementID;
 	if achievementID and not retried then
 		if group.criteriaID or not group.g then
@@ -10030,7 +10030,7 @@ local function CreateMiniListForGroup(group, retried)
 					end
 				end
 				if bestResult then
-					return CreateMiniListForGroup(bestResult, true);
+					return app:CreateMiniListForGroup(bestResult, true);
 				end
 			end
 		end
@@ -10781,7 +10781,7 @@ local function RowOnClick(self, button)
 			if IsAltKeyDown() then
 				AddTomTomWaypoint(reference, false);
 			elseif self.index > 0 then
-				CreateMiniListForGroup(self.ref);
+				app:CreateMiniListForGroup(self.ref);
 			else
 				app.Settings:Open();
 			end
@@ -11471,8 +11471,7 @@ CreateRow = function(self)
 	ClearRowData(row);
 	return row;
 end
-app.CreateMiniListForGroup = CreateMiniListForGroup;
- 
+
 -- Collection Window Creation
 app.Windows = {};
 local function OnScrollBarMouseWheel(self, delta)
@@ -16198,7 +16197,7 @@ SlashCmdList["ATTC"] = function(cmd)
 		
 		-- Search for the Link in the database
 		local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		if group then CreateMiniListForGroup(group); end
+		if group then app:CreateMiniListForGroup(group); end
 	else
 		-- Default command
 		app.ToggleMainList();
@@ -16273,7 +16272,7 @@ function ItemRefTooltip:SetHyperlink(link, a, b, c, d, e, f)
 		-- Search for the Link in the database
 		local cmd = linkType .. ":" .. id;
 		local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		if group then CreateMiniListForGroup(group); end
+		if group then app:CreateMiniListForGroup(group); end
 	end
 end
 
@@ -16595,7 +16594,7 @@ app.events.VARIABLES_LOADED = function()
 		local oldGroupBulletinBoard_Addon_ClickDungeon = GroupBulletinBoard_Addon.ClickDungeon;
 		GroupBulletinBoard_Addon.ClickDungeon = function(self,button,...)
 			if button == "RightButton" and self.attRef and IsShiftKeyDown() then
-				CreateMiniListForGroup(self.attRef);
+				app:CreateMiniListForGroup(self.attRef);
 				return;
 			end
 			oldGroupBulletinBoard_Addon_ClickDungeon(self, button, ...);
