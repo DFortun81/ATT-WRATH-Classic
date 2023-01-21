@@ -993,6 +993,7 @@ local CompanionPetSpellIDToSpeciesID = {
 	-- #if ANYCLASSIC
 	-- #if AFTER WRATH
 	[384796] = 384796,	-- Pebble
+	[388541] = 388541,	-- Hoplet
 	-- #endif
 	-- #endif
 };
