@@ -2105,5 +2105,6 @@ p(3249, {			-- Lil' Ursoc
 -----------------
 -- #if AFTER WRATH
 pet(198665, 384796);	-- Pebble's Pebble
+pet(200060, 388541);	-- Hoplet
 -- #endif
 -- #endif
