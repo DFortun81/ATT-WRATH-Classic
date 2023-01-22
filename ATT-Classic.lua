@@ -1624,7 +1624,7 @@ ResolveSymbolicLink = function(o)
 							cache = app.SearchForField("questID", assetID);
 						elseif criteriaType == 36 or criteriaType == 42 then
 							criteriaObject.providers = {{ "i", assetID }};
-						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 then
+						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 or criteriaType == 52 or criteriaType == 53 then
 							-- Ignored
 						else
 							print("Unhandled Criteria Type", criteriaType, assetID);
@@ -8604,7 +8604,7 @@ local fields = {
 		return t.r == Enum.FlightPathFaction.Alliance and 1 or 0;
 	end,
 	["lifetimeRank"] = function(t)
-		return select(3, GetPVPLifetimeStats());
+		return select(3, GetPVPLifetimeStats()) or 0;
 	end,
 	["collectible"] = function(t)
 		return app.CollectiblePVPRanks;
