@@ -1595,8 +1595,9 @@ root("Achievements", {
 			["groups"] = {
 				i(44175, {	-- Plagued Proto-Drake (MOUNT!)
 					-- #if ANYCLASSIC
+					-- They didn't actually remove this with Phase 2... Blizzard?!
 					["OnUpdate"] = [[function(t)
-						if ATTClassicSettings.Unobtainables[]] .. WRATH_PHASE_TWO .. [[] then
+						if ATTClassicSettings.Unobtainables[]] .. CATA_PHASE_ONE .. [[] then
 							t.u = ]] .. REMOVED_FROM_GAME .. [[;
 							t.rwp = nil;
 						else
@@ -1637,8 +1638,9 @@ root("Achievements", {
 			["groups"] = {
 				i(44164, {	-- Black Proto-Drake (MOUNT!)
 					-- #if ANYCLASSIC
+					-- They didn't actually remove this with Phase 2... Blizzard?!
 					["OnUpdate"] = [[function(t)
-						if ATTClassicSettings.Unobtainables[]] .. WRATH_PHASE_TWO .. [[] then
+						if ATTClassicSettings.Unobtainables[]] .. CATA_PHASE_ONE .. [[] then
 							t.u = ]] .. REMOVED_FROM_GAME .. [[;
 							t.rwp = nil;
 						else
