@@ -95,7 +95,7 @@ local INSANE_IN_THE_MEMBRANE_OnClick = [[function(row, button)
 			t.ravenholdt,
 			t.shendralar,
 		};
-		local clone = _.CreateMiniListForGroup(_.CreateNPC(t[t.key], template)).data;
+		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
 		clone.description = t.description;
 		return true;
 	end

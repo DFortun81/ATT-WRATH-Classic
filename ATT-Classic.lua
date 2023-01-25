@@ -8998,6 +8998,9 @@ local fields = {
 			end
 		end
 	end,
+	["hash"] = function(t)
+		return "ob:" .. t.objectiveID .. ":" .. (t.questID or 0);
+	end,
 	["objectiveID"] = function(t)
 		return 1;
 	end,
