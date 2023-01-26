@@ -4396,6 +4396,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			local achievementID = t.achievementID;
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
+				if app.AccountWideAchievements and ATTAccountWideData.Achievements[achievementID] then return 2; end
 				local criteriaID = t.criteriaID;
 				if criteriaID then
 					if criteriaID <= GetAchievementNumCriteria(achievementID) then
