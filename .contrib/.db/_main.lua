@@ -1530,11 +1530,11 @@ bubbleDownAndReplace = function(data, t)
 			for key, value in pairs(data) do
 				t[key] = value;
 			end
-			bubbleDown(data, t.groups);
-			bubbleDown(data, t.g);
+			bubbleDownAndReplace(data, t.groups);
+			bubbleDownAndReplace(data, t.g);
 		elseif isarray(t) then
 			for i,group in ipairs(t) do
-				bubbleDown(data, group);
+				bubbleDownAndReplace(data, group);
 			end
 		else
 			for key, value in pairs(data) do
@@ -1674,9 +1674,9 @@ icon = function(path)
 end
 
 -- Classic / Retail Helper Functions
-applyclassicphase = function(phase, data)
+applyclassicphase = function(phase, data, force)
 	-- #if ANYCLASSIC
-	return bubbleDown({ ["u"] = phase }, data);
+	return (force and bubbleDownAndReplace or bubbleDown)({ ["u"] = phase }, data);
 	-- #else
 	return data;
 	-- #endif
