@@ -1268,16 +1268,18 @@ MergeClone = function(g, o)
 	local clone = CreateObject(o);
 	local u = GetRelativeValue(o, "u");
 	if u then clone.u = u; end
-	local r = GetRelativeValue(o, "r");
-	if r then
-		clone.r = r;
-		clone.races = nil;
-	else
-		local races = GetRelativeValue(o, "races");
-		if races then clone.races = RawCloneArray(races); end
+	if not o.itemID or o.b == 1 then
+		local r = GetRelativeValue(o, "r");
+		if r then
+			clone.r = r;
+			clone.races = nil;
+		else
+			local races = GetRelativeValue(o, "races");
+			if races then clone.races = RawCloneArray(races); end
+		end
+		local c = GetRelativeValue(o, "c");
+		if c then clone.c = RawCloneArray(c); end
 	end
-	local c = GetRelativeValue(o, "c");
-	if c then clone.c = RawCloneArray(c); end
 	return MergeObject(g, clone);
 end
 end)();
