@@ -11194,7 +11194,7 @@ local function RowOnEnter(self)
 				for i,race in ipairs(reference.races) do
 					local info = C_CreatureInfo.GetRaceInfo(race);
 					if info then
-						if i > 1 then str = str .. "*, "; end
+						if i > 1 then str = str .. ", "; end
 						str = str .. info.raceName;
 					end
 				end
