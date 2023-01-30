@@ -3242,12 +3242,12 @@ local function SearchForLink(link)
 							end
 						end
 					end
-					return SearchForField("itemID", itemID);
+					return SearchForField("itemID", itemID), "itemID", itemID;
 				end
 			end
 		end
 	else
-		local kind, id, paramA, paramB = strsplit(":", link);
+		local kind, id = strsplit(":", link);
 		kind = string.gsub(string.lower(kind), "id", "ID");
 		if string.sub(kind,1,2) == "|c" then
 			kind = string.sub(kind,11);
@@ -3274,8 +3274,8 @@ local function SearchForLink(link)
 			kind = "spellID";
 		end
 		local cache = SearchForField(kind, id) or {};
-		if #cache == 0 then tinsert(cache, CreateObject({ [kind] = id, ["description"] = "@Crieve: This has not been sourced in ATT yet!" })); end
-		return cache;
+		if #cache == 0 then tinsert(cache, CreateObject({ ["key"] = kind, [kind] = id, ["description"] = "@Crieve: This has not been sourced in ATT yet!" })); end
+		return cache, kind, id;
 	end
 end
 local function SearchForMissingItemsRecursively(group, listing)
