@@ -1089,7 +1089,7 @@ local IsQuestFlaggedCompletedForObject = function(t)
 end
 
 -- Search Caching
-local searchCache, CreateObject, MergeObject, MergeObjects = {};
+local searchCache, CreateObject, MergeClone, MergeObject, MergeObjects = {};
 app.searchCache = searchCache;
 (function()
 local keysByPriority = {	-- Sorted by frequency of use.
@@ -1195,45 +1195,8 @@ CreateObject = function(t)
 	end
 end
 MergeObjects = function(g, g2)
-	if #g2 > 25 then
-		local hashTable,t = {};
-		for i,o in ipairs(g) do
-			local hash = GetHash(o);
-			if hash then
-				hashTable[hash] = o;
-			end
-		end
-		for i,o in ipairs(g2) do
-			local hash = GetHash(o);
-			if hash then
-				t = hashTable[hash];
-				if t then
-					if o.g then
-						local og = o.g;
-						o.g = nil;
-						if t.g then
-							MergeObjects(t.g, og);
-						else
-							t.g = og;
-						end
-					end
-					for k,v in pairs(o) do
-						if k ~= "expanded" then
-							rawset(t, k, v);
-						end
-					end
-				else
-					hashTable[hash] = o;
-					tinsert(g, o);
-				end
-			else
-				tinsert(g, o);
-			end
-		end
-	else
-		for i,o in ipairs(g2) do
-			MergeObject(g, o);
-		end
+	for i,o in ipairs(g2) do
+		MergeObject(g, o);
 	end
 end
 MergeObject = function(g, t, index)
@@ -1251,10 +1214,38 @@ MergeObject = function(g, t, index)
 					end
 				end
 				for k,v in pairs(t) do
-					if k ~= "expanded" then
+					if k == "races" or k == "c" then
+						local c = rawget(o, k);
+						if not c then
+							c = RawCloneArray(v);
+							if o.itemID and o.itemID == 46752 then
+								for _,p in ipairs(c) do
+									print("INSERTING (CLONE)", p, C_CreatureInfo.GetRaceInfo(p).raceName);
+								end
+							end
+							rawset(o, k, c);
+						else
+							for _,p in ipairs(v) do
+								if not contains(c, p) then
+									if o.itemID and o.itemID == 46752 then
+										print("INSERTING", p, C_CreatureInfo.GetRaceInfo(p).raceName);
+									end
+									tinsert(c, p);
+								end
+							end
+						end
+					elseif k == "r" then
+						if o[k] and o[k] ~= v then
+							rawset(o, k, nil);
+						else
+							rawset(o, k, v);
+						end
+					elseif k ~= "expanded" then
 						rawset(o, k, v);
 					end
 				end
+				rawset(o, "nmr", (o.races and not contains(o.races, app.RaceIndex)) or (o.r and o.r ~= app.FactionID));
+				rawset(o, "nmc", o.c and not contains(o.c, app.ClassIndex));
 				return o;
 			end
 		end
@@ -1264,7 +1255,30 @@ MergeObject = function(g, t, index)
 	else
 		tinsert(g, t);
 	end
+	if t.itemID and t.itemID == 46752 and t.races then
+		for _,p in ipairs(t.races) do
+			print("INSERTING (BASE)", p, C_CreatureInfo.GetRaceInfo(p).raceName);
+		end
+	end
+	rawset(t, "nmr", (t.races and not contains(t.races, app.RaceIndex)) or (t.r and t.r ~= app.FactionID));
+	rawset(t, "nmc", t.c and not contains(t.c, app.ClassIndex));
 	return t;
+end
+MergeClone = function(g, o)
+	local clone = CreateObject(o);
+	local u = GetRelativeValue(o, "u");
+	if u then clone.u = u; end
+	local r = GetRelativeValue(o, "r");
+	if r then
+		clone.r = r;
+		clone.races = nil;
+	else
+		local races = GetRelativeValue(o, "races");
+		if races then clone.races = RawCloneArray(races); end
+	end
+	local c = GetRelativeValue(o, "c");
+	if c then clone.c = RawCloneArray(c); end
+	return MergeObject(g, clone);
 end
 end)();
 local function ExpandGroupsRecursively(group, expanded, manual)
@@ -1971,16 +1985,16 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				local reagentCache = app.GetDataSubMember("Reagents", itemID);
 				if reagentCache then
 					for spellID,count in pairs(reagentCache[1]) do
-						MergeObject(recipes, CreateObject({ ["spellID"] = spellID, ["collectible"] = false, ["count"] = count }));
+						MergeClone(recipes, { ["spellID"] = spellID, ["collectible"] = false, ["count"] = count });
 					end
 					for craftedItemID,count in pairs(reagentCache[2]) do
-						MergeObject(crafted, CreateObject({ ["itemID"] = craftedItemID, ["count"] = count }));
+						MergeClone(crafted, { ["itemID"] = craftedItemID, ["count"] = count });
 						local searchResults = app.SearchForField("itemID", craftedItemID);
 						if searchResults and #searchResults > 0 then
 							for i,o in ipairs(searchResults) do
 								if not o.itemID and o.cost then
 									-- Reagent for something that crafts a thing required for something else.
-									MergeObject(group, CreateObject({ ["itemID"] = craftedItemID, ["count"] = count, ["g"] = { CreateObject(o) } }));
+									MergeClone(group, { ["itemID"] = craftedItemID, ["count"] = count, ["g"] = { CreateObject(o) } });
 								end
 							end
 						end
@@ -1988,27 +2002,6 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				end
 			end
 		end
-		
-		--[[
-		if paramA == "currencyID" then
-			local costResults = app.SearchForField("currencyIDAsCost", paramB);
-			if costResults and #costResults > 0 then
-				for i,o in ipairs(costResults) do
-					MergeObject(group, o);
-				end
-			end
-		elseif paramA == "itemID" then
-			local costResults = app.SearchForField("itemIDAsCost", paramB);
-			if costResults and #costResults > 0 then
-				for i,o in ipairs(costResults) do
-					if o.itemID ~= paramB then
-						print(o.key, o[o.key], o.text);
-						MergeObject(group, o);
-					end
-				end
-			end
-		end
-		]]
 		
 		-- Create a list of sources
 		if app.Settings:GetTooltipSetting("SourceLocations") and (not paramA or (app.Settings:GetTooltipSetting(paramA == "creatureID" and "SourceLocations:Creatures" or "SourceLocations:Things"))) then
@@ -2118,7 +2111,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 		if not group.g then
 			local merged = {};
 			for i,o in ipairs(group) do
-				MergeObject(merged, CreateObject(o));
+				MergeClone(merged, o);
 			end
 			if #merged == 1 and merged[1][paramA] == paramB then
 				group = merged[1];
@@ -2126,7 +2119,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				if symbolicLink then
 					if group.g and #group.g >= 0 then
 						for j=1,#symbolicLink,1 do
-							MergeObject(group.g, CreateObject(symbolicLink[j]));
+							MergeClone(group.g, symbolicLink[j]);
 						end
 					else
 						for j=#symbolicLink,1,-1 do
@@ -2142,7 +2135,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						o.symbolized = true;
 						if o.g and #o.g >= 0 then
 							for j=1,#symbolicLink,1 do
-								MergeObject(o.g, CreateObject(symbolicLink[j]));
+								MergeClone(o.g, symbolicLink[j]);
 							end
 						else
 							for j=#symbolicLink,1,-1 do
@@ -2157,31 +2150,8 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			end
 		end
 		
-		
-		
 		-- Resolve Cost
-		--[[
-		if paramA == "currencyID" then
-			local costResults = app.SearchForField("currencyIDAsCost", paramB);
-			if costResults and #costResults > 0 then
-				if not group.g then group.g = {} end
-				for i,o in ipairs(costResults) do
-					MergeObject(group.g, o);
-				end
-			end
-		elseif paramA == "itemID" or (paramA == "s" and group.itemID) then
-			local costResults = app.SearchForField("itemIDAsCost", group.itemID or paramB);
-			if costResults and #costResults > 0 then
-				if not group.g then group.g = {} end
-				for i,o in ipairs(costResults) do
-					if o.itemID ~= paramB then
-						MergeObject(group.g, o);
-					end
-				end
-			end
-		end
-		]]
-		-- Resolve Cost
+		--print("GetCachedSearchResults", paramA, paramB);
 		if paramA == "currencyID" then
 			local costResults = app.SearchForField("currencyIDAsCost", paramB);
 			if costResults and #costResults > 0 then
@@ -2190,7 +2160,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				usedToBuy.text = "Currency For";
 				if not usedToBuy.g then usedToBuy.g = {}; end
 				for i,o in ipairs(costResults) do
-					MergeObject(usedToBuy.g, CreateObject(o));
+					MergeClone(usedToBuy.g, o);
 				end
 				MergeObject(group.g, usedToBuy);
 			end
@@ -2214,7 +2184,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 							MergeObject(attunement.g, d);
 						end
 					else
-						MergeObject(usedToBuy.g, CreateObject(o));
+						MergeClone(usedToBuy.g, o);
 					end
 				end
 				if #attunement.g > 0 then
@@ -3042,7 +3012,7 @@ fieldConverters = {
 		end
 	end,
 	["c"] = function(group, value)
-		if not containsValue(value, app.ClassIndex) then
+		if not contains(value, app.ClassIndex) then
 			rawset(group, "nmc", true); -- "Not My Class"
 		end
 	end,
@@ -3052,7 +3022,7 @@ fieldConverters = {
 		end
 	end,
 	["races"] = function(group, value)
-		if not containsValue(value, app.RaceIndex) then
+		if not contains(value, app.RaceIndex) then
 			rawset(group, "nmr", true);	-- "Not My Race"
 		end
 	end,
@@ -3256,8 +3226,8 @@ local function SearchForLink(link)
 			kind = string.sub(kind,3);
 		end
 		if id then id = tonumber(strsplit("|[", id) or id); end
-		--print(kind, id, paramA, paramB);
-		--print(string.gsub(string.gsub(link, "|c", "c"), "|h", "h"));
+		--print("SearchForLink A:", kind, id);
+		--print("SearchForLink B:", string.gsub(string.gsub(link, "|c", "c"), "|h", "h"));
 		if kind == "i" then
 			kind = "itemID";
 		elseif kind == "quest" or kind == "q" then
@@ -6835,7 +6805,7 @@ local fields = {
 	end,
 	["nmc"] = function(t)
 		local c = t.c;
-		if c and not containsValue(c, app.ClassIndex) then
+		if c and not contains(c, app.ClassIndex) then
 			rawset(t, "nmc", true); -- "Not My Class"
 			return true;
 		end
@@ -10295,6 +10265,84 @@ function app:CreateMiniListForGroup(group, retried)
 			end
 		end
 		
+		--[[
+		local currencyID = group.currencyID;
+		if currencyID and not popout.data.usedtobuy then
+			local searchResults = SearchForField("currencyIDAsCost", currencyID);
+			if searchResults and #searchResults > 0 then
+				local usedtobuy = {};
+				usedtobuy.g = {};
+				usedtobuy.text = "Used to Buy";
+				usedtobuy.icon = "Interface\\Icons\\INV_Misc_Coin_01";
+				usedtobuy.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
+				usedtobuy.OnTooltip = function(t)
+					local total = 0;
+					for _,o in ipairs(t.g) do
+						if o.visible then
+							if o.cost then
+								for k,v in ipairs(o.cost) do
+									if v[1] == "c" and v[2] == currencyID then
+										total = total + (v[3] or 1);
+									end
+								end
+							end
+							if o.providers then
+								for k,v in ipairs(o.providers) do
+									if v[1] == "c" and v[2] == currencyID then
+										total = total + (v[3] or 1);
+									end
+								end
+							end
+						end
+					end
+					GameTooltip:AddDoubleLine("Total Needed", total);
+				end
+				MergeObjects(usedtobuy.g, searchResults);
+				if not popout.data.g then popout.data.g = {}; end
+				tinsert(popout.data.g, usedtobuy);
+				popout.data.usedtobuy = usedtobuy;
+			end
+		end
+		
+		local itemID = group.itemID;
+		if itemID and not popout.data.tradedin then
+			local searchResults = SearchForField("itemIDAsCost", itemID);
+			if searchResults and #searchResults > 0 then
+				local tradedin = {};
+				tradedin.g = {};
+				tradedin.text = "Used For";
+				tradedin.icon = "Interface\\Icons\\INV_Misc_Coin_01";
+				tradedin.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
+				tradedin.OnTooltip = function(t)
+					local total = 0;
+					for _,o in ipairs(t.g) do
+						if o.visible then
+							if o.cost then
+								for k,v in ipairs(o.cost) do
+									if v[1] == "i" and v[2] == itemID then
+										total = total + (v[3] or 1);
+									end
+								end
+							end
+							if o.providers then
+								for k,v in ipairs(o.providers) do
+									if v[1] == "i" and v[2] == itemID then
+										total = total + (v[3] or 1);
+									end
+								end
+							end
+						end
+					end
+					GameTooltip:AddDoubleLine("Total Needed", total);
+				end
+				MergeObjects(tradedin.g, searchResults);
+				if not popout.data.g then popout.data.g = {}; end
+				tinsert(popout.data.g, tradedin);
+				popout.data.tradedin = tradedin;
+			end
+		end
+		]]--
+		
 		if popout.data.key then
 			if group.cost and type(group.cost) == "table" then
 				local costGroup = {
@@ -12000,11 +12048,10 @@ function app:GetDataCache()
 			return calculateAccessibility(a) <= calculateAccessibility(b);
 		end
 		local buildCategoryEntry = function(self, headers, searchResults, inst)
-			local atLeastOne, header, headerType = false, self;
+			local sources, header, headerType = {}, self;
 			for j,o in ipairs(searchResults) do
 				if not o.u or o.u ~= 1 then
-					atLeastOne = true;
-					for key,value in pairs(o) do rawset(inst, key, value); end
+					MergeClone(sources, o);
 					if o.parent then
 						if not o.sourceQuests then
 							local questID = GetRelativeValue(o, "questID");
@@ -12045,7 +12092,7 @@ function app:GetDataCache()
 						elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == -1 then
 							headerType = "drop";
 						elseif o.parent.npcID then
-							headerType = o.parent.parent.headerID == -2 and -2 or "drop";
+							headerType = GetDeepestRelativeValue(o, "headerID") or o.parent.parent.headerID == -2 and -2 or "drop";
 						elseif GetRelativeValue(o, "isCraftedCategory") then
 							headerType = "crafted";
 						elseif o.parent.achievementID then
@@ -12066,54 +12113,8 @@ function app:GetDataCache()
 					end
 				end
 			end
-			if not atLeastOne then return nil; end
-			local sources, sourcesByItemID, sourcesBySpellID = {}, {}, {};
-			for j,o in ipairs(searchResults) do
-				local source;
-				if o.itemID then
-					source = sourcesByItemID[o.itemID];
-					if not source then
-						source = {};
-						source.itemID = o.itemID;
-						tinsert(sources, source);
-						sourcesByItemID[o.itemID] = source;
-					end
-				elseif o.spellID then
-					source = sourcesBySpellID[o.spellID];
-					if not source then
-						source = {};
-						tinsert(sources, source);
-						sourcesBySpellID[o.spellID] = source;
-					end
-				end
-				if source then
-					if o.requireSkill then source.requireSkill = o.requireSkill; end
-					local u = GetRelativeValue(o, "u");
-					if u then source.u = u; end
-					local r = GetRelativeValue(o, "r");
-					if r then
-						source.r = r;
-						if r ~= app.FactionID then
-							rawset(source, "nmr", true);	-- "Not My Race"
-						end
-					end
-					local races = GetRelativeValue(o, "races");
-					if races then
-						source.races = races;
-						if not containsValue(races, app.RaceIndex) then
-							rawset(source, "nmr", true);	-- "Not My Race"
-						end
-					end
-					local c = GetRelativeValue(o, "c");
-					if c then
-						source.c = c;
-						if not containsValue(c, app.ClassIndex) then
-							rawset(source, "nmc", true); -- "Not My Class"
-						end
-					end
-				end
-			end
 			local count = #sources;
+			if count == 0 then return nil; end
 			if count == 1 then
 				for key,value in pairs(sources[1]) do
 					inst[key] = value;
@@ -12168,7 +12169,7 @@ function app:GetDataCache()
 			inst.progress = nil;
 			inst.total = nil;
 			inst.g = nil;
-			tinsert(header.g, inst);
+			MergeObject(header.g, inst);
 			return inst;
 		end
 		
@@ -12340,13 +12341,9 @@ function app:GetDataCache()
 			for i,_ in pairs(fieldCache["speciesID"]) do
 				if not self.battlepets[i] then
 					local battlepet = app.CreateSpecies(tonumber(i));
+					local sources = {};
 					for j,o in ipairs(_) do
-						--[[
-						if o.key == "speciesID" then
-							for key,value in pairs(o) do rawset(battlepet, key, value); end
-						end
-						]]--
-						for key,value in pairs(o) do rawset(battlepet, key, value); end
+						MergeClone(sources, o);
 						local coords = GetRelativeValue(o, "coords");
 						if coords then
 							if not battlepet.coords then
@@ -12383,6 +12380,18 @@ function app:GetDataCache()
 									end
 								end
 							end
+						end
+					end
+					local count = #sources;
+					if count == 1 then
+						for key,value in pairs(sources[1]) do
+							rawset(battlepet, key, value);
+						end
+					elseif count > 1 then
+						-- Find the most accessible version of the thing.
+						insertionSort(sources, sortByAccessibility);
+						for key,value in pairs(sources[1]) do
+							rawset(battlepet, key, value);
 						end
 					end
 					self.battlepets[i] = battlepet;
@@ -13398,7 +13407,7 @@ app:GetWindow("CosmicInfuser", UIParent, function(self)
 						end
 						
 						-- Merge it into the listing.
-						MergeObject(self.data.g, CreateObject(mapObject));
+						MergeClone(self.data.g, mapObject);
 					end
 				end
 				
@@ -13839,7 +13848,7 @@ app:GetWindow("Debugger", UIParent, function(self)
 				until not mapInfo or not mapID;
 			end
 			
-			MergeObject(self.data.g, CreateObject(info));
+			MergeClone(self.data.g, info);
 			MergeObject(self.rawData, info);
 			self:Update();
 		end
@@ -13875,7 +13884,7 @@ app:GetWindow("Debugger", UIParent, function(self)
 							['data'] = copy,
 							['OnClick'] = function(row, button)
 								for i,info in ipairs(row.ref.data) do
-									MergeObject(self.data.g, CreateObject(info));
+									MergeClone(self.data.g, info);
 									MergeObject(self.rawData, info);
 								end
 								self:Update();
@@ -13923,7 +13932,7 @@ app:GetWindow("Debugger", UIParent, function(self)
 						end
 					until not mapInfo or not mapID;
 					
-					MergeObject(self.data.g, CreateObject(info));
+					MergeClone(self.data.g, info);
 					MergeObject(self.rawData, info);
 					self:Update();
 				end
@@ -14815,7 +14824,7 @@ app:GetWindow("Random", UIParent, function(self)
 						end
 						if not selected then selected = temp[#temp - 1]; end
 						if selected then
-							MergeObject(self.data.g, CreateObject(selected));
+							MergeClone(self.data.g, selected);
 						else
 							app.print("There was nothing to randomly select from.");
 						end
@@ -16946,7 +16955,7 @@ app.events.ADDON_LOADED = function(addonName)
 					if not data then
 						data = CreateObject(searchResult);
 						for i=2,#searchResults,1 do
-							MergeObject(data, CreateObject(searchResults[i]));
+							MergeClone(data, searchResults[i]);
 						end
 						if data.key == "npcID" then setmetatable(data, app.BaseItem); end
 						data.auctions = {};
