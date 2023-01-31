@@ -4346,9 +4346,33 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			end
 		end,
 		["icon"] = function(t)
+			if t.providers then
+				for k,v in ipairs(t.providers) do
+					if v[2] > 0 then
+						if v[1] == "o" then
+							local icon = app.ObjectIcons[v[2]];
+							if icon then return icon; end
+						elseif v[1] == "i" then
+							return select(5, GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Bag_10";
+						end
+					end
+				end
+			end
 			local achievementID = t.achievementID;
 			if achievementID then
 				return select(10, GetAchievementInfo(achievementID));
+			end
+		end,
+		["model"] = function(t)
+			if t.providers then
+				for k,v in ipairs(t.providers) do
+					if v[2] > 0 then
+						if v[1] == "o" then
+							local model = app.ObjectModels[v[2]];
+							if model then return model; end
+						end
+					end
+				end
 			end
 		end,
 		["description"] = function(t)
