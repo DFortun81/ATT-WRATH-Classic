@@ -1952,12 +1952,12 @@ root("Zones", m(KALIMDOR, {
 						3354,	-- Sorek
 						3063,	-- Krang Stonehoof
 					},
+					["altQuests"] = { 1502, 1819 },	-- Thun'grim Firegaze / Ulag the Cleaver
 					["coords"] = {
 						{ 54.18, 42.47, DUROTAR },
 						{ 49.4, 60.4, MULGORE },
 						{ 80.3, 32.4, ORGRIMMAR },
 					},
-					["description"] = "This quest becomes unavailable after completing \"Ulag the Cleaver\" in Tirisfal Glades.",
 					["races"] = HORDE_ONLY,
 					["classes"] = { WARRIOR },
 					["lvl"] = 10,
