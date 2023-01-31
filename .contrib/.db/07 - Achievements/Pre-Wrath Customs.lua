@@ -618,7 +618,6 @@ root("Achievements", {
 				i(40643),	-- Tabard of the Achiever
 			},
 		}),
-		ach(1244),	-- Well Read
 		-- Wooly Mammoth, located in Dalaran.
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_QUESTS, {
