@@ -1642,7 +1642,7 @@ ResolveSymbolicLink = function(o)
 							cache = app.SearchForField("questID", assetID);
 						elseif criteriaType == 36 or criteriaType == 42 then
 							criteriaObject.providers = {{ "i", assetID }};
-						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 or criteriaType == 52 or criteriaType == 53 then
+						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 or criteriaType == 52 or criteriaType == 53 or criteriaType == 54 then
 							-- Ignored
 						else
 							print("Unhandled Criteria Type", criteriaType, assetID);
