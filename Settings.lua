@@ -98,6 +98,7 @@ local GeneralSettingsBase = {
 		["AccountWide:RWP"] = true,
 		["AccountWide:Titles"] = false,
 		["AccountWide:Toys"] = true,
+		["Hide:PvP"] = false,
 		["Thing:Achievements"] = true,
 		["Thing:BattlePets"] = true,
 		["Thing:Deaths"] = true,
@@ -305,6 +306,10 @@ settings.GetModeString = function(self)
 			else
 				mode = "Account " .. mode;
 			end
+		end
+		
+		if self:Get("Hide:PvP") then
+			mode = "PvE " .. mode;
 		end
 
 		local things = {};
@@ -601,6 +606,11 @@ settings.UpdateMode = function(self)
 		app.RequireBindingFilter = app.FilterItemClass_RequireBinding;
 	else
 		app.RequireBindingFilter = app.NoFilter;
+	end
+	if self:Get("Hide:PvP") then
+		app.PvPFilter = app.FilterItemPvP;
+	else
+		app.PvPFilter = app.NoFilter;
 	end
 	app:UnregisterEvent("PLAYER_LEVEL_UP");
 	if self:Get("Filter:ByLevel") and not self:Get("DebugMode") then
@@ -1337,7 +1347,7 @@ function(self)
 	end
 end);
 ShowMinimapButtonCheckBox:SetATTTooltip("Enable this option if you want to see the minimap button. This button allows you to quickly access the Main List, show your Overall Collection Progress, and access the Settings Menu by right clicking it.\n\nSome people don't like clutter. Alternatively, you can access the Main List by typing '/att' in your chatbox. From there, you can right click the header to get to the Settings Menu.");
-ShowMinimapButtonCheckBox:SetPoint("TOPLEFT", FlightPathsAccountWideCheckBox, "TOPLEFT", 160, 0);
+ShowMinimapButtonCheckBox:SetPoint("TOPLEFT", ExplorationAccountWideCheckBox, "TOPLEFT", 160, 0);
 
 local MinimapButtonStyleCheckBox = settings:CreateCheckBox("Use the Old Minimap Style",
 function(self)
@@ -1462,6 +1472,25 @@ end);
 IgnoreFiltersForBoEsCheckBox:SetATTTooltip("Enable this setting if you want to ignore armor, weapon, race, class, or profession requirements for BoE items.\n\nIf you are trying to collect things for your alts via Auction House scanning, this mode may be useful to you.");
 IgnoreFiltersForBoEsCheckBox:SetPoint("TOPLEFT", HideBoEItemsCheckBox, "BOTTOMLEFT", 0, 4);
 
+local HidePvPCheckBox = settings:CreateCheckBox("Hide PvP Activities",
+function(self)
+	self:SetChecked(settings:Get("Hide:PvP"));
+	if settings:Get("DebugMode") then
+		self:Disable();
+		self:SetAlpha(0.2);
+	else
+		self:Enable();
+		self:SetAlpha(1);
+	end
+end,
+function(self)
+	settings:Set("Hide:PvP", self:GetChecked());
+	settings:UpdateMode();
+	app:RefreshDataCompletely();
+end);
+HidePvPCheckBox:SetATTTooltip("Enable this setting if you want to hide all PVP related activities, items, and achievements.");
+HidePvPCheckBox:SetPoint("TOPLEFT", IgnoreFiltersForBoEsCheckBox, "BOTTOMLEFT", 0, 4);
+
 local ReportCollectedThingsCheckBox = settings:CreateCheckBox("Report Collected Things",
 function(self)
 	self:SetChecked(settings:GetTooltipSetting("Report:Collected"));
@@ -1470,7 +1499,7 @@ function(self)
 	settings:SetTooltipSetting("Report:Collected", self:GetChecked());
 end);
 ReportCollectedThingsCheckBox:SetATTTooltip("Enable this option if you want to see a message in chat detailing which items you have collected or removed from your collection.\n\nNOTE: This is present because Blizzard silently adds appearances and other collectible items and neglects to notify you of the additional items available to you.\n\nWe recommend you keep this setting on. You will still hear the fanfare with it off assuming you have that option turned on.");
-ReportCollectedThingsCheckBox:SetPoint("TOPLEFT", IgnoreFiltersForBoEsCheckBox, "BOTTOMLEFT", 0, -4);
+ReportCollectedThingsCheckBox:SetPoint("TOPLEFT", HidePvPCheckBox, "BOTTOMLEFT", 0, -4);
 
 local ReportCompletedQuestsCheckBox = settings:CreateCheckBox("Report Completed Quests",
 function(self)

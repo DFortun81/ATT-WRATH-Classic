@@ -9514,7 +9514,7 @@ function app.FilterItemBind(item)
 	return item.b == 2 or item.b == 3; -- BoE
 end
 function app.FilterItemClass(item)
-	if app.UnobtainableItemFilter(item) then
+	if app.UnobtainableItemFilter(item) and app.PvPFilter(item) then
 		if app.ItemBindFilter(item) then return true; end
 		return app.ItemTypeFilter(item)
 			and app.RequireBindingFilter(item)
@@ -9522,6 +9522,13 @@ function app.FilterItemClass(item)
 			and app.ClassRequirementFilter(item)
 			and app.RaceRequirementFilter(item)
 			and app.RequireFactionFilter(item);
+	end
+end
+function app.FilterItemPvP(item)
+	if item.pvp then
+		return false;
+	else
+		return true;
 	end
 end
 function app.FilterItemClass_RequireClasses(item)
@@ -9624,6 +9631,7 @@ app.GroupRequirementsFilter = app.NoFilter;
 app.GroupVisibilityFilter = app.NoFilter;
 app.ItemBindFilter = app.FilterItemBind;
 app.ItemTypeFilter = app.NoFilter;
+app.PvPFilter = app.NoFilter;
 app.CollectedItemVisibilityFilter = app.NoFilter;
 app.ClassRequirementFilter = app.NoFilter;
 app.RaceRequirementFilter = app.NoFilter;
