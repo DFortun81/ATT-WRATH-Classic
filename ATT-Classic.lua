@@ -12290,8 +12290,9 @@ function app:GetDataCache()
 			for i,_ in pairs(fieldCache["achievementID"]) do
 				if not self.achievements[i] then
 					local achievement = app.CreateAchievement(tonumber(i));
+					local sources = {};
 					for j,o in ipairs(_) do
-						for key,value in pairs(o) do rawset(achievement, key, value); end
+						MergeClone(sources, o);
 						if o.parent then
 							achievement.sourceParent = o.parent;
 							if not o.sourceQuests then
@@ -12321,6 +12322,18 @@ function app:GetDataCache()
 									end
 								end
 							end
+						end
+					end
+					local count = #sources;
+					if count == 1 then
+						for key,value in pairs(sources[1]) do
+							rawset(achievement, key, value);
+						end
+					elseif count > 1 then
+						-- Find the most accessible version of the thing.
+						insertionSort(sources, sortByAccessibility);
+						for key,value in pairs(sources[1]) do
+							rawset(achievement, key, value);
 						end
 					end
 					self.achievements[i] = achievement;
