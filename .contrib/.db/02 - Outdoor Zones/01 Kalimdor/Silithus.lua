@@ -2133,6 +2133,33 @@ root("Zones", m(KALIMDOR, {
 					["questID"] = 8277,	-- Deadly Desert Venom
 					["cr"] = 11738,	-- Sand Skitterer
 				}),
+				applyclassicphase(PHASE_FIVE, i(20384, {	-- Silithid Carapace Fragment
+					["providers"] = {
+						{ "i", 20402 },	-- Agent of Nozdormu
+						{ "i", 20403 },	-- Proxy of Nozdormu
+					},
+					["timeline"] = { "removed 4.0.3" },
+					["crs"] = {
+						13301,	-- Hive'Ashi Ambusher
+						11722,	-- Hive'Ashi Defender
+						13136,	-- Hive'Ashi Drone
+						11723,	-- Hive'Ashi Sandstalker
+						11698,	-- Hive'Ashi Stinger
+						11724,	-- Hive'Ashi Swarmer
+						11721,	-- Hive'Ashi Worker
+						11730,	-- Hive'Regal Ambusher
+						11731,	-- Hive'Regal Burrower
+						11734,	-- Hive'Regal Hive Lord
+						11733,	-- Hive'Regal Slavemaker
+						11732,	-- Hive'Regal Spitfire
+						11729,	-- Hive'Zora Hive Sister
+						11728,	-- Hive'Zora Reaver
+						11726,	-- Hive'Zora Tunneler
+						11727,	-- Hive'Zora Wasp
+						11725,	-- Hive'Zora Waywatcher
+						15759,	-- Supreme Silithid Flayer
+					},
+				})),
 				i(22381, {	-- Silithus Venom Sample
 					["crs"] = {
 						11739,	-- Rock Stalker
