@@ -8700,11 +8700,13 @@ local questFields = {
 		return rawget(t, "isDaily") or rawget(t, "isWeekly") or rawget(t, "isMonthly") or rawget(t, "isYearly");
 	end,
 	["collectible"] = function(t)
-		if C_QuestLog.IsOnQuest(t.questID) then
-			return true;
+		if app.CollectibleQuests then
+			if C_QuestLog.IsOnQuest(t.questID) then
+				return true;
+			end
+			if t.locked then return app.AccountWideQuests; end
+			return not t.repeatable and not t.isBreadcrumb;
 		end
-		if t.locked then return app.AccountWideQuests; end
-		return app.CollectibleQuests and (not t.repeatable and not t.isBreadcrumb);
 	end,
 	["collected"] = function(t)
 		if C_QuestLog.IsOnQuest(t.questID) then
@@ -8742,10 +8744,10 @@ local questFields = {
 		return "|cffcbc3e3" .. t.name .. "|r";
 	end,
 	["collectibleAsReputation"] = function(t)
-		if C_QuestLog.IsOnQuest(t.questID) then
-			return true;
-		end
 		if app.CollectibleQuests then
+			if C_QuestLog.IsOnQuest(t.questID) then
+				return true;
+			end
 			if t.locked then return app.AccountWideQuests; end
 			if t.maxReputation and app.CollectibleReputations then
 				return true;
