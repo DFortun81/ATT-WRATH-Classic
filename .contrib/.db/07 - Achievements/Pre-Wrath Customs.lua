@@ -1242,6 +1242,25 @@ root("Achievements", {
 				689,	-- Ruins of Ahn'Qiraj
 			}},
 		}),
+		-- #if ANYCLASSIC
+		applyclassicphase(WRATH_PHASE_TWO, ach(17304, {	-- Defense Protocol Alpha: Terminated
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				17291,	-- Defense Protocol Alpha: Ahn'kahet: The Old Kingdom
+				17285,	-- Defense Protocol Alpha: Azjol-Nerub
+				17292,	-- Defense Protocol Alpha: Drak'Tharon Keep
+				17295,	-- Defense Protocol Alpha: Gundrak
+				17299,	-- Defense Protocol Alpha: Halls of Lightning
+				17297,	-- Defense Protocol Alpha: Halls of Stone
+				17302,	-- Defense Protocol Alpha: The Culling of Stratholme
+				17283,	-- Defense Protocol Alpha: The Nexus
+				17300,	-- Defense Protocol Alpha: The Oculus
+				17293,	-- Defense Protocol Alpha: The Violet Hold
+				17213,	-- Defense Protocol Alpha: Utgarde Keep
+				17301,	-- Defense Protocol Alpha: Utgarde Pinnacle
+			}},
+		})),
+		-- #endif
 		applyclassicphase(WRATH_PHASE_ONE, ach(2136, {	-- Glory of the Hero
 			-- Meta Achievement
 			["sym"] = {{"meta_achievement",
