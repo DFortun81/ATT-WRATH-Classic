@@ -1638,6 +1638,7 @@ ResolveSymbolicLink = function(o)
 					for criteriaID=1,GetAchievementNumCriteria(achievementID),1 do
 						local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, id = GetAchievementCriteriaInfo(achievementID, criteriaID);
 						local criteriaObject = app.CreateAchievementCriteria(id);
+						criteriaObject.achievementID = achievementID;
 						if criteriaType == 27 then
 							cache = app.SearchForField("questID", assetID);
 						elseif criteriaType == 36 or criteriaType == 42 then
@@ -1650,18 +1651,16 @@ ResolveSymbolicLink = function(o)
 						if cache then
 							local uniques = {};
 							MergeObjects(uniques, cache);
-							for i,o in ipairs(uniques) do
-								rawset(o, "text", nil);
-								for key,value in pairs(o) do
+							for i,p in ipairs(uniques) do
+								rawset(p, "text", nil);
+								for key,value in pairs(p) do
 									criteriaObject[key] = value;
 								end
-								rawset(o, "text", criteriaObject.text);
 							end
 						end
-						criteriaObject.achievementID = achievementID;
 						criteriaObject.parent = o;
-						tinsert(searchResults, criteriaObject);
 						app.CacheFields(criteriaObject);
+						tinsert(searchResults, criteriaObject);
 					end
 				end
 			elseif cmd == "meta_achievement" then
