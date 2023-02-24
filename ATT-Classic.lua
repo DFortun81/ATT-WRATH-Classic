@@ -8475,6 +8475,44 @@ app.CreateNPC = function(id, t)
 		return setmetatable(constructor(id, t, "headerID"), app.BaseHeader);
 	end
 end
+
+-- Automatic Headers
+local HeaderTypeAbbreviations = {
+	["a"] = "achievementID",
+	["m"] = "mapID",
+	["n"] = "npcID",
+	["i"] = "itemID",
+	["q"] = "questID",
+	["s"] = "spellID",
+};
+local automaticHeaderFields = {
+	["key"] = function(t)
+		return "headerID";
+	end,
+	["text"] = function(t)
+		return t.result.name or t.result.text;
+	end,
+	["icon"] = function(t)
+		return t.result.icon;
+	end,
+	["result"] = function(t)
+		local typ = HeaderTypeAbbreviations[t.type];
+		local cache = app.SearchForField(typ, t.headerID);
+		if cache and #cache > 0 then
+			rawset(t, "result", cache[1]);
+			return cache[1];
+		else
+			cache = CreateObject({[typ] = t.headerID});
+			rawset(t, "result", cache);
+			return cache;
+		end
+	end,
+};
+app.BaseAutomaticHeader = app.BaseObjectFields(automaticHeaderFields);
+app.CreateHeader = function(id, t)
+	print("Create Header", id);
+	return setmetatable(constructor(id, t, "headerID"), app.BaseAutomaticHeader);
+end
 end)();
 
 -- Object Lib (as in "World Object")
@@ -9391,7 +9429,7 @@ local spellFields = {
 		return GetItemInfo(t.itemID) or t.nameAsSpell;
 	end,
 	["nameAsSpell"] = function(t)
-		return GetSpellLink(t.spellID) or app.GetSpellName(t.spellID) or RETRIEVING_DATA;
+		return app.GetSpellName(t.spellID) or GetSpellLink(t.spellID) or RETRIEVING_DATA;
 	end,
 	["tsmAsItem"] = function(t)
 		return string.format("i:%d", t.itemID);
