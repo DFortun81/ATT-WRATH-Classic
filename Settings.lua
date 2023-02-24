@@ -317,8 +317,15 @@ settings.GetModeString = function(self)
 		local things = {};
 		local thingCount = 0;
 		local totalThingCount = 0;
+		local excludes = {
+			["Thing:Deaths"] = true,
+			["Thing:RWP"] = true,
+		};
+		if not (C_TransmogCollection and C_TransmogCollection.GetIllusions) then
+			excludes["Thing:Illusions"] = true;
+		end
 		for key,_ in pairs(GeneralSettingsBase.__index) do
-			if string.sub(key, 1, 6) == "Thing:" then
+			if string.sub(key, 1, 6) == "Thing:" and not excludes[key] then
 				totalThingCount = totalThingCount + 1;
 				if settings:Get(key) then
 					thingCount = thingCount + 1;
@@ -327,19 +334,24 @@ settings.GetModeString = function(self)
 			end
 		end
 		if thingCount == 0 then
-			mode = "None of the Things " .. mode;
-		elseif thingCount == 1 then
-			mode = things[1] .. " Only " .. mode;
-		elseif thingCount == 2 then
-			mode = things[1] .. " + " .. things[2] .. " Only " .. mode;
-		elseif thingCount == totalThingCount then
-			mode = "Insane " .. mode;
+			if self:Get("Thing:RWP") then
+				mode = "RWP Only " .. mode;
+			else
+				mode = "None of the Things " .. mode;
+			end
 		else
-			mode = "Normal " .. mode;
-		end
-		
-		if self:Get("Thing:RWP") then
-			mode = mode .. " + RWP";
+			if thingCount == 1 then
+				mode = things[1] .. " Only " .. mode;
+			elseif thingCount == 2 then
+				mode = things[1] .. " + " .. things[2] .. " Only " .. mode;
+			elseif thingCount == totalThingCount then
+				mode = "Insane " .. mode;
+			else
+				mode = "Normal " .. mode;
+			end
+			if self:Get("Thing:RWP") then
+				mode = mode .. " + RWP";
+			end
 		end
 	end
 	if self:Get("Filter:ByLevel") then
