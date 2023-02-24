@@ -49,6 +49,7 @@ buttonClass.SetATTTooltip = function(self, text)
 	self:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 		GameTooltip:SetText(text, nil, nil, nil, nil, true);
+		if self.OnTooltip then self:OnTooltip(); end
 		GameTooltip:Show();
 	end);
 	self:SetScript("OnLeave", function(self)

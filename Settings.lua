@@ -90,6 +90,7 @@ local GeneralSettingsBase = {
 		["AccountWide:Deaths"] = true,
 		["AccountWide:Exploration"] = false,
 		["AccountWide:FlightPaths"] = false,
+		["AccountWide:Illusions"] = true,
 		["AccountWide:Mounts"] = true,
 		["AccountWide:PVPRanks"] = false,
 		["AccountWide:Quests"] = false,
@@ -104,6 +105,7 @@ local GeneralSettingsBase = {
 		["Thing:Deaths"] = true,
 		["Thing:Exploration"] = true,
 		["Thing:FlightPaths"] = true,
+		["Thing:Illusions"] = true,
 		--["Thing:Loot"] = false,
 		["Thing:Mounts"] = true,
 		--["Thing:PVPRanks"] = false,
@@ -500,6 +502,7 @@ settings.UpdateMode = function(self)
 		app.AccountWideDeaths = true;
 		app.AccountWideExploration = true;
 		app.AccountWideFlightPaths = true;
+		app.AccountWideIllusions = true;
 		app.AccountWideMounts = true;
 		app.AccountWidePVPRanks = true;
 		app.AccountWideQuests = true;
@@ -513,6 +516,7 @@ settings.UpdateMode = function(self)
 		app.CollectibleBattlePets = true;
 		app.CollectibleExploration = true;
 		app.CollectibleFlightPaths = true;
+		app.CollectibleIllusions = true;
 		app.CollectibleLoot = true;
 		app.CollectibleMounts = true;
 		app.CollectiblePVPRanks = true;
@@ -536,6 +540,7 @@ settings.UpdateMode = function(self)
 		app.AccountWideDeaths = self:Get("AccountWide:Deaths");
 		app.AccountWideExploration = self:Get("AccountWide:Exploration");
 		app.AccountWideFlightPaths = self:Get("AccountWide:FlightPaths");
+		app.AccountWideIllusions = self:Get("AccountWide:Illusions");
 		app.AccountWideMounts = self:Get("AccountWide:Mounts");
 		app.AccountWidePVPRanks = self:Get("AccountWide:PVPRanks");
 		app.AccountWideQuests = self:Get("AccountWide:Quests");
@@ -549,6 +554,7 @@ settings.UpdateMode = function(self)
 		app.CollectibleBattlePets = self:Get("Thing:BattlePets");
 		app.CollectibleExploration = self:Get("Thing:Exploration");
 		app.CollectibleFlightPaths = self:Get("Thing:FlightPaths");
+		app.CollectibleIllusions = self:Get("Thing:Illusions");
 		app.CollectibleLoot = self:Get("Thing:Loot");
 		app.CollectibleMounts = self:Get("Thing:Mounts");
 		app.CollectiblePVPRanks = self:Get("Thing:PVPRanks");
@@ -1050,6 +1056,50 @@ end);
 FlightPathsAccountWideCheckBox:SetATTTooltip("Flight Paths tracking is only really useful per character, but do you really want to collect them all on all 50 of your characters?");
 FlightPathsAccountWideCheckBox:SetPoint("TOPLEFT", FlightPathsCheckBox, "TOPLEFT", 220, 0);
 
+-- Illusions aren't in the game until Transmog is.
+local IllusionsCheckBox;
+if C_TransmogCollection then
+IllusionsCheckBox = settings:CreateCheckBox("Illusions",
+function(self)
+	self:SetChecked(settings:Get("Thing:Illusions"));
+	if settings:Get("DebugMode") then
+		self:Disable();
+		self:SetAlpha(0.2);
+	else
+		self:Enable();
+		self:SetAlpha(1);
+	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("illusionID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
+end,
+function(self)
+	settings:Set("Thing:Illusions", self:GetChecked());
+	settings:UpdateMode();
+	app:RefreshDataCompletely();
+end);
+IllusionsCheckBox:SetATTTooltip("Enable this option to track illusions, which are really cool looking transmog effects you can apply to your weapons!");
+IllusionsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Illusions", t.total);
+end
+IllusionsCheckBox:SetPoint("TOPLEFT", FlightPathsCheckBox, "BOTTOMLEFT", 0, 4);
+
+local IllusionsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
+function(self)
+	self:SetChecked(true);
+	self:Disable();
+	self:SetAlpha(0.2);
+end);
+IllusionsAccountWideCheckBox:SetATTTooltip("Flight Paths tracking is only really useful per character, but do you really want to collect them all on all 50 of your characters?");
+IllusionsAccountWideCheckBox:SetPoint("TOPLEFT", IllusionsCheckBox, "TOPLEFT", 220, 0);
+end
+
 local LootCheckBox = settings:CreateCheckBox("Loot / Drops / Items",
 function(self)
 	self:SetChecked(settings:Get("Thing:Loot"));
@@ -1067,7 +1117,7 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 LootCheckBox:SetATTTooltip("Enable this option to track loot.\n\nLoot being any item you can get from a mob, quest, or container. Loot that qualifies for one of the other filters will still appear in ATT if this filter is turned off.\n\nYou can change which sort of loot displays for you based on the Filters tab.\n\nDefault: Class Defaults, Disabled.");
-LootCheckBox:SetPoint("TOPLEFT", FlightPathsCheckBox, "BOTTOMLEFT", 0, 4);
+LootCheckBox:SetPoint("TOPLEFT", IllusionsCheckBox or FlightPathsCheckBox, "BOTTOMLEFT", 0, 4);
 
 local RWPCheckBox = settings:CreateCheckBox("Removed With Patch Loot",
 function(self)

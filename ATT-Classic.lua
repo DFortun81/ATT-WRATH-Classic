@@ -1104,6 +1104,7 @@ local keysByPriority = {	-- Sorted by frequency of use.
 	"classID",
 	"professionID",
 	"categoryID",
+	"illusionID",
 	"headerID",
 };
 local function GetKey(t)
@@ -1162,6 +1163,8 @@ CreateObject = function(t)
 				t = app.CreateProfession(t.professionID, t);
 			elseif t.categoryID then
 				t = app.CreateCategory(t.categoryID, t);
+			elseif t.illusionID then
+				t = app.CreateIllusion(t.illusionID, t);
 			elseif t.recipeID then
 				t = app.CreateRecipe(t.recipeID, t);
 			elseif t.spellID then
@@ -2861,6 +2864,7 @@ fieldCache["explorationID"] = {};
 fieldCache["factionID"] = {};
 fieldCache["flightPathID"] = {};
 fieldCache["headerID"] = {};
+fieldCache["illusionID"] = {};
 fieldCache["itemID"] = {};
 fieldCache["itemIDAsCost"] = {};
 fieldCache["mapID"] = {};
@@ -2927,6 +2931,9 @@ fieldConverters = {
 		end
 		-- WARNING: DEV ONLY END
 		CacheField(group, "headerID", value);
+	end,
+	["illusionID"] = function(group, value)
+		CacheField(group, "illusionID", value);
 	end,
 	["itemID"] = function(group, value)
 		if group.isToy then CacheField(group, "toyID", value); end
@@ -4077,6 +4084,16 @@ local function RefreshCollections()
 		app.print("Refreshing collection...");
 		app.events.QUEST_LOG_UPDATE();
 		coroutine.yield();
+		
+		-- Harvest Illusion Collections
+		if C_TransmogCollection and C_TransmogCollection.GetIllusions then
+			local collectedIllusions = ATTAccountWideData.Illusions;
+			for _,illusion in ipairs(C_TransmogCollection.GetIllusions()) do
+				if rawget(illusion, "isCollected") then rawset(collectedIllusions, illusion.sourceID, 1); end
+			end
+			coroutine.yield();
+		end
+		
 		RefreshSkills();
 		app:GetDataCache();
 		app:RefreshDataCompletely();
@@ -6975,6 +6992,77 @@ local fields = {
 app.BaseHoliday = app.BaseObjectFields(fields);
 app.CreateHoliday = function(id, t)
 	return setmetatable(constructor(id, t, "holidayID"), app.BaseHoliday);
+end
+end)();
+
+-- Illusion Lib
+(function()
+local illusionFields = {
+	["key"] = function(t)
+		return "illusionID";
+	end,
+	["filterID"] = function(t)
+		return 103;
+	end,
+	["text"] = function(t)
+		return t.link;
+	end,
+	["icon"] = function(t)
+		return "Interface/ICONS/INV_Enchant_Disenchant";
+	end,
+	["collectible"] = function(t)
+		return app.CollectibleIllusions;
+	end,
+	["collected"] = function(t)
+		return ATTAccountWideData.Illusions[t.illusionID];
+	end,
+	["linkAsItem"] = function(t)
+		local name, link = GetItemInfo(t.itemID);
+		if link then
+			rawset(t, "name", name);
+			rawset(t, "link", link);
+			return link;
+		end
+	end,
+	["nameAsItem"] = function(t)
+		local name, link = GetItemInfo(t.itemID);
+		if link then
+			rawset(t, "name", name);
+			rawset(t, "link", link);
+			return name;
+		end
+		return RETRIEVING_DATA;
+	end,
+	["textAsItem"] = function(t)
+		return "|cffff80ff[" .. t.name .. "]|r";
+	end,
+};
+if C_TransmogCollection then
+	if C_TransmogCollection.GetIllusionStrings then
+		illusionFields.link = function(t)
+			return select(2, C_TransmogCollection.GetIllusionStrings(t.illusionID));
+		end
+	elseif C_TransmogCollection.GetIllusionSourceInfo then
+		illusionFields.link = function(t)
+			return select(3, C_TransmogCollection.GetIllusionSourceInfo(t.illusionID));
+		end
+	else
+		illusionFields.text = function(t)
+			return "[Illusion: " .. t.illusionID .. " (Unsupported)]";
+		end
+	end
+end
+local fields = RawCloneData(illusionFields);
+fields.link = illusionFields.linkAsItem;
+fields.name = illusionFields.nameAsItem;
+fields.text = illusionFields.textAsItem;
+app.BaseIllusionWithItem = app.BaseObjectFields(fields);
+app.CreateIllusion = function(id, t)
+	if t and rawget(t, "itemID") then
+		return setmetatable(constructor(id, t, "illusionID"), app.BaseIllusionWithItem);
+	else
+		return setmetatable(constructor(id, t, "illusionID"), app.BaseIllusion);
+	end
 end
 end)();
 
@@ -11047,6 +11135,7 @@ local function RowOnEnter(self)
 				GameTooltip:AddLine(msg);
 			end
 		end
+		if reference.illusionID and app.Settings:GetTooltipSetting("illusionID") then GameTooltip:AddDoubleLine(L["ILLUSION_ID"], tostring(reference.illusionID)); end
 		if reference.objectID and app.Settings:GetTooltipSetting("objectID") then GameTooltip:AddDoubleLine(L["OBJECT_ID"], tostring(reference.objectID)); end
 		if reference.speciesID and app.Settings:GetTooltipSetting("speciesID") then GameTooltip:AddDoubleLine(L["SPECIES_ID"], tostring(reference.speciesID)); end
 		if reference.spellID then
@@ -16605,6 +16694,7 @@ app.events.VARIABLES_LOADED = function()
 	if not accountWideData.Exploration then accountWideData.Exploration = {}; end
 	if not accountWideData.Factions then accountWideData.Factions = {}; end
 	if not accountWideData.FlightPaths then accountWideData.FlightPaths = {}; end
+	if not accountWideData.Illusions then accountWideData.Illusions = {}; end
 	if not accountWideData.Quests then accountWideData.Quests = {}; end
 	if not accountWideData.RWP then accountWideData.RWP = {}; end
 	if not accountWideData.Spells then accountWideData.Spells = {}; end
