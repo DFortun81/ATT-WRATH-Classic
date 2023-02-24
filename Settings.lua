@@ -888,6 +888,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("achievementID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Achievements", self:GetChecked());
@@ -895,6 +903,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 AchievementsCheckBox:SetATTTooltip("Enable this option to track achievements.\n\nNOTE: At this time, they are not officially implemented in WoW's API, but ATT can kinda make its own until then.");
+AchievementsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Achievements", t.total);
+end
 AchievementsCheckBox:SetPoint("TOPLEFT", ThingsLabel, "BOTTOMLEFT", 0, -8);
 
 local AchievementsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -926,6 +938,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("speciesID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:BattlePets", self:GetChecked());
@@ -933,6 +953,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 BattlePetsCheckBox:SetATTTooltip("Enable this option to track battle & companion pets.\n\nNOTE: At this time, you cannot use them for battling, but they can follow you around and be all cute and stuff.\n\nGotta Horde 'em all!");
+BattlePetsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Battle Pets", t.total);
+end
 BattlePetsCheckBox:SetPoint("TOPLEFT", AchievementsCheckBox, "BOTTOMLEFT", 0, 4);
 
 local BattlePetsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1002,6 +1026,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("explorationID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Exploration", self:GetChecked());
@@ -1009,6 +1041,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 ExplorationCheckBox:SetATTTooltip("Enable this option to track exploration completion for outdoor maps. If you want the Explorer title, completing this in preparation for Wrath Classic will greatly help you!");
+ExplorationCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Exploration", t.total);
+end
 ExplorationCheckBox:SetPoint("TOPLEFT", DeathsCheckBox, "BOTTOMLEFT", 0, 4);
 
 local ExplorationAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1040,6 +1076,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("flightPathID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:FlightPaths", self:GetChecked());
@@ -1047,6 +1091,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 FlightPathsCheckBox:SetATTTooltip("Enable this option to track flight paths and ferry stations.\n\nTo collect these, open the dialog with the flight / ferry master in each continent.\n\NOTE: Due to phasing technology, you may have to phase to the other versions of a zone to get credit for those points of interest.");
+FlightPathsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Flight Paths", t.total);
+end
 FlightPathsCheckBox:SetPoint("TOPLEFT", ExplorationCheckBox, "BOTTOMLEFT", 0, 4);
 
 local FlightPathsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1141,6 +1189,19 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("itemID");
+		for i,o in pairs(container) do
+			for i,p in ipairs(o) do
+				if p.itemID and p.rwp and p.f and app.Settings:GetFilterForRWPBase(p.f) then
+					total = total + 1;
+					break;
+				end
+			end
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:RWP", self:GetChecked());
@@ -1148,6 +1209,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 RWPCheckBox:SetATTTooltip("Enable this option to track future removed from game loot. Only Items tagged with 'removed with patch' data count toward this. If you find an item not tagged that should be tagged, please let me know!\n\nYou can change which sort of loot displays for you based on the Filters tab.\n\nDefault: Class Defaults, Disabled.");
+RWPCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total RWP", t.total);
+end
 RWPCheckBox:SetPoint("TOPLEFT", LootCheckBox, "BOTTOMLEFT", 0, 4);
 
 local RWPAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1179,13 +1244,34 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("spellID");
+		for i,o in pairs(container) do
+			for i,p in ipairs(o) do
+				if p.f == 100 then
+					total = total + 1;
+					break;
+				end
+			end
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Mounts", self:GetChecked());
 	settings:UpdateMode();
 	app:RefreshDataCompletely();
 end);
+if C_PetJournal then
+MountsCheckBox:SetATTTooltip("Enable this option to track mounts.");
+else
 MountsCheckBox:SetATTTooltip("Enable this option to track mounts.\n\nFair warning! Do this at your own risk, it will take up a lot of inventory space across your account and they can not be sent between characters!\n\nAdditionally, the cost of all Vendor mounts is reduced to 1/10 of their current prices with Wrath.");
+end
+MountsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Mounts", t.total);
+end
 MountsCheckBox:SetPoint("TOPLEFT", RWPCheckBox, "BOTTOMLEFT", 0, 4);
 
 local MountsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1216,6 +1302,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("questID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Quests", self:GetChecked());
@@ -1223,6 +1317,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 QuestsCheckBox:SetATTTooltip("Enable this option to track quests.\n\nYou can right click any quest in the lists to pop out their full quest chain to show your progress and any prerequisite or breadcrumb quests.\n\nNOTE: Quests are not permanently tracked due to the nature of how Daily, Weekly, Yearly, and Repeatable Quests are tracked in the Blizzard Database.");
+QuestsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Quests", t.total);
+end
 QuestsCheckBox:SetPoint("TOPLEFT", MountsCheckBox, "BOTTOMLEFT", 0, 4);
 
 local QuestsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1253,6 +1351,19 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("spellID");
+		for i,o in pairs(container) do
+			for i,p in ipairs(o) do
+				if p.f == 200 then
+					total = total + 1;
+					break;
+				end
+			end
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Recipes", self:GetChecked());
@@ -1260,6 +1371,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 RecipesCheckBox:SetATTTooltip("Enable this option to track recipes for your professions.\n\nNOTE: You must open your professions list in order to cache these.");
+RecipesCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Recipes", t.total);
+end
 RecipesCheckBox:SetPoint("TOPLEFT", QuestsCheckBox, "BOTTOMLEFT", 0, 4);
 
 local RecipesAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1291,6 +1406,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("factionID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Reputations", self:GetChecked());
@@ -1298,6 +1421,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 ReputationsCheckBox:SetATTTooltip("Enable this option to track reputations.\n\nOnce you reach Exalted with a reputation, it will be marked Collected.\n\nYou may have to do a manual refresh for this to update correctly.");
+ReputationsCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Reputations", t.total);
+end
 ReputationsCheckBox:SetPoint("TOPLEFT", RecipesCheckBox, "BOTTOMLEFT", 0, 4);
 
 local ReputationsAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1329,6 +1456,14 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("titleID");
+		for i,o in pairs(container) do
+			total = total + 1;
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Titles", self:GetChecked());
@@ -1336,6 +1471,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 TitlesCheckBox:SetATTTooltip("Enable this option to track character titles.");
+TitlesCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Titles", t.total);
+end
 TitlesCheckBox:SetPoint("TOPLEFT", ReputationsCheckBox, "BOTTOMLEFT", 0, 4);
 
 local TitlesAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
@@ -1367,6 +1506,19 @@ function(self)
 		self:Enable();
 		self:SetAlpha(1);
 	end
+	if not self.total or self.total == 0 then
+		local total = 0;
+		local container = app.SearchForFieldContainer("itemID");
+		for i,o in pairs(container) do
+			for i,p in ipairs(o) do
+				if p.isToy then
+					total = total + 1;
+					break;
+				end
+			end
+		end
+		self.total = total;
+	end
 end,
 function(self)
 	settings:Set("Thing:Toys", self:GetChecked());
@@ -1374,6 +1526,10 @@ function(self)
 	app:RefreshDataCompletely();
 end);
 ToysCheckBox:SetATTTooltip("Enable this option to track items that currently act as a toy or become a collectible toy in the future.");
+ToysCheckBox.OnTooltip = function(t)
+	GameTooltip:AddLine(" ");
+	GameTooltip:AddDoubleLine("Total Toys", t.total);
+end
 ToysCheckBox:SetPoint("TOPLEFT", TitlesCheckBox, "BOTTOMLEFT", 0, 4);
 
 local ToysAccountWideCheckBox = settings:CreateCheckBox("Account Wide",
