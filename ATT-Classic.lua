@@ -8487,7 +8487,7 @@ local HeaderTypeAbbreviations = {
 };
 local automaticHeaderFields = {
 	["key"] = function(t)
-		return "headerID";
+		return "autoID";
 	end,
 	["text"] = function(t)
 		return t.result.name or t.result.text;
@@ -8497,12 +8497,12 @@ local automaticHeaderFields = {
 	end,
 	["result"] = function(t)
 		local typ = HeaderTypeAbbreviations[t.type];
-		local cache = app.SearchForField(typ, t.headerID);
+		local cache = app.SearchForField(typ, t.autoID);
 		if cache and #cache > 0 then
 			rawset(t, "result", cache[1]);
 			return cache[1];
 		else
-			cache = CreateObject({[typ] = t.headerID});
+			cache = CreateObject({[typ] = t.autoID});
 			rawset(t, "result", cache);
 			return cache;
 		end
@@ -8510,8 +8510,7 @@ local automaticHeaderFields = {
 };
 app.BaseAutomaticHeader = app.BaseObjectFields(automaticHeaderFields);
 app.CreateHeader = function(id, t)
-	print("Create Header", id);
-	return setmetatable(constructor(id, t, "headerID"), app.BaseAutomaticHeader);
+	return setmetatable(constructor(id, t, "autoID"), app.BaseAutomaticHeader);
 end
 end)();
 
