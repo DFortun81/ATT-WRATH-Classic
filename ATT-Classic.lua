@@ -7828,6 +7828,13 @@ local fields = {
 	["title"] = function(t)
 		return t.maphash;
 	end,
+	["description"] = function(t)
+		if not TomTom then
+			return "You can use Alt+Right Click to plot the coordinates with TomTom installed. If this refuses to be marked collected for you in ATT, try reloading your UI or relogging.";
+		else
+			return "You can use Alt+Right Click to plot the coordinates. If this refuses to be marked collected for you in ATT, try reloading your UI or relogging.";
+		end
+	end,
 	["preview"] = function(t)
 		local exploredMapTextureInfo = t.exploredMapTextureInfo;
 		if exploredMapTextureInfo then
