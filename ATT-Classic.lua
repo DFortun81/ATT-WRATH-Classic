@@ -1649,7 +1649,7 @@ ResolveSymbolicLink = function(o)
 							cache = app.SearchForField("questID", assetID);
 						elseif criteriaType == 36 or criteriaType == 42 then
 							criteriaObject.providers = {{ "i", assetID }};
-						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 or criteriaType == 52 or criteriaType == 53 or criteriaType == 54 then
+						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 or criteriaType == 52 or criteriaType == 53 or criteriaType == 54 or criteriaType == 32 then
 							-- Ignored
 						else
 							print("Unhandled Criteria Type", criteriaType, assetID);
@@ -4666,6 +4666,7 @@ end,
 					for i,o in ipairs(f) do
 						if o.key == "factionID" then
 							t.rep = o;
+							break;
 						end
 					end
 					if not t.rep then
@@ -4701,7 +4702,17 @@ end,
 			for i,factionID in ipairs({ ... }) do
 				local f = app.SearchForField("factionID", factionID);
 				if f and #f > 0 then
-					tinsert(reps, f[1]);
+					local done = false;
+					for _,o in ipairs(f) do
+						if o.key == "factionID" then
+							tinsert(reps, o);
+							done = true;
+							break;
+						end
+					end
+					if not done then
+						tinsert(reps, f[1]);
+					end
 				else
 					return true;
 				end

@@ -1203,7 +1203,58 @@ root("Achievements", {
 		})),
 	}),
 	pvp(achcat(ACHIEVEMENT_CATEGORY_PVP, {
-		
+		-- Temporary location while an Arena file is made.
+		achcat(ACHIEVEMENT_CATEGORY_ARENA, {
+			ach(397),	-- Step Into the Arena [1]
+			ach(398),	-- Mercilessly Dedicated [100]
+			ach(875),	-- Vengefully Dedicated
+			ach(876, {	-- Brutally Dedicated
+				i(43349),	-- Tabard of Brute Force
+			}),
+			ach(2090, {	-- Challenger
+				title(32, {	-- Challenger
+					["collectible"] = false,
+				}),
+			}),
+			ach(2092, {	-- Duelist
+				title(30, {	-- Duelist
+					["collectible"] = false,
+				}),
+			}),
+			ach(2091, {	-- Gladiator
+				title(29, {	-- Gladiator
+					["collectible"] = false,
+				}),
+			}),
+			ach(406),		-- High Five: 1550
+			ach(407),		-- High Five: 1750
+			ach(404),		-- High Five: 2000
+			ach(1161),		-- High Five: 2200
+			
+			ach(408),	-- Hot Streak
+			ach(1162),	-- Hotter Streak
+			ach(399),	-- Just the Two of Us: 1550
+			ach(400),	-- Just the Two of Us: 1750
+			ach(401),	-- Just the Two of Us: 2000
+			ach(1159),	-- Just the Two of Us: 2200
+			ach(409),	-- Last Man Standing
+			ach(2093, {	-- Rival
+				title(31, {	-- Rival
+					["collectible"] = false,
+				}),
+			}),
+			ach(1174, {		-- The Arena Master
+				title(50),	-- Arena Master
+			}),
+			
+			ach(402),	-- Three's Company: 1550
+			ach(403),	-- Three's Company: 1750
+			ach(405),	-- Three's Company: 2000
+			ach(1160),	-- Three's Company: 2200
+			ach(699, {	-- World Wide Winner
+				["sym"] = {{ "achievement_criteria" }},
+			}),
+		}),
 	})),
 	achcat(ACHIEVEMENT_CATEGORY_DUNGEONS_AND_RAIDS, {
 		applyclassicphase(WRATH_PHASE_ONE, ach(1658, {	-- Champion of the Frozen Wastes
@@ -1553,6 +1604,42 @@ root("Achievements", {
 				697,	-- The Black Temple
 				698,	-- Sunwell Plateau
 			}},
+		}),
+		classicAch(4784, {	-- Emblematic
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 1,
+		}),
+		classicAch(3839, {	-- 25 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 25,
+		}),
+		classicAch(3840, {	-- 50 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 50,
+		}),
+		classicAch(3841, {	-- 100 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 100,
+		}),
+		classicAch(3842, {	-- 250 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 250,
+		}),
+		classicAch(3843, {	-- 500 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 500,
+		}),
+		classicAch(3844, {	-- 1000 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 1000,
+		}),
+		classicAch(3876, {	-- 1500 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 1500,
+		}),
+		classicAch(4316, {	-- 2500 Dungeon & Raid Emblems
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 2500,
 		}),
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_PROFESSIONS, {
@@ -1913,6 +2000,25 @@ root("Achievements", {
 			}},
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(735)),	-- Working Day and Night
+		ach(116, {	-- Professional Journeyman
+			["rank"] = 1,
+		}),
+		ach(731, {	-- Professional Expert
+			["rank"] = 2,
+		}),
+		ach(732, {	-- Professional Artisan / Professional Classic Master [BFA]
+			["rank"] = 3,
+		}),
+		ach(733, {	-- Professional Master / Professional Outland Master [BFA]
+			["rank"] = 4,
+		}),
+		ach(734, {	-- Professional Grand Master / Professional Northrend Master [BFA]
+			["rank"] = 5,
+		}),
+		ach(4924, {	-- Professional Illustrious Grand Master / Professional Cataclysmic Master [BFA]
+			["timeline"] = { "added 4.0.3" },
+			["rank"] = 6,
+		}),
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_REPUTATION, {
 		classicAch(522, {	-- Somebody Likes Me
