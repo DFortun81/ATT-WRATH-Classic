@@ -779,7 +779,10 @@ local function BuildSourceTextForTSM(group, l)
 	return L["TITLE"];
 end
 local function CloneData(data)
-	local clone = setmetatable({}, { __index = data });
+	local clone = setmetatable({}, getmetatable(data));
+	for key,value in pairs(data) do
+		rawset(clone, key, value);
+	end
 	if data.g then
 		clone.g = {};
 		for i,group in ipairs(data.g) do
@@ -6361,6 +6364,9 @@ local fields = {
 		return "difficultyID";
 	end,
 	["text"] = function(t)
+		return t.sourceParent and string.format("%s [%s]", t.name, t.sourceParent.text or UNKNOWN) or t.name;
+	end,
+	["name"] = function(t)
 		return L["CUSTOM_DIFFICULTIES"][t.difficultyID] or GetDifficultyInfo(t.difficultyID) or "Unknown Difficulty";
 	end,
 	["icon"] = function(t)
@@ -8948,7 +8954,7 @@ local criteriaFuncs = {
 	["label_questID"] = L["LOCK_CRITERIA_QUEST_LABEL"],
     ["text_questID"] = function(v)
 		local questObj = app.SearchForObject("questID", v);
-        return sformat("[%d] %s", v, questObj and questObj.text or "???");
+        return string.format("[%d] %s", v, questObj and questObj.text or "???");
     end,
 	]]--
 
@@ -10199,6 +10205,7 @@ function app:CreateMiniListForGroup(group, retried)
 			end
 			
 			local mainQuest = CloneData(group);
+			if group.parent then mainQuest.sourceParent = group.parent; end
 			if mainQuest.sym then
 				mainQuest.collectible = true;
 				mainQuest.visible = true;
@@ -10591,6 +10598,7 @@ function app:CreateMiniListForGroup(group, retried)
 		
 		BuildGroups(popout.data, popout.data.g);
 		UpdateGroups(popout.data, popout.data.g);
+		if group.parent then popout.data.sourceParent = group.parent; end
 	end
 	if IsAltKeyDown() then
 		AddTomTomWaypoint(popout.data, false);
