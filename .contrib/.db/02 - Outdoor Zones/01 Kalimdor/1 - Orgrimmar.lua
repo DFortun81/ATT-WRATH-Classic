@@ -190,6 +190,7 @@ root("Zones", m(KALIMDOR, {
 						1472,	-- Devourer of Souls [Undercity]
 					},
 					["coord"] = { 47.2, 46.6, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = { ORC, UNDEAD },
 					["classes"] = { WARLOCK },
 					["lvl"] = 20,
@@ -254,6 +255,7 @@ root("Zones", m(KALIMDOR, {
 				q(1507, {	-- Devourer of Souls [Orgrimmar]
 					["qg"] = 5875,	-- Dan'rul Bloodeye
 					["altQuests"] = { 1472 },	-- Devourer of Souls [Undercity]
+					["timeline"] = { "removed 4.0.3" },
 					["races"] = { ORC, UNDEAD },
 					["classes"] = { WARLOCK },
 					["isBreadcrumb"] = true,
@@ -423,6 +425,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5885,	-- Deino <Mage Trainer>
 					["sourceQuest"] = 1944,	-- Waters of Xavian
 					["coord"] = { 38.6, 86.0, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
 					["maps"] = { ASHENVALE },
 					["races"] = { UNDEAD, TROLL },
 					["classes"] = { MAGE },
@@ -467,6 +470,7 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 5910,	-- Zankaja
 					["sourceQuest"] = 1508,	-- Blind Cazul
 					["coord"] = { 37, 59.6, ORGRIMMAR },
+					["timeline"] = { "removed 4.0.3" },
 					["classes"] = { WARLOCK },
 					["races"] = { ORC, UNDEAD },
 					["lvl"] = 20,
@@ -694,12 +698,6 @@ root("Zones", m(KALIMDOR, {
 					["qg"] = 3401,	-- Shenthul
 					["races"] = { ORC, UNDEAD, TROLL },
 					["classes"] = { ROGUE },
-				}),
-				q(1146, {	-- The Swarm Grows (2/3)
-					["lvl"] = 29,
-					["races"] = HORDE_ONLY,
-					["qg"] = 4485,	-- Belgrom Rockmaul
-					["sourceQuest"] = 1145,	-- The Swarm Grows (1/3)
 				}),
 				q(5302, {	-- The Way of the Weaponsmith (H)
 					["qg"] = 11178,	-- Borgosh Corebender
