@@ -26,6 +26,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Southern Barrens.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Stonetalon Mountains.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Teldrassil.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\The Barrens.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Thousand Needles.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Winterspring.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Un'goro Crater.lua
