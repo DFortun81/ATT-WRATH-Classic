@@ -79,6 +79,8 @@ root("Zones", m(EASTERN_KINGDOMS, {
 
 -- World Drops
 -- #IMPORT: 03 - World Drops\\01 Rooted\\
+-- #IMPORT: 03 - World Drops\\Lockpicking.lua
+-- #IMPORT: 03 - World Drops\\Pick Pocket.lua
 
 -- Holidays
 -- #IMPORT: 21 - Holidays\\07 - Brewfest\\

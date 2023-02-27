@@ -8636,6 +8636,7 @@ app.SkillIDToSpellID = setmetatable({
 	[960] = 53428,  -- Runeforging
 	[40] = 2842,	-- Poisons
 	[633] = 1809,	-- Lockpicking
+	[921] = 921,	-- Pickpocketing
 	
 	-- Riding
 	[762] = 33388,	-- Riding
