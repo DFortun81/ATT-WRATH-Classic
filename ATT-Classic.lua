@@ -9699,37 +9699,62 @@ end
 function app.FilterItemClass_RequireRaces(item)
 	return not item.nmr;
 end
-function app.FilterItemClass_RequireRacesCurrentFaction(item)
-	if item.nmr then
-		if item.r then
-			if item.r == app.FactionID then
-				return true;
+if select(4, GetBuildInfo()) > 11403 then
+	function app.FilterItemClass_RequireRacesCurrentFaction(item)
+		if item.nmr then
+			if item.r then
+				if item.r == app.FactionID then
+					return true;
+				else
+					return false;
+				end
+			end
+			if item.races then
+				if app.FactionID == Enum.FlightPathFaction.Horde then
+					return containsAny(item.races, HORDE_ONLY);
+				else
+					return containsAny(item.races, ALLIANCE_ONLY);
+				end
 			else
 				return false;
 			end
+		else
+			return true;
 		end
-		if item.races then
-			if app.FactionID == Enum.FlightPathFaction.Horde then
-				return containsAny(item.races, HORDE_ONLY);
+	end
+else
+	function app.FilterItemClass_RequireRacesCurrentFaction(item)
+		if item.nmr then
+			if item.r then
+				if item.r == app.FactionID then
+					return true;
+				else
+					return false;
+				end
+			end
+			if item.races then
+				if app.FactionID == Enum.FlightPathFaction.Horde then
+					return containsAny(item.races, HORDE_ONLY);
+				else
+					return containsAny(item.races, ALLIANCE_ONLY);
+				end
 			else
-				return containsAny(item.races, ALLIANCE_ONLY);
+				return false;
 			end
 		else
-			return false;
-		end
-	else
-		if item.nmc then
-			if item.c and #item.c == 1 then
-				if app.FactionID == Enum.FlightPathFaction.Horde then
-					return item.c[1] ~= 2;	-- Check for Paladin
+			if item.nmc then
+				if item.c and #item.c == 1 then
+					if app.FactionID == Enum.FlightPathFaction.Horde then
+						return item.c[1] ~= 2;	-- Check for Paladin
+					else
+						return item.c[1] ~= 7;	-- Check for Shaman
+					end
 				else
-					return item.c[1] ~= 7;	-- Check for Shaman
+					return true;
 				end
 			else
 				return true;
 			end
-		else
-			return true;
 		end
 	end
 end
