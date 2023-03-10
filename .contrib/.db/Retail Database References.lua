@@ -25,6 +25,7 @@
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Northern Barrens.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Southern Barrens.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Stonetalon Mountains.lua
+-- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Tanaris.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Teldrassil.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\The Barrens.lua
 -- #IMPORT: 02 - Outdoor Zones\\01 Kalimdor\\Thousand Needles.lua
