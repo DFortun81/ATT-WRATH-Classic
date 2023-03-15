@@ -713,6 +713,20 @@ local inventorySlotsMap = {	-- Taken directly from CanIMogIt (Thanks!)
     ["INVTYPE_HOLDABLE"] = {17},
     ["INVTYPE_TABARD"] = {19},
 };
+local achievementTooltipText = {
+	[17213] = "DPA",	-- Defense Protocol Alpha: Utgarde Keep
+	[17283] = "DPA",	-- Defense Protocol Alpha: The Nexus
+	[17285] = "DPA",	-- Defense Protocol Alpha: Azjol-Nerub
+	[17291] = "DPA",	-- Defense Protocol Alpha: Ahn'kahet: The Old Kingdom
+	[17292] = "DPA",	-- Defense Protocol Alpha: Drak'Tharon Keep
+	[17293] = "DPA",	-- Defense Protocol Alpha: The Violet Hold
+	[17295] = "DPA",	-- Defense Protocol Alpha: Gundrak
+	[17297] = "DPA",	-- Defense Protocol Alpha: Halls of Stone
+	[17299] = "DPA",	-- Defense Protocol Alpha: Halls of Lightning
+	[17300] = "DPA",	-- Defense Protocol Alpha: The Oculus
+	[17301] = "DPA",	-- Defense Protocol Alpha: Utgarde Pinnacle
+	[17302] = "DPA",	-- Defense Protocol Alpha: The Culling of Stratholme
+};
 local function BuildGroups(parent, g)
 	if g then
 		-- Iterate through the groups
@@ -744,6 +758,14 @@ local function BuildSourceText(group, l, skip)
 			end
 			if parent.parent then
 				return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
+			end
+		end
+		if group.key == "criteriaID" and group.achievementID then
+			local tooltipText = achievementTooltipText[group.achievementID];
+			if tooltipText then
+				return BuildSourceText(parent, 5, group.itemID or skip) .. " (" .. tooltipText .. ")";
+			else
+				return BuildSourceText(parent, 5, group.itemID or skip);
 			end
 		end
 		if parent.key == "categoryID" or parent.key == "tierID" or group.key == "filterID" or group.key == "spellID" or group.key == "encounterID" or (parent.key == "mapID" and group.key == "npcID") then
