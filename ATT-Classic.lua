@@ -10925,114 +10925,36 @@ local function RowOnClick(self, button)
 		if IsShiftKeyDown() then
 			-- If we're at the Auction House
 			if AuctionFrame and AuctionFrame:IsShown() then
-				-- Auctionator Support
-				if Atr_SearchAH then
-					if reference.g and #reference.g > 0 then
-						local missingItems = SearchForMissingItemNames(reference);					
-						if #missingItems > 0 then
-							Atr_SelectPane(3);
-							Atr_SearchAH(L["TITLE"], missingItems, LE_ITEM_CLASS_ARMOR);
-							return true;
-						end
-						app.print("No cached items found in search. Expand the group and view the items to cache the names and try again. Only Bind on Equip items will be found using this search.");
-					else
-						local name = reference.name;
-						if name then
-							Atr_SelectPane(3);
-							--Atr_SearchAH(name, { name });
-							Atr_SetSearchText (name);
-							Atr_Search_Onclick ();
-							return true;
-						end
-						app.print("Only Bind on Equip items can be found using this search.");
-					end
-					return true;
-				elseif TSMAPI and TSMAPI.Auction then
-					if reference.g and #reference.g > 0 then
-						local missingItems = SearchForMissingItems(reference);					
-						if #missingItems > 0 then
-							local itemList, search = {};
-							for i,group in ipairs(missingItems) do
-								search = group.tsm or TSMAPI.Item:ToItemString(group.link or group.itemID);
-								if search then itemList[search] = BuildSourceTextForTSM(group, 0); end
-							end
-							app:ShowPopupDialog("Running this command can potentially destroy your existing TSM settings by reassigning items to the " .. L["TITLE"] .. " preset.\n\nWe recommend that you use a different profile when using this feature.\n\nDo you want to proceed anyways?",
-							function()
-								TSMAPI.Groups:CreatePreset(itemList);
-								app.print("Updated the preset successfully.");
-								if not TSMAPI.Operations:GetFirstByItem(search, "Shopping") then
-									print("The preset is missing a 'Shopping' Operation assignment.");
-									print("Type '/tsm operations' to create or assign one.");
-								end
-							end);
-							return true;
-						end
-						app.print("No cached items found in search. Expand the group and view the items to cache the names and try again. Only Bind on Equip items will be found using this search.");
-					else
-						-- Attempt to search manually with the link.
-						local link = reference.link or reference.silentLink;
-						if link and HandleModifiedItemClick(link) then
-							AuctionFrameBrowse_Search();
-							return true;
-						end
-					end
-					return true;
-				else
-					if reference.g and #reference.g > 0 and not reference.link then
-						app.print("Group-based searches are only supported using Auctionator.");
-						return true;
-					else
-						-- Attempt to search manually with the link.
-						local link = reference.link or reference.silentLink;
-						if link and HandleModifiedItemClick(link) then
-							AuctionFrameBrowse_Search();
-							return true;
-						end
-					end
-				end
-			elseif TSMAPI_FOUR and false then
-				if reference.g and #reference.g > 0 then
-					if true then
-						app.print("TSM4 not compatible with ATT yet. If you know how to create Presets like we used to do in TSM3, please whisper Crieve on Discord!");
-						return true;
-					end
-					local missingItems = SearchForMissingItems(reference);					
-					if #missingItems > 0 then
-						app:ShowPopupDialog("Running this command can potentially destroy your existing TSM settings by reassigning items to the " .. L["TITLE"] .. " preset.\n\nWe recommend that you use a different profile when using this feature.\n\nDo you want to proceed anyways?",
-						function()
-							local itemString, groupPath;
-							groupPath = BuildSourceTextForTSM(app:GetWindow("Prime").data, 0);
-							if TSMAPI_FOUR.Groups.Exists(groupPath) then
-								TSMAPI_FOUR.Groups.Remove(groupPath);
-							end
-							TSMAPI_FOUR.Groups.AppendOperation(groupPath, "Shopping", operation)
-							for i,group in ipairs(missingItems) do
-								if not group.spellID or group.itemID then
-									itemString = group.tsm;
-									if itemString then
-										groupPath = BuildSourceTextForTSM(group, 0);
-										TSMAPI_FOUR.Groups.Create(groupPath);
-										if TSMAPI_FOUR.Groups.IsItemInGroup(itemString) then
-											TSMAPI_FOUR.Groups.MoveItem(itemString, groupPath)
-										else
-											TSMAPI_FOUR.Groups.AddItem(itemString, groupPath)
-										end
-										if i > 10 then break; end
-									end
-								end
-							end
-							app.print("Updated the preset successfully.");
-						end);
-						return true;
-					end
+				local search = SearchForMissingItemNames(reference);
+				local count = #search;
+				if count < 1 then
 					app.print("No cached items found in search. Expand the group and view the items to cache the names and try again. Only Bind on Equip items will be found using this search.");
-				else
-					-- Attempt to search manually with the link.
-					local link = reference.link or reference.silentLink;
-					if link and HandleModifiedItemClick(link) then
-						AuctionFrameBrowse_Search();
+					return true;
+				end
+			
+				-- Auctionator Support
+				if TSM_API and TSM_API.IsUIVisible("AUCTION") then
+					app.print("TSM is not currently supported as the API for Classic is really limited.");
+					return true;
+				elseif Atr_SearchAH then
+					Atr_SelectPane(3);
+					if count > 1 then
+						Atr_SearchAH(L["TITLE"], search, LE_ITEM_CLASS_ARMOR);
+						return true;
+					else
+						Atr_SetSearchText (search[1]);
+						Atr_Search_Onclick ();
 						return true;
 					end
+				elseif Auctionator and Auctionator.API and AuctionatorTabs_Shopping then
+					Auctionator.API.v1.MultiSearchExact(L["TITLE"], search);
+					return;
+				end
+				
+				-- Attempt to search manually with the link.
+				local link = reference.link or reference.silentLink;
+				if link and HandleModifiedItemClick(link) then
+					AuctionFrameBrowse_Search();
 				end
 				return true;
 			else

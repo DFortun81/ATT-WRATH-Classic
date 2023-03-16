@@ -11,11 +11,11 @@ ROOTS = {
 	["AchievementDB"] = "AchievementDB",
 	["Achievements"] = "Achievements",
 	["BlackMarket"] = "BlackMarket",
+	["Character"] = "Character",
 	["CommonQualityItems"] = "CommonQualityItems",
 	["Craftables"] = "Craftables",
 	["ExpansionFeatures"] = "ExpansionFeatures",
 	["Factions"] = "Factions",
-	["GearSets"] = "GearSets",
 	["GroupFinder"] = "GroupFinder",
 	["HiddenAchievementTriggers"] = "HiddenAchievementTriggers",
 	["HiddenQuestTriggers"] = "HiddenQuestTriggers",
@@ -34,6 +34,7 @@ ROOTS = {
 	["Secrets"] = "Secrets",
 	["TradingPost"] = "TradingPost",
 	["Uncollectable"] = "Uncollectable",
+	["Unsorted"] = "Unsorted",
 	["WorldDrops"] = "WorldDrops",
 	["WorldEvents"] = "WorldEvents",
 	["Zones"] = "Zones",
@@ -344,6 +345,7 @@ HELHEIM = 649;
 HIGHMOUNTAIN = 650;
 SURAMAR = 680;
 EYE_OF_AZSHARA = 790;
+
 -- Class Halls
 ACHERUS_THE_EBON_HOLD_THE_HEART_OF_ACHERUS = 647;
 ACHERUS_THE_EBON_HOLD_HALL_OF_COMMAND = 648;
@@ -383,7 +385,7 @@ ZULDAZAR = 862;
 NAZMIR = 863;
 VOLDUN = 864;
 ZANDALAR = 875;
-KULTIRAS = 876;
+KUL_TIRAS = 876;
 TIRAGARDE_SOUND = 895;
 DRUSTVAR = 896;
 STORMSONG_VALLEY = 942;
@@ -396,6 +398,12 @@ ZANCHUL_COUNCIL_CHAMBERS = 1166;
 ZANCHUL_HALL_OF_THE_HIGH_PRIESTS = 1167;
 REPAIRED_CHAMBER_OF_HEART = 1473;
 MECHAGON = 1462;
+NAZJATAR = 1355;
+TOL_DAGOR = 1169;
+
+-- Exile's Reach
+EXILES_REACH = 1409;
+DARKMAUL_CITADEL = 1609;
 
 -- Shadowlands
 REVENDRETH = 1525;
@@ -423,10 +431,16 @@ DRAGON_ISLES = 1978;
 OHNAHRAN_PLAINS = 2023;
 THALDRASZUS = 2025;
 THE_AZURE_SPAN = 2024;
-THE_FORBIDDEN_REACH = 2118;
+THE_FORBIDDEN_REACH = 2151;
+THE_FORBIDDEN_REACH_EVOKER = 2118;
 THE_PRIMALIST_FUTURE = 2085;
 THE_WAKING_SHORES = 2022;
 VALDRAKKEN = 2112;
+ZARALEK_CAVERN = 2133;
+
+-- Factions
+COURT_OF_NIGHT = 2464;
+THE_WILD_HUNT = 2465;
 
 -- RACES
 HUMAN = 1;
@@ -530,15 +544,15 @@ TANKS = {
 	DRUID,
 	MONK,
 	PALADIN,
-	WARRIOR
+	WARRIOR,
 };
 HEALERS = {
 	DRUID,
+	EVOKER,
 	MONK,
 	PALADIN,
 	PRIEST,
 	SHAMAN,
-	EVOKER,
 };
 CLOTH_CLASSES = {
 	MAGE,
