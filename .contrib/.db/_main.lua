@@ -33,7 +33,7 @@ ROOTS = {
 	["RecipeDB"] = "RecipeDB",
 	["Secrets"] = "Secrets",
 	["TradingPost"] = "TradingPost",
-	["Uncollectable"] = "Uncollectable",
+	["Uncollectible"] = "Uncollectible",
 	["Unsorted"] = "Unsorted",
 	["WorldDrops"] = "WorldDrops",
 	["WorldEvents"] = "WorldEvents",
@@ -189,6 +189,10 @@ TAZAVESH_AGGRAMARS_VAULT = 1997;
 -- World Map
 COSMIC = 947;
 
+-- #if ANYCLASSIC
+-- NOTE: Classic WoW got all new mapIDs for the old world and Outland for some reason...
+-- This is pointed to as potential "OH HEY, WOAH THEY ARE ADDING THE OLD WORLD TO RETAIL!" proof.
+-- If they do, that'll explain this dumb change. If they don't, it's just a pointless difference and I'm sad.
 -- Kalimdor
 KALIMDOR = 1414;
 AHNQIRAJ_THE_FALLEN_KINGDOM = 327;
@@ -282,6 +286,101 @@ TEROKKAR_FOREST = 1952;
 SHATTRATH_CITY = 1955;
 BLADES_EDGE_MOUNTAINS = 1949;
 SHADOWMOON_VALLEY = 1948;
+-- #else
+-- Kalimdor
+KALIMDOR = 12;
+AHNQIRAJ_THE_FALLEN_KINGDOM = 327;
+ASHENVALE = 63;
+AZSHARA = 76;
+CAMP_NARACHE = 462;
+CAVERNS_OF_TIME = 75;
+DARKSHORE = 62;
+DARNASSUS = 89;
+DESOLACE = 66;
+DUROTAR = 1;
+DUSTWALLOW_MARSH = 70;
+FELWOOD = 77;
+FERALAS = 69;
+MOONGLADE = 80;
+MULGORE = 7;
+NORTHERN_BARRENS = 10;
+ORGRIMMAR = 85;
+SHADOWGLEN = 460;
+SILITHUS = 81;
+SOUTHERN_BARRENS = 199;
+STONETALON_MOUNTAINS = 65;
+TANARIS = 71;
+TELDRASSIL = 57;
+TELDRASSIL_BANETHIL_BARROW_DEN = 60;
+THE_BARRENS = NORTHERN_BARRENS;
+THOUSAND_NEEDLES = 64;
+THUNDER_BLUFF = 88;
+ULDUM = 249;
+UNGORO_CRATER = 78;
+WINTERSPRING = 83;
+
+-- Eastern Kingdoms
+EASTERN_KINGDOMS = 13;
+ALTERAC_MOUNTAINS = 1416;
+ARATHI_HIGHLANDS = 14;
+BADLANDS = 15;
+BLACKROCK_MOUNTAIN = 33;
+BLACKROCK_MOUNTAIN_LEVEL2 = 34;
+BLACKROCK_MOUNTAIN_LEVEL3 = 35;
+BLASTED_LANDS = 17;
+BURNING_STEPPES = 36;
+COLDRIDGE_VALLEY = 427;
+DEADWIND_PASS = 42;
+DEATHKNELL = 465;
+DEEPRUN_TRAM = 499;
+DUN_MOROGH = 27;
+DUSKWOOD = 47;
+EASTERN_PLAGUELANDS = 23;
+ELWYNN_FOREST = 37;
+HILLSBRAD_FOOTHILLS = 25;
+IRONFORGE = 87;
+LIGHTS_HOPE_CHAPEL = 24;
+LOCH_MODAN = 48;
+NEW_TINKERTOWN = 469;
+NEW_TINKERTOWN_LOWER = 30;
+NORTHERN_STRANGLETHORN = 50;
+NORTHSHIRE_VALLEY = 425;
+REDRIDGE_MOUNTAINS = 49;
+RUINS_OF_GILNEAS = 217;
+SEARING_GORGE = 32;
+SILVERPINE_FOREST = 21;
+STORMWIND_CITY = 84;
+STRANGLETHORN_VALE = 224;
+SWAMP_OF_SORROWS = 51;
+SUNSTRIDER_ISLE = 467;
+THE_CAPE_OF_STRANGLETHORN = 210;
+THE_HINTERLANDS = 26;
+TIRISFAL_GLADES = 18;
+TWILIGHT_HIGHLANDS = 241;
+UNDERCITY = 90;
+WESTERN_PLAGUELANDS = 22;
+WESTFALL = 52;
+WETLANDS = 56;
+
+-- Outland & TBC Additions
+OUTLAND = 101;
+EVERSONG_WOODS = 94;
+GHOSTLANDS = 95;
+ISLE_OF_QUELDANAS = 122;
+SILVERMOON_CITY = 110;
+AZUREMYST_ISLE = 97;
+BLOODMYST_ISLE = 106;
+AMMEN_VALE = 468;
+THE_EXODAR = 103;
+HELLFIRE_PENINSULA = 100;
+ZANGARMARSH = 102;
+NAGRAND = 107;
+NETHERSTORM = 109;
+TEROKKAR_FOREST = 108;
+SHATTRATH_CITY = 111;
+BLADES_EDGE_MOUNTAINS = 105;
+SHADOWMOON_VALLEY = 104;
+-- #endif
 
 -- Cataclysm
 MOUNT_HYJAL = 198;
@@ -704,6 +803,7 @@ ACHIEVEMENT_CATEGORY_QUESTS = 96;
 	ACHIEVEMENT_CATEGORY_LEGION_QUESTS = 15252;
 	ACHIEVEMENT_CATEGORY_BATTLE_FOR_AZEROTH_QUESTS = 15284;
 	ACHIEVEMENT_CATEGORY_SHADOWLANDS_QUESTS = 15422;
+	ACHIEVEMENT_CATEGORY_DRAGONFLIGHT_QUESTS = 15455;
 ACHIEVEMENT_CATEGORY_EXPLORATION = 97;
 	ACHIEVEMENT_CATEGORY_EASTERN_KINGDOMS_EXP = 14777;
 	ACHIEVEMENT_CATEGORY_KALIMDOR_EXP = 14778;
@@ -715,7 +815,7 @@ ACHIEVEMENT_CATEGORY_EXPLORATION = 97;
 	ACHIEVEMENT_CATEGORY_LEGION_EXP = 15257;
 	ACHIEVEMENT_CATEGORY_BATTLE_FOR_AZEROTH_EXP = 15298;
 	ACHIEVEMENT_CATEGORY_SHADOWLANDS_EXP = 15436;
-ACHIEVEMENT_CATEGORY_WORLD_EVENTS = 155;
+	ACHIEVEMENT_CATEGORY_DRAGONFLIGHT_EXP = 15465;
 ACHIEVEMENT_CATEGORY_DUNGEONS_AND_RAIDS = 168;
 	ACHIEVEMENT_CATEGORY_CLASSIC_DR = 14808;
 	ACHIEVEMENT_CATEGORY_THE_BURNING_CRUSADE_DR = 14805;
@@ -733,10 +833,13 @@ ACHIEVEMENT_CATEGORY_DUNGEONS_AND_RAIDS = 168;
 	ACHIEVEMENT_CATEGORY_BATTLE_RAID = 15286;
 	ACHIEVEMENT_CATEGORY_SHADOWLANDS_DUNGEON = 15428;
 	ACHIEVEMENT_CATEGORY_SHADOWLANDS_RAID = 15438;
+	ACHIEVEMENT_CATEGORY_DRAGONFLIGHT_DUNGEON = 15467;
+	ACHIEVEMENT_CATEGORY_DRAGONFLIGHT_RAID = 15468;
 ACHIEVEMENT_CATEGORY_PROFESSIONS = 169;
 	ACHIEVEMENT_CATEGORY_COOKING = 170;
 	ACHIEVEMENT_CATEGORY_FISHING = 171;
 	ACHIEVEMENT_CATEGORY_ARCHAEOLOGY = 15071;
+	ACHIEVEMENT_CATEGORY_DRAGON_ISLES_HIDDEN = 15457;
 ACHIEVEMENT_CATEGORY_REPUTATION = 201;
 	ACHIEVEMENT_CATEGORY_CLASSIC_REP = 14864;
 	ACHIEVEMENT_CATEGORY_THE_BURNING_CRUSADE_REP = 14865;
@@ -746,7 +849,8 @@ ACHIEVEMENT_CATEGORY_REPUTATION = 201;
 	ACHIEVEMENT_CATEGORY_DRAENOR_REP = 15232;
 	ACHIEVEMENT_CATEGORY_LEGION_REP = 15258;
 	ACHIEVEMENT_CATEGORY_BATTLE_FOR_AZEROTH_REP = 15305;
-	ACHIEVEMENT_CATEGORY_SHADOWLANDS_REP = 	15439;
+	ACHIEVEMENT_CATEGORY_SHADOWLANDS_REP = 15439;
+	ACHIEVEMENT_CATEGORY_DRAGONFLIGHT_REP = 15466;
 ACHIEVEMENT_CATEGORY_WORLD_EVENTS = 155;
 	ACHIEVEMENT_CATEGORY_LUNAR_FESTIVAL = 160;
 	ACHIEVEMENT_CATEGORY_LOVE_IS_IN_THE_AIR = 187;
@@ -767,6 +871,7 @@ ACHIEVEMENT_CATEGORY_COLLECTIONS = 15246;
 	ACHIEVEMENT_CATEGORY_TOY_BOX = 15247;
 	ACHIEVEMENT_CATEGORY_MOUNTS = 15248;
 	ACHIEVEMENT_CATEGORY_APPEARANCES = 15259;
+	ACHIEVEMENT_CATEGORY_DRAGON_ISLES_DRAKE_COSMETICS = 15478;
 ACHIEVEMENT_CATEGORY_EXPANSION_FEATURES = 15301;
 	ACHIEVEMENT_CATEGORY_ARGENT_TOURNAMENT = 14941;
 	ACHIEVEMENT_CATEGORY_TOL_BARAD = 15075;
@@ -780,6 +885,7 @@ ACHIEVEMENT_CATEGORY_EXPANSION_FEATURES = 15301;
 	ACHIEVEMENT_CATEGORY_VISIONS_OF_NZOTH = 15426;
 	ACHIEVEMENT_CATEGORY_TORGHAST = 15440;
 	ACHIEVEMENT_CATEGORY_COVENANT_SANCTUMS = 15441;
+	ACHIEVEMENT_CATEGORY_DRAGON_RACING = 15462;
 ACHIEVEMENT_CATEGORY_FEATS_OF_STRENGTH = 81;
 	ACHIEVEMENT_CATEGORY_MOUNTS_FOS = 15269;
 	ACHIEVEMENT_CATEGORY_DUNGEONS_FOS = 15272;
@@ -828,6 +934,7 @@ FACTION_HEADER_NEUTRAL = -29;
 FACTION_HEADER_ALLIANCE = -30;
 FACTION_HEADER_HORDE = -31;
 
+
 -- Slot Categories
 HEAD = -320;
 SHOULDER = -321;
@@ -843,22 +950,45 @@ FINGER = -385;
 -- Meta Slot
 ARMOR = -318;
 WEAPONS = -319;
+SETS = -1000;
+TITANFORGED = -355;
 
 -- D&R
 COMMON_BOSS_DROPS = -1;
 WORLD_BOSSES = -7;
 BOSSES = -10;
+SCENARIOS = -10069;
+MYTHIC_PLUS = -857;
+
+-- Mythic Seasons
+SEASON_INFESTED = 13080;
+SEASON_REAPING = 13449;
+SEASON_BEGUILING = 13781;
+SEASON_AWAKENED = 14145;
+SEASON_PROUD = 14532;
+SEASON_TORMENTED = 15327;
+SEASON_CRYPTIC = 15691;
+SEASON_SHROUDED = 15756;
+SEASON_THUNDERING = 16429;
 
 -- Pet
---PET_BATTLE = -796;
---PET_JOURNAL = -797;
+PET_BATTLE = -796;
+PET_JOURNAL = -797;
 
 -- Battlegrounds
+-- #if ANYCLASSIC
 ALTERAC_VALLEY = 1459;
 ARATHI_BASIN = 1461;
 EYE_OF_THE_STORM = 1956;
 WARSONG_GULCH = 1460;
 WINTERGRASP_BG = 2104;
+-- #else
+ALTERAC_VALLEY = 91;
+ARATHI_BASIN = 93;
+EYE_OF_THE_STORM = 112;
+WARSONG_GULCH = 92;
+WINTERGRASP_BG = 1334;
+-- #endif
 
 -- PvP Headers
 PVP = -9;
@@ -906,10 +1036,11 @@ SEASON_DREAD = -689;
 SEASON_SINISTER = -690;
 SEASON_NOTORIOUS = -691;
 SEASON_CORRUPTED = -692;
-SEASON_SINFUL = -693;
-SEASON_UNCHAINED = -694;
-SEASON_COSMIC = -695;
-SEASON_ETERNAL = -696;
+SEASON_SINFUL = 14690;
+SEASON_UNCHAINED = 14973;
+SEASON_COSMIC = 15353;
+SEASON_ETERNAL = 15606;
+SEASON_CRIMSON = 15951;
 
 -- Expansion Features
 --LEGENDARIES = -364;
@@ -968,9 +1099,26 @@ FIFTEENTH_ANNIVERSARY = -5364;
 SIXTEENTH_ANNIVERSARY = -5365;
 SEVENTEENTH_ANNIVERSARY = -5366;
 EIGHTEENTH_ANNIVERSARY = -5367;
+
+-- NYI
+P1xx = -2180;
+P2xx = -2181;
+P3xx = -2182;
+P4xx = -2183;
+P5xx = -2184;
+P6xx = -2185;
+P7xx = -2186;
+P8xx = -2187;
+P9xx = -2188;
 --------------------------
 --     T H E  E N D     --
 --------------------------
+-- Currencies
+ANIMA = 1813;
+CONQUEST = 1602;
+DRAGON_SUPPLIES = 2003;
+GRATEFUL = 1885;
+HONOR = 1792;
 
 -- Filters
 HELD_IN_OFF_HAND = 1;
@@ -1007,6 +1155,8 @@ LIBRAMS = 54;
 RELICS = 54;
 TOTEMS = 54;
 CONSUMABLES = 55;
+REAGENTS = 56;
+PROF_EQUIP = 57;
 MOUNTS = 100;
 BATTLE_PETS = 101;
 TOYS = 102;
@@ -1015,11 +1165,13 @@ QUEST_ITEMS = 104;
 TITLES = 110;
 GLYPHS = 111;
 BAGS = 113;
+MOUNT_EQUIPMENT = 114;
 RECIPES = 200;
 
 -- Professions
 PROFESSIONS = -38;
 DISCOVERY = -37;
+ASCENSION_CRAFTING = 2791;
 ALCHEMY = 171;
 ARCHAEOLOGY = 794;
 BLACKSMITHING = 164;
@@ -1042,6 +1194,7 @@ POISONS = 40;
 PROTOFORM_SYNTHESIS = 2819;
 SKINNING = 393;
 TAILORING = 197;
+TUSKARR_FISHING_GEAR = 2847;
 
 -- D&R Tiers
 CLASSIC_TIER = 1;
@@ -1055,7 +1208,17 @@ BFA_TIER = 8;
 SL_TIER = 9;
 DF_TIER = 10;
 
--- #if AFTER CATA
+-- #if AFTER DF
+CURRENT_TIER = DF_TIER;
+-- #elseif AFTER SHADOWLANDS
+CURRENT_TIER = SL_TIER;
+-- #elseif AFTER BFA
+CURRENT_TIER = BFA_TIER;
+-- #elseif AFTER LEGION
+CURRENT_TIER = LEGION_TIER;
+-- #elseif AFTER WOD
+CURRENT_TIER = WOD_TIER;
+-- #elseif AFTER CATA
 CURRENT_TIER = CATA_TIER;
 -- #elseif AFTER WRATH
 CURRENT_TIER = WRATH_TIER;
@@ -1081,7 +1244,16 @@ REMOVED_FROM_GAME = 2;
 BLACK_MARKET = 3;
 BLIZZARD_BALANCE = 3;
 TCG = 3;
+TRAINING = 15;
 ELITE_PVP_REQUIREMENT = 4;
+
+-- Holidays
+CALL_OF_THE_SCARAB = 1574965;
+FREE_T_SHIRT_DAY = 2827082;
+MARCH_OF_THE_TADPOLES = 1572472;
+THE_GREAT_GNOMEREGAN_RUN = 1671627;
+THOUSAND_BOAT_BASH = 1572478;
+TRIAL_OF_STYLE = 1671631;
 
 -- #if ANYCLASSIC
 -- Classic Phases
@@ -1151,6 +1323,9 @@ BFA_PHASE_ONE = 80;
 -- Shadowlands Phases
 SHADOWLANDS_PHASE_ONE = 90;
 
+-- Dragonflight Phases
+DF_PHASE_ONE = 100;
+
 -- Done defining Phases for Classic
 -- #endif
 
@@ -1176,10 +1351,11 @@ REMOVED_SL_S2 = "removed 9.1.0.39185";					-- Shadowlands Season 2 End on Februa
 ADDED_SL_1_5 = "added 9.1.5";							-- Shadowlands 9.1.5 Start on November 2nd, 2021
 REMOVED_SL_1_5 = "removed 9.1.5";						-- Shadowlands 9.1.5 Start on November 2nd, 2021
 ADDED_SL_S3 = "added 9.2.0.42423";						-- Shadowlands Season 3 Start on February 22nd, 2022
-REMOVED_SL_S3 = "added 9.2.0.42488";					-- Shadowlands Season 3 Start on February 22nd, 2022
-ADDED_SL_S4 = "added 9.2.5.44908";						-- Shadowlands Season 4 Start on May 31, 2022
-REMOVED_SL_S4 = "removed 9.2.5.44908";					-- Shadowlands Season 4 Start on May 31, 2022
-ADDED_SL_2_7 = "added 9.2.7";							-- Shadowlands 9.2.7 Start on August 16, 2022
+REMOVED_SL_S3 = "removed 9.2.0.42488";					-- Shadowlands Season 3 Start on February 22nd, 2022
+ADDED_SL_S4 = "added 9.2.5.43903";						-- Shadowlands Season 4 Start on May 31, 2022
+REMOVED_SL_S4 = "removed 9.2.5.43903";					-- Shadowlands Season 4 Start on May 31, 2022
+ADDED_SL_2_7 = "added 9.2.7.45114";						-- Shadowlands 9.2.7 Start on August 16, 2022
+REMOVED_SL_2_7 = "removed 9.2.7.45114";						-- Shadowlands 9.2.7 Start on August 16, 2022
 --
 CREATED_DF_PRE = "created 10.0.0.46293";				-- First phase of Dragonflight pre-patch on October 25th, 2022
 ADDED_DF_PRE = "added 10.0.0.46293";					-- First phase of Dragonflight pre-patch on October 25th, 2022
@@ -1459,10 +1635,16 @@ POST_PROCESSING_FUNCTIONS = {};
 -- Construct a commonly formatted object.
 struct = function(field, id, t)
 	if not t then t = {};
+	elseif (t.g or t.groups) and t[1] then
+		print("ERROR: Don't use 'g' or 'groups' with an array of objects! Fix Group: "..field..":"..id);
+		return;
 	elseif not t.groups and t[1] then
 		t = { ["groups"] = bubbleUp(t) };
 	elseif t.groups then
 		t.groups = bubbleUp(t.groups);
+	end
+	if not id then
+		print("Missing ID for",field,"group");
 	end
 	t[field] = id;
 	return t;
@@ -1487,6 +1669,7 @@ addObject = function(o, t)
 	table.insert(t, o);
 	return t;
 end
+-- Appends a common groups set into the groups for this object
 appendGroups = function(...)
 	local data = { ... };
 	local count = #data;
@@ -1508,6 +1691,24 @@ appendGroups = function(...)
 		return groups;
 	end
 end
+-- Appends together multiple sets of groups. This way multiple portions of a single group can be created separately and joined together for one final 'groups' container
+appendAllGroups = function(...)
+	local arrs = select("#", ...);
+	if arrs > 0 then
+		local g = {};
+		local i, select, a = #g + 1, select;
+		for n=1,arrs do
+			a = select(n, ...);
+			if a then
+				for ai=1,#a do
+					g[i] = a[ai];
+					i = i + 1;
+				end
+			end
+		end
+		return g;
+	end
+end
 -- Simply applies keys from 'data' into 't' where each key does not already exist
 applyData = function(data, t)
 	if data and t then
@@ -1518,18 +1719,23 @@ applyData = function(data, t)
 		end
 	end
 end
--- Applies a copy of the provided data into the tables of the provided array
+-- Applies a copy of the provided data into the tables of the provided array/group
 sharedData = function(data, t)
 	if t then
 		for _,group in ipairs(t) do
 			applyData(data, group);
+		end
+		if t.g or t.groups then
+			for _,group in ipairs(t.g or t.groups) do
+				applyData(data, group);
+			end
 		end
 	end
 	return t;
 end
 -- Performs sharedData logic but also applies the data to the top-level table
 sharedDataSelf = function(data, t)
-	-- if this is an array, convert to .g container first to prevent merge confusion
+	-- if this is an array, convert to .groups container first to prevent merge confusion
 	t = togroups(t);
 	-- then apply the data to itself
 	applyData(data, t);
@@ -1688,6 +1894,16 @@ merge = function(...)
 	end
 	return t;
 end
+repVendor = function(rep, group)
+	local t = {};
+	for i,groups in ipairs(group) do
+		groups = bubbleDown({["minReputation"] = {rep, i+3}}, groups)
+		for j,o in ipairs(groups) do
+			table.insert(t, o);
+		end
+	end
+	return t;
+end
 run = function(method, t)
 	if t then
 		if t.g or t.groups then
@@ -1713,7 +1929,11 @@ end
 
 -- Asset Path Helper Functions
 asset = function(path)
+	-- #if ANYCLASSIC
 	return "Interface\\Addons\\ATT-Classic\\assets\\" .. path;
+	-- #else
+	return "Interface\\Addons\\AllTheThings\\assets\\" .. path;
+	-- #endif
 end
 icon = function(path)
 	return "Interface\\Icons\\" .. path;
@@ -1730,13 +1950,21 @@ end
 applyholiday = function(holiday, data)
 	return bubbleDown({ ["u"] = holiday }, data);
 end
-lvlsquish = function(originalLvl, shadowlandsLvl, retailLvl)
-	-- #if ANYCLASSIC
-	return originalLvl;
-	-- #elseif AFTER SHADOWLANDS
+local squishes = {};
+lvlsquish = function(originalLvl, cataLvl, shadowlandsLvl)
+	if cataLvl < shadowlandsLvl then
+		local squish = "lvlsquish(" .. originalLvl .. ", " .. cataLvl .. ", " ..shadowlandsLvl .. ") > " .. "lvlsquish(" .. originalLvl .. ", " .. shadowlandsLvl .. ", " .. cataLvl .. ")";
+		if not squishes[squish] then
+			print("Someone messed up a lvlsquish order.", squish);
+			squishes[squish] = true;
+		end
+	end
+	-- #if AFTER SHADOWLANDS
 	return shadowlandsLvl;
+	-- #elseif AFTER CATA
+	return cataLvl;
 	-- #else
-	return retailLvl or originalLvl;
+	return originalLvl;
 	-- #endif
 end
 
@@ -1817,7 +2045,7 @@ moh = function(cost, item)								-- Assign a Mark of Honor cost to an item with
 	return item;
 end
 vicioussaddle = function(item)							-- Assign a Vicious Saddle cost to an item with proper timeline requirements.
-	-- #if BEFORE 5.4.0.17153
+	-- #if AFTER 5.4.0.17153
 	applycost(item, { "i", 103533, 1 });	-- Vicious Saddle
 	-- #endif
 	return item;
@@ -1848,22 +2076,50 @@ achcat = function(id, t)								-- Create an ACHIEVEMENT CATEGORY Object
 	return struct("achievementCategoryID", id, t);
 end
 achievementCategory = achcat;
-battlepet = function(id, t)								-- Create a BATTLE PET Object (Battle Pet == Species == Pet)
-	t = struct("speciesID", id, t);
-	if not t.itemID then t.u = WRATH_PHASE_ONE; end
+artifact = function(id, t)								-- Create an ARTIFACT Object
+	return struct("artifactID", id, t);
+end
+az = function(id, rank, t)								-- Create a AZERITE ESSENCE Object.
+	if t or type(rank) == "number" then
+		t = struct("azeriteEssenceID", id, t or {});
+		t["rank"] = rank;
+		return t;
+	else
+		return struct("azeriteEssenceID", id, rank);
+	end
+end
+azeriteEssence = az;									-- Create a AZERITE ESSENCE Object. (alternative shortcut)
+azeriteItem = function(id, t)							-- Create an Item which is marked as having obtained the Heart of Azeroth
+	t = i(id, t);
+	t.customCollect = { "HOA" };
 	return t;
 end
-classicAch = function(id, altID, t)							-- Create an ACHIEVEMENT Object that doesn't have a timeline built into it.
+azewrongItem = function(id, t)							-- Create an Item which is marked as having not obtained the Heart of Azeroth
+	t = i(id, t);
+	t.customCollect = { "~HOA" };
+	return t;
+end
+battlepet = function(id, t)								-- Create a BATTLE PET Object (Battle Pet == Species == Pet)
+	t = struct("speciesID", id, t);
+	if not t.itemID then t.u = MOP_PHASE_ONE; end
+	return t;
+end
+classicAch = function(id, altID, t)						-- Create an ACHIEVEMENT Object that doesn't have a timeline built into it.
 	if t or type(altID) == "number" then
 		t = struct("allianceAchievementID", id, t or {});
 		t["hordeAchievementID"] = altID;
+		return t;
 	else
-		t = struct("achievementID", id, altID);
+		return struct("achievementID", id, altID);
 	end
-	return t;
 end
 pet = battlepet;										-- Create a BATTLE PET Object (alternative shortcut)
 p = battlepet;											-- Create a BATTLE PET Object (alternative shortcut)
+battlepetability = function(id, t)						-- Create a BATTLE PET ABILITY Object
+	return struct("petAbilityID", id, t);
+end
+bpa = battlepetability;									-- Create a BATTLE PET ABILITY Object (alternative shortcut)
+pa = battlepetability;									-- Create a BATTLE PET ABILITY Object (alternative shortcut)
 battlepettype = function(id, t)							-- Create a BATTLE PET TYPE Object
 	return struct("petTypeID", id, t);
 end
@@ -1899,6 +2155,26 @@ creature = function(id, t)								-- Create a CREATURE Object
 	return struct("creatureID", id, t);
 end
 cr = creature;											-- Create a CREATURE Object (alternative shortcut)
+crit = function(criteriaUID, t)           				-- Create an Achievement Criteria Object (localized automatically)
+	if not t then t = {};
+	elseif not t.groups then
+		if not isarray(t) then
+			-- DO NOT do that lol
+			if t.achievementID then
+				-- print(table.concat({"Do not use AchievementID:",t.achievementID," inside Achievement Criteria:",criteriaUID," ==> Use '_quests', '_npcs', 'cost', or 'provider' to define where/how this Criteria is granted instead of directly nesting it in Source."}))
+				-- error(table.concat({"Do not use AchievementID:",t.achievementID," inside Achievement Criteria:",criteriaUID," ==> Use '_quests', '_npcs', 'cost', or 'provider' to define where/how this Criteria is granted instead of directly nesting it in Source."}))
+			end
+			if t.questID then
+				error(table.concat({"Do not use QuestID:",t.questID," inside Achievement Criteria:",criteriaUID," ==> Use '_quests' to indicate a Criteria granted from completion of a single Quest."}))
+			end
+		else
+			t = { ["groups"] = t };
+		end
+	end
+	t.criteriaID = criteriaUID;
+	if not t.timeline then bubbleDown({ ["timeline"] = { "added 3.0.1" } }, t); end
+	return t;
+end
 currency = function(id, t)								-- Create a CURRENCY Object
 	return struct("currencyID", id, t);
 end
@@ -1909,9 +2185,6 @@ d = function(id, t)										-- Create a DIFFICULTY Object
 	if db then t.modID = db.modID; end
 	-- #endif
 	return t;
-end
-faction = function(id, t)								-- Create a FACTION Object
-	return struct("factionID", id, t);
 end
 e = function(id, t)										-- Create an ENCOUNTER Object
 	-- #if AFTER WRATH
@@ -1972,6 +2245,9 @@ explorationBatch = function(data)
 	end
 	return groups;
 end
+faction = function(id, t)								-- Create a FACTION Object
+	return struct("factionID", id, t);
+end
 flightpath = function(id, t)							-- Create a FLIGHT PATH Object
 	return struct("flightPathID", id, t);
 end
@@ -2031,7 +2307,7 @@ ig = function(id, t)									-- Create an ITEM Object that ignores bonus IDs.
 end
 inst = function(id, t)									-- Create an INSTANCE Object
 	if t then
-		t.instanceID = id;
+		t = struct("instanceID", id, t);
 		-- #if BEFORE WRATH
 		-- Not yet supported in classic.
 		if t.groups or t.g then
@@ -2059,7 +2335,7 @@ inst = function(id, t)									-- Create an INSTANCE Object
 		return struct("instanceID", id, t);
 	end
 end
-inst_tw = function(id ,t)								-- Create a TIMEWALKING INSTANCE Object
+inst_tw = function(id, t)								-- Create a TIMEWALKING INSTANCE Object
 	t = inst(id, t);
 	t.u = TIMEWALKING;
 	-- Look for the CreatureID's
@@ -2095,13 +2371,26 @@ mount = function(id, t)									-- Create a MOUNT Object, which is just a spellI
 end
 npc = function(id, t)									-- Create an NPC Object (negative indicates that it is custom)
 	if not id then
-		--error("NPC ID Missing!");
+		-- error("NPC ID Missing");
 		if t then
 			return unpack(t);
 		else
 			return nil;
 		end
 	end
+	-- #IF NOT ANYCLASSIC
+	-- Retail Cleanliness checks
+	if id == COMMON_BOSS_DROPS or
+		id == COMMON_VENDOR_ITEMS or
+		id == DROPS
+	then
+		-- Items contained under these Header values will automatically list under the respective NPCs in minilists
+		if t.crs or t.cr then
+			t.maps = nil;
+			t.map = nil;
+		end
+	end
+	-- #ENDIF
 	return struct("npcID", id, t);
 end
 n = npc;												-- Create an NPC Object (alternative shortcut)
@@ -2109,6 +2398,22 @@ obj = function(id, t)									-- Create a WORLD OBJECT Object (an interactable, 
 	return struct("objectID", id, t);
 end
 o = obj;												-- Create a WORLD OBJECT Object (alternative shortcut)
+o_repeated = function(t)								-- Create a group which represents the shared contents for multiple, identically-named WORLD OBJECTS
+	if t[1] then
+		-- move the raw array of objects into a .g group
+		t = { g = t };
+	end
+	if t.groups or t.g then
+		for i,group in ipairs(t.groups or t.g) do
+			-- first existing objectID value of the sub-groups will be used to show the localized name in-game instead of creating a new custom category as well
+			if group.objectID and not t.objectID then
+				-- is it really this simple
+				return struct("objectID", group.objectID, t);
+			end
+		end
+	end
+	print("Could not find a group with an objectID value");
+end
 petbattle = function(t)									-- Flag all nested content as requiring Pet Battle gameplay
 	-- #if ANYCLASSIC
 	return t;
@@ -2121,7 +2426,7 @@ prof = function(skillID, t)								-- Create a PROFESSION Object
 end
 profession = function(skillID, t)						-- Create a PROFESSION Container. (NOTE: Only use in the Profession Folder.)
 	local p = prof(skillID, t);
-	root("Professions", p);
+	root(ROOTS.Professions, p);
 	return p;
 end
 pvp = function(t)										-- Flag all nested content as requiring PvP gameplay
@@ -2148,6 +2453,10 @@ end
 r = recipe;												-- Create a RECIPE Object (alternative shortcut)
 root = function(category, g)							-- Create a ROOT CATEGORY Object
 	if not g then g = g or {}; end
+	-- Automatically apply data to specific categories
+	if category == ROOTS.NeverImplemented then
+		g = bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, g);
+	end
 	local o = _[category];
 	if not o then
 		if isarray(g) then
@@ -2205,7 +2514,7 @@ tier = function(id, patch, t)							-- Create a TIER Object
 	end
 	t = struct("tierID", id, t);
 	if not t.timeline then
-		t.timeline = { "added " .. math.floor(id) .. ".0.1" };
+		t.timeline = { "added " .. math.floor(id) .. ".0" };
 	end
 	return t;
 end
@@ -2250,23 +2559,6 @@ a = function(t)	-- Flag as Alliance Only
 	end
 	return t;
 end
-crit = function(criteriaID, t)           -- Create an Achievement Criteria Object (localized automatically)
-	if not t then t = {};
-	elseif not t.groups then
-		if not isarray(t) then
-			-- DO NOT do that lol
-		else
-			t = { ["groups"] = t };
-		end
-	end
-	t.criteriaID = criteriaID;
-	if not t.timeline then bubbleDown({ ["timeline"] = { "added 3.0.1" } }, t); end
-	return t;
-end
-model = function(displayID, t)
-	t.displayID = displayID;
-	return t;
-end
 crs = function(id, t)											-- Add a Creature List to an object.
 	if type(id) == "number" then
 		t.cr = id;
@@ -2300,11 +2592,15 @@ h = function(t) -- Flag as Horde Only
 	end
 	return t;
 end
+model = function(displayID, t)
+	t.displayID = displayID;
+	return t;
+end
 un = function(u, t) t.u = u; return t; end						-- Mark an object unobtainable where u is the type.
 
 -- Used by the Harvester (Parser)
 function Harvest(things)
-	local itemDB = root("ItemDB", {});
+	local itemDB = root(ROOTS.ItemDBConditional, {});
 	local thing;
 	for i,j in pairs(things) do
 		thing = itemDB[i];
@@ -2320,9 +2616,26 @@ function Harvest(things)
 		end
 		if j.bonuses then
 			if not thing.bonuses then thing.bonuses = {} end
-			for l,bonusID in pairs(j.bonuses) do
-				thing.bonuses[l] = bonusID;
+			for bonusID,sourceID in pairs(j.bonuses) do
+				thing.bonuses[bonusID] = sourceID;
 			end
+		end
+	end
+end
+function Artifacts(things)
+	if not _.Artifacts then _.Artifacts = {}; end
+	local thing;
+	for i,j in pairs(things) do
+		thing = _.Artifacts[i];
+		if not thing then
+			thing = {};
+			_.Artifacts[i] = thing;
+		end
+		if j[1] then
+			thing.offHand = j[1];
+		end
+		if j[2] then
+			thing.mainHand = j[2];
 		end
 	end
 end

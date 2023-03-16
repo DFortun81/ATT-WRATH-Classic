@@ -18,4 +18,4 @@
 -- #IMPORT: 00 - Item Database\\MusicRolls.lua
 -- #IMPORT: 00 - Item Database\\RuneforgePowers.lua
 -- Can't use 00 - Item Database\\SourceIDs.lua
--- #IMPORT: 00 - Item Database\\Uncollectable.lua
+-- #IMPORT: 00 - Item Database\\Uncollectible.lua
