@@ -16913,6 +16913,7 @@ app.events.ADDON_LOADED = function(addonName)
 		
 		-- Create the movable Auction Data window.
 		local window = app:GetWindow("AuctionData", AuctionFrame);
+		window:ClearAllPoints();
 		window:SetPoint("TOPLEFT", AuctionFrame, "TOPRIGHT", 0, -10);
 		window:SetPoint("BOTTOMLEFT", AuctionFrame, "BOTTOMRIGHT", 0, 10);
 		window.data = {
