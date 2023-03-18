@@ -1609,6 +1609,10 @@ root("Achievements", {
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 1,
 		}),
+		classicAch(3838, {	-- Dungeon & Raid Emblem
+			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
+			["rank"] = 1,
+		}),
 		classicAch(3839, {	-- 25 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 25,
