@@ -994,6 +994,7 @@ app.L = {
 		["Hellfire Citadel: Blood Furnace"] = "The Blood Furnace";
 		["Hellfire Citadel: The Blood Furnace"] = "The Blood Furnace";
 		["Hellfire Citadel: The Shattered Halls"] = "The Shattered Halls";
+		["Magister's Terrace"] = "Magisters' Terrace";
 		["Tempest Keep: The Arcatraz"] = "The Arcatraz";
 		["Tempest Keep: The Botanica"] = "The Botanica";
 		["Tempest Keep: The Mechanar"] = "The Mechanar";
