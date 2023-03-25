@@ -7266,7 +7266,7 @@ local itemFields = {
 		return t.collectibleAsCost;
 	end,
 	["collected"] = function(t)
-		return t.collectedAsCost or t.collectedAsRWP;
+		return t.collectedAsRWP or t.collectedAsCost;
 	end,
 	["collectedAsCost"] = function(t)
 		local id, any, partial = t.itemID;
@@ -7330,16 +7330,6 @@ local itemFields = {
 				end
 			end
 			if any then
-				if (t.rwp or (t.u and (t.u == 2 or t.u == 3 or t.u == 4))) and app.CollectibleRWP and t.f and app.Settings:GetFilterForRWP(t.f) then
-					if not ATTAccountWideData.RWP[id] then
-						if app.Settings:GetTooltipSetting("Report:Collected") then
-							print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
-						end
-						app:PlayFanfare();
-					end
-					app.CurrentCharacter.RWP[id] = 1;
-					ATTAccountWideData.RWP[id] = 1;
-				end
 				return partial and 2 or 1;
 			end
 		end
@@ -7408,7 +7398,10 @@ local itemFields = {
 		end
 	end,
 	["collectedAsFaction"] = function(t)
-		return t.collectedAsFactionOnly or t.collectedAsCost;
+		if t.collectedAsCost == false then
+			return 0;
+		end
+		return t.collectedAsFactionOnly;
 	end,
 	["collectedAsFactionOnly"] = function(t)
 		if t.factionID then
@@ -7423,7 +7416,10 @@ local itemFields = {
 		end
 	end,
 	["collectedAsFactionOrQuest"] = function(t)
-		return t.collectedAsFactionOnly or t.collectedAsQuest;
+		if not t.collectedAsQuest then
+			return 0;
+		end
+		return t.collectedAsFactionOnly;
 	end,
 	["collectedAsQuest"] = function(t)
 		return IsQuestFlaggedCompletedForObject(t) or t.collectedAsCost;
