@@ -7266,7 +7266,9 @@ local itemFields = {
 		return t.collectibleAsCost;
 	end,
 	["collected"] = function(t)
-		return t.collectedAsRWP or t.collectedAsCost;
+		local rwp = t.collectedAsRWP;
+		if rwp == 0 then return nil; end
+		return rwp or t.collectedAsCost;
 	end,
 	["collectedAsCost"] = function(t)
 		local id, any, partial = t.itemID;
@@ -7395,6 +7397,7 @@ local itemFields = {
 				return 0;
 			end
 			if app.AccountWideRWP and ATTAccountWideData.RWP[id] then return 2; end
+			return 0;
 		end
 	end,
 	["collectedAsFaction"] = function(t)
