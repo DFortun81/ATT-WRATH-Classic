@@ -572,7 +572,10 @@ root("Achievements", {
 		}),
 		-- Ring of the Kirin Tor, located in Dalaran.
 		classicAch(546, {	-- Safe Deposit
-			-- #if BEFORE WRATH
+			-- #if BEFORE TBC
+			["description"] = "Buy 6 additional bank slots.",
+			["OnUpdate"] = [[function(t) t.SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 6); end]],
+			-- #elseif BEFORE WRATH
 			["description"] = "Buy 7 additional bank slots.",
 			["OnUpdate"] = [[function(t) t.SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 7); end]],
 			-- #endif
