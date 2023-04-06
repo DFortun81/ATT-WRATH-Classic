@@ -912,18 +912,20 @@ ACHIEVEMENT_CATEGORY_LEGACY = 15234;
 ACHIEVEMENTS = -4;
 --BONUS_OBJECTIVES = -221;
 COMMON_VENDOR_ITEMS = -3;
-MAPS = -24;
-PARTY_SYNC = -11;
 DROPS = -26;
 --EMISSARY_QUESTS = -169;
 EXPLORATION = -15;
 FLIGHT_PATHS = -6;
+--HIDDEN_QUESTS = -999;
+MAPS = -24;
+PARTY_SYNC = -11;
 QUESTS = -17;
 RARES = -16;
 REWARDS = -18;
 SPECIAL = -77;
 TREASURES = -212;
 VENDORS = -2;
+--WEEKLY_HOLIDAYS = -176;
 WORLD_QUESTS = -34;
 ZONE_DROPS = 0;
 --ZONE_REWARDS = -903;
@@ -1222,7 +1224,7 @@ CURRENT_TIER = WOD_TIER;
 -- #elseif AFTER CATA
 CURRENT_TIER = CATA_TIER;
 -- #elseif AFTER WRATH
-CURRENT_TIER = WRATH_TIER;
+CURRENT_TIER = WOTLK_TIER;
 -- #elseif AFTER TBC
 CURRENT_TIER = TBC_TIER;
 -- #else
@@ -1308,12 +1310,18 @@ WRATH_PHASE_SIX = 35;
 -- NOTE: Reason for this is to show when stuff is going away eventually.
 -- Cataclysm Classic Phases
 CATA_PHASE_ONE = 40;
+CATA_PHASE_TWO = 41;
+CATA_PHASE_THREE = 42;
 
 -- Mists of Pandaria Classic Phases
 MOP_PHASE_ONE = 50;
+MOP_PHASE_TWO = 51;
+MOP_PHASE_THREE = 52;
 
 -- Warlords of Draenor Classic Phases
 WOD_PHASE_ONE = 60;
+WOD_PHASE_TWO = 61;
+WOD_PHASE_THREE = 62;
 
 -- Legion Classic Phases
 LEGION_PHASE_ONE = 70;
@@ -1666,6 +1674,8 @@ ItemClassInfo = {
 };
 TIMEWALKING_DUNGEON_CREATURE_IDS = {};
 POST_PROCESSING_FUNCTIONS = {};
+-- A unique value which indicates the actual field within a group should not actually be Parsed (useful to bypass groups within sharedData/bubbleDown)
+IGNORED_VALUE = 'E9B4EEAE-88EA-44F8-B7DF-0831B5F99A44'
 
 -- Construct a commonly formatted object.
 struct = function(field, id, t)
@@ -1756,6 +1766,12 @@ applyData = function(data, t)
 end
 -- Applies a copy of the provided data into the tables of the provided array/group
 sharedData = function(data, t)
+	if not data then
+		print("sharedData: No Shared Data")
+	end
+	if not t then
+		print("sharedData: No Source 't'")
+	end
 	if t then
 		for _,group in ipairs(t) do
 			applyData(data, group);
@@ -1770,6 +1786,12 @@ sharedData = function(data, t)
 end
 -- Performs sharedData logic but also applies the data to the top-level table
 sharedDataSelf = function(data, t)
+	if not data then
+		print("sharedDataSelf: No Shared Data")
+	end
+	if not t then
+		print("sharedDataSelf: No Source 't'")
+	end
 	-- if this is an array, convert to .groups container first to prevent merge confusion
 	t = togroups(t);
 	-- then apply the data to itself
@@ -1779,11 +1801,21 @@ sharedDataSelf = function(data, t)
 end
 -- Applies a copy of the provided data into all sub-groups of the provided table/array
 bubbleDown = function(data, t)
+	if not data then
+		print("bubbleDown: No Bubble Data")
+	end
+	if not t then
+		print("bubbleDown: No Source 't'")
+	end
 	if t then
 		if t.g or t.groups then
 			applyData(data, t);
-			bubbleDown(data, t.groups);
-			bubbleDown(data, t.g);
+			if t.groups then
+				bubbleDown(data, t.groups);
+			end
+			if t.g then
+				bubbleDown(data, t.g);
+			end
 		elseif isarray(t) then
 			for _,group in ipairs(t) do
 				bubbleDown(data, group);
@@ -1833,6 +1865,12 @@ bubbleDownAndReplace = function(data, t)
 end
 -- Performs bubbleDown logic but also applies the data to the top-level table
 bubbleDownSelf = function(data, t)
+	if not data then
+		print("bubbleDownSelf: No Bubble Data")
+	end
+	if not t then
+		print("bubbleDownSelf: No Source 't'")
+	end
 	-- if this is an array, convert to .g container first to prevent merge confusion
 	t = togroups(t);
 	-- then apply regular bubbleDown on the group
@@ -2577,7 +2615,8 @@ title_gendered = function(id_m, id_f, t)				-- Create a TITLE Object which is 't
 	return struct("titleID", id_m * id_f * 100, t);		-- Arbitrary titleID from the combination of both titleID's
 end
 v = function(id, t)										-- Create a VIGNETTE Object
-	return struct("vignetteID", id, t);
+	t.type = "vignetteID";
+	return struct("questID", id, t);
 end
 
 -- SHORTCUTS for Field Modifiers (not objects, you can apply these anywhere)
