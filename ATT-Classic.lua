@@ -3212,7 +3212,6 @@ local function SearchForField(field, id)
 	if field and id then
 		_cache = rawget(fieldCache, field);
 		if _cache then return rawget(_cache, id), field, id; end
-		return SearchForFieldRecursively(app:GetDataCache(), field, id), field, id;
 	end
 end
 app.SearchForFieldContainer = SearchForFieldContainer;
@@ -8524,6 +8523,7 @@ end
 -- Automatic Headers
 local HeaderTypeAbbreviations = {
 	["a"] = "achievementID",
+	["c"] = "classID",
 	["m"] = "mapID",
 	["n"] = "npcID",
 	["i"] = "itemID",
