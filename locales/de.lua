@@ -98,6 +98,7 @@ local a = L.ALT_PROFESSION_TEXT_TO_ID;
 for key,value in pairs({
 	["Ingenieurskunst"] = 4036,	-- Engineering
 	["Erste Hilfe"] = 3273,	-- First Aid
+	["Kräuterkunde"] = 2366,	-- Herb Gathering
 	["Lederverarbeitung"] = 2108,	-- Leatherworking
 	["Reiten"] = 33388,	-- Riding
 })

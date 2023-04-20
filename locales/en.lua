@@ -1147,6 +1147,7 @@ app.L = {
 	-- This is necessary because sometimes the names of spells do not match for different languages.
 	["ALT_PROFESSION_TEXT_TO_ID"] = {
 		["Riding"] = 33388,	-- Riding
+		["Herbalism"] = 2366,	-- Herb Gathering
 	};
 	
 	-- Unobtainable Listing
