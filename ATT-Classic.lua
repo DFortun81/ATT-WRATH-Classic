@@ -67,6 +67,7 @@ end
 
 -- Coroutine Helper Functions
 app.refreshing = {};
+local UpdateGroup, UpdateGroups;
 local function OnUpdate(self)
 	for i=#self.__stack,1,-1 do
 		if not self.__stack[i][1](self) then
@@ -2998,6 +2999,11 @@ fieldConverters = {
 	["qgs"] = function(group, value)
 		for i,questGiverID in ipairs(value) do
 			cacheCreatureID(group, questGiverID);
+		end
+	end,
+	["titleIDs"] = function(group, value)
+		for _,titleID in ipairs(value) do
+			CacheField(group, "titleID", titleID);
 		end
 	end,
 	["providers"] = function(group, value)
@@ -9547,6 +9553,53 @@ end)();
 
 -- Title Lib
 (function()
+local function StylizePlayerTitle(title, style, me)
+	if style == 0 then
+		-- Prefix
+		return title .. me;
+	elseif style == 1 then
+		-- Player Name First
+		return me .. title;
+	elseif style == 2 then
+		-- Player Name First (with space)
+		return me .. " " .. title;
+	elseif style == 3 then
+		-- Comma Separated
+		return me .. ", " .. title;
+	end
+end
+local OnUpdateForSpecificGender = function(t)
+	if not (app.Settings:Get("AccountMode") or app.Settings:Get("DebugMode") or t.playerGender == UnitSex("player")) then
+		t.visible = false;
+		return true;
+	elseif t.parent.titleIDs then
+		UpdateGroup(t.parent, t);
+		t.visible = false;
+		return true;
+	end
+end
+local OnUpdateForGenderedTitle = function(t)
+	if not (app.Settings:Get("AccountMode") or app.Settings:Get("DebugMode")) then
+		t.progress = nil;
+		t.total = nil;
+		t.g = nil;
+	else
+		if not t.titleObjects then
+			local titleObjects = {};
+			for index,titleID in ipairs(t.titleIDs) do
+				local titleObject = app.CreateTitle(titleID, { ["playerGender"] = index == 1 and 2 or 3, ["OnUpdate"] = OnUpdateForSpecificGender });
+				titleObject.parent = t;
+				tinsert(titleObjects, titleObject);
+			end
+			t.titleObjects = titleObjects;
+		end
+		local g = {};
+		for index,titleObject in ipairs(t.titleObjects) do
+			if titleObject.titleID ~= t.titleID then tinsert(g, titleObject); end
+		end
+		if #g > 0 then t.g = g; end
+	end
+end
 local fields = {
 	["key"] = function(t)
 		return "titleID";
@@ -9558,34 +9611,22 @@ local fields = {
 		return L["TITLES_DESC"];
 	end,
 	["text"] = function(t)
-		local name = t.playerTitle;
-		if name then
-			name = "|cff00ccff" .. name .. "|r";
-			rawset(t, "name", name);
-			return name;
-		end
+		return "|cff00ccff" .. (t.name or RETRIEVING_DATA) .. "|r";
 	end,
-	["playerTitle"] = function(t)
-		local name = GetTitleName(t.titleID);
-		if name then
-			local style = t.style;
-			if style == 0 then
-				-- Prefix
-				return name .. UnitName("player");
-			elseif style == 1 then
-				-- Player Name First
-				return UnitName("player") .. name;
-			elseif style == 2 then
-				-- Player Name First (with space)
-				return UnitName("player") .. " " .. name;
-			elseif style == 3 then
-				-- Comma Separated
-				return UnitName("player") .. ", " .. name;
-			end
-		end
+	["name"] = function(t)
+		return StylizePlayerTitle(t.titleName, t.style, UnitName("player"));
+	end,
+	["playerGender"] = function(t)
+		return UnitSex("player");
+	end,
+	["titleName"] = function(t)
+		return GetTitleName(t.titleID);
+	end,
+	["title"] = function(t)
+		return StylizePlayerTitle(t.titleName, t.style, "("..CALENDAR_PLAYER_NAME..")");
 	end,
 	["style"] = function(t)
-		local name = GetTitleName(t.titleID);
+		local name = t.titleName;
 		if name then
 			local first = string.sub(name, 1, 1);
 			if first == " " then
@@ -9625,13 +9666,7 @@ local fields = {
 		return true;
 	end,
 	["collected"] = function(t)
-		if app.CurrentCharacter.Titles[t.titleID] then return 1; end
-		if app.AccountWideTitles and ATTAccountWideData.Titles[t.titleID] then return 2; end
-		if IsTitleKnown(t.titleID) then
-			app.CurrentCharacter.Titles[t.titleID] = 1;
-			ATTAccountWideData.Titles[t.titleID] = 1;
-			return 1;
-		end
+		return t.saved or (app.AccountWideTitles and ATTAccountWideData.Titles[t.titleID] and 2);
 	end,
 	["saved"] = function(t)
 		if app.CurrentCharacter.Titles[t.titleID] then return true; end
@@ -9641,9 +9676,88 @@ local fields = {
 			return true;
 		end
 	end,
+	["collectedForGendered"] = function(t)
+		if t.saved then return 1; end
+		if app.AccountWideTitles then
+			local ids = t.titleIDs;
+			local m, f = ids[1], ids[2];
+			return (ATTAccountWideData.Titles[m] or ATTAccountWideData.Titles[f]) and 2;
+		end
+	end,
+	["descriptionForGendered"] = function(t)
+		return "This title changes its state whenever your character changes its gender identity. This is particularly common in Brunnhildar Village in Storm Peaks or by means of using an Engineering teleport. In account mode you will need to have multiple characters with representation of both gender types.";
+	end,
+	["progressForGendered"] = function(t)
+		local ids, acctTitles = t.titleIDs, ATTAccountWideData.Titles;
+		local m, f = ids[1], ids[2];
+		return (acctTitles[m] and 1 or 0) + (acctTitles[f] and 1 or 0);
+	end,
+	["savedForGendered"] = function(t)
+		local ids, acctTitles, charTitles = t.titleIDs, ATTAccountWideData.Titles, app.CurrentCharacter.Titles;
+		local m, f = ids[1], ids[2];
+		if IsTitleKnown(m) then
+			charTitles[m] = 1;
+			acctTitles[m] = 1;
+			if charTitles[f] == 1 then
+				-- Check for a character that has this title.
+				charTitles[f] = nil;
+				acctTitles[f] = nil;
+				for guid,characterData in pairs(ATTCharacterData) do
+					if characterData.Titles and characterData.Titles[f] then
+						acctTitles[f] = 1;
+						break;
+					end
+				end
+			end
+			return true;
+		end
+		if IsTitleKnown(f) then
+			charTitles[f] = 1;
+			acctTitles[f] = 1;
+			if charTitles[m] == 1 then
+				-- Check for a character that has this title.
+				charTitles[m] = nil;
+				acctTitles[m] = nil;
+				for guid,characterData in pairs(ATTCharacterData) do
+					if characterData.Titles and characterData.Titles[m] then
+						acctTitles[m] = 1;
+						break;
+					end
+				end
+			end
+			return true;
+		end
+	end,
+	["titleForGendered"] = function(t)
+		local ids, acctTitles = t.titleIDs, ATTAccountWideData.Titles;
+		local m, f = ids[1], ids[2];
+		local player = "("..CALENDAR_PLAYER_NAME..")";
+		return "  " .. StylizePlayerTitle(GetTitleName(m), t.style, player).. "\n  " .. StylizePlayerTitle(GetTitleName(f), t.style, player)
+			.. DESCRIPTION_SEPARATOR .. GetCollectionIcon(acctTitles[m]) .. "\n" .. GetCollectionIcon(acctTitles[f]);
+	end,
+	["titleIDForGendered"] = function(t)
+		return t.playerGender == 2 and t.titleIDs[1] or t.titleIDs[2];
+	end,
+	["OnUpdateForGendered"] = function(t)
+		return OnUpdateForGenderedTitle;
+	end,
+	["OnUpdateForSpecificGender"] = function(t)
+		return OnUpdateForSpecificGender;
+	end
 };
 app.BaseTitle = app.BaseObjectFields(fields);
+local genderedFields = RawCloneData(fields);
+genderedFields.collected = fields.collectedForGendered;
+genderedFields.description = fields.descriptionForGendered;
+genderedFields.saved = fields.savedForGendered;
+genderedFields.title = fields.titleForGendered;
+genderedFields.titleID = fields.titleIDForGendered;
+genderedFields.OnUpdate = fields.OnUpdateForGendered;
+app.BaseGenderedTitle = app.BaseObjectFields(genderedFields);
 app.CreateTitle = function(id, t)
+	if t and t.titleIDs then
+		return setmetatable(constructor(nil, t, "titleID"), app.BaseGenderedTitle);
+	end
 	return setmetatable(constructor(id, t, "titleID"), app.BaseTitle);
 end
 end)();
@@ -9881,7 +9995,6 @@ app.RecursiveIsDescendantOfParentWithValue = function(group, field, value)
 end
 
 -- Processing Functions (Coroutines)
-local UpdateGroup, UpdateGroups;
 UpdateGroup = function(parent, group)
 	local visible = false;
 	
@@ -12702,8 +12815,20 @@ function app:GetDataCache()
 				end
 			end
 			for i,_ in pairs(fieldCache["titleID"]) do
-				if not self.titles[i] then
-					self.titles[i] = buildCategoryEntry(self, headers, _, app.CreateTitle(tonumber(i)));
+				local titleID = tonumber(i);
+				if not self.titles[titleID] then
+					local titleIDs = _[1].titleIDs;
+					if titleIDs then
+						for index,j in ipairs(titleIDs) do
+							if not self.titles[j] then
+								local titleObject = app.CreateTitle(j, { ["playerGender"] = index == 1 and 2 or 3 });
+								self.titles[j] = buildCategoryEntry(self, headers, _, titleObject);
+								titleObject.OnUpdate = titleObject.OnUpdateForSpecificGender;
+							end
+						end
+					else
+						self.titles[titleID] = buildCategoryEntry(self, headers, _, app.CreateTitle(titleID));
+					end
 				end
 			end
 			if not headers[-32] then
