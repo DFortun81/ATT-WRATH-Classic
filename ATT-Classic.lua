@@ -2905,6 +2905,7 @@ fieldCache["spellID"] = {};
 fieldCache["tierID"] = {};
 fieldCache["titleID"] = {};
 fieldCache["toyID"] = {};
+fieldCache["npcID"] = rawget(fieldCache, "creatureID");
 local cacheCreatureID = function(group, value)
 	if value > 0 then
 		CacheField(group, "creatureID", value);
