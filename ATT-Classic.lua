@@ -14592,6 +14592,62 @@ app:GetWindow("Objects", UIParent, function(self, ...)
 		app.VisibilityFilter = visibilityFilter;
 	end
 end);
+app:GetWindow("Quests", UIParent, function(self)
+	if self:IsVisible() then
+		if not self.initialized then
+			self.initialized = true;
+			self.dirty = true;
+			local actions = {
+				['text'] = "Quests",
+				['icon'] = "Interface\\GossipFrame\\AvailableQuestIcon", 
+				["description"] = "This window shows you all of the quests (based on filters) that you can complete. Go get 'em!\n\nNOTE: This window will not include quest items used to complete quests, but will show all of the associated quest rewards.",
+				['visible'] = true, 
+				['expanded'] = true,
+				['back'] = 1,
+				["indent"] = 0,
+				['OnUpdate'] = function(data)
+					if not self.dirty then return nil; end
+					self.dirty = nil;
+					
+					local g = {};
+					if not data.results then
+						data.results = app:BuildSearchResponseForField(app:GetWindow("Prime").data.g, "questID");
+					end
+					if #data.results > 0 then
+						for i,result in ipairs(data.results) do
+							table.insert(g, result);
+						end
+					end
+					data.g = g;
+					if #g > 0 then
+						for i,entry in ipairs(g) do
+							entry.indent = nil;
+						end
+						data.progress = 0;
+						data.total = 0;
+						data.indent = 0;
+						data.visible = true;
+						BuildGroups(data, data.g);
+						app.UpdateGroups(data, data.g);
+						if not data.expanded then
+							data.expanded = true;
+							ExpandGroupsRecursively(data, true);
+						end
+					end
+					BuildGroups(self.data, self.data.g);
+					UpdateWindow(self, true);
+				end,
+				['options'] = { },
+				['g'] = { },
+			};
+			self.data = actions;
+		end
+		
+		-- Update the window and all of its row data
+		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
+		UpdateWindow(self);
+	end
+end);
 app:GetWindow("RaidAssistant", UIParent, function(self)
 	if self:IsVisible() then
 		if not self.initialized then
@@ -16555,6 +16611,9 @@ SlashCmdList["ATTC"] = function(cmd)
 			return true;
 		elseif cmd == "rwp" then
 			app:GetWindow("RWP"):Toggle();
+			return true;
+		elseif cmd == "quests" then
+			app:GetWindow("Quests"):Toggle();
 			return true;
 		elseif cmd == "breadcrumbs" then
 			app:GetWindow("Breadcrumbs"):Toggle();
