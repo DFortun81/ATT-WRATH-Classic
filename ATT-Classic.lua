@@ -8539,6 +8539,12 @@ local HeaderTypeAbbreviations = {
 	["q"] = "questID",
 	["s"] = "spellID",
 };
+-- Alternate functions to attach data into a table based on an id for a given type code
+local AlternateDataTypes = {
+	["_G"] = function(id)
+		return { ["text"] = _G[id] };
+	end,
+};
 local automaticHeaderFields = {
 	["key"] = function(t)
 		return "autoID";
@@ -8551,14 +8557,25 @@ local automaticHeaderFields = {
 	end,
 	["result"] = function(t)
 		local typ = HeaderTypeAbbreviations[t.type];
-		local cache = app.SearchForField(typ, t.autoID);
-		if cache and #cache > 0 then
-			rawset(t, "result", cache[1]);
-			return cache[1];
+		if typ then
+			local cache = app.SearchForField(typ, t.autoID);
+			if cache and #cache > 0 then
+				rawset(t, "result", cache[1]);
+				return cache[1];
+			else
+				cache = CreateObject({[typ] = t.autoID});
+				rawset(t, "result", cache);
+				return cache;
+			end
 		else
-			cache = CreateObject({[typ] = t.autoID});
-			rawset(t, "result", cache);
-			return cache;
+			local cache = AlternateDataTypes[t.type];
+			if cache then
+				cache = cache(t.autoID);
+				if cache then
+					rawset(t, "result", cache);
+					return cache;
+				end
+			end
 		end
 	end,
 };
