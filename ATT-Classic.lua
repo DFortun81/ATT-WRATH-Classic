@@ -4656,7 +4656,7 @@ end,
 			local g = (t.sourceParent or t.parent).parent.g;
 			if g and #g > 0 then
 				for i,o in ipairs(g) do
-					if o.headerID == -15 then
+					if o.headerID == app.HeaderConstants.EXPLORATION then
 						t.areas = o.g;
 						break;
 					end
@@ -8091,7 +8091,7 @@ local onMapUpdate = function(t)
 	local coordinates = {};
 	if t.g then
 		for i,o in ipairs(t.g) do
-			if o.key == "headerID" and o.headerID == -15 then
+			if o.key == "headerID" and o.headerID == app.HeaderConstants.EXPLORATION then
 				explorationHeader = o;
 				if o.g then
 					for j,e in ipairs(o.g) do
@@ -8169,7 +8169,7 @@ local onMapUpdate = function(t)
 				o.parent = explorationHeader;
 			end
 		else
-			explorationHeader = app.CreateNPC(-15, newExplorationObjects);
+			explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, newExplorationObjects);
 			explorationHeader.u = t.u;
 			for i,o in ipairs(newExplorationObjects) do
 				o.parent = explorationHeader;
@@ -8242,7 +8242,7 @@ app.CreateMap = function(id, t)
 		local explorationByAreaID = {};
 		local explorationHeader = nil;
 		for i,o in ipairs(t.g) do
-			if o.headerID == -15 then
+			if o.headerID == app.HeaderConstants.EXPLORATION then
 				explorationHeader = o;
 				if o.g then
 					for j,e in ipairs(o.g) do
@@ -8278,7 +8278,7 @@ app.CreateMap = function(id, t)
 					o.parent = explorationHeader;
 				end
 			else
-				explorationHeader = app.CreateNPC(-15, newExplorationObjects);
+				explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, newExplorationObjects);
 				explorationHeader.u = t.u;
 				for i,o in ipairs(newExplorationObjects) do
 					o.parent = explorationHeader;
@@ -12056,7 +12056,7 @@ function app:GetDataCache()
 		end
 		
 		-- Factions (Dynamic)
-		local factionsCategory = app.CreateNPC(-8, {});
+		local factionsCategory = app.CreateNPC(app.HeaderConstants.FACTIONS, {});
 		factionsCategory.g = {};
 		factionsCategory.factions = {};
 		factionsCategory.expanded = false;
@@ -12851,11 +12851,11 @@ function app:GetDataCache()
 					end
 				end
 			end
-			if not headers[-32] then
-				local searchResults = SearchForField("headerID", -32);
+			if not headers[app.HeaderConstants.HONOR_TITLES] then
+				local searchResults = SearchForField("headerID", app.HeaderConstants.HONOR_TITLES);
 				if searchResults and #searchResults > 0 then
-					header = app.CreateNPC(-32);
-					headers[-32] = header;
+					header = app.CreateNPC(app.HeaderConstants.HONOR_TITLES);
+					headers[app.HeaderConstants.HONOR_TITLES] = header;
 					tinsert(self.g, header);
 					header.parent = self;
 					header.u = searchResults[1].u;
@@ -13813,11 +13813,11 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 				local header = { mapID = self.mapID, g = groups };
 				local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
 				table.insert(groups, achievementsHeader);
-				local explorationHeader = app.CreateNPC(-15, { ["g"] = {} });
+				local explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, { ["g"] = {} });
 				table.insert(groups, explorationHeader);
-				local factionsHeader = app.CreateNPC(-8, { ["g"] = {} });
+				local factionsHeader = app.CreateNPC(app.HeaderConstants.FACTIONS, { ["g"] = {} });
 				table.insert(groups, factionsHeader);
-				local flightPathsHeader = app.CreateNPC(-6, { ["g"] = {} });
+				local flightPathsHeader = app.CreateNPC(app.HeaderConstants.FLIGHT_PATHS, { ["g"] = {} });
 				table.insert(groups, flightPathsHeader);
 				local questsHeader = app.CreateNPC(app.HeaderConstants.QUESTS, { ["g"] = {} });
 				table.insert(groups, questsHeader);
