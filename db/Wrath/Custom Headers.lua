@@ -73,9 +73,12 @@ for key,value in pairs({
 	[-1000035] = "Interface/Icons/ability_mount_redfrostwyrm_01",
 	[-1000036] = "Interface/Icons/ability_mount_redfrostwyrm_01",
 	[-1000037] = "Interface/Icons/INV_Chest_Plate03",
-	[-1000038] = "Interface/Icons/INV_Misc_Token_ScarletCrusade",
-	[-1000039] = "Interface/Icons/INV_MISC_KEY_13",
-	[-1000040] = "Interface/Icons/inv_jewelry_amulet_03",
+	[-1000038] = "Interface/Icons/Ability_Warlock_DemonicEmpowerment",
+	[-1000039] = "Interface/Icons/Achievement_Reputation_Ogre",
+	[-1000040] = "Interface/Icons/INV_Misc_Head_Elf_02",
+	[-1000041] = "Interface/Icons/INV_Misc_Token_ScarletCrusade",
+	[-1000042] = "Interface/Icons/INV_MISC_KEY_13",
+	[-1000043] = "Interface/Icons/inv_jewelry_amulet_03",
 }) do a[key] = value; end
 
 local a = L.HEADER_NAMES;
@@ -118,9 +121,12 @@ for key,value in pairs({
 	[-1000035] = select(2, GetAchievementInfo(3758))..": Season 7",
 	[-1000036] = select(2, GetAchievementInfo(4599))..": Season 8",
 	[-1000037] = "Tier 0.5 Sets",
-	[-1000038] = "Main Gate",
-	[-1000039] = "Service Entrance",
-	[-1000040] = "Spirit of Competition",
+	[-1000038] = DUNGEON_FLOOR_DIREMAUL5.." (East)",
+	[-1000039] = DUNGEON_FLOOR_DIREMAUL1.." (North)",
+	[-1000040] = DUNGEON_FLOOR_DIREMAUL2.." (West)",
+	[-1000041] = "Main Gate",
+	[-1000042] = "Service Entrance",
+	[-1000043] = "Spirit of Competition",
 }) do a[key] = value; end
 
 local a = L.HEADER_DESCRIPTIONS;
@@ -130,9 +136,12 @@ for key,value in pairs({
 	[-1000017] = "Naughty secrets...",
 	[-1000022] = "World Quests are time-limited Quests available in specific locations with variable rewards.\n\nMake sure to check the ATT World Quests window (/attwq) often to see what time-limited Things you should go collect!",
 	[-1000024] = "These items can drop from repeatable treasure chests, wish crickets, world quests or table missions.",
-	[-1000038] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Live\" or \"Scarlet\" side, which the Scarlet Crusade has taken over.",
-	[-1000039] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Dead\" or \"Scourge\" side, which the Scourge has taken over.",
-	[-1000040] = "This is a Battlegrounds-based event that coincides with the beginning of the Summer Olympic games. The only time this was celebrated was in 2008 to correspond to the Beijing Olympics, and although there appeared to be the intention to repeat this event, it never returned.",
+	[-1000038] = "This part of the instance can be accessed from the eastern-most portal. (right side)",
+	[-1000039] = "This part of the instance can be accessed from the northern-most portal.",
+	[-1000040] = "This part of the instance can be accessed from the western-most portal. (left side)",
+	[-1000041] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Live\" or \"Scarlet\" side, which the Scarlet Crusade has taken over.",
+	[-1000042] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Dead\" or \"Scourge\" side, which the Scourge has taken over.",
+	[-1000043] = "This is a Battlegrounds-based event that coincides with the beginning of the Summer Olympic games. The only time this was celebrated was in 2008 to correspond to the Beijing Olympics, and although there appeared to be the intention to repeat this event, it never returned.",
 }) do a[key] = value; end
 
 local a = L.HEADER_LORE;
@@ -171,6 +180,9 @@ for key,value in pairs({
 	[-1000035] = select(2, GetAchievementInfo(3758))..": Saison 7",
 	[-1000036] = select(2, GetAchievementInfo(4599))..": Saison 8",
 	[-1000037] = "Ensembles Tier 0.5",
+	[-1000038] = DUNGEON_FLOOR_DIREMAUL5.." (Est)",
+	[-1000039] = DUNGEON_FLOOR_DIREMAUL1.." (Nord)",
+	[-1000040] = DUNGEON_FLOOR_DIREMAUL2.." (Ouest)",
 }) do a[key] = value; end
 end
 
@@ -218,6 +230,9 @@ for key,value in pairs({
 	[-1000035] = select(2, GetAchievementInfo(3758))..": Сезон 7",
 	[-1000036] = select(2, GetAchievementInfo(4599))..": Сезон 8",
 	[-1000037] = "Комплекты T0.5",
+	[-1000038] = DUNGEON_FLOOR_DIREMAUL5.." (Восток)",
+	[-1000039] = DUNGEON_FLOOR_DIREMAUL1.." (Север)",
+	[-1000040] = DUNGEON_FLOOR_DIREMAUL2.." (Запад)",
 }) do a[key] = value; end
 end
 
@@ -239,6 +254,9 @@ for key,value in pairs({
 	[-1000035] = select(2, GetAchievementInfo(3758)).."：第7赛季",
 	[-1000036] = select(2, GetAchievementInfo(4599)).."：第8赛季",
 	[-1000037] = "等级 0.5 套装",
+	[-1000038] = DUNGEON_FLOOR_DIREMAUL5.." (东)",
+	[-1000039] = DUNGEON_FLOOR_DIREMAUL1.." (北)",
+	[-1000040] = DUNGEON_FLOOR_DIREMAUL2.." (西)",
 }) do a[key] = value; end
 end
 

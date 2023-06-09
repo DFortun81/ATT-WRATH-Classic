@@ -577,9 +577,6 @@ app.L = {
 		[15301] = { -1, "Expansion Features" },
 	},
 	["HEADER_ICONS"] = {
-		[-12] = "Interface\\Icons\\Spell_Shadow_SummonImp", 								-- East entrance demons
-		[-13] = "Interface\\Icons\\inv_axe_10", 											-- North entrance ogres
-		[-14] = "Interface\\Icons\\INV_Misc_Head_Elf_02", 									-- West entrace elves
 		[-19] = "Interface\\Icons\\INV_Misc_Head_Dragon_Green",								-- Dragons of Nightmare (World Bosses)
 		[-29] = "Interface\\FriendsFrame\\PlusManz-PlusManz",								-- Neutral
 		[-30] = "Interface\\FriendsFrame\\PlusManz-Alliance",								-- Alliance
@@ -690,9 +687,6 @@ app.L = {
 		[-9983] = "Interface\\Icons\\inv_jewelry_amulet_03",				-- Honor
 	};
 	["HEADER_NAMES"] = {
-		[-12] = DUNGEON_FLOOR_DIREMAUL5.." (East)",								-- Warpwood Quarter
-		[-13] = DUNGEON_FLOOR_DIREMAUL1.." (North)",							-- Gordok Commons
-		[-14] = DUNGEON_FLOOR_DIREMAUL2.." (West)",								-- Capital Gardens
 		[-19] = "Dragons of Nightmare",											-- Dragons of Nightmare (World Bosses)
 		[-20] = "Silithid Royalty",												-- Silithid Royalty
 		[-21] = "Captains",
