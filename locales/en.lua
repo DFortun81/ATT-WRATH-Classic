@@ -651,7 +651,6 @@ app.L = {
 		[-394] = "Interface\\Icons\\achievement_dungeon_plaguewing",						-- The Plagueworks
 		[-395] = "Interface\\Icons\\achievement_dungeon_crimsonhall",						-- The Crimson Halls
 		[-396] = "Interface\\Icons\\achievement_dungeon_icecrown_frostwinghalls",			-- The Frostwing Halls
-		[-420] = "Interface\\Icons\\INV_Chest_Plate03",								-- Tier 0.5 Sets
 		[-522] = "Interface\\Icons\\inv_misc_tournaments_banner_troll",						-- Zalazane's Fall
 		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
 		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",						-- Operation: Gnomeregan
@@ -791,7 +790,6 @@ app.L = {
 		[-394] = "The Plagueworks",												-- The Plagueworks
 		[-395] = "The Crimson Hall",											-- The Crimson Hall
 		[-396] = "The Frostwing Halls",											-- The Frostwing Halls
-		[-420] = "Tier 0.5 Sets",												-- Tier 0.5 Sets
 		[-422] = "Atal'ai Defenders",											-- Atal'ai Defenders
 		[-423] = "The Four Horsemen",											-- The Four Horsemen
 
@@ -872,6 +870,9 @@ app.L = {
 	},
 	["HEADER_DESCRIPTIONS"] = {
 		[-5] = "A specific holiday may need to be active for you to complete the referenced Things within this section.",
+	};
+	["HEADER_LORE"] = {
+		
 	};
 	
 	["TIER_DATA"] = {

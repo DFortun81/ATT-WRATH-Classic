@@ -1063,7 +1063,7 @@ local CompletedQuests = setmetatable({}, {__newindex = function (t, key, value)
 			if searchResults and #searchResults > 0 then
 				local questID, nmr, nmc, text = key, false, false, "";
 				for i,searchResult in ipairs(searchResults) do
-					if searchResult.questID == questID and not IgnoreErrorQuests[questID] and not GetRelativeField(searchResult, "headerID", -420) then
+					if searchResult.questID == questID and not IgnoreErrorQuests[questID] and not GetRelativeField(searchResult, "headerID", app.HeaderConstants.TIER_ZERO_POINT_FIVE_SETS) then
 						if searchResult.nmr and not nmr then
 							nmr = true;
 							text = searchResult.text;
@@ -8494,6 +8494,9 @@ local headerFields = {
 	end,
 	["description"] = function(t)
 		return L["HEADER_DESCRIPTIONS"][t.headerID];
+	end,
+	["lore"] = function(t)
+		return L["HEADER_LORE"][t.headerID];
 	end,
 	["savedAsQuest"] = function(t)
 		return IsQuestFlaggedCompletedForObject(t) == 1;
