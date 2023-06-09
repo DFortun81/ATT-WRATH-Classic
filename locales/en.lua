@@ -681,7 +681,6 @@ app.L = {
 		[-661] = "Interface\\Worldmap\\GlowSkull_64Purple",									-- Gladator PvP Gear
 		[-662] = "Interface\\Worldmap\\GlowSkull_64Red",									-- Elite PvP Gear
 	-- The Burning Crusade PvP Seasons
-		[-664] = app.asset("achievement_featsofstrength_gladiator_01"),				-- Gladiator: Season 1
 		[-665] = app.asset("achievement_featsofstrength_gladiator_02"),				-- Merciless Gladiator: Season 2
 		[-666] = app.asset("achievement_featsofstrength_gladiator_03"),				-- Vengeful Gladiator: Season 3
 		[-667] = app.asset("achievement_featsofstrength_gladiator_04"),				-- Brutal Gladiator: Season 4
@@ -837,7 +836,6 @@ app.L = {
 		[-661] = "Gladiator Gear",												-- Gladiator PvP Gear
 		[-662] = "Elite Gear",													-- Elite PvP Gear
 	-- The Burning Crusade PvP Seasons
-		[-664] = "Gladiator",						-- Gladiator: Season 1
 		[-665] = "Merciless Gladiator",				-- Merciless Gladiator: Season 2
 		[-666] = "Vengeful Gladiator",				-- Vengeful Gladiator: Season 3
 		[-667] = "Brutal Gladiator",				-- Brutal Gladiator: Season 4
