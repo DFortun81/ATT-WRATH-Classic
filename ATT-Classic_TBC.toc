@@ -14,11 +14,6 @@ lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
 src\base.lua
 db\Presets.lua
-db\TBC\CategoryDB.lua
-db\TBC\ExplorationDB.lua
-db\TBC\ObjectDB.lua
-db\FlightPathDB.lua
-db\RaceDB.lua
 locales\en.lua
 locales\en_auto.lua
 locales\es.lua
@@ -29,6 +24,12 @@ locales\ko.lua
 locales\pt.lua
 locales\ru.lua
 locales\cn.lua
+db\TBC\Custom Headers.lua
+db\TBC\CategoryDB.lua
+db\TBC\ExplorationDB.lua
+db\TBC\ObjectDB.lua
+db\FlightPathDB.lua
+db\RaceDB.lua
 Settings.lua
 ATT-Classic.lua
 db\TBC\Categories.lua
