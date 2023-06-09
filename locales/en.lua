@@ -584,8 +584,6 @@ app.L = {
 		[-29] = "Interface\\FriendsFrame\\PlusManz-PlusManz",								-- Neutral
 		[-30] = "Interface\\FriendsFrame\\PlusManz-Alliance",								-- Alliance
 		[-31] = "Interface\\FriendsFrame\\PlusManz-Horde", 									-- Horde
-		[-37] = "Interface\\Icons\\inv_misc_book_07",										-- Discovery
-		[-38] = app.asset("Category_Professions"),											-- Professions
 		[-47] = app.asset("Holiday_Lunar"),													-- Lunar Festival
 		[-50] = app.asset("Holiday_love"),													-- Love is in the Air
 		[-51] = app.asset("Holiday_noblegarden"),											-- Noblegarden
@@ -639,8 +637,6 @@ app.L = {
 		[-370] = "Interface\\Icons\\inv_misc_cauldron_nature",						-- The Plague Quarter
 		[-371] = "Interface\\Icons\\inv_misc_head_dragon_blue",						-- The Upper Necropolis
 		[-383] = "Interface\\Icons\\inv_misc_gem_variety_02",						-- Miscellaneous
-		[-388] = "Interface\\Icons\\INV_Misc_Token_ScarletCrusade",					-- Main Gate (Stratholme)
-		[-389] = "Interface\\Icons\\INV_MISC_KEY_13",								-- Service Entrance (Stratholme)
 	-- Icecrown Citadel
 		[-393] = "Interface\\Icons\\achievement_dungeon_icecrown_icecrownentrance",			-- Storming the Citadel
 		[-394] = "Interface\\Icons\\achievement_dungeon_plaguewing",						-- The Plagueworks
@@ -703,8 +699,6 @@ app.L = {
 		[-29] = COMBATLOG_FILTER_STRING_NEUTRAL_UNITS,							-- Neutral
 		[-30] = FACTION_ALLIANCE,												-- Alliance
 		[-31] = FACTION_HORDE, 													-- Horde
-		[-37] = BATTLE_PET_SOURCE_11,											-- Discovery
-		[-38] = TRADE_SKILLS,													-- Professions
 -- World Events
 		[-47] = "Lunar Festival",												-- Lunar Festival
 		[-50] = "Love is in the Air",											-- Love is in the Air
@@ -761,8 +755,6 @@ app.L = {
 		[-370] = DUNGEON_FLOOR_NAXXRAMAS4, 										-- The Plague Quarter
 		[-371] = DUNGEON_FLOOR_NAXXRAMAS6, 										-- The Upper Necropolis
 		[-383] = MISCELLANEOUS,													-- Miscellaneous (Holidays)
-		[-388] = "Main Gate",													-- Main Gate (Stratholme)
-		[-389] = "Service Entrance",											-- Service Entrance (Stratholme)
 	-- Icecrown Citadel
 		[-393] = "Storming the Citadel",										-- Storming the Citadel
 		[-394] = "The Plagueworks",												-- The Plagueworks
