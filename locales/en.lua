@@ -680,16 +680,6 @@ app.L = {
 		[-660] = "Interface\\Worldmap\\GlowSkull_64Blue",									-- Combatant PvP Gear
 		[-661] = "Interface\\Worldmap\\GlowSkull_64Purple",									-- Gladator PvP Gear
 		[-662] = "Interface\\Worldmap\\GlowSkull_64Red",									-- Elite PvP Gear
-	-- The Burning Crusade PvP Seasons
-		[-665] = app.asset("achievement_featsofstrength_gladiator_02"),				-- Merciless Gladiator: Season 2
-		[-666] = app.asset("achievement_featsofstrength_gladiator_03"),				-- Vengeful Gladiator: Season 3
-		[-667] = app.asset("achievement_featsofstrength_gladiator_04"),				-- Brutal Gladiator: Season 4
-	-- Wrath of the Lich-King PvP Seasons
-		[-668] = "Interface\\Icons\\ability_mount_redfrostwyrm_01",							-- Deadly Gladiator: Season 5
-		[-669] = "Interface\\Icons\\ability_mount_redfrostwyrm_01",							-- Furious Gladiator: Season 6
-		[-670] = "Interface\\Icons\\ability_mount_redfrostwyrm_01",							-- Relentless Gladiator: Season 7
-		[-671] = "Interface\\Icons\\ability_mount_redfrostwyrm_01",							-- Wrathful Gladiator: Season 8
-		
 	-- WoW Anniversary
 		[-5353] = "Interface\\Icons\\inv_misc_celebrationcake_01",							-- 4th Anniversary
 		[-5354] = "Interface\\Icons\\inv_misc_celebrationcake_01",							-- 5th Anniversary
@@ -835,16 +825,6 @@ app.L = {
 		[-660] = "Combatant Gear",												-- Combatant PvP Gear (WoD, Legion)
 		[-661] = "Gladiator Gear",												-- Gladiator PvP Gear
 		[-662] = "Elite Gear",													-- Elite PvP Gear
-	-- The Burning Crusade PvP Seasons
-		[-665] = "Merciless Gladiator",				-- Merciless Gladiator: Season 2
-		[-666] = "Vengeful Gladiator",				-- Vengeful Gladiator: Season 3
-		[-667] = "Brutal Gladiator",				-- Brutal Gladiator: Season 4
-	-- Wrath of the Lich-King PvP Seasons
-		[-668] = "Deadly Gladiator",				-- Deadly Gladiator: Season 5
-		[-657] = "Hateful Gladiator",				-- Hateful Gladiator: Season 5
-		[-669] = "Furious Gladiator",				-- Furious Gladiator: Season 6
-		[-670] = "Relentless Gladiator",			-- Relentless Gladiator: Season 7
-		[-671] = "Wrathful Gladiator",				-- Wrathful Gladiator: Season 8
 		
 		[-5353] = GetAchievementInfo and select(2,GetAchievementInfo(2398)) or "WoW's 4th Anniversary",	-- 4th Anniversary
 		[-5354] = GetAchievementInfo and select(2,GetAchievementInfo(4400)) or "WoW's 5th Anniversary",	-- 5th Anniversary
