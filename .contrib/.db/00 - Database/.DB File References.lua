@@ -6,7 +6,7 @@
 -- #IMPORT: 00 - DB\\ObjectDB.lua
 -- #IMPORT: 00 - DB\\PetDB.lua
 -- #IMPORT: 00 - DB\\ToyDB.lua
--- #IMPORT: ..\\_profession.lua
+-- #IMPORT: _profession.lua
 -- #IMPORT: 00 - Item Database\\Build NYI.lua
 -- #IMPORT: 00 - Item Database\\ProfessionDB\\
 -- #IMPORT: 00 - Item Database\\BindOnAccountItems.lua
