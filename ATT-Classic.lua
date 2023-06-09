@@ -744,11 +744,11 @@ local function BuildSourceText(group, l, skip)
 	local parent = group.parent;
 	if parent then
 		if not group.itemID and not skip and (parent.key == "filterID" or parent.key == "spellID" or ((parent.headerID or (parent.spellID and (group.categoryID or group.tierID)))
-			and ((parent.headerID == -2 or parent.headerID == -17 or parent.headerID == -7) or (parent.parent and parent.parent.parent)))) then
+			and ((parent.headerID == app.HeaderConstants.VENDORS or parent.headerID == app.HeaderConstants.QUESTS or parent.headerID == app.HeaderConstants.WORLD_BOSSES) or (parent.parent and parent.parent.parent)))) then
 			return BuildSourceText(parent.parent, 5, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA) .. " (" .. (parent.text or RETRIEVING_DATA) .. ")";
 		end
 		if group.headerID then
-			if group.headerID == 0 then
+			if group.headerID == app.HeaderConstants.ZONE_DROPS then
 				if group.crs and #group.crs == 1 then
 					return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (NPCNameFromID[group.crs[1]] or RETRIEVING_DATA) .. " (Drop)";
 				end
@@ -1926,7 +1926,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						end
 					end
 					insertionSort(regroup, function(a, b)
-						return not (a.headerID and a.headerID == -1) and b.headerID and b.headerID == -1;
+						return not (a.headerID and a.headerID == app.HeaderConstants.COMMON_BOSS_DROPS) and b.headerID and b.headerID == app.HeaderConstants.COMMON_BOSS_DROPS;
 					end);
 				end
 				group = regroup;
@@ -2188,7 +2188,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			local costResults = app.SearchForField("currencyIDAsCost", paramB);
 			if costResults and #costResults > 0 then
 				if not group.g then group.g = {} end
-				local usedToBuy = app.CreateNPC(-2);
+				local usedToBuy = app.CreateNPC(app.HeaderConstants.VENDORS);
 				usedToBuy.text = "Currency For";
 				if not usedToBuy.g then usedToBuy.g = {}; end
 				for i,o in ipairs(costResults) do
@@ -2200,9 +2200,9 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			local costResults = app.SearchForField("itemIDAsCost", paramB);
 			if costResults and #costResults > 0 then
 				if not group.g then group.g = {} end
-				local attunement = app.CreateNPC(-17);
+				local attunement = app.CreateNPC(app.HeaderConstants.QUESTS);
 				if not attunement.g then attunement.g = {}; end
-				local usedToBuy = app.CreateNPC(-2);
+				local usedToBuy = app.CreateNPC(app.HeaderConstants.VENDORS);
 				if not usedToBuy.g then usedToBuy.g = {}; end
 				for i,o in ipairs(costResults) do
 					if o.key == "instanceID" or ((o.key == "difficultyID" or o.key == "mapID" or o.key == "headerID") and (o.parent and GetRelativeValue(o.parent, "instanceID"))) then
@@ -4897,7 +4897,7 @@ end,
 			local g = (t.sourceParent or t.parent).parent.g;
 			if g and #g > 0 then
 				for i,o in ipairs(g) do
-					if o.headerID == -17 then
+					if o.headerID == app.HeaderConstants.QUESTS then
 						quests = o.g;
 						break;
 					end
@@ -8439,7 +8439,7 @@ local npcFields = {
 		return NPCNameFromID[t.npcID] or RETRIEVING_DATA;
 	end,
 	["icon"] = function(t)
-		return (t.parent and t.parent.headerID == -2 and "Interface\\Icons\\INV_Misc_Coin_01")
+		return (t.parent and t.parent.headerID == app.HeaderConstants.VENDORS and "Interface\\Icons\\INV_Misc_Coin_01")
 			or app.DifficultyIcons[GetRelativeValue(t, "difficultyID") or 1];
 	end,
 	["title"] = function(t)
@@ -12082,7 +12082,7 @@ function app:GetDataCache()
 		
 		-- Holidays
 		if app.Categories.Holidays then
-			db = app.CreateNPC(-5, app.Categories.Holidays);
+			db = app.CreateNPC(app.HeaderConstants.HOLIDAYS, app.Categories.Holidays);
 			db.description = "These events occur at consistent dates around the year based on and themed around real world holiday events.";
 			db.isHolidayCategory = true;
 			db.expanded = false;
@@ -12392,14 +12392,14 @@ function app:GetDataCache()
 							headerType = "pvp";
 						elseif GetRelativeValue(o, "isEventCategory") then
 							headerType = "event";
-						elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == -1 then
+						elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == app.HeaderConstants.COMMON_BOSS_DROPS then
 							headerType = "drop";
 						elseif o.parent.npcID then
-							headerType = GetDeepestRelativeValue(o, "headerID") or o.parent.parent.headerID == -2 and -2 or "drop";
+							headerType = GetDeepestRelativeValue(o, "headerID") or o.parent.parent.headerID == app.HeaderConstants.VENDORS and app.HeaderConstants.VENDORS or "drop";
 						elseif GetRelativeValue(o, "isCraftedCategory") then
 							headerType = "crafted";
 						elseif o.parent.achievementID then
-							headerType = -4;
+							headerType = app.HeaderConstants.ACHIEVEMENTS;
 						else
 							headerType = GetDeepestRelativeValue(o, "headerID") or "drop";
 						end
@@ -12435,7 +12435,7 @@ function app:GetDataCache()
 			header = headers[headerType];
 			if not header then
 				if headerType == "holiday" then
-					header = app.CreateNPC(-5);
+					header = app.CreateNPC(app.HeaderConstants.HOLIDAYS);
 				elseif headerType == "promo" then
 					header = {};
 					header.text = BATTLE_PET_SOURCE_8;
@@ -12917,7 +12917,7 @@ function app:GetDataCache()
 			for npcID,_ in pairs(searchResults) do
 				for i,data in ipairs(_) do
 					if not data.coords and data.parent then
-						if data.parent.headerID == -2 or data.parent.headerID == -16 then 
+						if data.parent.headerID == app.HeaderConstants.VENDORS or data.parent.headerID == app.HeaderConstants.RARES then 
 							-- If this is a rare or vendor with no coordinates
 							tinsert(missingCoordinates, npcID);
 							break;
@@ -13811,7 +13811,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 				-- Simplify the returned groups
 				local groups = {};
 				local header = { mapID = self.mapID, g = groups };
-				local achievementsHeader = app.CreateNPC(-4, { ["g"] = {} });
+				local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
 				table.insert(groups, achievementsHeader);
 				local explorationHeader = app.CreateNPC(-15, { ["g"] = {} });
 				table.insert(groups, explorationHeader);
@@ -13819,13 +13819,13 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 				table.insert(groups, factionsHeader);
 				local flightPathsHeader = app.CreateNPC(-6, { ["g"] = {} });
 				table.insert(groups, flightPathsHeader);
-				local questsHeader = app.CreateNPC(-17, { ["g"] = {} });
+				local questsHeader = app.CreateNPC(app.HeaderConstants.QUESTS, { ["g"] = {} });
 				table.insert(groups, questsHeader);
-				local raresHeader = app.CreateNPC(-16, { ["g"] = {} });
+				local raresHeader = app.CreateNPC(app.HeaderConstants.RARES, { ["g"] = {} });
 				table.insert(groups, raresHeader);
-				local vendorsHeader = app.CreateNPC(-2, { ["g"] = {} });
+				local vendorsHeader = app.CreateNPC(app.HeaderConstants.VENDORS, { ["g"] = {} });
 				table.insert(groups, vendorsHeader);
-				local zoneDropsHeader = app.CreateNPC(0, { ["g"] = {} });
+				local zoneDropsHeader = app.CreateNPC(app.HeaderConstants.ZONE_DROPS, { ["g"] = {} });
 				table.insert(groups, zoneDropsHeader);
 				for i, group in ipairs(results) do
 					local clone = {};
@@ -13859,9 +13859,9 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 						header[group.key] = group[group.key];
 						MergeObject({header}, clone);
 					elseif group.key == "npcID" then
-						if GetRelativeField(group, "headerID", -2) or GetRelativeField(group, "headerID", -173) then	-- It's a Vendor. (or a timewaking vendor)
+						if GetRelativeField(group, "headerID", app.HeaderConstants.VENDORS) or GetRelativeField(group, "headerID", -173) then	-- It's a Vendor. (or a timewaking vendor)
 							MergeObject(vendorsHeader.g, clone, 1);
-						elseif GetRelativeField(group, "headerID", -17) then	-- It's a Quest.
+						elseif GetRelativeField(group, "headerID", app.HeaderConstants.QUESTS) then	-- It's a Quest.
 							MergeObject(questsHeader.g, clone, 1);
 						else
 							MergeObject(groups, clone);
@@ -13880,7 +13880,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 					elseif group.key == "flightPathID" then
 						MergeObject(flightPathsHeader.g, clone);
 					elseif group.key == "itemID" then
-						if GetRelativeField(group, "headerID", 0) then
+						if GetRelativeField(group, "headerID", app.HeaderConstants.ZONE_DROPS) then
 							MergeObject(zoneDropsHeader.g, clone);
 						else
 							local requireSkill = GetRelativeValue(group, "requireSkill");
