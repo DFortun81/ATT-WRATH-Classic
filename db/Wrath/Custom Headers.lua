@@ -14,9 +14,9 @@ for key,value in pairs({
 
 local a = L.HEADER_NAMES;
 for key,value in pairs({
-	[-1000002] = ~ZONE.." "..BATTLE_PET_SOURCE_1,
-	[-1000001] = ~BATTLE_PET_SOURCE_3,
-	[-1000000] = ~BATTLE_PET_BREED_QUALITY2.." "..TRANSMOG_SOURCE_1,
+	[-1000002] = ZONE.." "..BATTLE_PET_SOURCE_1,
+	[-1000001] = BATTLE_PET_SOURCE_3,
+	[-1000000] = BATTLE_PET_BREED_QUALITY2.." "..TRANSMOG_SOURCE_1,
 }) do a[key] = value; end
 
 if simplifiedLocale == "de" then
