@@ -234,6 +234,7 @@ app.L = {
 		[51] = "Interface\\Icons\\INV_Jewelry_Necklace_02",					-- Neck
 		[52] = "Interface\\Icons\\INV_Jewelry_Ring_04",						-- Finger
 		[53] = "Interface\\Icons\\INV_Trinket_Naxxramas05",					-- Trinket
+		[54] = "Interface\\Icons\\Inv_relics_libramofhope",					-- Relic / Libram / Idols
 		[57] = "Interface\\Icons\\inv_fishingpole_01",						-- Fishing Poles
 		[100] = app.asset("Category_Mounts"),								-- Mounts
 		[101] = app.asset("Category_PetJournal"),							-- Battle Pets
@@ -578,9 +579,6 @@ app.L = {
 	},
 	["HEADER_ICONS"] = {
 		[-19] = "Interface\\Icons\\INV_Misc_Head_Dragon_Green",								-- Dragons of Nightmare (World Bosses)
-		[-29] = "Interface\\FriendsFrame\\PlusManz-PlusManz",								-- Neutral
-		[-30] = "Interface\\FriendsFrame\\PlusManz-Alliance",								-- Alliance
-		[-31] = "Interface\\FriendsFrame\\PlusManz-Horde", 									-- Horde
 		[-47] = app.asset("Holiday_Lunar"),													-- Lunar Festival
 		[-50] = app.asset("Holiday_love"),													-- Love is in the Air
 		[-51] = app.asset("Holiday_noblegarden"),											-- Noblegarden
@@ -614,17 +612,6 @@ app.L = {
 		
 		[-297] = "Interface\\Icons\\inv_letter_17", 								-- Mailbox
 		[-304] = "Interface\\Icons\\INV_BannerPVP_02",								-- Battlegrounds
-		[-318] = "Interface\\Icons\\INV_Chest_Plate03",								-- Armor
-		[-319] = "Interface\\Icons\\INV_Sword_23",									-- Weapons
-		[-320] = "Interface\\Icons\\inv_helmet_03",									-- Head
-		[-321] = "Interface\\Icons\\inv_shoulder_05",								-- Shoulder
-		[-322] = "Interface\\Icons\\inv_misc_cape_11",								-- Back
-		[-323] = "Interface\\Icons\\inv_chest_chain",								-- Chest
-		[-326] = "Interface\\Icons\\inv_bracer_07",									-- Wrist
-		[-327] = "Interface\\Icons\\Inv_gauntlets_24",								-- Hands
-		[-328] = "Interface\\Icons\\inv_belt_24",									-- Waist
-		[-329] = "Interface\\Icons\\inv_pants_09",									-- Legs
-		[-330] = "Interface\\Icons\\inv_boots_09",									-- Feet
 	-- Argent Tournament
 		[-363] = "Interface\\Icons\\achievement_reputation_argentchampion",			-- The Argent Tournament
 
@@ -690,9 +677,6 @@ app.L = {
 		[-19] = "Dragons of Nightmare",											-- Dragons of Nightmare (World Bosses)
 		[-20] = "Silithid Royalty",												-- Silithid Royalty
 		[-21] = "Captains",
-		[-29] = COMBATLOG_FILTER_STRING_NEUTRAL_UNITS,							-- Neutral
-		[-30] = FACTION_ALLIANCE,												-- Alliance
-		[-31] = FACTION_HORDE, 													-- Horde
 -- World Events
 		[-47] = "Lunar Festival",												-- Lunar Festival
 		[-50] = "Love is in the Air",											-- Love is in the Air
@@ -729,17 +713,6 @@ app.L = {
 -- Other
 		[-297] = MINIMAP_TRACKING_MAILBOX,										-- Mailbox
 		[-304] = BATTLEGROUNDS,													-- Battlegrounds
-		[-318] = ARMOR, 														-- Armor
-		[-319] = AUCTION_CATEGORY_WEAPONS, 										-- Weapons
-		[-320] = INVTYPE_HEAD, 													-- Head
-		[-321] = INVTYPE_SHOULDER, 												-- Shoulder
-		[-322] = INVTYPE_CLOAK,													-- Back
-		[-323] = INVTYPE_CHEST, 												-- Chest
-		[-326] = INVTYPE_WRIST, 												-- Wrist
-		[-327] = INVTYPE_HAND, 													-- Hands
-		[-328] = INVTYPE_WAIST, 												-- Waist
-		[-329] = INVTYPE_LEGS, 													-- Legs
-		[-330] = INVTYPE_FEET, 													-- Feet
 	-- Argent Tournament
 		[-363] = GetCategoryInfo and GetCategoryInfo(14941),										-- The Argent Tournament
 -- Dungeon/Raid Wing Info
