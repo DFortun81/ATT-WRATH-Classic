@@ -24,9 +24,9 @@ _.HeaderConstants = {
 	WORLD_BOSSES = -1000024,
 	ZONE_DROPS = -1000026,
 	WEAPONS = -1000041,
-	HONOR_TITLES = -1000051,
-	PVP = -1000052,
-	TIER_ZERO_POINT_FIVE_SETS = -1000062,
+	HONOR_TITLES = -1000052,
+	PVP = -1000053,
+	TIER_ZERO_POINT_FIVE_SETS = -1000063,
 };
 
 local a = L.HEADER_ICONS;
@@ -64,24 +64,27 @@ for key,value in pairs({
 	[-1000044] = "Interface/FriendsFrame/PlusManz-Alliance",
 	[-1000045] = "Interface/FriendsFrame/PlusManz-Horde",
 	[-1000046] = "Interface/FriendsFrame/PlusManz-PlusManz",
-	[-1000051] = "Interface/Icons/inv_sword_48",
-	[-1000052] = _.asset("Category_PvP"),
-	[-1000053] = "Interface/Icons/achievement_featsofstrength_gladiator_01",
-	[-1000054] = "Interface/Icons/achievement_featsofstrength_gladiator_02",
-	[-1000055] = "Interface/Icons/achievement_featsofstrength_gladiator_03",
-	[-1000056] = "Interface/Icons/achievement_featsofstrength_gladiator_04",
-	[-1000057] = "Interface/Icons/ability_mount_redfrostwyrm_01",
+	[-1000047] = "Interface/Icons/INV_Misc_Head_Dragon_Green",
+	[-1000052] = "Interface/Icons/inv_sword_48",
+	[-1000053] = _.asset("Category_PvP"),
+	[-1000054] = "Interface/Icons/achievement_featsofstrength_gladiator_01",
+	[-1000055] = "Interface/Icons/achievement_featsofstrength_gladiator_02",
+	[-1000056] = "Interface/Icons/achievement_featsofstrength_gladiator_03",
+	[-1000057] = "Interface/Icons/achievement_featsofstrength_gladiator_04",
 	[-1000058] = "Interface/Icons/ability_mount_redfrostwyrm_01",
 	[-1000059] = "Interface/Icons/ability_mount_redfrostwyrm_01",
 	[-1000060] = "Interface/Icons/ability_mount_redfrostwyrm_01",
 	[-1000061] = "Interface/Icons/ability_mount_redfrostwyrm_01",
-	[-1000062] = "Interface/Icons/INV_Chest_Plate03",
-	[-1000063] = "Interface/Icons/Ability_Warlock_DemonicEmpowerment",
-	[-1000064] = "Interface/Icons/Achievement_Reputation_Ogre",
-	[-1000065] = "Interface/Icons/INV_Misc_Head_Elf_02",
-	[-1000066] = "Interface/Icons/INV_Misc_Token_ScarletCrusade",
-	[-1000067] = "Interface/Icons/INV_MISC_KEY_13",
-	[-1000068] = "Interface/Icons/inv_jewelry_amulet_03",
+	[-1000062] = "Interface/Icons/ability_mount_redfrostwyrm_01",
+	[-1000063] = "Interface/Icons/INV_Chest_Plate03",
+	[-1000064] = "Interface/Icons/achievement_pvp_h_12",
+	[-1000065] = "Interface/Icons/Inv_misc_ahnqirajtrinket_06",
+	[-1000066] = "Interface/Icons/Ability_Warlock_DemonicEmpowerment",
+	[-1000067] = "Interface/Icons/Achievement_Reputation_Ogre",
+	[-1000068] = "Interface/Icons/INV_Misc_Head_Elf_02",
+	[-1000069] = "Interface/Icons/INV_Misc_Token_ScarletCrusade",
+	[-1000070] = "Interface/Icons/INV_MISC_KEY_13",
+	[-1000071] = "Interface/Icons/inv_jewelry_amulet_03",
 }) do a[key] = value; end
 
 local a = L.HEADER_NAMES;
@@ -119,41 +122,47 @@ for key,value in pairs({
 	[-1000044] = FACTION_ALLIANCE,
 	[-1000045] = FACTION_HORDE,
 	[-1000046] = COMBATLOG_FILTER_STRING_NEUTRAL_UNITS,
-	[-1000051] = "Honor Titles",
-	[-1000052] = BUG_CATEGORY14,
-	[-1000053] = select(2, GetAchievementInfo(2091))..": Season 1",
-	[-1000054] = select(2, GetAchievementInfo(418))..": Season 2",
-	[-1000055] = select(2, GetAchievementInfo(419))..": Season 3",
-	[-1000056] = select(2, GetAchievementInfo(420))..": Season 4",
-	[-1000057] = select(2, GetAchievementInfo(3336))..": Season 5",
-	[-1000058] = "Hateful Gladiator",
-	[-1000059] = select(2, GetAchievementInfo(3436))..": Season 6",
-	[-1000060] = select(2, GetAchievementInfo(3758))..": Season 7",
-	[-1000061] = select(2, GetAchievementInfo(4599))..": Season 8",
-	[-1000062] = "Tier 0.5 Sets",
-	[-1000063] = DUNGEON_FLOOR_DIREMAUL5.." (East)",
-	[-1000064] = DUNGEON_FLOOR_DIREMAUL1.." (North)",
-	[-1000065] = DUNGEON_FLOOR_DIREMAUL2.." (West)",
-	[-1000066] = "Main Gate",
-	[-1000067] = "Service Entrance",
-	[-1000068] = "Spirit of Competition",
+	[-1000047] = "Dragons of Nightmare",
+	[-1000052] = "Honor Titles",
+	[-1000053] = BUG_CATEGORY14,
+	[-1000054] = select(2, GetAchievementInfo(2091))..": Season 1",
+	[-1000055] = select(2, GetAchievementInfo(418))..": Season 2",
+	[-1000056] = select(2, GetAchievementInfo(419))..": Season 3",
+	[-1000057] = select(2, GetAchievementInfo(420))..": Season 4",
+	[-1000058] = select(2, GetAchievementInfo(3336))..": Season 5",
+	[-1000059] = "Hateful Gladiator",
+	[-1000060] = select(2, GetAchievementInfo(3436))..": Season 6",
+	[-1000061] = select(2, GetAchievementInfo(3758))..": Season 7",
+	[-1000062] = select(2, GetAchievementInfo(4599))..": Season 8",
+	[-1000063] = "Tier 0.5 Sets",
+	[-1000064] = "Captains",
+	[-1000065] = "Silithid Royalty",
+	[-1000066] = DUNGEON_FLOOR_DIREMAUL5.." (East)",
+	[-1000067] = DUNGEON_FLOOR_DIREMAUL1.." (North)",
+	[-1000068] = DUNGEON_FLOOR_DIREMAUL2.." (West)",
+	[-1000069] = "Main Gate",
+	[-1000070] = "Service Entrance",
+	[-1000071] = "Spirit of Competition",
 }) do a[key] = value; end
 
 local a = L.HEADER_DESCRIPTIONS;
 for key,value in pairs({
+	[-1000012] = "A specific holiday may need to be active for you to complete the referenced Things within this section.",
 	[-1000015] = "This section will only show your current character's professions outside of Account and Debug Mode.",
 	[-1000018] = "Contains Things which are rewarded or are available from other content within the containing section.\nThey are consolidated here in an effort to reduce duplication from many possible Sources.",
-	[-1000063] = "This part of the instance can be accessed from the eastern-most portal. (right side)",
-	[-1000064] = "This part of the instance can be accessed from the northern-most portal.",
-	[-1000065] = "This part of the instance can be accessed from the western-most portal. (left side)",
-	[-1000066] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Live\" or \"Scarlet\" side, which the Scarlet Crusade has taken over.",
-	[-1000067] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Dead\" or \"Scourge\" side, which the Scourge has taken over.",
-	[-1000068] = "This is a Battlegrounds-based event that coincides with the beginning of the Summer Olympic games. The only time this was celebrated was in 2008 to correspond to the Beijing Olympics, and although there appeared to be the intention to repeat this event, it never returned.",
+	[-1000066] = "This part of the instance can be accessed from the eastern-most portal. (right side)",
+	[-1000067] = "This part of the instance can be accessed from the northern-most portal.",
+	[-1000068] = "This part of the instance can be accessed from the western-most portal. (left side)",
+	[-1000069] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Live\" or \"Scarlet\" side, which the Scarlet Crusade has taken over.",
+	[-1000070] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Dead\" or \"Scourge\" side, which the Scourge has taken over.",
+	[-1000071] = "This is a Battlegrounds-based event that coincides with the beginning of the Summer Olympic games. The only time this was celebrated was in 2008 to correspond to the Beijing Olympics, and although there appeared to be the intention to repeat this event, it never returned.",
 }) do a[key] = value; end
 
 local a = L.HEADER_LORE;
 for key,value in pairs({
-	[-1000062] = "The Dungeon Set 2 class sets, commonly referred to as Tier 0.5, are obtained by completing a long quest chain to upgrade the first set available as drops in end game dungeons into stronger versions of themselves. In current WoW, these sets are covetted by Collectors as the quest chain was completely removed from the game with Cataclysm. In WoW Classic, you should finish this quest chain on all of your characters before then!",
+	[-1000047] = "One of these dragons will spawn randomly at the associated coordinates across Azeroth.",
+	[-1000063] = "The Dungeon Set 2 class sets, commonly referred to as Tier 0.5, are obtained by completing a long quest chain to upgrade the first set available as drops in end game dungeons into stronger versions of themselves. In current WoW, these sets are covetted by Collectors as the quest chain was completely removed from the game with Cataclysm. In WoW Classic, you should finish this quest chain on all of your characters before then!",
+	[-1000064] = "These can be farmed infinitely by resetting the boss.",
 }) do a[key] = value; end
 
 if simplifiedLocale == "de" then
@@ -161,14 +170,15 @@ a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000003] = "Gemeinsame Bossbeute",
 	[-1000008] = "Erkundung",
-	[-1000058] = "Hasserfüllten Gladiator",
+	[-1000047] = "Drachen des Alptraums",
+	[-1000059] = "Hasserfüllten Gladiator",
 }) do a[key] = value; end
 end
 
 if simplifiedLocale == "es" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
-	[-1000058] = "Gladiador Odioso",
+	[-1000059] = "Gladiador Odioso",
 }) do a[key] = value; end
 end
 
@@ -177,40 +187,42 @@ a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000004] = "Objets communs des vendeurs",
 	[-1000008] = "Exploration",
-	[-1000053] = select(2, GetAchievementInfo(2091))..": Saison 1",
-	[-1000054] = select(2, GetAchievementInfo(418))..": Saison 2",
-	[-1000055] = select(2, GetAchievementInfo(419))..": Saison 3",
-	[-1000056] = select(2, GetAchievementInfo(420))..": Saison 4",
-	[-1000057] = select(2, GetAchievementInfo(3336))..": Saison 5",
-	[-1000058] = "Gladiateur Haineux",
-	[-1000059] = select(2, GetAchievementInfo(3436))..": Saison 6",
-	[-1000060] = select(2, GetAchievementInfo(3758))..": Saison 7",
-	[-1000061] = select(2, GetAchievementInfo(4599))..": Saison 8",
-	[-1000062] = "Ensembles Tier 0.5",
-	[-1000063] = DUNGEON_FLOOR_DIREMAUL5.." (Est)",
-	[-1000064] = DUNGEON_FLOOR_DIREMAUL1.." (Nord)",
-	[-1000065] = DUNGEON_FLOOR_DIREMAUL2.." (Ouest)",
+	[-1000047] = "Dragons du Cauchemar",
+	[-1000054] = select(2, GetAchievementInfo(2091))..": Saison 1",
+	[-1000055] = select(2, GetAchievementInfo(418))..": Saison 2",
+	[-1000056] = select(2, GetAchievementInfo(419))..": Saison 3",
+	[-1000057] = select(2, GetAchievementInfo(420))..": Saison 4",
+	[-1000058] = select(2, GetAchievementInfo(3336))..": Saison 5",
+	[-1000059] = "Gladiateur Haineux",
+	[-1000060] = select(2, GetAchievementInfo(3436))..": Saison 6",
+	[-1000061] = select(2, GetAchievementInfo(3758))..": Saison 7",
+	[-1000062] = select(2, GetAchievementInfo(4599))..": Saison 8",
+	[-1000063] = "Ensembles Tier 0.5",
+	[-1000064] = "Capitaines",
+	[-1000066] = DUNGEON_FLOOR_DIREMAUL5.." (Est)",
+	[-1000067] = DUNGEON_FLOOR_DIREMAUL1.." (Nord)",
+	[-1000068] = DUNGEON_FLOOR_DIREMAUL2.." (Ouest)",
 }) do a[key] = value; end
 end
 
 if simplifiedLocale == "it" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
-	[-1000058] = "Gladiatore Perfido",
+	[-1000059] = "Gladiatore Perfido",
 }) do a[key] = value; end
 end
 
 if simplifiedLocale == "ko" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
-	[-1000058] = "원한에 검투사",
+	[-1000059] = "원한에 검투사",
 }) do a[key] = value; end
 end
 
 if simplifiedLocale == "pt" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
-	[-1000058] = "Gladiador Odioso",
+	[-1000059] = "Gladiador Odioso",
 }) do a[key] = value; end
 end
 
@@ -225,19 +237,21 @@ for key,value in pairs({
 	[-1000021] = "Сундук с сокровищами",
 	[-1000024] = "Мировые Боссы",
 	[-1000026] = "Добыча локации",
-	[-1000053] = select(2, GetAchievementInfo(2091))..": Сезон 1",
-	[-1000054] = select(2, GetAchievementInfo(418))..": Сезон 2",
-	[-1000055] = select(2, GetAchievementInfo(419))..": Сезон 3",
-	[-1000056] = select(2, GetAchievementInfo(420))..": Сезон 4",
-	[-1000057] = select(2, GetAchievementInfo(3336))..": Сезон 5",
-	[-1000058] = "Злобный гладиатор",
-	[-1000059] = select(2, GetAchievementInfo(3436))..": Сезон 6",
-	[-1000060] = select(2, GetAchievementInfo(3758))..": Сезон 7",
-	[-1000061] = select(2, GetAchievementInfo(4599))..": Сезон 8",
-	[-1000062] = "Комплекты T0.5",
-	[-1000063] = DUNGEON_FLOOR_DIREMAUL5.." (Восток)",
-	[-1000064] = DUNGEON_FLOOR_DIREMAUL1.." (Север)",
-	[-1000065] = DUNGEON_FLOOR_DIREMAUL2.." (Запад)",
+	[-1000047] = "Драконы Кошмара",
+	[-1000054] = select(2, GetAchievementInfo(2091))..": Сезон 1",
+	[-1000055] = select(2, GetAchievementInfo(418))..": Сезон 2",
+	[-1000056] = select(2, GetAchievementInfo(419))..": Сезон 3",
+	[-1000057] = select(2, GetAchievementInfo(420))..": Сезон 4",
+	[-1000058] = select(2, GetAchievementInfo(3336))..": Сезон 5",
+	[-1000059] = "Злобный гладиатор",
+	[-1000060] = select(2, GetAchievementInfo(3436))..": Сезон 6",
+	[-1000061] = select(2, GetAchievementInfo(3758))..": Сезон 7",
+	[-1000062] = select(2, GetAchievementInfo(4599))..": Сезон 8",
+	[-1000063] = "Комплекты T0.5",
+	[-1000064] = "Капитаны",
+	[-1000066] = DUNGEON_FLOOR_DIREMAUL5.." (Восток)",
+	[-1000067] = DUNGEON_FLOOR_DIREMAUL1.." (Север)",
+	[-1000068] = DUNGEON_FLOOR_DIREMAUL2.." (Запад)",
 }) do a[key] = value; end
 end
 
@@ -246,19 +260,21 @@ a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000004] = "常规商人物品",
 	[-1000008] = "勘探",
-	[-1000053] = select(2, GetAchievementInfo(2091)).."：第1赛季",
-	[-1000054] = select(2, GetAchievementInfo(418)).."：第2赛季",
-	[-1000055] = select(2, GetAchievementInfo(419)).."：第3赛季",
-	[-1000056] = select(2, GetAchievementInfo(420)).."：第4赛季",
-	[-1000057] = select(2, GetAchievementInfo(3336)).."：第5赛季",
-	[-1000058] = "憎恨角斗士",
-	[-1000059] = select(2, GetAchievementInfo(3436)).."：第6赛季",
-	[-1000060] = select(2, GetAchievementInfo(3758)).."：第7赛季",
-	[-1000061] = select(2, GetAchievementInfo(4599)).."：第8赛季",
-	[-1000062] = "等级 0.5 套装",
-	[-1000063] = DUNGEON_FLOOR_DIREMAUL5.." (东)",
-	[-1000064] = DUNGEON_FLOOR_DIREMAUL1.." (北)",
-	[-1000065] = DUNGEON_FLOOR_DIREMAUL2.." (西)",
+	[-1000047] = "梦魇之龙",
+	[-1000054] = select(2, GetAchievementInfo(2091)).."：第1赛季",
+	[-1000055] = select(2, GetAchievementInfo(418)).."：第2赛季",
+	[-1000056] = select(2, GetAchievementInfo(419)).."：第3赛季",
+	[-1000057] = select(2, GetAchievementInfo(420)).."：第4赛季",
+	[-1000058] = select(2, GetAchievementInfo(3336)).."：第5赛季",
+	[-1000059] = "憎恨角斗士",
+	[-1000060] = select(2, GetAchievementInfo(3436)).."：第6赛季",
+	[-1000061] = select(2, GetAchievementInfo(3758)).."：第7赛季",
+	[-1000062] = select(2, GetAchievementInfo(4599)).."：第8赛季",
+	[-1000063] = "等级 0.5 套装",
+	[-1000064] = "船长",
+	[-1000066] = DUNGEON_FLOOR_DIREMAUL5.." (东)",
+	[-1000067] = DUNGEON_FLOOR_DIREMAUL1.." (北)",
+	[-1000068] = DUNGEON_FLOOR_DIREMAUL2.." (西)",
 }) do a[key] = value; end
 end
 

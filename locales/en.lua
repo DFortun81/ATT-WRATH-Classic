@@ -578,7 +578,6 @@ app.L = {
 		[15301] = { -1, "Expansion Features" },
 	},
 	["HEADER_ICONS"] = {
-		[-19] = "Interface\\Icons\\INV_Misc_Head_Dragon_Green",								-- Dragons of Nightmare (World Bosses)
 		[-47] = app.asset("Holiday_Lunar"),													-- Lunar Festival
 		[-50] = app.asset("Holiday_love"),													-- Love is in the Air
 		[-51] = app.asset("Holiday_noblegarden"),											-- Noblegarden
@@ -674,9 +673,6 @@ app.L = {
 		[-9983] = "Interface\\Icons\\inv_jewelry_amulet_03",				-- Honor
 	};
 	["HEADER_NAMES"] = {
-		[-19] = "Dragons of Nightmare",											-- Dragons of Nightmare (World Bosses)
-		[-20] = "Silithid Royalty",												-- Silithid Royalty
-		[-21] = "Captains",
 -- World Events
 		[-47] = "Lunar Festival",												-- Lunar Festival
 		[-50] = "Love is in the Air",											-- Love is in the Air
@@ -793,9 +789,7 @@ app.L = {
 -- Factions / Cities
 		[-10066] = "Legendary",
 	},
-	["HEADER_DESCRIPTIONS"] = {
-		[-5] = "A specific holiday may need to be active for you to complete the referenced Things within this section.",
-	};
+	["HEADER_DESCRIPTIONS"] = {};
 	["HEADER_LORE"] = {};
 	
 	["TIER_DATA"] = {
