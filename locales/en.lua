@@ -796,9 +796,7 @@ app.L = {
 	["HEADER_DESCRIPTIONS"] = {
 		[-5] = "A specific holiday may need to be active for you to complete the referenced Things within this section.",
 	};
-	["HEADER_LORE"] = {
-		
-	};
+	["HEADER_LORE"] = {};
 	
 	["TIER_DATA"] = {
 		{	-- Classic
