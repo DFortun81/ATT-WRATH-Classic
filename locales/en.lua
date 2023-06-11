@@ -591,23 +591,11 @@ app.L = {
 		[-60] = app.asset("Holiday_Pilgrim"),												-- Pilgrim's Bounty
 		[-61] = app.asset("Holiday_winter_veil"),											-- Feast of Winter Veil
 		
-		[-85] = "Interface\\Icons\\inv_spear_01",											-- Graveyard (SM)
-		[-86] = "Interface\\Icons\\INV_Misc_Book_13",										-- Library (SM)
-		[-87] = "Interface\\Icons\\inv_helmet_25",											-- Armory (SM)
-		[-88] = "Interface\\Icons\\inv_helmet_12",											-- Cathedral (SM)
-		
 		[-165] = "Interface\\Icons\\inv_box_01",											-- Junkboxes
 		
 		[-297] = "Interface\\Icons\\inv_letter_17", 								-- Mailbox
 		[-304] = "Interface\\Icons\\INV_BannerPVP_02",								-- Battlegrounds
-	-- Argent Tournament
-		[-363] = "Interface\\Icons\\achievement_reputation_argentchampion",			-- The Argent Tournament
 
-		[-367] = "Interface\\Icons\\ability_rogue_deviouspoisons",					-- The Construct Quarter
-		[-368] = "Interface\\Icons\\inv_trinket_naxxramas04",						-- The Arachnid Quarter
-		[-369] = "Interface\\Icons\\spell_deathknight_classicon",					-- The Military Quarter
-		[-370] = "Interface\\Icons\\inv_misc_cauldron_nature",						-- The Plague Quarter
-		[-371] = "Interface\\Icons\\inv_misc_head_dragon_blue",						-- The Upper Necropolis
 		[-383] = "Interface\\Icons\\inv_misc_gem_variety_02",						-- Miscellaneous
 	-- Icecrown Citadel
 		[-393] = "Interface\\Icons\\achievement_dungeon_icecrown_icecrownentrance",			-- Storming the Citadel
@@ -658,8 +646,6 @@ app.L = {
 		[-5365] = "Interface\\Icons\\inv_misc_celebrationcake_01",							-- 16th Anniversary
 		[-5366] = "Interface\\Icons\\inv_misc_celebrationcake_01",							-- 17th Anniversary
 		[-5367] = "Interface\\Icons\\inv_misc_celebrationcake_01",							-- 18th Anniversary
-		
-		[-9983] = "Interface\\Icons\\inv_jewelry_amulet_03",				-- Honor
 	};
 	["HEADER_NAMES"] = {
 -- World Events
@@ -676,23 +662,11 @@ app.L = {
 		[-60] = "Pilgrim's Bounty",												-- Pilgrim's Bounty
 		[-61] = "Feast of Winter Veil",											-- Feast of Winter Veil
 		
-		[-85] = "Graveyard",
-		[-86] = "Library",
-		[-87] = "Armory",
-		[-88] = "Cathedral",
-		
 		[-165] = GetItemSubClassInfo(13,1),										-- Junkboxes
 -- Other
 		[-297] = MINIMAP_TRACKING_MAILBOX,										-- Mailbox
 		[-304] = BATTLEGROUNDS,													-- Battlegrounds
-	-- Argent Tournament
-		[-363] = GetCategoryInfo and GetCategoryInfo(14941),										-- The Argent Tournament
 -- Dungeon/Raid Wing Info
-		[-367] = DUNGEON_FLOOR_NAXXRAMAS1, 										-- The Construct Quarter
-		[-368] = DUNGEON_FLOOR_NAXXRAMAS2, 										-- The Arachnid Quarter
-		[-369] = DUNGEON_FLOOR_NAXXRAMAS3,					 					-- The Military Quarter
-		[-370] = DUNGEON_FLOOR_NAXXRAMAS4, 										-- The Plague Quarter
-		[-371] = DUNGEON_FLOOR_NAXXRAMAS6, 										-- The Upper Necropolis
 		[-383] = MISCELLANEOUS,													-- Miscellaneous (Holidays)
 	-- Icecrown Citadel
 		[-393] = "Storming the Citadel",										-- Storming the Citadel
@@ -761,7 +735,6 @@ app.L = {
 		[-5366] = GetAchievementInfo and select(2,GetAchievementInfo(14942)) or "WoW's 17th Anniversary",	-- 17th Anniversary
 		[-5367] = GetAchievementInfo and select(2,GetAchievementInfo(15218)) or "WoW's 18th Anniversary",	-- 18th Anniversary
 		
-		[-9983] = HONOR,							-- Honor
 -- Factions / Cities
 		[-10066] = "Legendary",
 	},
