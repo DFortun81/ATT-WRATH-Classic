@@ -1,4 +1,4 @@
--------------------------------------------------------
+﻿-------------------------------------------------------
 --   O B J E C T   D A T A B A S E   M O D U L E   --
 -------------------------------------------------------
 local _ = select(2, ...);
@@ -393,6 +393,7 @@ _.ObjectNames = {
 	[178144] = "Troll Chest",
 	[178195] = "Warsong Oil",
 	[178204] = "Warsong Axe Shipment",
+	[178224] = "Dire Pool",
 	[178227] = "Murgut's Totem Basket",
 	[178553] = "Hive'Ashi Pod",
 	[178609] = "Holiday Snow",
@@ -1104,6 +1105,7 @@ _.ObjectIcons = {
 	[178144] = "Interface/Icons/inv_jewelry_talisman_14",
 	[178195] = "Interface/Icons/inv_potion_64",
 	[178204] = "Interface/Icons/inv_crate_01",
+	[178224] = "Interface/Icons/inv_potion_25",
 	[178227] = "Interface/Icons/inv_misc_idol_03",
 	[178553] = "Interface/Icons/inv_misc_slime_01",
 	[178609] = "Interface/Icons/INV_Ammo_Snowball",
