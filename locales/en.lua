@@ -597,11 +597,6 @@ app.L = {
 		[-304] = "Interface\\Icons\\INV_BannerPVP_02",								-- Battlegrounds
 
 		[-383] = "Interface\\Icons\\inv_misc_gem_variety_02",						-- Miscellaneous
-	-- Icecrown Citadel
-		[-393] = "Interface\\Icons\\achievement_dungeon_icecrown_icecrownentrance",			-- Storming the Citadel
-		[-394] = "Interface\\Icons\\achievement_dungeon_plaguewing",						-- The Plagueworks
-		[-395] = "Interface\\Icons\\achievement_dungeon_crimsonhall",						-- The Crimson Halls
-		[-396] = "Interface\\Icons\\achievement_dungeon_icecrown_frostwinghalls",			-- The Frostwing Halls
 		[-522] = "Interface\\Icons\\inv_misc_tournaments_banner_troll",						-- Zalazane's Fall
 		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
 		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",						-- Operation: Gnomeregan
@@ -668,11 +663,6 @@ app.L = {
 		[-304] = BATTLEGROUNDS,													-- Battlegrounds
 -- Dungeon/Raid Wing Info
 		[-383] = MISCELLANEOUS,													-- Miscellaneous (Holidays)
-	-- Icecrown Citadel
-		[-393] = "Storming the Citadel",										-- Storming the Citadel
-		[-394] = "The Plagueworks",												-- The Plagueworks
-		[-395] = "The Crimson Hall",											-- The Crimson Hall
-		[-396] = "The Frostwing Halls",											-- The Frostwing Halls
 		[-422] = "Atal'ai Defenders",											-- Atal'ai Defenders
 		[-423] = "The Four Horsemen",											-- The Four Horsemen
 
@@ -734,9 +724,6 @@ app.L = {
 		[-5365] = GetAchievementInfo and select(2,GetAchievementInfo(14271)) or "WoW's 16th Anniversary",	-- 16th Anniversary
 		[-5366] = GetAchievementInfo and select(2,GetAchievementInfo(14942)) or "WoW's 17th Anniversary",	-- 17th Anniversary
 		[-5367] = GetAchievementInfo and select(2,GetAchievementInfo(15218)) or "WoW's 18th Anniversary",	-- 18th Anniversary
-		
--- Factions / Cities
-		[-10066] = "Legendary",
 	},
 	["HEADER_DESCRIPTIONS"] = {};
 	["HEADER_LORE"] = {};
