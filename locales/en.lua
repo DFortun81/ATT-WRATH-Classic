@@ -578,19 +578,6 @@ app.L = {
 		[15301] = { -1, "Expansion Features" },
 	},
 	["HEADER_ICONS"] = {
-		[-47] = app.asset("Holiday_Lunar"),													-- Lunar Festival
-		[-50] = app.asset("Holiday_love"),													-- Love is in the Air
-		[-51] = app.asset("Holiday_noblegarden"),											-- Noblegarden
-		[-52] = app.asset("Holiday_Children"),												-- Children's Week
-		[-53] = app.asset("Holiday_Midsummer"),												-- Midsummer Fire Festival
-		[-55] = app.asset("Holiday_Pirate"),												-- Pirate's Day
-		[-56] = app.asset("Holiday_brewfest"),												-- Brewfest
-		[-57] = app.asset("Holiday_Harvestfest"), 											-- Harvest Festival
-		[-58] = app.asset("Holiday_hallows_end"),											-- Hallow's End
-		[-59] = app.asset("Holiday_Day_of_the_Dead"),										-- Day of the Dead
-		[-60] = app.asset("Holiday_Pilgrim"),												-- Pilgrim's Bounty
-		[-61] = app.asset("Holiday_winter_veil"),											-- Feast of Winter Veil
-		
 		[-165] = "Interface\\Icons\\inv_box_01",											-- Junkboxes
 		
 		[-297] = "Interface\\Icons\\inv_letter_17", 								-- Mailbox
@@ -643,20 +630,6 @@ app.L = {
 		[-5367] = "Interface\\Icons\\inv_misc_celebrationcake_01",							-- 18th Anniversary
 	};
 	["HEADER_NAMES"] = {
--- World Events
-		[-47] = "Lunar Festival",												-- Lunar Festival
-		[-50] = "Love is in the Air",											-- Love is in the Air
-		[-51] = "Noblegarden",													-- Noblegarden
-		[-52] = "Children's Week",												-- Children's Week
-		[-53] = "Midsummer Fire Festival",										-- Midsummer Fire Festival
-		[-55] = "Pirate's Day",
-		[-56] = "Brewfest",														-- Brewfest
-		[-57] = "Harvest Festival",												-- Harvest Festival
-		[-58] = "Hallow's End",													-- Hallow's End
-		[-59] = "Day of the Dead",												-- Day of the Dead
-		[-60] = "Pilgrim's Bounty",												-- Pilgrim's Bounty
-		[-61] = "Feast of Winter Veil",											-- Feast of Winter Veil
-		
 		[-165] = GetItemSubClassInfo(13,1),										-- Junkboxes
 -- Other
 		[-297] = MINIMAP_TRACKING_MAILBOX,										-- Mailbox
