@@ -12147,7 +12147,7 @@ function app:GetDataCache()
 		table.insert(g, flightPathsCategory);
 		
 		-- Expansion Features
-		if app.Categories.ExpansionFeatures then
+		if app.Categories.ExpansionFeatures and #app.Categories.ExpansionFeatures > 0 then
 			db = {};
 			db.text = "Expansion Features";
 			db.icon = app.asset("Category_ExpansionFeatures");
