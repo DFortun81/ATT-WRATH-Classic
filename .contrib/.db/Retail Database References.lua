@@ -15,18 +15,19 @@
 -- #IMPORT: 03 - World Drops\\Pick Pocket.lua
 
 -- Holidays
--- #IMPORT: 21 - Holidays\\01 - Lunar Festival.lua
--- #IMPORT: 21 - Holidays\\02 - Love is in the Air.lua
--- #IMPORT: 21 - Holidays\\03 - Noblegarden.lua
--- #IMPORT: 21 - Holidays\\04 - Children's Week.lua
--- #IMPORT: 21 - Holidays\\05 - Midsummer Fire Festival.lua
--- #IMPORT: 21 - Holidays\\06 - Pirates' Day.lua
--- #IMPORT: 21 - Holidays\\07 - Brewfest.lua
--- #IMPORT: 21 - Holidays\\08 - Harvest Festival.lua
--- #IMPORT: 21 - Holidays\\09 - Hallow's End.lua
--- #IMPORT: 21 - Holidays\\10 - Day of the Dead.lua
--- #IMPORT: 21 - Holidays\\11 - Pilgrim's Bounty.lua
--- #IMPORT: 21 - Holidays\\12 - Feast of Winter Veil.lua
+-- #IMPORT: 21 - Holidays\\00 - Achievements.lua
+-- #IMPORT: 21 - Holidays\\02 - Lunar Festival.lua
+-- #IMPORT: 21 - Holidays\\03 - Love is in the Air.lua
+-- #IMPORT: 21 - Holidays\\05 - Noblegarden.lua
+-- #IMPORT: 21 - Holidays\\06 - Children's Week.lua
+-- #IMPORT: 21 - Holidays\\08 - Midsummer Fire Festival.lua
+-- #IMPORT: 21 - Holidays\\12 - Pirates' Day.lua
+-- #IMPORT: 21 - Holidays\\13 - Brewfest.lua
+-- #IMPORT: 21 - Holidays\\14 - Harvest Festival.lua
+-- #IMPORT: 21 - Holidays\\16 - Hallow's End.lua
+-- #IMPORT: 21 - Holidays\\17 - Day of the Dead.lua
+-- #IMPORT: 21 - Holidays\\18 - Pilgrim's Bounty.lua
+-- #IMPORT: 21 - Holidays\\19 - Feast of Winter Veil.lua
 -- #IMPORT: 21 - Holidays\\Kalu'ak Fishing Derby.lua
 -- #IMPORT: 21 - Holidays\\Stranglethorn Fishing Extravaganza.lua
 
@@ -70,5 +71,6 @@
 -- #IMPORT: 09 - PvP\\03 Wrath of the Lich King PvP Seasons.lua
 
 -- NYI
+-- #IMPORT: 17 - NYI\\NYI Professions\\
 -- #IMPORT: 17 - NYI\\NYI Mounts.lua
 -- #IMPORT: 17 - NYI\\NYI Recipes.lua
