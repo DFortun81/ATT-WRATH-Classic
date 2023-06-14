@@ -589,7 +589,6 @@ app.L = {
 		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",						-- Operation: Gnomeregan
 		[-532] = "Interface\\Icons\\ability_shaman_stormstrike",					-- Heroes of the Storm
 		[-533] = "Interface\\Icons\\Inv_misc_rune_01",								-- Hearthstone
-		[-534] = "Interface\\Icons\\inv_misc_gift_01",								-- Collector's Edition
 		[-535] = "Interface\\Icons\\inv_misc_ticket_tarot_stack_01",				-- Trading Card Game
 		[-536] = "Interface\\Icons\\Inv_misc_rune_01",								-- Hearthstone Mercenaries
 		[-538] = "Interface\\Icons\\inv_box_01",									-- The Ahn'Qiraj War Effort
@@ -602,10 +601,6 @@ app.L = {
 		[-553] = "Interface\\Icons\\INV_Drink_10",									-- iCoke
 		[-577] = "Interface\\Icons\\INV_MISC_FILM_01",								-- Warcraft Movie
 		[-578] = app.asset("Expansion_CLASSIC"),									-- World of Warcraft 15th Anniversary
-		[-579] = "Interface\\Icons\\achievement_dungeon_outland_dungeonmaster",		-- Dark Portal Pass
-		[-581] = app.asset("Expansion_TBC"),										-- TBC Classic Deluxe Edition
-		[-582] = app.asset("Expansion_WOTLK"),										-- Northrend Heroic Upgrade ("Cheap")
-		[-583] = app.asset("Expansion_WOTLK"),										-- Northrend Epic Upgrade
 		
 	-- PvP Set Names
 		[-659] = "Interface\\Worldmap\\GlowSkull_64Green",									-- Aspirant PvP Gear
@@ -627,38 +622,12 @@ app.L = {
 		[-522] = "Zalazane's Fall",												-- Zalazane's Fall
 		[-523] = "Elemental Unrest",											-- Elemental Unrest
 		[-524] = "Operation: Gnomeregan",										-- Operation: Gnomeregan
-		[-532] = "Heroes of the Storm",
-		[-533] = "Hearthstone",
-		[-534] = "Collector's Edition",
 		[-535] = BATTLE_PET_SOURCE_9,											-- Trading Card Game
-		[-536] = "Hearthstone Mercenaries",
 		[-538] = "The Ahn'Qiraj War Effort",
 		[-539] = "The Scepter of the Shifting Sands",
 		[-540] = "The Scourge Invasion",
 		[-541] = "The Silithyst Must Flow",
 		[-542] = "The Opening of the Dark Portal",
-		
-		[-545] = "Blizzcon",
-		[-546] = REFER_A_FRIEND,												-- Recruit A Friend
-		
-		[-552] = "Warcraft 3 Spoils of War Edition",
-		[-553] = "iCoke",
-		
-		[-564] = "Starcraft II: Wings of Liberty",
-		[-565] = "Starcraft II: Heart of the Swarm",
-		[-566] = "Diablo III",
-		[-568] = "Overwatch: Origins",
-		
-		[-573] = SCROLL_OF_RESURRECTION,										-- Scroll of Resurrection
-		[-574] = "Diablo III Annual Pass",
-		[-575] = "Diablo III: Reaper of Souls",
-		[-576] = "StarCraft II: Legacy of the Void",
-		[-577] = "Warcraft Movie",
-		[-578] = "World of Warcraft 15th Anniversary",
-		[-579] = "Dark Portal Pass",
-		[-581] = "TBC Classic Deluxe Edition",
-		[-582] = "WOTLK Northrend Heroic Upgrade",
-		[-583] = "WOTLK Northrend Epic Upgrade",
 		
 	-- PvP Set Names
 		[-659] = "Aspirant Gear",												-- Aspirant PvP Gear (WoD, BfA)
