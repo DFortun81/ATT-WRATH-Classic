@@ -699,7 +699,9 @@ app.L = {
 		[-5367] = GetAchievementInfo and select(2,GetAchievementInfo(15218)) or "WoW's 18th Anniversary",	-- 18th Anniversary
 	},
 	["HEADER_DESCRIPTIONS"] = {};
+	["HEADER_EVENTS"] = {};
 	["HEADER_LORE"] = {};
+	["EVENT_REMAPPING"] = {};
 	
 	["TIER_DATA"] = {
 		{	-- Classic

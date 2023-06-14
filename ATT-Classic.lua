@@ -2250,6 +2250,15 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			tinsert(info, 1, { left = group.description, wrap = true, color = "ff66ccff" });
 		end
 		
+		if group.eventInfo and group.eventInfo.times then
+			local timeStrings = app.GetBestEventTimeStrings(group.eventInfo.times);
+			if timeStrings then
+				for i,timeString in ipairs(timeStrings) do
+					tinsert(info, 1, { left = timeString, wrap = true, color = "ff66ccff" });
+				end
+			end
+		end
+		
 		if group.rwp then
 			tinsert(info, 1, { left = GetRemovedWithPatchString(group.rwp), wrap = true, color = "FFFFAAAA" });
 		end
@@ -8385,6 +8394,119 @@ fields.repeatable = npcFields.repeatableAsQuest;
 fields.saved = fields.savedAsQuest;
 app.BaseNPCWithQuest = app.BaseObjectFields(fields);
 
+-- Event Lib (using Headers!)
+do
+local remappedEventToMapID = {
+	[374] = 1429,	-- Elwynn Forest
+	[375] = 1456,	-- Thunder Bluff
+	[376] = 1952,	-- Terrokar Forest
+};
+app.GetEventCache = function()
+	local cache = GetDataMember("Events");
+	if not cache then
+		cache = {};
+		if C_DateAndTime and C_Calendar then
+			local date = C_DateAndTime.GetCurrentCalendarTime();
+			if date.month > 8 then
+				C_Calendar.SetAbsMonth(date.month - 8, date.year);
+			else
+				C_Calendar.SetAbsMonth(date.month + 4, date.year - 1);
+			end
+			for month=1,12,1 do
+				-- We kick off the search from January 1 at the start of the year using SetAbsMonth/GetMonthInfo. All successive functions are built from the returns of these.
+				local absMonth = C_Calendar.SetAbsMonth(month, date.year);
+				local monthInfo = C_Calendar.GetMonthInfo(absMonth);
+				for day=1,monthInfo.numDays,1 do
+					local numEvents = C_Calendar.GetNumDayEvents(0, day);
+					if numEvents > 0 then
+						for index=1,numEvents,1 do
+							local event = C_Calendar.GetDayEvent(0, day, index);
+							if event then -- If this is nil, then attempting to index it on the same line will toss an error.
+								if event.calendarType == "HOLIDAY" and (not event.sequenceType or event.sequenceType == "" or event.sequenceType == "START") then
+									local eventID = event.eventID;
+									local remappedID = L.EVENT_REMAPPING[eventID] or eventID;
+									if remappedID then
+										local t = cache[remappedID];
+										if not t then
+											t = {
+												["name"] = event.title,
+												["icon"] = event.iconTexture,
+												["times"] = {},
+											};
+											cache[remappedID] = t;
+											SetDataMember("Events", cache);
+										end
+										local schedule = {
+											["start"] = time({
+												year=event.startTime.year,
+												month=event.startTime.month,
+												day=event.startTime.monthDay,
+												hour=event.startTime.hour,
+												minute=event.startTime.minute,
+											}),
+											["end"] = time({
+												year=event.endTime.year,
+												month=event.endTime.month,
+												day=event.endTime.monthDay,
+												hour=event.endTime.hour,
+												minute=event.endTime.minute,
+											}),
+											["startTime"] = event.startTime,
+											["endTime"] = event.endTime,
+										};
+										if remappedID ~= eventID then
+											schedule.remappedID = eventID;
+										end
+										tinsert(t.times, schedule);
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return cache;
+end
+local function GetEventTimeString(d)
+	if d then
+		return format("%s, %s %02d, %d at %02d:%02d", 
+			CALENDAR_WEEKDAY_NAMES[d.weekday],
+			CALENDAR_FULLDATE_MONTH_NAMES[d.month],
+			d.monthDay, d.year, d.hour, d.minute );
+	end
+	return "??";
+end
+app.GetBestEventTimeStrings = function(times)
+	if times and #times > 0 then
+		local now = C_DateAndTime.GetServerTimeLocal();
+		local nextData = times[1];
+		for i,data in ipairs(times) do
+			if now < data["end"] then
+				nextData = data;
+				break;
+			end
+		end
+		local schedule = {};
+		if nextData.endTime then
+			tinsert(schedule, "Start:" .. DESCRIPTION_SEPARATOR .. GetEventTimeString(nextData.startTime));
+			tinsert(schedule, "End:" .. DESCRIPTION_SEPARATOR .. GetEventTimeString(nextData.endTime));
+			
+		else
+			tinsert(schedule, "Active:" .. DESCRIPTION_SEPARATOR .. GetEventTimeString(nextData.startTime));
+		end
+		if nextData.remappedID then
+			local mapID = remappedEventToMapID[nextData.remappedID];
+			local info = C_Map.GetMapInfo(mapID);
+			tinsert(schedule, "Where:" .. DESCRIPTION_SEPARATOR .. (info.name or ("Map ID #" .. mapID)));
+		end
+		return schedule;
+	end
+end
+end
+
+local texcoordForEvents = { 0.0, 0.7109375, 0.0, 0.7109375 };
 local headerFields = {
 	["key"] = function(t)
 		return "headerID";
@@ -8404,6 +8526,32 @@ local headerFields = {
 	["lore"] = function(t)
 		return L["HEADER_LORE"][t.headerID];
 	end,
+	["nameAsEvent"] = function(t)
+		return L["HEADER_NAMES"][t.headerID] or t.eventInfo.name;
+	end,
+	["iconAsEvent"] = function(t)
+		return L["HEADER_ICONS"][t.headerID] or t.eventInfo.icon;
+	end,
+	["texcoordAsEvent"] = function(t)
+		if t.icon == t.eventInfo.icon then
+			return texcoordForEvents;
+		end
+	end,
+	["eventIDAsEvent"] = function(t)
+		local eventID = L.HEADER_EVENTS[t.headerID];
+		if eventID then
+			t.eventID = eventID;
+			return eventID;
+		end
+	end,
+	["eventInfo"] = function(t)
+		local info = app.GetEventCache()[t.eventID];
+		if info then
+			t.eventInfo = info;
+			return info;
+		end
+		return {};
+	end,
 	["savedAsQuest"] = function(t)
 		return IsQuestFlaggedCompletedForObject(t) == 1;
 	end,
@@ -8413,14 +8561,24 @@ local headerFields = {
 };
 app.BaseHeader = app.BaseObjectFields(headerFields);
 local fields = RawCloneData(headerFields);
+fields.name = headerFields.nameAsEvent;
+fields.icon = headerFields.iconAsEvent;
+fields.texcoord = headerFields.texcoordAsEvent;
+fields.eventID = headerFields.eventIDAsEvent;
+app.BaseHeaderWithEvent = app.BaseObjectFields(fields, "BaseHeaderWithEvent");
+
+local fields = RawCloneData(headerFields);
 fields.saved = headerFields.savedAsQuest;
 fields.trackable = headerFields.trackableAsQuest;
 app.BaseHeaderWithQuest = app.BaseObjectFields(fields);
+
 app.CreateNPC = function(id, t)
 	if t then
 		if id < 1 then
 			if rawget(t, "questID") then
 				return setmetatable(constructor(id, t, "headerID"), app.BaseHeaderWithQuest);
+			elseif L.HEADER_EVENTS[id] then
+				return setmetatable(constructor(id, t, "headerID"), app.BaseHeaderWithEvent);
 			else
 				return setmetatable(constructor(id, t, "headerID"), app.BaseHeader);
 			end
@@ -11348,6 +11506,19 @@ local function RowOnEnter(self)
 				end
 				GameTooltip:AddLine(description, 0.4, 0.8, 1, 1);
 			end
+			if reference.eventInfo and reference.eventInfo.times then
+				local timeStrings = app.GetBestEventTimeStrings(reference.eventInfo.times);
+				if timeStrings then
+					for i,timeString in ipairs(timeStrings) do
+						local left, right = strsplit(DESCRIPTION_SEPARATOR, timeString);
+						if right then
+							GameTooltip:AddDoubleLine(left, right, 0.4, 0.8, 1, 0.4, 0.8, 1, 1);
+						else
+							GameTooltip:AddLine(left, 0.4, 0.8, 1, 1);
+						end
+					end
+				end
+			end
 			if reference.awp then
 				local found = false;
 				local awp = GetAddedWithPatchString(reference.awp);
@@ -11861,6 +12032,8 @@ function app:GetDataCache()
 	-- Update the Row Data by filtering raw data
 	local allData = app:GetWindow("Prime").data;
 	if not allData or not allData.total and app.Categories then
+		app.GetEventCache();
+		
 		allData = setmetatable({}, {
 			__index = function(t, key)
 				if key == "title" then
@@ -16884,6 +17057,7 @@ app.events.VARIABLES_LOADED = function()
 	local oldsettings = {};
 	for i,key in ipairs({
 		"AddonMessageProcessor",
+		"Events",
 		"GroupQuestsByGUID",
 		"LinkedAccounts",
 		"LocalizedCategoryNames",
