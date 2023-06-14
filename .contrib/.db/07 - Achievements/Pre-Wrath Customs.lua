@@ -9,7 +9,7 @@ local COMPANIONS_OnClick = [[function(row, button)
 			table.insert(template, o[1]);
 		end
 		
-		local clone = _.CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
+		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
 		clone.OnTooltip = t.OnTooltip;
 		clone.OnUpdate = t.OnUpdate;
 		clone.rank = t.rank;
@@ -199,7 +199,7 @@ local MOUNTS_OnClick = [[function(row, button)
 			end
 		end
 		
-		local clone = _.CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
+		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
 		clone.OnTooltip = t.OnTooltip;
 		clone.OnUpdate = t.OnUpdate;
 		clone.rank = t.rank;
@@ -277,7 +277,7 @@ local REPUTATIONS_OnClick = [[function(row, button)
 		local t = row.ref;
 		local template = {};
 		for i,o in ipairs(_:GetDataCache().g) do
-			if o.headerID == -8 then
+			if o.headerID == ]] .. FACTIONS .. [[ then
 				for j,p in ipairs(o.g) do
 					if (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
 						table.insert(template, p);
@@ -286,7 +286,7 @@ local REPUTATIONS_OnClick = [[function(row, button)
 			end
 		end
 		
-		local clone = _.CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
+		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
 		clone.OnTooltip = t.OnTooltip;
 		clone.OnUpdate = t.OnUpdate;
 		clone.rank = t.rank;
@@ -304,7 +304,7 @@ local REPUTATIONS_OnTooltip = [[function(t)
 			_.IgnoredReputationsForAchievements = ignored;
 		end
 		for i,o in ipairs(_:GetDataCache().g) do
-			if o.headerID == -8 then
+			if o.headerID == ]] .. FACTIONS .. [[ then
 				for j,p in ipairs(o.g) do
 					if (p.visible or p.factionID == 909) and not ignored[p.factionID] and (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
 						GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, _.L[p.standing >= 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
@@ -370,7 +370,7 @@ local REPUTATIONS_OnTooltip = [[function(t)
 		GameTooltip:AddLine(" ");
 		local ignored = _.IgnoredReputationsForAchievements or {};
 		for i,o in ipairs(_:GetDataCache().g) do
-			if o.headerID == -8 then
+			if o.headerID == ]] .. FACTIONS .. [[ then
 				for j,p in ipairs(o.g) do
 					if (p.visible or p.factionID == 909) and not ignored[p.factionID] and (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
 						GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, _.L[p.standing >= 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
