@@ -583,30 +583,20 @@ app.L = {
 		[-297] = "Interface\\Icons\\inv_letter_17", 								-- Mailbox
 		[-304] = "Interface\\Icons\\INV_BannerPVP_02",								-- Battlegrounds
 
-		[-383] = "Interface\\Icons\\inv_misc_gem_variety_02",						-- Miscellaneous
-		[-522] = "Interface\\Icons\\inv_misc_tournaments_banner_troll",						-- Zalazane's Fall
+		[-522] = "Interface\\Icons\\inv_misc_tournaments_banner_troll",				-- Zalazane's Fall
 		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
-		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",						-- Operation: Gnomeregan
-		[-532] = "Interface\\Icons\\ability_shaman_stormstrike",					-- Heroes of the Storm
-		[-533] = "Interface\\Icons\\Inv_misc_rune_01",								-- Hearthstone
-		[-535] = "Interface\\Icons\\inv_misc_ticket_tarot_stack_01",				-- Trading Card Game
-		[-536] = "Interface\\Icons\\Inv_misc_rune_01",								-- Hearthstone Mercenaries
+		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",				-- Operation: Gnomeregan
 		[-538] = "Interface\\Icons\\inv_box_01",									-- The Ahn'Qiraj War Effort
 		[-539] = "Interface\\Icons\\Inv_hammer_25",									-- The Scepter of the Shifting Sands
 		[-540] = "Interface\\Icons\\inv_stone_02",									-- The Scourge Invasion
 		[-541] = "Interface\\Icons\\spell_holiday_tow_spicecloud",					-- The Silithyst Must Flow
 		[-542] = "Interface\\Icons\\achievement_dungeon_outland_dungeonmaster",		-- The Opening of the Dark Portal
-		[-545] = app.asset("inv_misc_blizzcon09_poster"),							-- Blizzcon
-		[-546] = app.asset("achievement_reputation_08"),							-- Recruit A Friend
-		[-553] = "Interface\\Icons\\INV_Drink_10",									-- iCoke
-		[-577] = "Interface\\Icons\\INV_MISC_FILM_01",								-- Warcraft Movie
-		[-578] = app.asset("Expansion_CLASSIC"),									-- World of Warcraft 15th Anniversary
 		
 	-- PvP Set Names
-		[-659] = "Interface\\Worldmap\\GlowSkull_64Green",									-- Aspirant PvP Gear
-		[-660] = "Interface\\Worldmap\\GlowSkull_64Blue",									-- Combatant PvP Gear
-		[-661] = "Interface\\Worldmap\\GlowSkull_64Purple",									-- Gladator PvP Gear
-		[-662] = "Interface\\Worldmap\\GlowSkull_64Red",									-- Elite PvP Gear
+		[-659] = "Interface\\Worldmap\\GlowSkull_64Green",							-- Aspirant PvP Gear
+		[-660] = "Interface\\Worldmap\\GlowSkull_64Blue",							-- Combatant PvP Gear
+		[-661] = "Interface\\Worldmap\\GlowSkull_64Purple",							-- Gladator PvP Gear
+		[-662] = "Interface\\Worldmap\\GlowSkull_64Red",							-- Elite PvP Gear
 	};
 	["HEADER_NAMES"] = {
 		[-165] = GetItemSubClassInfo(13,1),										-- Junkboxes
@@ -614,7 +604,6 @@ app.L = {
 		[-297] = MINIMAP_TRACKING_MAILBOX,										-- Mailbox
 		[-304] = BATTLEGROUNDS,													-- Battlegrounds
 -- Dungeon/Raid Wing Info
-		[-383] = MISCELLANEOUS,													-- Miscellaneous (Holidays)
 		[-422] = "Atal'ai Defenders",											-- Atal'ai Defenders
 		[-423] = "The Four Horsemen",											-- The Four Horsemen
 
@@ -622,7 +611,6 @@ app.L = {
 		[-522] = "Zalazane's Fall",												-- Zalazane's Fall
 		[-523] = "Elemental Unrest",											-- Elemental Unrest
 		[-524] = "Operation: Gnomeregan",										-- Operation: Gnomeregan
-		[-535] = BATTLE_PET_SOURCE_9,											-- Trading Card Game
 		[-538] = "The Ahn'Qiraj War Effort",
 		[-539] = "The Scepter of the Shifting Sands",
 		[-540] = "The Scourge Invasion",
