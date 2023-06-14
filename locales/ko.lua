@@ -3,10 +3,6 @@ if GetLocale() ~= "koKR" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
 local a = L.ZONE_TEXT_TO_MAP_ID;
 wipe(a);
 for key,value in pairs({
@@ -88,18 +84,6 @@ for key,value in pairs({
 	["약초채집"] = 2366,	-- Herb Gathering
 	["가죽 세공"] = 2108,	-- Leatherworking
 	["탈것 타기"] = 33388,	-- Riding
-})
-do a[key] = value; end
-
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	-- Enter translated headers here
-})
-do a[key] = value; end
-
-local a = app.ObjectNames;
-for key,value in pairs({
-	-- Enter translated OBJECTID's here
 })
 do a[key] = value; end
 

@@ -3,10 +3,6 @@ if GetLocale() ~= "deDE" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
 -- TODO
 L.SAVED_TO_DJ_INSTANCES["Violette Festung"] = "Die Violette Festung";
 L.SAVED_TO_DJ_INSTANCES["Geschmolzener Kern"] = "Der Geschmolzene Kern";
@@ -104,12 +100,6 @@ for key,value in pairs({
 })
 do a[key] = value; end
 
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	[-1] = "Gemeinsame Bossbeute",										-- Common Boss Drop
-})
-do a[key] = value; end
-
 local a = app.ObjectNames;
 for key,value in pairs({
 	-- Enter translated OBJECTID's here
@@ -139,7 +129,6 @@ for key,value in pairs({
 	[21042] = "Abzeichen der Wache von Theramore",
 	[35251] = "Karnitols Truhe",
 	[112948] = "Verschlossene Geldkassette der 'Kühnheit'",
---	[113768] = GetSpellInfo(61820),
 	[113768] = "Bunt gefärbtes Ei",
 	[123329] = "Baelogs Truhe",
 	[131474] = "Die Scheiben von Norgannon",
@@ -194,7 +183,6 @@ for key,value in pairs({
 	[180918] = "GESUCHT: Thaelis der Manadurstige",
 	[181011] = "Magister Nachtschimmers Tagebuch",
 	[181074] = "Arenabeute",
---	[181083] = "Sothos and Jarien's Heirlooms",				-- No Translation
 	[181147] = "Steckbrief",
 	[181150] = "Staubiges Tagebuch",
 	[181153] = "Gesucht: Kel'gash der Boshafte",

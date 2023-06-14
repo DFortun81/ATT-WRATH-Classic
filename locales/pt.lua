@@ -3,10 +3,6 @@ if GetLocale() ~= "ptBR" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
 local a = L.ZONE_TEXT_TO_MAP_ID;
 wipe(a);
 for key,value in pairs({
@@ -91,12 +87,6 @@ for key,value in pairs({
 })
 do a[key] = value; end
 
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	-- Enter translated NPCID's here
-})
-do a[key] = value; end
-
 local a = app.ObjectNames;
 for key,value in pairs({
 	-- Enter translated OBJECTID's here
@@ -107,7 +97,6 @@ for key,value in pairs({
 	[61] = "A Velha Lápide",
 	[256] = "Procura-se!",
 	[259] = "Barril Semienterrado",
---	[270] = "Unguarded Thunder Ale Barrel",						-- No translation
 	[2059] = "Cadáver Enânico",
 	[2076] = "Caldeirão Borbulhante",
 	[2083] = "Correspondência dos Vela Sangrenta",
@@ -142,33 +131,23 @@ for key,value in pairs({
 	[160836] = "Arca de Relíquia",
 	[160845] = "Cofre Sombrio",
 	[161495] = "Cofre Secreto",
---	[161504] = "A Small Pack",								-- No translation
 	[161505] = "Bote Naufragado",
 	[161521] = "Equipamento de Pesquisa",
 	[161526] = "Caixote de Comestíveis",
 	[164820] = "Placa de Identificação do Guardião Sombrio",
---	[164885] = "Corrupted Night Dragon",					-- No translation
---	[164886] = "Corrupted Songflower",						-- No translation
---	[164887] = "Corrupted Windblossom",						-- No translation
---	[164888] = "Corrupted Whipper Root",					-- No translation
 	[164955] = "Torre de Cristal Norte",
 	[164956] = "Torre de Cristal Oeste",
 	[164957] = "Torre de Cristal Oriental",
 	[169243] = "Baú dos Sete",
 	[173232] = "Instruções de Ferraria",
 	[174682] = "Cuidado com o Pterrordax",
---	[175320] = "WANTED: Murkdeep!",							-- No translation
---	[175524] = "Mysterious Red Crystal",					-- No translation
 	[175756] = "O Flagelo de Lordaeron",
 	[176090] = "Restos Humanos",
 	[176091] = "Caldeirão de Lenha Morta",
---	[176115] = "Wanted Poster - Arnak Grimtotem",			-- No translation
 	[176392] = "Caldeirão do Flagelo",
 	[177787] = "Diário de Rodovalho",
---	[177904] = "Wanted Poster: Besseleth",					-- No translation
 	[177964] = "Pedra das Profundezas",
 	[179485] = "Armadilha Quebrada",
---	[179501] = "Knot Thimblejack's Cache",					-- No translation
 	[179832] = "Travesseiro Ornado da Alma Fada",
 	[179564] = "Homenagem a Gordok",
 	[179697] = "Baú do Tesouro da Arena",
@@ -179,8 +158,6 @@ for key,value in pairs({
 	[180794] = "Diário de Janice Barov",
 	[180918] = "Procura-se: Thaelis, o Famélico",
 	[181011] = "Diário do Magíster Ocaso",
---	[181074] = "Arena Spoils",								-- No translation
---	[181083] = "Sothos and Jarien's Heirlooms",				-- No Translation
 	[181147] = "Cartaz de Procura-se",
 	[181150] = "Diário Empoeirado",
 	[181153] = "Cartaz de Procura-se: Kel'gash, o Perverso",

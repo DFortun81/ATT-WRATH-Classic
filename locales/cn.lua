@@ -3,10 +3,6 @@ if GetLocale() ~= "zhCN" and GetLocale() ~= "zhTW" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
 -- General Text
 L["TITLE"] = "|cffb4b4ffALL THE THINGS|r"
 L["AUCTION_TAB"] = "|cffb4b4ffATT|r"
@@ -157,13 +153,3 @@ for key,value in pairs({
 	["骑术"] = 33388,	-- Riding
 })
 do a[key] = value; end
-
-local a = L.HEADER_NAMES;
-for key, value in pairs({}) do
-    a[key] = value
-end
-
-local a = app.ObjectNames;
-for key, value in pairs({}) do
-    a[key] = value
-end

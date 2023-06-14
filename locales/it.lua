@@ -3,10 +3,6 @@ if GetLocale() ~= "itIT" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
 local a = L.ZONE_TEXT_TO_MAP_ID;
 wipe(a);
 for key,value in pairs({
@@ -84,12 +80,6 @@ for key,value in pairs({
 })
 do a[key] = value; end
 
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	-- Enter translated NPCID's here
-})
-do a[key] = value; end
-
 local a = app.ObjectNames;
 for key,value in pairs({
 	-- Enter translated OBJECTID's here
@@ -100,7 +90,6 @@ for key,value in pairs({
 	[61] = "Tomba Rovinata",
 	[256] = "Ricercato!",
 	[259] = "Barile Mezzo Sepolto",
---	[270] = "Unguarded Thunder Ale Barrel",						-- No translation
 	[2059] = "Cadavere di un Nano",
 	[2076] = "Calderone Ribollente",
 	[2083] = "Corrispondenza dei Velerosse",
@@ -119,7 +108,6 @@ for key,value in pairs({
 	[21042] = "Distintivo della Guardia di Theramore",
 	[35251] = "Cassa di Karnitol",
 	[112948] = "Forziere Chiuso dell'Intrepida",
---	[113768] = GetSpellInfo(61820),
 	[113768] = "Uovo Decorato",
 	[123329] = "Cassa di Baelog",
 	[131474] = "Dischi di Norgannon",
@@ -136,33 +124,23 @@ for key,value in pairs({
 	[160836] = "Reliquiario",
 	[160845] = "Forziere Oscuro",
 	[161495] = "Cassaforte Segreta",
---	[161504] = "A Small Pack",								-- No translation
 	[161505] = "Zattera Distrutta",
 	[161521] = "Equipaggiamento Scientifico",
 	[161526] = "Cassa di Cibo",
 	[164820] = "Targa del Guardiano Oscuro",
---	[164885] = "Corrupted Night Dragon",					-- No translation
---	[164886] = "Corrupted Songflower",						-- No translation
---	[164887] = "Corrupted Windblossom",						-- No translation
---	[164888] = "Corrupted Whipper Root",					-- No translation
 	[164955] = "Pilastro di Cristallo Settentrionale",
 	[164956] = "Pilastro di Cristallo Occidentale",
 	[164957] = "Pilastro di Cristallo Orientale",
 	[169243] = "Cassa dei Sette",
 	[173232] = "Progetti di Forgiatura",
 	[174682] = "Attenzione ai Pterrordattili",
---	[175320] = "WANTED: Murkdeep!",							-- No translation
---	[175524] = "Mysterious Red Crystal",					-- No translation
 	[175756] = "Il Flagello di Lordaeron",
 	[176090] = "Resti di Umanoide",
 	[176091] = "Calderone dei Legnomorto",
---	[176115] = "Wanted Poster - Arnak Grimtotem",			-- No translation
 	[176392] = "Calderone del Flagello",
 	[177787] = "Diario di Rackmore",
---	[177904] = "Wanted Poster: Besseleth",					-- No translation
 	[177964] = "Pietra Profonda",
 	[179485] = "Trappola Rotta",
---	[179501] = "Knot Thimblejack's Cache",					-- No translation
 	[179832] = "Cuscino Decorato di Pillaclencher",
 	[179564] = "Tributo dei Gordok",
 	[179697] = "Cassa del Tesoro dell'Arena",
@@ -170,11 +148,8 @@ for key,value in pairs({
 	[180503] = "Libro di Ricette Insabbiato",
 	[180690] = "Grande Forziere dello Scarabeo",
 	[180691] = "Forziere dello Scarabeo",
---	[180794] = "Journal of Jandice Barov",					-- No translation
 	[180918] = "Ricercato: Thaelis il Famelico",
 	[181011] = "Diario del Magistro Lungovespro",
---	[181074] = "Arena Spoils",								-- No translation
---	[181083] = "Sothos and Jarien's Heirlooms",				-- No Translation
 	[181147] = "Manifesto dei Ricercati",
 	[181150] = "Diario Impolverato",
 	[181153] = "Manifesto dei Ricercati: Kel'gash il Perfido",

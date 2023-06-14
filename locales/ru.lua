@@ -91,15 +91,3 @@ for key,value in pairs({
 	["Верховая езда"] = 33388,	-- Riding
 })
 do a[key] = value; end
-
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	-- Enter translated NPCID's here
-})
-do a[key] = value; end
-
-local a = app.ObjectNames;
-for key,value in pairs({
-	-- Enter translated OBJECTID's here
-})
-do a[key] = value; end

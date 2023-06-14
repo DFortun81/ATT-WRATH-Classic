@@ -3,10 +3,6 @@ if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
 local a = L.ZONE_TEXT_TO_MAP_ID;
 wipe(a);
 for key,value in pairs({
@@ -91,12 +87,6 @@ for key,value in pairs({
 })
 do a[key] = value; end
 
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	-- Enter translated NPCID's here
-})
-do a[key] = value; end
-
 local a = app.ObjectNames;
 for key,value in pairs({
 	-- Enter translated OBJECTID's here
@@ -126,7 +116,6 @@ for key,value in pairs({
 	[21042] = "Identificación de guardia de Theramore",
 	[35251] = "Cofre de Karnitol",
 	[112948] = "Caja fuerte de El Intrépido cerrada",
---	[113768] = GetSpellInfo(61820),
 	[113768] = "Huevo de colores vivos",
 	[123329] = "Cofre de Baelog",
 	[131474] = "Los Discos de Norgannon",
@@ -180,8 +169,6 @@ for key,value in pairs({
 	[180794] = "Diario de Jandice Barov",
 	[180918] = "Se busca: Thaelis el Hambriento",
 	[181011] = "Diario del magister Ocaso Marchito",
---	[181074] = "Arena Spoils",								-- No translation
---	[181083] = "Sothos and Jarien's Heirlooms",				-- No Translation
 	[181147] = "Cartel de Se busca",
 	[181150] = "Diario polvoriento",
 	[181153] = "Cartel de Se busca: Kel'gash el Malvado",

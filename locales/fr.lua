@@ -3,11 +3,6 @@ if GetLocale() ~= "frFR" then return; end
 local app = select(2, ...);
 local L = app.L;
 
---TODO: L.FACTION_MODE_TOOLTIP = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
-
---TODO: L.TOGGLE_FACTION_MODE = "Toggle Faction Mode";
-
--- TODO
 L.SAVED_TO_DJ_INSTANCES["Temple noir"] = "Le Temple noir";
 L.SAVED_TO_DJ_INSTANCES["Le Puits de soleil"] = "Plateau du Puits de soleil";
 L.SAVED_TO_DJ_INSTANCES["Donjon de la Tempête"] = "L'Œil";
@@ -97,12 +92,6 @@ for key,value in pairs({
 })
 do a[key] = value; end
 
-local a = L.HEADER_NAMES;
-for key,value in pairs({
-	-- Enter translated NPCID's here
-})
-do a[key] = value; end
-
 local a = app.ObjectNames;
 for key,value in pairs({
 	-- Enter translated OBJECTID's here
@@ -132,7 +121,6 @@ for key,value in pairs({
 	[21042] = "Ecusson de la garde de Theramore",
 	[35251] = "Coffre de Karnitol",
 	[112948] = "Coffre verrouillé de l'Intrépide",
---	[113768] = GetSpellInfo(61820),
 	[113768] = "Œuf vivement coloré",
 	[123329] = "Coffre de Baelog",
 	[131474] = "Les disques de Norgannon",
@@ -187,7 +175,6 @@ for key,value in pairs({
 	[180918] = "Avis de recherche : Thaelis l'Affameur",
 	[181011] = "Journal du magistère Ternesoir",
 	[181074] = "Butin de l'arène",
---	[181083] = "Sothos and Jarien's Heirlooms",				-- No Translation
 	[181147] = "Avis de recherche",
 	[181150] = "Journal poussiéreux",
 	[181153] = "Avis de recherche : Kel'gash le Malfaisant",
