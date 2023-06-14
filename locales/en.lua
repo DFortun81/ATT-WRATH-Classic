@@ -577,55 +577,14 @@ app.L = {
 		[81] = { -1, "Feats of Strength" },
 		[15301] = { -1, "Expansion Features" },
 	},
-	["HEADER_ICONS"] = {
-		[-165] = "Interface\\Icons\\inv_box_01",											-- Junkboxes
-		
-		[-297] = "Interface\\Icons\\inv_letter_17", 								-- Mailbox
-		[-304] = "Interface\\Icons\\INV_BannerPVP_02",								-- Battlegrounds
-
-		[-522] = "Interface\\Icons\\inv_misc_tournaments_banner_troll",				-- Zalazane's Fall
-		[-523] = app.asset("Expansion_CATA"),										-- Elemental Unrest
-		[-524] = "Interface\\Icons\\inv_misc_tournaments_symbol_gnome",				-- Operation: Gnomeregan
-		[-538] = "Interface\\Icons\\inv_box_01",									-- The Ahn'Qiraj War Effort
-		[-539] = "Interface\\Icons\\Inv_hammer_25",									-- The Scepter of the Shifting Sands
-		[-540] = "Interface\\Icons\\inv_stone_02",									-- The Scourge Invasion
-		[-541] = "Interface\\Icons\\spell_holiday_tow_spicecloud",					-- The Silithyst Must Flow
-		[-542] = "Interface\\Icons\\achievement_dungeon_outland_dungeonmaster",		-- The Opening of the Dark Portal
-		
-	-- PvP Set Names
-		[-659] = "Interface\\Worldmap\\GlowSkull_64Green",							-- Aspirant PvP Gear
-		[-660] = "Interface\\Worldmap\\GlowSkull_64Blue",							-- Combatant PvP Gear
-		[-661] = "Interface\\Worldmap\\GlowSkull_64Purple",							-- Gladator PvP Gear
-		[-662] = "Interface\\Worldmap\\GlowSkull_64Red",							-- Elite PvP Gear
-	};
-	["HEADER_NAMES"] = {
-		[-165] = GetItemSubClassInfo(13,1),										-- Junkboxes
--- Other
-		[-297] = MINIMAP_TRACKING_MAILBOX,										-- Mailbox
-		[-304] = BATTLEGROUNDS,													-- Battlegrounds
--- Dungeon/Raid Wing Info
-		[-422] = "Atal'ai Defenders",											-- Atal'ai Defenders
-		[-423] = "The Four Horsemen",											-- The Four Horsemen
-
--- Blizzard Events and Anniversaries
-		[-522] = "Zalazane's Fall",												-- Zalazane's Fall
-		[-523] = "Elemental Unrest",											-- Elemental Unrest
-		[-524] = "Operation: Gnomeregan",										-- Operation: Gnomeregan
-		[-538] = "The Ahn'Qiraj War Effort",
-		[-539] = "The Scepter of the Shifting Sands",
-		[-540] = "The Scourge Invasion",
-		[-541] = "The Silithyst Must Flow",
-		[-542] = "The Opening of the Dark Portal",
-		
-	-- PvP Set Names
-		[-659] = "Aspirant Gear",												-- Aspirant PvP Gear (WoD, BfA)
-		[-660] = "Combatant Gear",												-- Combatant PvP Gear (WoD, Legion)
-		[-661] = "Gladiator Gear",												-- Gladiator PvP Gear
-		[-662] = "Elite Gear",													-- Elite PvP Gear
-	},
+	
+	-- Deprecated!
+	["HEADER_ICONS"] = {};
+	["HEADER_NAMES"] = {},
 	["HEADER_DESCRIPTIONS"] = {};
 	["HEADER_EVENTS"] = {};
 	["HEADER_LORE"] = {};
+	
 	["EVENT_REMAPPING"] = {};
 	
 	["TIER_DATA"] = {
