@@ -6,9 +6,8 @@ DARKMOON_FAIRE_HEADER = createHeader({
 	readable = "Darkmoon Faire",
 	constant = "DARKMOON_FAIRE_HEADER",
 	icon = [[~_.asset("Event_dmf")]],
-	eventID = 479,	-- Darkmoon Island
+	eventID = EVENTS.DARKMOON_FAIRE,	-- Darkmoon Island
 	-- #if BEFORE CATA
-	-- TODO: Map these to 479 in the addon
 	eventIDs = {
 		374,	-- Elwynn Forest
 		375,	-- Thunder Bluff
@@ -79,7 +78,7 @@ local OnTooltipForDarkmoonFaire = [[function(t)
 		GameTooltip:AddDoubleLine("Turn in Decks.", (n - x) .. " / " .. n .. " (" .. x .. ")", 1, 1, 1);
 	end
 end]];
-root("Holidays", applyholiday(DARKMOON_FAIRE, n(DARKMOON_FAIRE_HEADER, {	-- Darkmoon Faire
+root("Holidays", applyevent(EVENTS.DARKMOON_FAIRE, n(DARKMOON_FAIRE_HEADER, {	-- Darkmoon Faire
 	["maps"] = {
 		ELWYNN_FOREST,
 		MULGORE,

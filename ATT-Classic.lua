@@ -1297,6 +1297,8 @@ MergeClone = function(g, o)
 	local clone = CreateObject(o);
 	local u = GetRelativeValue(o, "u");
 	if u then clone.u = u; end
+	local e = GetRelativeValue(o, "e");
+	if e then clone.e = e; end
 	if not o.itemID or o.b == 1 then
 		local r = GetRelativeValue(o, "r");
 		if r then
@@ -1783,8 +1785,14 @@ local function BuildContainsInfo(groups, entries, paramA, paramB, indent, layer)
 				if group.u then
 					local reason = L["UNOBTAINABLE_ITEM_REASONS"][group.u];
 					if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then
-						o.prefix = string.sub(o.prefix, 4) .. "|T" .. L["UNOBTAINABLE_ITEM_TEXTURES"][reason[1]] .. ":0|t ";
+						o.texture = L["UNOBTAINABLE_ITEM_TEXTURES"][reason[1]];
 					end
+				elseif group.e then
+					o.texture = L["UNOBTAINABLE_ITEM_TEXTURES"][4];
+				end
+				if o.texture then
+					o.prefix = string.sub(o.prefix, 4) .. "|T" .. o.texture .. ":0|t ";
+					o.texture = nil;
 				end
 				tinsert(entries, o);
 				
@@ -1983,11 +1991,14 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			
 			if itemID then
 				-- Show the unobtainable source text
-				local u = 99999999;
+				local u, e = 99999999;
 				for i,j in ipairs(group) do
 					if j.itemID == itemID then
 						if j.u and u > j.u and (not j.crs or paramA == "itemID") then
 							u = j.u;
+						end
+						if j.e then
+							e = j.e;
 						end
 					end
 				end
@@ -1996,6 +2007,10 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 					if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then
 						tinsert(info, { left = reason[2], wrap = true });
 					end
+				end
+				if e then
+					local reason = app.GetEventTooltipNoteForGroup({e = e});
+					if reason then tinsert(info, { left = reason, wrap = true }); end
 				end
 				local itemName, itemLink = GameTooltip:GetItem();
 				if app.Settings:GetTooltipSetting("itemID") then tinsert(info, { left = L["ITEM_ID"], right = tostring(itemID) }); end
@@ -2068,7 +2083,9 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						end
 					end
 					if not didthing then
-						if not app.RecursiveClassAndRaceFilter(j.parent) then
+						if j.e then
+							tinsert(unfiltered, text .. " |T" .. L["UNOBTAINABLE_ITEM_TEXTURES"][4] .. ":0|t");
+						elseif not app.RecursiveClassAndRaceFilter(j.parent) then
 							tinsert(unfiltered, text .. " |TInterface\\FriendsFrame\\StatusIcon-Away:0|t");
 						elseif not app.RecursiveUnobtainableFilter(j.parent) then
 							tinsert(unfiltered, text .. " |TInterface\\FriendsFrame\\StatusIcon-DnD:0|t");
@@ -8462,11 +8479,44 @@ fields.repeatable = npcFields.repeatableAsQuest;
 fields.saved = fields.savedAsQuest;
 app.BaseNPCWithQuest = app.BaseObjectFields(fields);
 
+-- Header Lib
+local headerFields = {
+	["key"] = function(t)
+		return "headerID";
+	end,
+	["text"] = function(t)
+		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
+	end,
+	["name"] = function(t)
+		return L["HEADER_NAMES"][t.headerID];
+	end,
+	["icon"] = function(t)
+		return L["HEADER_ICONS"][t.headerID];
+	end,
+	["description"] = function(t)
+		return L["HEADER_DESCRIPTIONS"][t.headerID];
+	end,
+	["lore"] = function(t)
+		return L["HEADER_LORE"][t.headerID];
+	end,
+	["savedAsQuest"] = function(t)
+		return IsQuestFlaggedCompletedForObject(t) == 1;
+	end,
+	["trackableAsQuest"] = function(t)
+		return true;
+	end,
+};
+app.BaseHeader = app.BaseObjectFields(headerFields);
+local fields = RawCloneData(headerFields);
+fields.saved = headerFields.savedAsQuest;
+fields.trackable = headerFields.trackableAsQuest;
+app.BaseHeaderWithQuest = app.BaseObjectFields(fields);
+
 -- Event Lib (using Headers!)
 do
 local remappedEventToMapID = {
 	[374] = 1429,	-- Elwynn Forest
-	[375] = 1456,	-- Thunder Bluff
+	[375] = 1412,	-- Mulgore
 	[376] = 1952,	-- Terrokar Forest
 };
 -- Check to make sure these APIs are available on the environment.
@@ -8561,6 +8611,70 @@ local function GetEventTimeString(d)
 	end
 	return "??";
 end
+local UpcomingEventLeeway = 604800;	-- 86400, currently set to a week. 86400 is a day.
+local EventInformation = setmetatable({}, { __index = function(t, id)
+	local info = app.GetEventCache()[id];
+	if info and info.times then
+		rawset(t, id, info);
+		return info;
+	end
+	return {};
+end });
+local NextEventSchedule = setmetatable({}, { __index = function(t, id)
+	local info = EventInformation[id];
+	if info then
+		local times = info.times;
+		if times and #times > 0 then
+			local now = C_DateAndTime.GetServerTimeLocal();
+			local lastData;
+			for i,data in ipairs(times) do
+				lastData = data;
+				if now < data["end"] then
+					-- If the event is within the leeway, mark it active
+					if now > (data["start"] - UpcomingEventLeeway) then
+						rawset(app.ActiveEvents, id, true);
+					end
+					break;
+				end
+			end
+			rawset(t, id, lastData);
+			return lastData;
+		end
+	end
+end });
+app.ActiveEvents = setmetatable({}, { __index = function(t, id)
+	local nextEvent = NextEventSchedule[id];
+	if nextEvent then
+		-- If the event is within the leeway, mark it active
+		local now = C_DateAndTime.GetServerTimeLocal();
+		if now < nextEvent["end"] and now > (nextEvent["start"] - UpcomingEventLeeway) then
+			rawset(t, id, true);
+			return true;
+		end
+	end
+end });
+app.GetEventName = function(e)
+	local info = app.GetEventInformation(e);
+	if info then
+		local name = info.name;
+		if not name then
+			local headerID;
+			name = "Event #" .. e;
+			for id,eventID in pairs(L.HEADER_EVENTS) do
+				if e == eventID then
+					name = L.HEADER_NAMES[id];
+					break;
+				end
+			end
+			info.name = name;
+		end
+		return name;
+	end
+	return "Event #" .. e;
+end
+app.GetEventTooltipNoteForGroup = function(group)
+	return L["EVENT_TOOLTIPS"][group.e] or ("|CFF00FFDEThis requires the " .. app.GetEventName(group.e) .. " event to be Active.|r");
+end
 app.GetEventTimeStrings = function(nextEvent)
 	if nextEvent then
 		local schedule = {};
@@ -8578,93 +8692,42 @@ app.GetEventTimeStrings = function(nextEvent)
 		return schedule;
 	end
 end
-end
+app.GetEventInformation = function(eventID)
+	return EventInformation[eventID];
+end;
+app.SetUpcomingEventLeeway = function(leeway)
+	UpcomingEventLeeway = leeway;
+	wipe(app.ActiveEvents);
+end;
 
 local texcoordForEvents = { 0.0, 0.7109375, 0.0, 0.7109375 };
-local headerFields = {
-	["key"] = function(t)
-		return "headerID";
-	end,
-	["text"] = function(t)
-		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
-	end,
-	["name"] = function(t)
-		return L["HEADER_NAMES"][t.headerID];
-	end,
-	["icon"] = function(t)
-		return L["HEADER_ICONS"][t.headerID];
-	end,
-	["description"] = function(t)
-		return L["HEADER_DESCRIPTIONS"][t.headerID];
-	end,
-	["lore"] = function(t)
-		return L["HEADER_LORE"][t.headerID];
-	end,
-	["nameAsEvent"] = function(t)
-		return L["HEADER_NAMES"][t.headerID] or t.eventInfo.name;
-	end,
-	["iconAsEvent"] = function(t)
-		return L["HEADER_ICONS"][t.headerID] or t.eventInfo.icon;
-	end,
-	["texcoordAsEvent"] = function(t)
-		if t.icon == t.eventInfo.icon then
-			return texcoordForEvents;
-		end
-	end,
-	["eventIDAsEvent"] = function(t)
-		local eventID = L.HEADER_EVENTS[t.headerID];
-		if eventID then
-			t.eventID = eventID;
-			return eventID;
-		end
-	end,
-	["eventInfoAsEvent"] = function(t)
-		local info = app.GetEventCache()[t.eventID];
-		if info and info.times then
-			t.eventInfo = info;
-			return info;
-		end
-		return {};
-	end,
-	["nextEventAsEvent"] = function(t)
-		local info = t.eventInfo;
-		if info then
-			local times = info.times;
-			if times and #times > 0 then
-				local now = C_DateAndTime.GetServerTimeLocal();
-				local lastData;
-				for i,data in ipairs(times) do
-					lastData = data;
-					if now < data["end"] then
-						break;
-					end
-				end
-				t.nextEvent = lastData;
-				return lastData;
-			end
-		end
-	end,
-	["savedAsQuest"] = function(t)
-		return IsQuestFlaggedCompletedForObject(t) == 1;
-	end,
-	["trackableAsQuest"] = function(t)
-		return true;
-	end,
-};
-app.BaseHeader = app.BaseObjectFields(headerFields);
 local fields = RawCloneData(headerFields);
-fields.name = headerFields.nameAsEvent;
-fields.icon = headerFields.iconAsEvent;
-fields.texcoord = headerFields.texcoordAsEvent;
-fields.eventID = headerFields.eventIDAsEvent;
-fields.eventInfo = headerFields.eventInfoAsEvent;
-fields.nextEvent = headerFields.nextEventAsEvent;
+fields.name = function(t)
+	return L["HEADER_NAMES"][t.headerID] or t.eventInfo.name;
+end;
+fields.icon = function(t)
+	return L["HEADER_ICONS"][t.headerID] or t.eventInfo.icon;
+end;
+fields.texcoord = function(t)
+	if t.icon == t.eventInfo.icon then
+		return texcoordForEvents;
+	end
+end;
+fields.eventID = function(t)
+	local eventID = L.HEADER_EVENTS[t.headerID];
+	if eventID then
+		t.eventID = eventID;
+		return eventID;
+	end
+end;
+fields.eventInfo = function(t)
+	return EventInformation[t.eventID];
+end;
+fields.nextEvent = function(t)
+	return NextEventSchedule[t.eventID];
+end;
 app.BaseHeaderWithEvent = app.BaseObjectFields(fields, "BaseHeaderWithEvent");
-
-local fields = RawCloneData(headerFields);
-fields.saved = headerFields.savedAsQuest;
-fields.trackable = headerFields.trackableAsQuest;
-app.BaseHeaderWithQuest = app.BaseObjectFields(fields);
+end
 
 app.CreateNPC = function(id, t)
 	if t then
@@ -9981,7 +10044,7 @@ function app.FilterItemBind(item)
 	return item.b == 2 or item.b == 3; -- BoE
 end
 function app.FilterItemClass(item)
-	if app.UnobtainableItemFilter(item) and app.PvPFilter(item) then
+	if app.UnobtainableItemFilter(item) and app.RequireEventFilter(item) and app.PvPFilter(item) then
 		if app.ItemBindFilter(item) then return true; end
 		return app.ItemTypeFilter(item)
 			and app.RequireBindingFilter(item)
@@ -10081,6 +10144,13 @@ function app.FilterItemClass_RequireBinding(item)
 		return true;
 	end
 end
+function app.FilterItemClass_RequireEvent(item)
+	if item.e and not app.ActiveEvents[item.e] then
+		return false;
+	else
+		return true;
+	end
+end
 function app.FilterItemClass_RequiredSkill(item)
 	local requireSkill = item.requireSkill;
 	if requireSkill and (not item.professionID or not GetRelativeValue(item, "DontEnforceSkillRequirements") or item.b == 1) then
@@ -10128,6 +10198,7 @@ app.CollectedItemVisibilityFilter = app.NoFilter;
 app.ClassRequirementFilter = app.NoFilter;
 app.RaceRequirementFilter = app.NoFilter;
 app.RequireBindingFilter = app.NoFilter;
+app.RequireEventFilter = app.FilterItemClass_RequireEvent;
 app.RequiredSkillFilter = app.NoFilter;
 app.RequireFactionFilter = app.FilterItemClass_RequireFaction;
 app.UnobtainableItemFilter = app.FilterItemClass_UnobtainableItem;
@@ -10156,7 +10227,7 @@ app.RecursiveDefaultClassAndRaceFilter = function(group)
 	return false;
 end
 app.RecursiveUnobtainableFilter = function(group)
-	if app.UnobtainableItemFilter(group) then
+	if app.UnobtainableItemFilter(group) and app.RequireEventFilter(group) then
 		if group.parent then return app.RecursiveUnobtainableFilter(group.parent); end
 		return true;
 	end
@@ -11019,6 +11090,13 @@ local function SetRowData(self, row, data)
 					row.Indicator:Show();
 				end
 			end
+		elseif data.e then
+			local texture = L["UNOBTAINABLE_ITEM_TEXTURES"][4];
+			if texture then
+				row.Indicator:SetTexture(texture);
+				row.Indicator:SetPoint("RIGHT", leftmost, relative, x, 0);
+				row.Indicator:Show();
+			end
 		end
 		-- if data is quest and is currently accepted
 		if data.questID and GetQuestLogIndexByID(data.questID)>0 then
@@ -11341,6 +11419,10 @@ local function RowOnEnter(self)
 					if reference and reference.u then
 						local reason = L["UNOBTAINABLE_ITEM_REASONS"][reference.u];
 						if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then GameTooltip:AddLine(reason[2], 1, 1, 1, true); end
+					end
+					if reference.e then
+						local reason = app.GetEventTooltipNoteForGroup(reference);
+						if reason then GameTooltip:AddLine(reason, 1, 1, 1, true); end
 					end
 					AttachTooltipSearchResults(GameTooltip, 1, "itemID:" .. reference.itemID, SearchForField, "itemID", reference.itemID);
 				end
@@ -11672,6 +11754,10 @@ local function RowOnEnter(self)
 			if reference.u then
 				local reason = L["UNOBTAINABLE_ITEM_REASONS"][reference.u];
 				if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then GameTooltip:AddLine(reason[2], 1, 1, 1, true); end
+			end
+			if reference.e then
+				local reason = app.GetEventTooltipNoteForGroup(reference);
+				if reason then GameTooltip:AddLine(reason, 1, 1, 1, true); end
 			end
 			if reference.sym then GameTooltip:AddLine("Right click to view more information.", 0.8, 0.8, 1, true); end
 		end
@@ -12520,6 +12606,9 @@ function app:GetDataCache()
 			end
 			if source.nmc then
 				score = score + 10;
+			end
+			if source.e then
+				score = score + 1;
 			end
 			if source.u then
 				score = score + 1;
@@ -14102,6 +14191,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 					self.data[key] = value;
 				end
 				
+				self.data.e = nil;
 				self.data.u = nil;
 				self.data.mapID = self.mapID;
 				setmetatable(self.data,
