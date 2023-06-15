@@ -4876,7 +4876,7 @@ end,
 	if t.collectible and t.spells then
 		GameTooltip:AddLine(" ");
 		for i,spell in ipairs(t.spells) do
-			GameTooltip:AddDoubleLine(" |T" .. spell.icon .. ":0|t " .. spell.text, app.L[faction.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+			GameTooltip:AddDoubleLine(" |T" .. spell.icon .. ":0|t " .. spell.text, app.L[spell.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
 		end
 	end
 end,
