@@ -402,10 +402,12 @@ root("Achievements", {
 		-- #endif
 		ach(2716),	-- Dual Talent Specialization
 		applyclassicphase(WRATH_PHASE_ONE, ach(556)),	-- Epic
+		-- #if AFTER TBC
 		classicAch(889, {	-- Fast and Furious
 			["spellID"] = 33391,	-- Journeyman Riding
 			["rank"] = 2,
 		}),
+		-- #endif
 		classicAch(2142, {	-- Filling Up The Barn
 			["OnClick"] = MOUNTS_OnClick,
 			["OnTooltip"] = MOUNTS_OnTooltip,
@@ -424,8 +426,25 @@ root("Achievements", {
 			["f"] = 100,
 		})),
 		classicAch(891, {	-- Giddy Up!
+			-- #if AFTER TBC
 			["spellID"] = 33388,	-- Apprentice Riding
 			["rank"] = 1,
+			-- #else
+			["description"] = "Learn any of the riding skills.",
+			["OnClick"] = [[_.CommonAchievementHandlers.KNOW_SPELLS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.KNOW_SPELLS_OnTooltip]],
+			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.KNOW_SPELLS_ANY_OnUpdate(t, 824, 18995, 10907, 826, 10861, 828, 10906, 825); end]],
+			--[[
+				824,	-- Horse Riding
+				18995,	-- Kodo Riding
+				10907,	-- Mechanostrider Piloting
+				826,	-- Ram Riding
+				10861,	-- Raptor Riding
+				828,	-- Tiger Riding
+				10906,	-- Undead Horsemanship
+				825,	-- Wolf Riding
+			]]--
+			-- #endif
 		}),
 		ach(1176, {	-- Got My Mind On My Money [100g]
 			["rank"] = 100,

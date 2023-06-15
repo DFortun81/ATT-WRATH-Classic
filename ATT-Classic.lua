@@ -4812,6 +4812,74 @@ end,
 		end
 	end
 end,
+["KNOW_SPELLS_OnUpdate"] = function(t, ...)
+	if t.collectible then
+		if not t.spells then
+			local spells = {};
+			for i,spellID in ipairs({ ... }) do
+				local f = app.SearchForField("spellID", spellID);
+				if f and #f > 0 then
+					tinsert(spells, f[1]);
+				else
+					return true;
+				end
+			end
+			if #spells < 1 then return true; end
+			t.spells = spells;
+		end
+		if useAchievementAPI then return; end
+		local collected = true;
+		for i,spell in ipairs(t.spells) do
+			if spell.collected then
+				collected = false;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+end,
+["KNOW_SPELLS_ANY_OnUpdate"] = function(t, ...)
+	if t.collectible then
+		if not t.spells then
+			local spells = {};
+			for i,spellID in ipairs({ ... }) do
+				local f = app.SearchForField("spellID", spellID);
+				if f and #f > 0 then
+					tinsert(spells, f[1]);
+				else
+					return true;
+				end
+			end
+			if #spells < 1 then return true; end
+			t.spells = spells;
+		end
+		if useAchievementAPI then return; end
+		local collected = false;
+		for i,spell in ipairs(t.spells) do
+			if spell.collected then
+				collected = true;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+end,
+["KNOW_SPELLS_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.spells)).data;
+		clone.description = t.description;
+		return true;
+	end
+end,
+["KNOW_SPELLS_OnTooltip"] = function(t)
+	if t.collectible and t.spells then
+		GameTooltip:AddLine(" ");
+		for i,spell in ipairs(t.spells) do
+			GameTooltip:AddDoubleLine(" |T" .. spell.icon .. ":0|t " .. spell.text, app.L[faction.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+		end
+	end
+end,
 ["LOREMASTER_KALIMDOR_OnUpdate"] = function(t, ...)
 	return app.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate(t, 1414, ...);
 end,
