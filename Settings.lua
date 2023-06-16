@@ -269,9 +269,6 @@ settings.CheckSeasonalDate = function(self, eventID, startMonth, startDay, endMo
 	local active = (now >= start and now <= ends);
 	app.ActiveEvents[eventID] = active;
 end
-settings.CheckWeekDay = function(self, eventID, weekDay)
-	app.ActiveEvents[eventID] = date("*t").wday == weekDay;
-end
 settings.Get = function(self, setting)
 	return ATTClassicSettings.General[setting];
 end
