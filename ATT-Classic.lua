@@ -3666,7 +3666,7 @@ local function ShowItemCompareTooltips(...)
 			local shoppingTooltip = GameTooltip.shoppingTooltips[i];
 			if shoppingTooltip then
 				shoppingTooltip.attItem = type(item) == "number" and select(2, GetItemInfo(item)) or item;
-				shoppingTooltip:SetHyperlink(shoppingTooltip.attItem);
+				pcall(shoppingTooltip.SetHyperlink, shoppingTooltip, shoppingTooltip.attItem);
 			else
 				break;
 			end
@@ -3704,7 +3704,7 @@ local function ShowItemCompareTooltips(...)
 			else
 				shoppingTooltip3:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", 0, -10);
 			end
-			shoppingTooltip3:SetHyperlink(shoppingTooltip3.attItem);
+			pcall(shoppingTooltip3.SetHyperlink, shoppingTooltip3, shoppingTooltip3.attItem);
 			shoppingTooltip3:Show();
 			shoppingTooltip1:SetOwner(shoppingTooltip3, "ANCHOR_NONE");
 		else
@@ -3724,7 +3724,7 @@ local function ShowItemCompareTooltips(...)
 				shoppingTooltip1:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", 0, -10);
 			end
 		end
-		shoppingTooltip1:SetHyperlink(shoppingTooltip1.attItem);
+		pcall(shoppingTooltip1.SetHyperlink, shoppingTooltip1, shoppingTooltip1.attItem);
 		shoppingTooltip1:Show();
 
 		if count > 1 then
@@ -3735,7 +3735,7 @@ local function ShowItemCompareTooltips(...)
 			else
 				shoppingTooltip2:SetPoint("TOPLEFT", shoppingTooltip1, "TOPRIGHT", 0, 0);
 			end
-			shoppingTooltip2:SetHyperlink(shoppingTooltip2.attItem);
+			pcall(shoppingTooltip2.SetHyperlink, shoppingTooltip2, shoppingTooltip2.attItem);
 			shoppingTooltip2:Show();
 		end
 	
@@ -11506,7 +11506,7 @@ local function RowOnEnter(self)
 			if reference.itemID then
 				local link = reference.link;
 				if link and link ~= "" then
-					GameTooltip:SetHyperlink(link);
+					pcall(GameTooltip.SetHyperlink, GameTooltip, link);
 				else
 					GameTooltip:AddLine("Item #" .. reference.itemID);
 					if reference and reference.u then
