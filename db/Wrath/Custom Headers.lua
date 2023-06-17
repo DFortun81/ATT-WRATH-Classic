@@ -78,18 +78,18 @@ for key,value in pairs({
 _.Modules.Events.SetEventInformation(590, {
 {
 	["start"] = 1667754000, ["end"] = 1669827600,
-	["startTime"] = {["hour"] = 10,["year"] = 2022,["month"] = 11,["weekday"] = 1,["monthDay"] = 6,["minute"] = 0},
-	["endTime"] = {["hour"] = 10,["year"] = 2022,["month"] = 11,["weekday"] = 4,["monthDay"] = 30,["minute"] = 0}
+	["startTime"] = {["minute"] = 0,["monthDay"] = 6,["weekday"] = 1,["year"] = 2022,["month"] = 11,["hour"] = 10},
+	["endTime"] = {["minute"] = 0,["monthDay"] = 30,["weekday"] = 4,["year"] = 2022,["month"] = 11,["hour"] = 10}
 },
 {
 	["start"] = 1699290000, ["end"] = 1701363600,
-	["startTime"] = {["hour"] = 10,["year"] = 2023,["month"] = 11,["weekday"] = 2,["monthDay"] = 6,["minute"] = 0},
-	["endTime"] = {["hour"] = 10,["year"] = 2023,["month"] = 11,["weekday"] = 5,["monthDay"] = 30,["minute"] = 0}
+	["startTime"] = {["minute"] = 0,["monthDay"] = 6,["weekday"] = 2,["year"] = 2023,["month"] = 11,["hour"] = 10},
+	["endTime"] = {["minute"] = 0,["monthDay"] = 30,["weekday"] = 5,["year"] = 2023,["month"] = 11,["hour"] = 10}
 },
 {
 	["start"] = 1730912400, ["end"] = 1732986000,
-	["startTime"] = {["hour"] = 10,["year"] = 2024,["month"] = 11,["weekday"] = 4,["monthDay"] = 6,["minute"] = 0},
-	["endTime"] = {["hour"] = 10,["year"] = 2024,["month"] = 11,["weekday"] = 7,["monthDay"] = 30,["minute"] = 0}
+	["startTime"] = {["minute"] = 0,["monthDay"] = 6,["weekday"] = 4,["year"] = 2024,["month"] = 11,["hour"] = 10},
+	["endTime"] = {["minute"] = 0,["monthDay"] = 30,["weekday"] = 7,["year"] = 2024,["month"] = 11,["hour"] = 10}
 }});
 
 local a = L.HEADER_ICONS;
