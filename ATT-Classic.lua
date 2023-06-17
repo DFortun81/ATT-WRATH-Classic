@@ -4477,7 +4477,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 		["OnTooltip"] = function()
 			return onTooltipForAchievementCriteria;
 		end,
-	});
+	}, "BaseAchievementCriteria");
 	app.CreateAchievementCriteria = function(id, t)
 		return setmetatable(constructor(id, t, "criteriaID"), app.BaseAchievementCriteria);
 	end
@@ -4568,7 +4568,7 @@ else
 	
 	local fieldsWithSpellID = RawCloneData(fields);
 	fieldsWithSpellID.OnUpdate = fields.OnUpdateForSpellID;
-	app.BaseAchievementWithSpellID = app.BaseObjectFields(fieldsWithSpellID);
+	app.BaseAchievementWithSpellID = app.BaseObjectFields(fieldsWithSpellID, "BaseAchievementWithSpellID");
 	app.CreateAchievement = function(id, t)
 		t = constructor(id, t, "achievementID");
 		return setmetatable(t, t.spellID and app.BaseAchievementWithSpellID or app.BaseAchievement);
@@ -4579,8 +4579,8 @@ else
 	end
 end
 
-app.BaseAchievement = app.BaseObjectFields(fields);
-app.BaseAchievementCategory = app.BaseObjectFields(categoryFields);
+app.BaseAchievement = app.BaseObjectFields(fields, "BaseAchievement");
+app.BaseAchievementCategory = app.BaseObjectFields(categoryFields, "BaseAchievementCategory");
 app.CreateAchievementCategory = function(id, t)
 	return setmetatable(constructor(id, t, "achievementCategoryID"), app.BaseAchievementCategory);
 end
@@ -5139,7 +5139,7 @@ local fields = {
 		return ATTC.CategoryIcons[t.categoryID] or "Interface/ICONS/INV_Misc_Gear_02";
 	end,
 };
-app.BaseCategory = app.BaseObjectFields(fields);
+app.BaseCategory = app.BaseObjectFields(fields, "BaseCategory");
 app.CreateCategory = function(id, t)
 	return setmetatable(constructor(id, t, "categoryID"), app.BaseCategory);
 end
@@ -5598,7 +5598,7 @@ local fields = {
 		return RAID_CLASS_COLORS[C_CreatureInfo.GetClassInfo(t.classID).classFile];
 	end,
 };
-app.BaseCharacterClass = app.BaseObjectFields(fields);
+app.BaseCharacterClass = app.BaseObjectFields(fields, "BaseCharacterClass");
 app.CreateCharacterClass = function(id, t)
 	return setmetatable(constructor(id, t, "classID"), app.BaseCharacterClass);
 end
@@ -5784,7 +5784,7 @@ local fields = {
 		end
 	end,
 };
-app.BaseSoftReserveUnit = app.BaseObjectFields(fields);
+app.BaseSoftReserveUnit = app.BaseObjectFields(fields, "BaseSoftReserveUnit");
 app.CreateSoftReserveUnit = function(unit, t)
 	return setmetatable(constructor(unit, t, "unit"), app.BaseSoftReserveUnit);
 end
@@ -5876,7 +5876,7 @@ local fields = {
 		return text;
 	end,
 };
-app.BaseQuestUnit = app.BaseObjectFields(fields);
+app.BaseQuestUnit = app.BaseObjectFields(fields, "BaseQuestUnit");
 app.CreateQuestUnit = function(unit, t)
 	return setmetatable(constructor(unit, t, "unit"), app.BaseQuestUnit);
 end
@@ -5941,7 +5941,7 @@ local fields = {
 		return UnitClass(t.unit);
 	end,
 };
-app.BaseUnit = app.BaseObjectFields(fields);
+app.BaseUnit = app.BaseObjectFields(fields, "BaseUnit");
 app.CreateUnit = function(unit, t)
 	return setmetatable(constructor(unit, t, "unit"), app.BaseUnit);
 end
@@ -6226,14 +6226,14 @@ app.BasePetType = app.BaseObjectFields({
 		-- return "Interface/Icons/Icon_PetFamily_"..PET_TYPE_SUFFIX[t.petTypeID];
 		return app.asset("Icon_PetFamily_"..PET_TYPE_SUFFIX[t.petTypeID]);
 	end,
-});
-app.BaseMount = app.BaseObjectFields(mountFields);
-app.BaseSpecies = app.BaseObjectFields(speciesFields);
+}, "BasePetType");
+app.BaseMount = app.BaseObjectFields(mountFields, "BaseMount");
+app.BaseSpecies = app.BaseObjectFields(speciesFields, "BaseSpecies");
 
 local fields = RawCloneData(mountFields);
 fields.link = mountFields.linkForItem;
 fields.tsm = mountFields.tsmForItem;
-app.BaseMountWithItemID = app.BaseObjectFields(fields);
+app.BaseMountWithItemID = app.BaseObjectFields(fields, "BaseMountWithItemID");
 app.CreateMount = function(id, t)
 	if t and rawget(t, "itemID") then
 		return setmetatable(constructor(id, t, "spellID"), app.BaseMountWithItemID);
@@ -6338,17 +6338,15 @@ local fields = {
 		
 	end,
 };
-app.BaseCurrencyClass = app.BaseObjectFields(fields);
-app.CreateCurrencyClass = function(id, t)
-	return setmetatable(constructor(id, t, "currencyID"), app.BaseCurrencyClass);
-end
-(function()
 local fieldsAfterFailure = RawCloneData(fields);
 fieldsAfterFailure.collectibleAsCost = fields.collectibleAsCostAfterFailure;
 fieldsAfterFailure.collectedAsCost = fields.collectedAsCostAfterFailure;
-local newMeta = app.BaseObjectFields(fieldsAfterFailure);
+local newMeta = app.BaseObjectFields(fieldsAfterFailure, "BaseCurrencyClassAfterFailure");
 fields.metaAfterFailure = function(t) return newMeta; end;
-end)();
+app.BaseCurrencyClass = app.BaseObjectFields(fields, "BaseCurrencyClass");
+app.CreateCurrencyClass = function(id, t)
+	return setmetatable(constructor(id, t, "currencyID"), app.BaseCurrencyClass);
+end
 end)();
 
 -- Death Tracker Lib
@@ -6413,7 +6411,7 @@ local fields = {
 		return OnUpdateForDeathTrackerLib;
 	end,
 };
-app.BaseDeathClass = app.BaseObjectFields(fields);
+app.BaseDeathClass = app.BaseObjectFields(fields, "BaseDeathClass");
 app.CreateDeathClass = function()
 	return setmetatable({}, app.BaseDeathClass);
 end
@@ -6521,7 +6519,7 @@ local fields = {
 		if t.parent then return t.key .. t[t.key] .. "~" .. t.parent.key .. t.parent[t.parent.key]; end
 	end,
 };
-app.BaseDifficulty = app.BaseObjectFields(fields);
+app.BaseDifficulty = app.BaseObjectFields(fields, "BaseDifficulty");
 app.CreateDifficulty = function(id, t)
 	return setmetatable(constructor(id, t, "difficultyID"), app.BaseDifficulty);
 end
@@ -6571,7 +6569,7 @@ if EJ_GetEncounterInfo then
 			end
 		end,
 	};
-	app.BaseEncounter = app.BaseObjectFields(fields);
+	app.BaseEncounter = app.BaseObjectFields(fields, "BaseEncounter");
 	app.CreateEncounter = function(id, t)
 		return setmetatable(constructor(id, t, "encounterID"), app.BaseEncounter);
 	end
@@ -6761,7 +6759,7 @@ local fields = {
 	end,
 };
 fields.collected = fields.saved;
-app.BaseFaction = app.BaseObjectFields(fields);
+app.BaseFaction = app.BaseObjectFields(fields, "BaseFaction");
 app.CreateFaction = function(id, t)
 	return setmetatable(constructor(id, t, "factionID"), app.BaseFaction);
 end
@@ -6790,7 +6788,7 @@ local fields = {
 		return L["FILTER_ID_ICONS"][t.filterID];
 	end,
 };
-app.BaseFilter = app.BaseObjectFields(fields);
+app.BaseFilter = app.BaseObjectFields(fields, "BaseFilter");
 app.CreateFilter = function(id, t)
 	return setmetatable(constructor(id, t, "filterID"), app.BaseFilter);
 end
@@ -6975,7 +6973,7 @@ local fields = {
 		return r and r ~= app.FactionID;
 	end,
 };
-app.BaseFlightPath = app.BaseObjectFields(fields);
+app.BaseFlightPath = app.BaseObjectFields(fields, "BaseFlightPath");
 app.CreateFlightPath = function(id, t)
 	return setmetatable(constructor(id, t, "flightPathID"), app.BaseFlightPath);
 end
@@ -7078,7 +7076,7 @@ local fields = RawCloneData(illusionFields);
 fields.link = illusionFields.linkAsItem;
 fields.name = illusionFields.nameAsItem;
 fields.text = illusionFields.textAsItem;
-app.BaseIllusionWithItem = app.BaseObjectFields(fields);
+app.BaseIllusionWithItem = app.BaseObjectFields(fields, "BaseIllusionWithItem");
 app.CreateIllusion = function(id, t)
 	if t and rawget(t, "itemID") then
 		return setmetatable(constructor(id, t, "illusionID"), app.BaseIllusionWithItem);
@@ -7414,54 +7412,54 @@ local itemFields = {
 		return IsQuestFlaggedCompletedForObject(t) == 1;
 	end,
 };
-app.BaseItem = app.BaseObjectFields(itemFields);
 (function()
 local fieldsAfterFailure = RawCloneData(itemFields);
 fieldsAfterFailure.collectibleAsCost = itemFields.collectibleAsCostAfterFailure;
 fieldsAfterFailure.collectedAsCost = itemFields.collectedAsCostAfterFailure;
-local newMeta = app.BaseObjectFields(fieldsAfterFailure);
+local newMeta = app.BaseObjectFields(fieldsAfterFailure, "BaseItemAfterFailure");
 itemFields.metaAfterFailure = function(t) return newMeta; end;
 end)();
+app.BaseItem = app.BaseObjectFields(itemFields, "BaseItem");
 
 local fields = RawCloneData(itemFields);
 fields.collectible = itemFields.collectibleAsFaction;
 fields.collected = itemFields.collectedAsFaction;
-app.BaseItemWithFactionID = app.BaseObjectFields(fields);
 (function()
 local fieldsAfterFailure = RawCloneData(fields);
 fieldsAfterFailure.collectibleAsCost = itemFields.collectibleAsCostAfterFailure;
 fieldsAfterFailure.collectedAsCost = itemFields.collectedAsCostAfterFailure;
-local newMeta = app.BaseObjectFields(fieldsAfterFailure);
+local newMeta = app.BaseObjectFields(fieldsAfterFailure, "BaseItemWithFactionIDAfterFailure");
 fields.metaAfterFailure = function(t) return newMeta; end;
 end)();
+app.BaseItemWithFactionID = app.BaseObjectFields(fields, "BaseItemWithFactionID");
 
 local fields = RawCloneData(itemFields);
 fields.collectible = itemFields.collectibleAsQuest;
 fields.collected = itemFields.collectedAsQuest;
 fields.trackable = itemFields.trackableAsQuest;
 fields.saved = itemFields.savedAsQuest;
-app.BaseItemWithQuestID = app.BaseObjectFields(fields);
 (function()
 local fieldsAfterFailure = RawCloneData(fields);
 fieldsAfterFailure.collectibleAsCost = itemFields.collectibleAsCostAfterFailure;
 fieldsAfterFailure.collectedAsCost = itemFields.collectedAsCostAfterFailure;
-local newMeta = app.BaseObjectFields(fieldsAfterFailure);
+local newMeta = app.BaseObjectFields(fieldsAfterFailure, "BaseItemWithQuestIDAfterFailure");
 fields.metaAfterFailure = function(t) return newMeta; end;
 end)();
+app.BaseItemWithQuestID = app.BaseObjectFields(fields, "BaseItemWithQuestID");
 
 local fields = RawCloneData(itemFields);
 fields.collectible = itemFields.collectibleAsFactionOrQuest;
 fields.collected = itemFields.collectedAsFactionOrQuest;
 fields.trackable = itemFields.trackableAsQuest;
 fields.saved = itemFields.savedAsQuest;
-app.BaseItemWithQuestIDAndFactionID = app.BaseObjectFields(fields);
 (function()
 local fieldsAfterFailure = RawCloneData(fields);
 fieldsAfterFailure.collectibleAsCost = itemFields.collectibleAsCostAfterFailure;
 fieldsAfterFailure.collectedAsCost = itemFields.collectedAsCostAfterFailure;
-local newMeta = app.BaseObjectFields(fieldsAfterFailure);
+local newMeta = app.BaseObjectFields(fieldsAfterFailure, "BaseItemWithQuestIDAndFactionIDAfterFailure");
 fields.metaAfterFailure = function(t) return newMeta; end;
 end)();
+app.BaseItemWithQuestIDAndFactionID = app.BaseObjectFields(fields, "BaseItemWithQuestIDAndFactionID");
 app.CreateItem = function(id, t)
 	if t then
 		--[[
@@ -7516,7 +7514,7 @@ fields.collected = function(t)
 end
 fields.isToy = function(t) return true; end
 
-app.BaseToy = app.BaseObjectFields(fields);
+app.BaseToy = app.BaseObjectFields(fields, "BaseToy");
 app.CreateToy = function(id, t)
 	return setmetatable(constructor(id, t, "itemID"), app.BaseToy);
 end
@@ -7584,7 +7582,7 @@ itemHarvesterFields.text = function(t)
 		rawset(t, "collected", true);
 	end
 end
-app.BaseItemHarvester = app.BaseObjectFields(itemHarvesterFields);
+app.BaseItemHarvester = app.BaseObjectFields(itemHarvesterFields, "BaseItemHarvester");
 
 local ItemHarvester = CreateFrame("GameTooltip", "ATTCItemHarvester", UIParent, "GameTooltipTemplate");
 local itemTooltipHarvesterFields = RawCloneData(itemHarvesterFields);
@@ -7668,7 +7666,7 @@ itemTooltipHarvesterFields.text = function(t)
 		return link;
 	end
 end
-app.BaseItemTooltipHarvester = app.BaseObjectFields(itemTooltipHarvesterFields);
+app.BaseItemTooltipHarvester = app.BaseObjectFields(itemTooltipHarvesterFields, "BaseItemTooltipHarvester");
 app.CreateItemHarvester = function(id, t)
 	return setmetatable(constructor(id, t, "itemID"), app.BaseItemHarvester);
 end
@@ -7732,7 +7730,7 @@ local fields = {
 		return setLootMethod;
 	end,
 };
-app.BaseLootMethod = app.BaseObjectFields(fields);
+app.BaseLootMethod = app.BaseObjectFields(fields, "BaseLootMethod");
 app.CreateLootMethod = function(id, t)
 	return setmetatable(constructor(id, t, "id"), app.BaseLootMethod);
 end
@@ -7763,7 +7761,7 @@ local fields = {
 		return setLootThreshold;
 	end,
 };
-app.BaseLootThreshold = app.BaseObjectFields(fields);
+app.BaseLootThreshold = app.BaseObjectFields(fields, "BaseLootThreshold");
 app.CreateLootThreshold = function(id, t)
 	return setmetatable(constructor(id, t, "id"), app.BaseLootThreshold);
 end
@@ -7964,7 +7962,7 @@ local fields = {
 		end
 	end
 };
-app.ExplorationClass = app.BaseObjectFields(fields);
+app.ExplorationClass = app.BaseObjectFields(fields, "ExplorationClass");
 app.CreateExploration = function(id, t)
 	return setmetatable(constructor(id, t, "explorationID"), app.ExplorationClass);
 end
@@ -8209,7 +8207,7 @@ local fields = {
 		return t.locks;
 	end,
 };
-app.BaseMap = app.BaseObjectFields(fields);
+app.BaseMap = app.BaseObjectFields(fields, "BaseMap");
 app.CreateMap = function(id, t)
 	local map = setmetatable(constructor(id, t, "mapID"), app.BaseMap);
 	local artID = t.artID;
@@ -8312,7 +8310,7 @@ local instanceFields = {
 		return t.locks;
 	end,
 };
-app.BaseInstance = app.BaseObjectFields(instanceFields);
+app.BaseInstance = app.BaseObjectFields(instanceFields, "BaseInstance");
 app.CreateInstance = function(id, t)
 	if t.creatureID and t.creatureID < 0 then
 		rawset(t, "headerID", t.creatureID);
@@ -8466,7 +8464,7 @@ local npcFields = {
 	end,
 };
 npcFields.icon = npcFields.iconAsDefault;
-app.BaseNPC = app.BaseObjectFields(npcFields);
+app.BaseNPC = app.BaseObjectFields(npcFields, "BaseNPC");
 
 local fields = RawCloneData(npcFields);
 fields.collectible = npcFields.collectibleAsQuest;
@@ -8474,7 +8472,7 @@ fields.collected = npcFields.collectedAsQuest;
 fields.trackable = npcFields.trackableAsQuest;
 fields.repeatable = npcFields.repeatableAsQuest;
 fields.saved = fields.savedAsQuest;
-app.BaseNPCWithQuest = app.BaseObjectFields(fields);
+app.BaseNPCWithQuest = app.BaseObjectFields(fields, "BaseNPCWithQuest");
 
 -- Header Lib
 local headerFields = {
@@ -8503,11 +8501,11 @@ local headerFields = {
 		return true;
 	end,
 };
-app.BaseHeader = app.BaseObjectFields(headerFields);
+app.BaseHeader = app.BaseObjectFields(headerFields, "BaseHeader");
 local fields = RawCloneData(headerFields);
 fields.saved = headerFields.savedAsQuest;
 fields.trackable = headerFields.trackableAsQuest;
-app.BaseHeaderWithQuest = app.BaseObjectFields(fields);
+app.BaseHeaderWithQuest = app.BaseObjectFields(fields, "BaseHeaderWithQuest");
 
 -- Event Lib (using the Events Module!)
 local fields = RawCloneData(headerFields);
@@ -8590,7 +8588,7 @@ local automaticHeaderFields = {
 		end
 	end,
 };
-app.BaseAutomaticHeader = app.BaseObjectFields(automaticHeaderFields);
+app.BaseAutomaticHeader = app.BaseObjectFields(automaticHeaderFields, "BaseAutomaticHeader");
 app.CreateHeader = function(id, t)
 	return setmetatable(constructor(id, t, "autoID"), app.BaseAutomaticHeader);
 end
@@ -8654,7 +8652,7 @@ local objectFields = {
 		return rawget(t, "isDaily") or rawget(t, "isWeekly") or rawget(t, "isMonthly") or rawget(t, "isYearly");
 	end,
 };
-app.BaseObject = app.BaseObjectFields(objectFields);
+app.BaseObject = app.BaseObjectFields(objectFields, "BaseObject");
 
 local fields = RawCloneData(objectFields);
 fields.collectible = objectFields.collectibleAsQuest;
@@ -8662,7 +8660,7 @@ fields.collected = objectFields.collectedAsQuest;
 fields.trackable = objectFields.trackableAsQuest;
 fields.repeatable = objectFields.repeatableAsQuest;
 fields.saved = fields.savedAsQuest;
-app.BaseObjectWithQuest = app.BaseObjectFields(fields);
+app.BaseObjectWithQuest = app.BaseObjectFields(fields, "BaseObjectWithQuest");
 app.CreateObject = function(id, t)
 	if t and rawget(t, "questID") then
 		return setmetatable(constructor(id, t, "objectID"), app.BaseObjectWithQuest);
@@ -8784,7 +8782,7 @@ local fields = {
 		return {{"selectprofession", t.professionID}};
 	end
 };
-app.BaseProfession = app.BaseObjectFields(fields);
+app.BaseProfession = app.BaseObjectFields(fields, "BaseProfession");
 app.CreateProfession = function(id, t)
 	return setmetatable(constructor(id, t, "professionID"), app.BaseProfession);
 end
@@ -8830,7 +8828,7 @@ local fields = {
 		GameTooltip:AddDoubleLine("Your lifetime highest rank: ", _G["PVP_RANK_" .. (t.lifetimeRank) .. "_" .. (app.FactionID == 2 and 1 or 0)], 1, 1, 1, 1, 1, 1);
 	end
 };
-app.BasePVPRank = app.BaseObjectFields(fields);
+app.BasePVPRank = app.BaseObjectFields(fields, "BasePVPRank");
 app.CreatePVPRank = function(id, t)
 	return setmetatable(constructor(id, t, "pvpRankID"), app.BasePVPRank);
 end
@@ -8983,18 +8981,18 @@ local questFields = {
 		end
 	end,
 };
-app.BaseQuest = app.BaseObjectFields(questFields);
+app.BaseQuest = app.BaseObjectFields(questFields, "BaseQuest");
 
 local fields = RawCloneData(questFields);
 fields.collectible = questFields.collectibleAsBreadcrumb;
 fields.collected = questFields.collectedAsBreadcrumb;
 fields.text = questFields.textAsBreadcrumb;
-app.BaseQuestAsBreadcrumb = app.BaseObjectFields(fields);
+app.BaseQuestAsBreadcrumb = app.BaseObjectFields(fields, "BaseQuestAsBreadcrumb");
 
 local fields = RawCloneData(questFields);
 fields.collectible = questFields.collectibleAsReputation;
 fields.collected = questFields.collectedAsReputation;
-app.BaseQuestWithReputation = app.BaseObjectFields(fields);
+app.BaseQuestWithReputation = app.BaseObjectFields(fields, "BaseQuestWithReputation");
 
 local criteriaFuncs = {
     ["achID"] = function(achievementID)
@@ -9285,7 +9283,7 @@ local fields = {
 		end
 	end,
 };
-app.BaseQuestObjective = app.BaseObjectFields(fields);
+app.BaseQuestObjective = app.BaseObjectFields(fields, "BaseQuestObjective");
 app.CreateQuestObjective = function(id, t)
 	return setmetatable(constructor(id, t, "objectiveID"), app.BaseQuestObjective);
 end
@@ -9520,7 +9518,7 @@ local spellFields = {
 spellFields.baseIcon = spellFields.baseIconAsSpell;
 spellFields.link = spellFields.linkAsSpell;
 spellFields.name = spellFields.nameAsSpell;
-app.BaseSpell = app.BaseObjectFields(spellFields);
+app.BaseSpell = app.BaseObjectFields(spellFields, "BaseSpell");
 app.CreateSpell = function(id, t)
 	if t and rawget(t, "itemID") then
 		return setmetatable(constructor(id, t, "spellID"), app.BaseRecipeWithItem);
@@ -9536,7 +9534,7 @@ recipeFields.collected = recipeFields.collectedAsSpell;
 recipeFields.link = recipeFields.linkAsSpell;
 recipeFields.name = recipeFields.nameAsSpell;
 recipeFields.f = recipeFields.fAsSpell;
-app.BaseRecipe = app.BaseObjectFields(recipeFields);
+app.BaseRecipe = app.BaseObjectFields(recipeFields, "BaseRecipe");
 
 local fields = RawCloneData(recipeFields);
 fields.baseIcon = recipeFields.baseIconAsItem;
@@ -9544,7 +9542,7 @@ fields.link = recipeFields.linkAsItem;
 fields.name = recipeFields.nameAsItem;
 fields.tsm = recipeFields.tsmAsItem;
 fields.b = recipeFields.bAsItem;
-app.BaseRecipeWithItem = app.BaseObjectFields(fields);
+app.BaseRecipeWithItem = app.BaseObjectFields(fields, "BaseRecipeWithItem");
 app.CreateRecipe = function(id, t)
 	if t and rawget(t, "itemID") then
 		return setmetatable(constructor(id, t, "spellID"), app.BaseRecipeWithItem);
@@ -9776,7 +9774,7 @@ local fields = {
 		return OnUpdateForSpecificGender;
 	end
 };
-app.BaseTitle = app.BaseObjectFields(fields);
+app.BaseTitle = app.BaseObjectFields(fields, "BaseTitle");
 local genderedFields = RawCloneData(fields);
 genderedFields.collected = fields.collectedForGendered;
 genderedFields.description = fields.descriptionForGendered;
@@ -9784,7 +9782,7 @@ genderedFields.saved = fields.savedForGendered;
 genderedFields.title = fields.titleForGendered;
 genderedFields.titleID = fields.titleIDForGendered;
 genderedFields.OnUpdate = fields.OnUpdateForGendered;
-app.BaseGenderedTitle = app.BaseObjectFields(genderedFields);
+app.BaseGenderedTitle = app.BaseObjectFields(genderedFields, "BaseGenderedTitle");
 app.CreateTitle = function(id, t)
 	if t and t.titleIDs then
 		return setmetatable(constructor(nil, t, "titleID"), app.BaseGenderedTitle);
