@@ -30,11 +30,6 @@
 -- #IMPORT: 07 - Events\\The Scepter of the Shifting Sands\\
 -- #IMPORT: 07 - Events\\The Scourge Invasion\\
 -- #IMPORT: 07 - Events\\The Silithyst Must Flow\\
--- #IMPORT: 07 - Events\\WoW Anniversary\\04th Anniversary.lua
--- #IMPORT: 07 - Events\\WoW Anniversary\\05th Anniversary.lua
--- #IMPORT: 07 - Events\\WoW Anniversary\\06th Anniversary.lua
--- #IMPORT: 07 - Events\\WoW Anniversary\\07th Anniversary.lua
--- #IMPORT: 07 - Events\\WoW Anniversary\\08th Anniversary.lua
 -- #IMPORT: 07 - Events\\Zalazane's Fall\\
 
 -- Craftables
