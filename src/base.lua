@@ -205,3 +205,20 @@ function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
 	end
 	ATTEditBox:Show()
 end
+
+-- Lib Helpers
+-- Creates a Base Object Table which will evaluate the provided set of 'fields' (each field value being a keyed function)
+app.BaseObjectFields = function(fields)
+	return {
+	__index = function(t, key)
+		_cache = rawget(fields, key);
+		return _cache and _cache(t);
+	end
+};
+end
+
+-- Define Modules
+app.Modules = {};
+
+-- Global Variables
+AllTheThingsSavedVariables = {};

@@ -15,21 +15,7 @@
 -- #IMPORT: 03 - World Drops\\Pick Pocket.lua
 
 -- Holidays
--- #IMPORT: 21 - Holidays\\00 - Achievements.lua
--- #IMPORT: 21 - Holidays\\02 - Lunar Festival.lua
--- #IMPORT: 21 - Holidays\\03 - Love is in the Air.lua
--- #IMPORT: 21 - Holidays\\05 - Noblegarden.lua
--- #IMPORT: 21 - Holidays\\06 - Children's Week.lua
--- #IMPORT: 21 - Holidays\\08 - Midsummer Fire Festival.lua
--- #IMPORT: 21 - Holidays\\12 - Pirates' Day.lua
--- #IMPORT: 21 - Holidays\\13 - Brewfest.lua
--- #IMPORT: 21 - Holidays\\14 - Harvest Festival.lua
--- #IMPORT: 21 - Holidays\\16 - Hallow's End.lua
--- #IMPORT: 21 - Holidays\\17 - Day of the Dead.lua
--- #IMPORT: 21 - Holidays\\18 - Pilgrim's Bounty.lua
--- #IMPORT: 21 - Holidays\\19 - Feast of Winter Veil.lua
--- #IMPORT: 21 - Holidays\\Kalu'ak Fishing Derby.lua
--- #IMPORT: 21 - Holidays\\Stranglethorn Fishing Extravaganza.lua
+-- #IMPORT: 21 - Holidays\\
 
 -- Expansion Features
 -- #IMPORT: 06 - Expansion Features\\01 Burning Crusade\\Achievements.lua

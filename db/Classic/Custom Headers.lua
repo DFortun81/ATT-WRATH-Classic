@@ -29,29 +29,29 @@ _.HeaderConstants = {
 	PVP = -1000110,
 	DARKMOON_FAIRE_HEADER = -1000128,
 	TIER_ZERO_POINT_FIVE_SETS = -1000129,
-	LUNAR_FESTIVAL_HEADER = -1000152,
-	LOVE_IS_IN_THE_AIR_HEADER = -1000153,
-	NOBLEGARDEN_HEADER = -1000154,
-	CHILDRENS_WEEK_HEADER = -1000155,
-	MIDSUMMER_FIRE_FESTIVAL_HEADER = -1000156,
+	CHILDRENS_WEEK_HEADER = -1000153,
+	FEAST_OF_WINTER_VEIL_HEADER = -1000155,
+	HALLOWS_END_HEADER = -1000157,
 	HARVEST_FESTIVAL_HEADER = -1000158,
-	HALLOWS_END_HEADER = -1000159,
-	FEAST_OF_WINTER_VEIL_HEADER = -1000162,
+	LOVE_IS_IN_THE_AIR_HEADER = -1000161,
+	LUNAR_FESTIVAL_HEADER = -1000162,
+	MIDSUMMER_FIRE_FESTIVAL_HEADER = -1000164,
+	NOBLEGARDEN_HEADER = -1000165,
 };
 
 local a = L.HEADER_EVENTS;
 for key,value in pairs({
 	[-1000128] = 479,
-	[-1000152] = 327,
-	[-1000153] = 423,
-	[-1000154] = 181,
-	[-1000155] = 201,
-	[-1000156] = 341,
+	[-1000153] = 201,
+	[-1000155] = 141,
+	[-1000157] = 324,
 	[-1000158] = 321,
-	[-1000159] = 324,
-	[-1000162] = 141,
-	[-1000164] = 301,
-	[-1000182] = 1181,
+	[-1000161] = 423,
+	[-1000162] = 327,
+	[-1000164] = 341,
+	[-1000165] = 181,
+	[-1000169] = 301,
+	[-1000190] = 1181,
 }) do a[key] = value; end
 
 local a = L.EVENT_REMAPPING;
@@ -60,6 +60,136 @@ for key,value in pairs({
 	[375] = 479,
 	[376] = 479,
 }) do a[key] = value; end
+
+-- Programmatic Event Scheduling
+_.Modules.Events.SetEventInformation(181, {
+{
+	["start"] = 1650178800, ["end"] = 1650265200,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 0,["month"] = 4,["monthDay"] = 17},
+	["endTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 0,["month"] = 4,["monthDay"] = 18}
+},
+{
+	["start"] = 1681714800, ["end"] = 1681801200,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 0,["month"] = 4,["monthDay"] = 17},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 0,["month"] = 4,["monthDay"] = 18}
+},
+{
+	["start"] = 1713337200, ["end"] = 1713423600,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 0,["month"] = 4,["monthDay"] = 17},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 0,["month"] = 4,["monthDay"] = 18}
+}});
+_.Modules.Events.SetEventInformation(341, {
+{
+	["start"] = 1655830800, ["end"] = 1657040400,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 6,["monthDay"] = 21},
+	["endTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 7,["monthDay"] = 5}
+},
+{
+	["start"] = 1687366800, ["end"] = 1688576400,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 6,["monthDay"] = 21},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 7,["monthDay"] = 5}
+},
+{
+	["start"] = 1718989200, ["end"] = 1720198800,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 6,["monthDay"] = 21},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 7,["monthDay"] = 5}
+}});
+_.Modules.Events.SetEventInformation(327, {
+{
+	["start"] = 1642698000, ["end"] = 1643907600,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 1,["monthDay"] = 20},
+	["endTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 3}
+},
+{
+	["start"] = 1674234000, ["end"] = 1675443600,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 1,["monthDay"] = 20},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 3}
+},
+{
+	["start"] = 1705770000, ["end"] = 1706979600,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 1,["monthDay"] = 20},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 3}
+}});
+_.Modules.Events.SetEventInformation(423, {
+{
+	["start"] = 1644166800, ["end"] = 1645376400,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 6},
+	["endTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 20}
+},
+{
+	["start"] = 1675702800, ["end"] = 1676912400,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 6},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 20}
+},
+{
+	["start"] = 1707238800, ["end"] = 1708448400,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 6},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 2,["monthDay"] = 20}
+}});
+_.Modules.Events.SetEventInformation(321, {
+{
+	["start"] = 1662483600, ["end"] = 1663088400,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 9,["monthDay"] = 6},
+	["endTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 9,["monthDay"] = 13}
+},
+{
+	["start"] = 1694019600, ["end"] = 1694624400,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 9,["monthDay"] = 6},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 9,["monthDay"] = 13}
+},
+{
+	["start"] = 1725642000, ["end"] = 1726246800,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 9,["monthDay"] = 6},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 9,["monthDay"] = 13}
+}});
+_.Modules.Events.SetEventInformation(324, {
+{
+	["start"] = 1666112400, ["end"] = 1667325600,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 10,["monthDay"] = 18},
+	["endTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 11,["month"] = 11,["monthDay"] = 1}
+},
+{
+	["start"] = 1697648400, ["end"] = 1698861600,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 10,["monthDay"] = 18},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 11,["month"] = 11,["monthDay"] = 1}
+},
+{
+	["start"] = 1729270800, ["end"] = 1730484000,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 10,["monthDay"] = 18},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 11,["month"] = 11,["monthDay"] = 1}
+}});
+_.Modules.Events.SetEventInformation(141, {
+{
+	["start"] = 1671210000, ["end"] = 1672664400,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 10,["month"] = 12,["monthDay"] = 16},
+	["endTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 6,["month"] = 1,["monthDay"] = 2}
+},
+{
+	["start"] = 1702746000, ["end"] = 1704200400,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 10,["month"] = 12,["monthDay"] = 16},
+	["endTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 6,["month"] = 1,["monthDay"] = 2}
+},
+{
+	["start"] = 1734368400, ["end"] = 1735822800,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 10,["month"] = 12,["monthDay"] = 16},
+	["endTime"] = {["year"] = 2025,["minute"] = 0,["hour"] = 6,["month"] = 1,["monthDay"] = 2}
+}});
+_.Modules.Events.SetEventInformation(201, {
+{
+	["start"] = 1651388400, ["end"] = 1651989600,
+	["startTime"] = {["year"] = 2022,["minute"] = 0,["hour"] = 0,["month"] = 5,["monthDay"] = 1},
+	["endTime"] = {["year"] = 2022,["minute"] = 59,["hour"] = 23,["month"] = 5,["monthDay"] = 7}
+},
+{
+	["start"] = 1682924400, ["end"] = 1683525600,
+	["startTime"] = {["year"] = 2023,["minute"] = 0,["hour"] = 0,["month"] = 5,["monthDay"] = 1},
+	["endTime"] = {["year"] = 2023,["minute"] = 59,["hour"] = 23,["month"] = 5,["monthDay"] = 7}
+},
+{
+	["start"] = 1714546800, ["end"] = 1715148000,
+	["startTime"] = {["year"] = 2024,["minute"] = 0,["hour"] = 0,["month"] = 5,["monthDay"] = 1},
+	["endTime"] = {["year"] = 2024,["minute"] = 59,["hour"] = 23,["month"] = 5,["monthDay"] = 7}
+}});
 
 local a = L.HEADER_ICONS;
 for key,value in pairs({
@@ -120,23 +250,23 @@ for key,value in pairs({
 	[-1000145] = "Interface/Icons/INV_Misc_Token_ScarletCrusade",
 	[-1000146] = "Interface/Icons/INV_MISC_KEY_13",
 	[-1000147] = "Interface/Icons/Inv_misc_head_troll_01",
-	[-1000152] = _.asset("Holiday_Lunar"),
-	[-1000153] = _.asset("Holiday_love"),
-	[-1000154] = _.asset("Holiday_noblegarden"),
-	[-1000155] = _.asset("Holiday_Children"),
-	[-1000156] = _.asset("Holiday_Midsummer"),
+	[-1000153] = _.asset("Holiday_Children"),
+	[-1000155] = _.asset("Holiday_winter_veil"),
+	[-1000157] = _.asset("Holiday_hallows_end"),
 	[-1000158] = _.asset("Holiday_Harvestfest"),
-	[-1000159] = _.asset("Holiday_hallows_end"),
-	[-1000162] = _.asset("Holiday_winter_veil"),
-	[-1000164] = "Interface/Icons/inv_misc_fish_06",
-	[-1000168] = "Interface/Icons/inv_box_01",
-	[-1000170] = "Interface/Icons/Inv_hammer_25",
-	[-1000171] = "Interface/Icons/inv_stone_02",
-	[-1000172] = "Interface/Icons/spell_holiday_tow_spicecloud",
-	[-1000182] = _.asset("Promotion_Blizzcon"),
-	[-1000183] = _.asset("Promotion_Collector"),
-	[-1000200] = "Interface/Icons/Inv_drink_10",
-	[-1000201] = "Interface/Icons/Spell_Misc_Drink",
+	[-1000161] = _.asset("Holiday_love"),
+	[-1000162] = _.asset("Holiday_Lunar"),
+	[-1000164] = _.asset("Holiday_Midsummer"),
+	[-1000165] = _.asset("Holiday_noblegarden"),
+	[-1000169] = "Interface/Icons/inv_misc_fish_06",
+	[-1000176] = "Interface/Icons/inv_box_01",
+	[-1000178] = "Interface/Icons/Inv_hammer_25",
+	[-1000179] = "Interface/Icons/inv_stone_02",
+	[-1000180] = "Interface/Icons/spell_holiday_tow_spicecloud",
+	[-1000190] = _.asset("Promotion_Blizzcon"),
+	[-1000191] = _.asset("Promotion_Collector"),
+	[-1000208] = "Interface/Icons/Inv_drink_10",
+	[-1000209] = "Interface/Icons/Spell_Misc_Drink",
 }) do a[key] = value; end
 
 local a = L.HEADER_NAMES;
@@ -198,23 +328,23 @@ for key,value in pairs({
 	[-1000145] = "Main Gate",
 	[-1000146] = "Service Entrance",
 	[-1000147] = "Atal'ai Defenders",
-	[-1000152] = "Lunar Festival",
-	[-1000153] = "Love is in the Air",
-	[-1000154] = "Noblegarden",
-	[-1000155] = "Children's Week",
-	[-1000156] = "Midsummer Fire Festival",
+	[-1000153] = "Children's Week",
+	[-1000155] = GetSpellInfo(21953),
+	[-1000157] = "Hallow's End",
 	[-1000158] = "Harvest Festival",
-	[-1000159] = "Hallow's End",
-	[-1000162] = GetSpellInfo(21953),
-	[-1000164] = "Stranglethorn Fishing Extravaganza",
-	[-1000168] = "The Ahn'Qiraj War Effort",
-	[-1000170] = "The Scepter of the Shifting Sands",
-	[-1000171] = "The Scourge Invasion",
-	[-1000172] = "The Silithyst Must Flow",
-	[-1000182] = "BlizzCon",
-	[-1000183] = "Collector's Edition",
-	[-1000200] = "iCoke",
-	[-1000201] =  AUCTION_CATEGORY_MISCELLANEOUS,
+	[-1000161] = "Love is in the Air",
+	[-1000162] = "Lunar Festival",
+	[-1000164] = "Midsummer Fire Festival",
+	[-1000165] = "Noblegarden",
+	[-1000169] = "Stranglethorn Fishing Extravaganza",
+	[-1000176] = "The Ahn'Qiraj War Effort",
+	[-1000178] = "The Scepter of the Shifting Sands",
+	[-1000179] = "The Scourge Invasion",
+	[-1000180] = "The Silithyst Must Flow",
+	[-1000190] = "BlizzCon",
+	[-1000191] = "Collector's Edition",
+	[-1000208] = "iCoke",
+	[-1000209] =  AUCTION_CATEGORY_MISCELLANEOUS,
 }) do a[key] = value; end
 
 local a = L.HEADER_DESCRIPTIONS;
@@ -227,12 +357,12 @@ for key,value in pairs({
 	[-1000137] = "This part of the instance can be accessed from the western-most portal. (left side)",
 	[-1000145] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Live\" or \"Scarlet\" side, which the Scarlet Crusade has taken over.",
 	[-1000146] = "Stratholme is divided into two sides.\n\nThis side is commonly referred to as the \"Dead\" or \"Scourge\" side, which the Scourge has taken over.",
-	[-1000168] = "When Phase 5 is eventually released, the Ruins of Ahn'Qiraj and Temple of Ahn'Qiraj will not be immediately available. Instead, server communities will have to undertake a massive war effort to open the raids by gathering supplies to prepare for the war and completing an epic questline that ultimately culminates in the banging of a gong to open the gates and release the horrors within upon the world.\n\nOnce both factions have finished their contribution, there is a 5-day grace period where. Afterwards, there is a server-wide 10 hour event which spans several zones in Kalimdor the moment someone bangs the gong.\n\nHow quickly Ahn'Qiraj opens depends on the server and its faction balance.\n\nWe recommend delaying the War Effort as long as possible to allow for the most number of people to obtain the Scarab Lord mount as everyone that finishes The Scepter of the Shifting Sands quest line will be granted the same rewards!",
-	[-1000170] = "In addition to all players on a realm working towards completing the War Effort, one player had to create the Scepter of the Shifting Sands - a very difficult task that could only be solved by a server's top guild back when the questline was added. After the war effort was finished and the army of the Alliance and the Horde arrived in Silithus, the Scepter of the Shifting Sands could be used on the Scarab Gong. Doing so resulted in the opening of Ahn'Qiraj. The first player to bang the Scarab Gong on each server would be rewarded with the Scarab Lord title (in Burning Crusade, the title will not be available in Classic!) and the Black Qiraji Resonating Crystal mount. Anyone else who followed them within 10 hours was rewarded with the title as well.\n\nAlthough it is still possible to complete the questline for the Scepter of the Shifting Sands after the gates have been opened on your server, doing so will not reward neither the Black Qiraji Resonating Crystal nor the Scarab Lord title.",
-	[-1000171] = "The Scourge Invasion was a world event in Patch 1.11 and again during the Wrath of the Lich King Pre-Patch during 3.0.1 that heralded the opening of Naxxramas, the citadel of the dreaded Kel'Thuzad.\n\nSeveral regions of Azeroth came under attack by Scourge forces. Members of the Argent Dawn organized a worldwide counter to the Scourge invasion, keeping an eye out for any necropolis sightings and passing on their information to all adventurers willing to aid them in their struggle.\n\nWith each victory against the Scourge, the defense grows stronger. As more and more invasion attempts are beaten back by the defenders, the Argent Dawn will be able to bestow increasingly more powerful blessings upon those fighting the invaders. If the mortal races focus on clearing the Scourge camps all over the world that have sprung up beneath each necropolis, perhaps the invasion can effectively be halted or even repelled. Those who wish to take up arms against the undead invaders should speak with a representative of the Argent Dawn to learn what regions need help and how the defense is holding up.",
-	[-1000172] = "The Silithyst Must Flow is the name of the world PvP event in Silithus, where players of both factions must try and secure as much Silithyst as possible. Silithyst is a red crystalline dust that reaches the surface through geysers exclusive to the Silithus desert. Both the Alliance and the Horde have taken an interest in this new substance, and researchers on both sides have discovered unique and valuable properties in the dust. The Horde and Alliance camps in the region have both been outfitted with turn-in stations where players can unload the Silithyst they collect.",
-	[-1000200] = "These were only available through the 2006 iCoke Promotion (China Only)",
-	[-1000201] = "This section is for miscellaneous promotions that took place in the real world or something to do with account management.",
+	[-1000176] = "When Phase 5 is eventually released, the Ruins of Ahn'Qiraj and Temple of Ahn'Qiraj will not be immediately available. Instead, server communities will have to undertake a massive war effort to open the raids by gathering supplies to prepare for the war and completing an epic questline that ultimately culminates in the banging of a gong to open the gates and release the horrors within upon the world.\n\nOnce both factions have finished their contribution, there is a 5-day grace period where. Afterwards, there is a server-wide 10 hour event which spans several zones in Kalimdor the moment someone bangs the gong.\n\nHow quickly Ahn'Qiraj opens depends on the server and its faction balance.\n\nWe recommend delaying the War Effort as long as possible to allow for the most number of people to obtain the Scarab Lord mount as everyone that finishes The Scepter of the Shifting Sands quest line will be granted the same rewards!",
+	[-1000178] = "In addition to all players on a realm working towards completing the War Effort, one player had to create the Scepter of the Shifting Sands - a very difficult task that could only be solved by a server's top guild back when the questline was added. After the war effort was finished and the army of the Alliance and the Horde arrived in Silithus, the Scepter of the Shifting Sands could be used on the Scarab Gong. Doing so resulted in the opening of Ahn'Qiraj. The first player to bang the Scarab Gong on each server would be rewarded with the Scarab Lord title (in Burning Crusade, the title will not be available in Classic!) and the Black Qiraji Resonating Crystal mount. Anyone else who followed them within 10 hours was rewarded with the title as well.\n\nAlthough it is still possible to complete the questline for the Scepter of the Shifting Sands after the gates have been opened on your server, doing so will not reward neither the Black Qiraji Resonating Crystal nor the Scarab Lord title.",
+	[-1000179] = "The Scourge Invasion was a world event in Patch 1.11 and again during the Wrath of the Lich King Pre-Patch during 3.0.1 that heralded the opening of Naxxramas, the citadel of the dreaded Kel'Thuzad.\n\nSeveral regions of Azeroth came under attack by Scourge forces. Members of the Argent Dawn organized a worldwide counter to the Scourge invasion, keeping an eye out for any necropolis sightings and passing on their information to all adventurers willing to aid them in their struggle.\n\nWith each victory against the Scourge, the defense grows stronger. As more and more invasion attempts are beaten back by the defenders, the Argent Dawn will be able to bestow increasingly more powerful blessings upon those fighting the invaders. If the mortal races focus on clearing the Scourge camps all over the world that have sprung up beneath each necropolis, perhaps the invasion can effectively be halted or even repelled. Those who wish to take up arms against the undead invaders should speak with a representative of the Argent Dawn to learn what regions need help and how the defense is holding up.",
+	[-1000180] = "The Silithyst Must Flow is the name of the world PvP event in Silithus, where players of both factions must try and secure as much Silithyst as possible. Silithyst is a red crystalline dust that reaches the surface through geysers exclusive to the Silithus desert. Both the Alliance and the Horde have taken an interest in this new substance, and researchers on both sides have discovered unique and valuable properties in the dust. The Horde and Alliance camps in the region have both been outfitted with turn-in stations where players can unload the Silithyst they collect.",
+	[-1000208] = "These were only available through the 2006 iCoke Promotion (China Only)",
+	[-1000209] = "This section is for miscellaneous promotions that took place in the real world or something to do with account management.",
 }) do a[key] = value; end
 
 local a = L.HEADER_LORE;
@@ -253,9 +383,9 @@ for key,value in pairs({
 	[-1000142] = "Bibliothek",
 	[-1000143] = "Waffenkammer",
 	[-1000144] = "Kathedrale",
-	[-1000156] = "Sonnenwendfest",
-	[-1000164] = "Anglerwettbewerb im Schlingendorntal",
-	[-1000170] = "Das Szepter der Sandstürme",
+	[-1000164] = "Sonnenwendfest",
+	[-1000169] = "Anglerwettbewerb im Schlingendorntal",
+	[-1000178] = "Das Szepter der Sandstürme",
 }) do a[key] = value; end
 end
 
@@ -263,9 +393,9 @@ if simplifiedLocale == "es" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000132] = "Los Cuatro Jinetes",
-	[-1000156] = "Festival del Fuego del Solsticio de Verano",
-	[-1000164] = "Gran espectáculo de pesca de Tuercespina",
-	[-1000170] = "El cetro del Mar de Dunas",
+	[-1000164] = "Festival del Fuego del Solsticio de Verano",
+	[-1000169] = "Gran espectáculo de pesca de Tuercespina",
+	[-1000178] = "El cetro del Mar de Dunas",
 }) do a[key] = value; end
 end
 
@@ -286,11 +416,11 @@ for key,value in pairs({
 	[-1000143] = "Armurerie",
 	[-1000144] = "Cathédrale",
 	[-1000147] = "Défenseurs Atal'ai",
-	[-1000156] = "Fête du Feu du solstice d’été",
-	[-1000164] = "Concours de pêche de Strangleronce",
-	[-1000168] = "Effort de guerre d’Ahn'Qiraj",
-	[-1000170] = "Le Sceptre des Sables changeants",
-	[-1000183] = "Edition Collector",
+	[-1000164] = "Fête du Feu du solstice d’été",
+	[-1000169] = "Concours de pêche de Strangleronce",
+	[-1000176] = "Effort de guerre d’Ahn'Qiraj",
+	[-1000178] = "Le Sceptre des Sables changeants",
+	[-1000191] = "Edition Collector",
 }) do a[key] = value; end
 end
 
@@ -298,9 +428,9 @@ if simplifiedLocale == "it" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000132] = "I Cavalieri dell'Apocalisse",
-	[-1000156] = "Fuochi di Mezza Estate",
-	[-1000164] = "Gara di Pesca a Rovotorto",
-	[-1000170] = "Scettro delle Sabbie Mutevoli",
+	[-1000164] = "Fuochi di Mezza Estate",
+	[-1000169] = "Gara di Pesca a Rovotorto",
+	[-1000178] = "Scettro delle Sabbie Mutevoli",
 }) do a[key] = value; end
 end
 
@@ -308,9 +438,9 @@ if simplifiedLocale == "ko" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000132] = "4인 기사단",
-	[-1000156] = "한여름 불꽃축제",
-	[-1000164] = "가시덤불 골짜기 낚시왕 선발대회",
-	[-1000170] = "흐르는 모래의 홀",
+	[-1000164] = "한여름 불꽃축제",
+	[-1000169] = "가시덤불 골짜기 낚시왕 선발대회",
+	[-1000178] = "흐르는 모래의 홀",
 }) do a[key] = value; end
 end
 
@@ -318,9 +448,9 @@ if simplifiedLocale == "pt" then
 a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000132] = "Os Quatro Cavaleiros",
-	[-1000156] = "Festival do Fogo do Solstício",
-	[-1000164] = "Festerê de Pesca da Selva do Espinhaço",
-	[-1000170] = "Cetro das Areias Cambiantes",
+	[-1000164] = "Festival do Fogo do Solstício",
+	[-1000169] = "Festerê de Pesca da Selva do Espinhaço",
+	[-1000178] = "Cetro das Areias Cambiantes",
 }) do a[key] = value; end
 end
 
@@ -347,12 +477,12 @@ for key,value in pairs({
 	[-1000143] = "Оружейная",
 	[-1000144] = "Собор",
 	[-1000147] = "Защитники Атал'ай",
-	[-1000156] = "Огненный Солнцеворот",
-	[-1000164] = "Рыбомания Тернистой долины",
-	[-1000168] = "Война в Ан'Кираже",
-	[-1000170] = "Скипетр Зыбучих песков",
-	[-1000171] = "Вторжение Плети",
-	[-1000183] = "Коллекционное издание",
+	[-1000164] = "Огненный Солнцеворот",
+	[-1000169] = "Рыбомания Тернистой долины",
+	[-1000176] = "Война в Ан'Кираже",
+	[-1000178] = "Скипетр Зыбучих песков",
+	[-1000179] = "Вторжение Плети",
+	[-1000191] = "Коллекционное издание",
 }) do a[key] = value; end
 end
 
@@ -373,15 +503,15 @@ for key,value in pairs({
 	[-1000143] = "武器库",
 	[-1000144] = "修道院",
 	[-1000147] = "阿塔莱防御者",
-	[-1000156] = "仲夏火焰节",
-	[-1000164] = "荆棘谷钓鱼大赛",
-	[-1000168] = "安其拉之战捐献",
-	[-1000170] = "流沙节杖",
-	[-1000171] = "天灾入侵",
-	[-1000172] = "希利苏斯流沙",
-	[-1000182] = "暴雪嘉年华",
-	[-1000183] = "典藏版",
-	[-1000200] = "可口可乐活动",
+	[-1000164] = "仲夏火焰节",
+	[-1000169] = "荆棘谷钓鱼大赛",
+	[-1000176] = "安其拉之战捐献",
+	[-1000178] = "流沙节杖",
+	[-1000179] = "天灾入侵",
+	[-1000180] = "希利苏斯流沙",
+	[-1000190] = "暴雪嘉年华",
+	[-1000191] = "典藏版",
+	[-1000208] = "可口可乐活动",
 }) do a[key] = value; end
 end
 

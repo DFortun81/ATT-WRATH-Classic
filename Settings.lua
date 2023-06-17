@@ -575,7 +575,7 @@ settings.UpdateMode = function(self)
 		end
 		
 		if self:Get("Show:OnlyActiveEvents") then
-			app.RequireEventFilter = app.FilterItemClass_RequireEvent;
+			app.RequireEventFilter = app.Modules.Events.FilterIsEventActive;
 		else
 			app.RequireEventFilter = app.NoFilter;
 		end

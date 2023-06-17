@@ -7,15 +7,16 @@
 ## X-Interface: 20504
 ## X-Wago-ID: yQKyY5K7
 ## X-Curse-Project-ID: 267285
-## SavedVariables: ATTCharacterData, ATTAccountWideData, ATTClassicSettings, ATTClassicAD, ATTClassicAuctionData, ATTClassicDebugData
+## SavedVariables: ATTCharacterData, ATTAccountWideData, AllTheThingsSavedVariables, ATTClassicSettings, ATTClassicAD, ATTClassicAuctionData, ATTClassicDebugData
 ## SavedVariablesPerCharacter: ATTClassicSettingsPerCharacter
 lib\LibStub\LibStub.lua
 lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
 src\base.lua
+locales\en.lua
+src\Modules\Events.lua
 db\Presets.lua
 db\TBC\ObjectDB.lua
-locales\en.lua
 locales\en_auto.lua
 locales\es.lua
 locales\de.lua
