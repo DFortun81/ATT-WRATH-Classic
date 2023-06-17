@@ -7674,6 +7674,22 @@ end)();
 
 -- Loot Method + Threshold Lib
 (function()
+local lootMethods = {
+	--personalloot = "Personal Loot",
+	group = "Group Loot",
+	master = "Master Loot",
+};
+local lootMethodDescriptions = {
+	--personalloot = L["PERSONAL_LOOT_DESC"],
+	group = "Group loot, round-robin for normal items, rolling for special ones.\n\nClick twice to create a group automatically if you're by yourself.",
+	master = "Master looter, designated player distributes loot.\n\nClick twice to create a group automatically if you're by yourself.",
+};
+if UnitLootMethod then
+	for key,value in pairs(UnitLootMethod) do
+		lootMethods[key] = value.text;
+		lootMethodDescriptions[key] = value.tooltipText;
+	end
+end
 local lootMethodIcons = {
 	freeforall = "Interface\\Icons\\Ability_Rogue_Sprint",
 	group = "Interface\\Icons\\INV_Misc_Coin_01",
@@ -7712,13 +7728,13 @@ local fields = {
 		return "id";
 	end,
 	["text"] = function(t)
-		return UnitLootMethod[t.id].text;
+		return lootMethods[t.id];
 	end,
 	["icon"] = function(t)
 		return lootMethodIcons[t.id];
 	end,
 	["description"] = function(t)
-		return UnitLootMethod[t.id].tooltipText;
+		return lootMethodDescriptions[t.id];
 	end,
 	["visible"] = function(t)
 		return true;
@@ -11962,13 +11978,13 @@ local function UpdateWindow(self, force, fromTrigger)
 					if fromTrigger then app:PlayCompleteSound(); end
 					self.missingData = nil;
 				end
-				tinsert(self.rowData, {
-					["text"] = "No entries matching your filters were found.",
-					["description"] = "If you believe this was in error, try activating 'Debug Mode'. One of your filters may be restricting the visibility of the group.",
-					["collectible"] = 1,
-					["collected"] = 1,
-					["back"] = 0.7
-				});
+				if not self.ignoreNoEntries then
+					tinsert(self.rowData, {
+						["text"] = "No entries matching your filters were found.",
+						["description"] = "If you believe this was in error, try activating 'Debug Mode'. One of your filters may be restricting the visibility of the group.",
+						["back"] = 0.7
+					});
+				end
 			else
 				self.missingData = true;
 			end
@@ -14732,6 +14748,7 @@ app:GetWindow("RaidAssistant", UIParent, function(self)
 	if self:IsVisible() then
 		if not self.initialized then
 			self.initialized = true;
+			self.ignoreNoEntries = true;
 			
 			-- Loot Method Switching
 			local lootmethod, lootmasters, lootthreshold, raidassistant;
@@ -14755,7 +14772,7 @@ app:GetWindow("RaidAssistant", UIParent, function(self)
 							table.insert(data.g, option);
 						end
 					end
-					for key,value in pairs(UnitLootMethod) do
+					for key,value in pairs(UnitLootMethod or { group = 1, master = 2 }) do
 						table.insert(data.g, app.CreateLootMethod(key));
 					end
 				end,
@@ -14949,15 +14966,16 @@ app:GetWindow("RaidAssistant", UIParent, function(self)
 			self:Reset();
 		end
 		
+		-- Update the groups without forcing Debug Mode.
+		local visibilityFilter = app.VisibilityFilter;
+		app.VisibilityFilter = function() return true; end;
+		
 		-- Update the window and all of its row data
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
 		for i,g in ipairs(self.data.g) do
 			if g.OnUpdate then g.OnUpdate(g, self); end
 		end
 		
-		-- Update the groups without forcing Debug Mode.
-		local visibilityFilter = app.VisibilityFilter;
-		app.VisibilityFilter = app.ObjectVisibilityFilter;
 		BuildGroups(self.data, self.data.g);
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
