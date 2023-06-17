@@ -17050,7 +17050,6 @@ app.events.VARIABLES_LOADED = function()
 	local oldsettings = {};
 	for i,key in ipairs({
 		"AddonMessageProcessor",
-		"EventCache",
 		"GroupQuestsByGUID",
 		"LinkedAccounts",
 		"LocalizedCategoryNames",

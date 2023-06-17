@@ -68,9 +68,9 @@ for key,value in pairs({
 
 local a = L.EVENT_REMAPPING;
 for key,value in pairs({
+	[376] = 479,
 	[374] = 479,
 	[375] = 479,
-	[376] = 479,
 }) do a[key] = value; end
 
 local a = L.HEADER_ICONS;
