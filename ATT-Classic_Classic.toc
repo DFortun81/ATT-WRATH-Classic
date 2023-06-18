@@ -16,6 +16,7 @@ src\base.lua
 locales\en.lua
 src\Modules\Events.lua
 db\Presets.lua
+db\Classic\CategoryDB.lua
 db\Classic\ObjectDB.lua
 locales\en_auto.lua
 locales\es.lua
@@ -27,7 +28,6 @@ locales\pt.lua
 locales\ru.lua
 locales\cn.lua
 db\Classic\Custom Headers.lua
-db\Classic\CategoryDB.lua
 db\Classic\ExplorationDB.lua
 db\FlightPathDB.lua
 db\RaceDB.lua

@@ -4359,6 +4359,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 		if data then return data[1]; end
 		return -1;
 	end
+	app.BaseAchievement = app.BaseObjectFields(fields, "BaseAchievement");
 	app.CreateAchievement = function(id, t)
 		return setmetatable(constructor(id, t, "achievementID"), app.BaseAchievement);
 	end
@@ -4565,6 +4566,7 @@ else
 		if data then return data[1]; end
 		return -1;
 	end
+	app.BaseAchievement = app.BaseObjectFields(fields, "BaseAchievement");
 	
 	local fieldsWithSpellID = RawCloneData(fields);
 	fieldsWithSpellID.OnUpdate = fields.OnUpdateForSpellID;
@@ -4579,7 +4581,6 @@ else
 	end
 end
 
-app.BaseAchievement = app.BaseObjectFields(fields, "BaseAchievement");
 app.BaseAchievementCategory = app.BaseObjectFields(categoryFields, "BaseAchievementCategory");
 app.CreateAchievementCategory = function(id, t)
 	return setmetatable(constructor(id, t, "achievementCategoryID"), app.BaseAchievementCategory);
@@ -8531,26 +8532,22 @@ end
 app.BaseHeaderWithEvent = app.BaseObjectFields(fields, "BaseHeaderWithEvent");
 
 app.CreateNPC = function(id, t)
-	if t then
-		if id < 1 then
-			if rawget(t, "questID") then
-				return setmetatable(constructor(id, t, "headerID"), app.BaseHeaderWithQuest);
-			elseif L.HEADER_EVENTS[id] then
-				return setmetatable(constructor(id, t, "headerID"), app.BaseHeaderWithEvent);
-			else
-				return setmetatable(constructor(id, t, "headerID"), app.BaseHeader);
-			end
+	if id < 1 then
+		t = constructor(id, t, "headerID");
+		if L.HEADER_EVENTS[id] then
+			return setmetatable(t, app.BaseHeaderWithEvent);
+		elseif t.questID then
+			return setmetatable(t, app.BaseHeaderWithQuest);
 		else
-			if rawget(t, "questID") then
-				return setmetatable(constructor(id, t, "npcID"), app.BaseNPCWithQuest);
-			else
-				return setmetatable(constructor(id, t, "npcID"), app.BaseNPC);
-			end
+			return setmetatable(t, app.BaseHeader);
 		end
-	elseif id > 1 then
-		return setmetatable(constructor(id, t, "npcID"), app.BaseNPC);
 	else
-		return setmetatable(constructor(id, t, "headerID"), app.BaseHeader);
+		t = constructor(id, t, "npcID");
+		if t.questID then
+			return setmetatable(t, app.BaseNPCWithQuest);
+		else
+			return setmetatable(t, app.BaseNPC);
+		end
 	end
 end
 
