@@ -51,7 +51,7 @@ for key,value in pairs({
 	[-1000164] = 341,
 	[-1000165] = 181,
 	[-1000169] = 301,
-	[-1000190] = 1181,
+	[-1000185] = 1181,
 }) do a[key] = value; end
 
 local a = L.EVENT_REMAPPING;
@@ -64,186 +64,186 @@ for key,value in pairs({
 _.Modules.Events.SetEventInformation(181, {
 {
 	["start"] = 1650178800, ["end"] = 1650265200,
-	["startTime"] = {["month"] = 4,["monthDay"] = 17,["weekday"] = 1,["year"] = 2022,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 4,["monthDay"] = 18,["weekday"] = 2,["year"] = 2022,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 4,["monthDay"] = 17,["weekday"] = 1,["year"] = 2022},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 4,["monthDay"] = 18,["weekday"] = 2,["year"] = 2022}
 },
 {
 	["start"] = 1681714800, ["end"] = 1681801200,
-	["startTime"] = {["month"] = 4,["monthDay"] = 17,["weekday"] = 2,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 4,["monthDay"] = 18,["weekday"] = 3,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 4,["monthDay"] = 17,["weekday"] = 2,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 4,["monthDay"] = 18,["weekday"] = 3,["year"] = 2023}
 },
 {
 	["start"] = 1713337200, ["end"] = 1713423600,
-	["startTime"] = {["month"] = 4,["monthDay"] = 17,["weekday"] = 4,["year"] = 2024,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 4,["monthDay"] = 18,["weekday"] = 5,["year"] = 2024,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 4,["monthDay"] = 17,["weekday"] = 4,["year"] = 2024},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 4,["monthDay"] = 18,["weekday"] = 5,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(341, {
 {
 	["start"] = 1655830800, ["end"] = 1657040400,
-	["startTime"] = {["month"] = 6,["monthDay"] = 21,["weekday"] = 3,["year"] = 2022,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 7,["monthDay"] = 5,["weekday"] = 3,["year"] = 2022,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 6,["monthDay"] = 21,["weekday"] = 3,["year"] = 2022},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 7,["monthDay"] = 5,["weekday"] = 3,["year"] = 2022}
 },
 {
 	["start"] = 1687366800, ["end"] = 1688576400,
-	["startTime"] = {["month"] = 6,["monthDay"] = 21,["weekday"] = 4,["year"] = 2023,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 7,["monthDay"] = 5,["weekday"] = 4,["year"] = 2023,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 6,["monthDay"] = 21,["weekday"] = 4,["year"] = 2023},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 7,["monthDay"] = 5,["weekday"] = 4,["year"] = 2023}
 },
 {
 	["start"] = 1718989200, ["end"] = 1720198800,
-	["startTime"] = {["month"] = 6,["monthDay"] = 21,["weekday"] = 6,["year"] = 2024,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 7,["monthDay"] = 5,["weekday"] = 6,["year"] = 2024,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 6,["monthDay"] = 21,["weekday"] = 6,["year"] = 2024},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 7,["monthDay"] = 5,["weekday"] = 6,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(327, {
 {
 	["start"] = 1642698000, ["end"] = 1643907600,
-	["startTime"] = {["month"] = 1,["monthDay"] = 20,["weekday"] = 5,["year"] = 2022,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 2,["monthDay"] = 3,["weekday"] = 5,["year"] = 2022,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 1,["monthDay"] = 20,["weekday"] = 5,["year"] = 2022},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 3,["weekday"] = 5,["year"] = 2022}
 },
 {
 	["start"] = 1674234000, ["end"] = 1675443600,
-	["startTime"] = {["month"] = 1,["monthDay"] = 20,["weekday"] = 6,["year"] = 2023,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 2,["monthDay"] = 3,["weekday"] = 6,["year"] = 2023,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 1,["monthDay"] = 20,["weekday"] = 6,["year"] = 2023},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 3,["weekday"] = 6,["year"] = 2023}
 },
 {
 	["start"] = 1705770000, ["end"] = 1706979600,
-	["startTime"] = {["month"] = 1,["monthDay"] = 20,["weekday"] = 7,["year"] = 2024,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 2,["monthDay"] = 3,["weekday"] = 7,["year"] = 2024,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 1,["monthDay"] = 20,["weekday"] = 7,["year"] = 2024},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 3,["weekday"] = 7,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(423, {
 {
 	["start"] = 1644166800, ["end"] = 1645376400,
-	["startTime"] = {["month"] = 2,["monthDay"] = 6,["weekday"] = 1,["year"] = 2022,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 2,["monthDay"] = 20,["weekday"] = 1,["year"] = 2022,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 6,["weekday"] = 1,["year"] = 2022},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 20,["weekday"] = 1,["year"] = 2022}
 },
 {
 	["start"] = 1675702800, ["end"] = 1676912400,
-	["startTime"] = {["month"] = 2,["monthDay"] = 6,["weekday"] = 2,["year"] = 2023,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 2,["monthDay"] = 20,["weekday"] = 2,["year"] = 2023,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 6,["weekday"] = 2,["year"] = 2023},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 20,["weekday"] = 2,["year"] = 2023}
 },
 {
 	["start"] = 1707238800, ["end"] = 1708448400,
-	["startTime"] = {["month"] = 2,["monthDay"] = 6,["weekday"] = 3,["year"] = 2024,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 2,["monthDay"] = 20,["weekday"] = 3,["year"] = 2024,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 6,["weekday"] = 3,["year"] = 2024},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 2,["monthDay"] = 20,["weekday"] = 3,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(321, {
 {
 	["start"] = 1662483600, ["end"] = 1663088400,
-	["startTime"] = {["month"] = 9,["monthDay"] = 6,["weekday"] = 3,["year"] = 2022,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 9,["monthDay"] = 13,["weekday"] = 3,["year"] = 2022,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 9,["monthDay"] = 6,["weekday"] = 3,["year"] = 2022},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 9,["monthDay"] = 13,["weekday"] = 3,["year"] = 2022}
 },
 {
 	["start"] = 1694019600, ["end"] = 1694624400,
-	["startTime"] = {["month"] = 9,["monthDay"] = 6,["weekday"] = 4,["year"] = 2023,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 9,["monthDay"] = 13,["weekday"] = 4,["year"] = 2023,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 9,["monthDay"] = 6,["weekday"] = 4,["year"] = 2023},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 9,["monthDay"] = 13,["weekday"] = 4,["year"] = 2023}
 },
 {
 	["start"] = 1725642000, ["end"] = 1726246800,
-	["startTime"] = {["month"] = 9,["monthDay"] = 6,["weekday"] = 6,["year"] = 2024,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 9,["monthDay"] = 13,["weekday"] = 6,["year"] = 2024,["minute"] = 0,["hour"] = 10}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 9,["monthDay"] = 6,["weekday"] = 6,["year"] = 2024},
+	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 9,["monthDay"] = 13,["weekday"] = 6,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(324, {
 {
 	["start"] = 1666112400, ["end"] = 1667325600,
-	["startTime"] = {["month"] = 10,["monthDay"] = 18,["weekday"] = 3,["year"] = 2022,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 11,["monthDay"] = 1,["weekday"] = 3,["year"] = 2022,["minute"] = 0,["hour"] = 11}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 10,["monthDay"] = 18,["weekday"] = 3,["year"] = 2022},
+	["endTime"] = {["hour"] = 11,["minute"] = 0,["month"] = 11,["monthDay"] = 1,["weekday"] = 3,["year"] = 2022}
 },
 {
 	["start"] = 1697648400, ["end"] = 1698861600,
-	["startTime"] = {["month"] = 10,["monthDay"] = 18,["weekday"] = 4,["year"] = 2023,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 11,["monthDay"] = 1,["weekday"] = 4,["year"] = 2023,["minute"] = 0,["hour"] = 11}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 10,["monthDay"] = 18,["weekday"] = 4,["year"] = 2023},
+	["endTime"] = {["hour"] = 11,["minute"] = 0,["month"] = 11,["monthDay"] = 1,["weekday"] = 4,["year"] = 2023}
 },
 {
 	["start"] = 1729270800, ["end"] = 1730484000,
-	["startTime"] = {["month"] = 10,["monthDay"] = 18,["weekday"] = 6,["year"] = 2024,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 11,["monthDay"] = 1,["weekday"] = 6,["year"] = 2024,["minute"] = 0,["hour"] = 11}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 10,["monthDay"] = 18,["weekday"] = 6,["year"] = 2024},
+	["endTime"] = {["hour"] = 11,["minute"] = 0,["month"] = 11,["monthDay"] = 1,["weekday"] = 6,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(141, {
 {
 	["start"] = 1671210000, ["end"] = 1672664400,
-	["startTime"] = {["month"] = 12,["monthDay"] = 16,["weekday"] = 6,["year"] = 2022,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 1,["monthDay"] = 2,["weekday"] = 2,["year"] = 2023,["minute"] = 0,["hour"] = 6}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 12,["monthDay"] = 16,["weekday"] = 6,["year"] = 2022},
+	["endTime"] = {["hour"] = 6,["minute"] = 0,["month"] = 1,["monthDay"] = 2,["weekday"] = 2,["year"] = 2023}
 },
 {
 	["start"] = 1702746000, ["end"] = 1704200400,
-	["startTime"] = {["month"] = 12,["monthDay"] = 16,["weekday"] = 7,["year"] = 2023,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 1,["monthDay"] = 2,["weekday"] = 3,["year"] = 2024,["minute"] = 0,["hour"] = 6}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 12,["monthDay"] = 16,["weekday"] = 7,["year"] = 2023},
+	["endTime"] = {["hour"] = 6,["minute"] = 0,["month"] = 1,["monthDay"] = 2,["weekday"] = 3,["year"] = 2024}
 },
 {
 	["start"] = 1734368400, ["end"] = 1735822800,
-	["startTime"] = {["month"] = 12,["monthDay"] = 16,["weekday"] = 2,["year"] = 2024,["minute"] = 0,["hour"] = 10},
-	["endTime"] = {["month"] = 1,["monthDay"] = 2,["weekday"] = 5,["year"] = 2025,["minute"] = 0,["hour"] = 6}
+	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 12,["monthDay"] = 16,["weekday"] = 2,["year"] = 2024},
+	["endTime"] = {["hour"] = 6,["minute"] = 0,["month"] = 1,["monthDay"] = 2,["weekday"] = 5,["year"] = 2025}
 }});
 _.Modules.Events.SetEventInformation(201, {
 {
 	["start"] = 1651388400, ["end"] = 1651989600,
-	["startTime"] = {["month"] = 5,["monthDay"] = 1,["weekday"] = 1,["year"] = 2022,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 5,["monthDay"] = 7,["weekday"] = 7,["year"] = 2022,["minute"] = 59,["hour"] = 23}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 5,["monthDay"] = 1,["weekday"] = 1,["year"] = 2022},
+	["endTime"] = {["hour"] = 23,["minute"] = 59,["month"] = 5,["monthDay"] = 7,["weekday"] = 7,["year"] = 2022}
 },
 {
 	["start"] = 1682924400, ["end"] = 1683525600,
-	["startTime"] = {["month"] = 5,["monthDay"] = 1,["weekday"] = 2,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 5,["monthDay"] = 7,["weekday"] = 1,["year"] = 2023,["minute"] = 59,["hour"] = 23}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 5,["monthDay"] = 1,["weekday"] = 2,["year"] = 2023},
+	["endTime"] = {["hour"] = 23,["minute"] = 59,["month"] = 5,["monthDay"] = 7,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1714546800, ["end"] = 1715148000,
-	["startTime"] = {["month"] = 5,["monthDay"] = 1,["weekday"] = 4,["year"] = 2024,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 5,["monthDay"] = 7,["weekday"] = 3,["year"] = 2024,["minute"] = 59,["hour"] = 23}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 5,["monthDay"] = 1,["weekday"] = 4,["year"] = 2024},
+	["endTime"] = {["hour"] = 23,["minute"] = 59,["month"] = 5,["monthDay"] = 7,["weekday"] = 3,["year"] = 2024}
 }});
 _.Modules.Events.SetEventInformation(479, {
 {
 	["start"] = 1683442800, ["remappedID"] = 374, ["end"] = 1684047600,
-	["startTime"] = {["month"] = 5,["monthDay"] = 7,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 5,["monthDay"] = 14,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 5,["monthDay"] = 7,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 5,["monthDay"] = 14,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1685862000, ["remappedID"] = 375, ["end"] = 1686466800,
-	["startTime"] = {["month"] = 6,["monthDay"] = 4,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 6,["monthDay"] = 11,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 6,["monthDay"] = 4,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 6,["monthDay"] = 11,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1688281200, ["remappedID"] = 374, ["end"] = 1688886000,
-	["startTime"] = {["month"] = 7,["monthDay"] = 2,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 7,["monthDay"] = 9,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 7,["monthDay"] = 2,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 7,["monthDay"] = 9,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1691305200, ["remappedID"] = 375, ["end"] = 1691910000,
-	["startTime"] = {["month"] = 8,["monthDay"] = 6,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 8,["monthDay"] = 13,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 8,["monthDay"] = 6,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 8,["monthDay"] = 13,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1693724400, ["remappedID"] = 374, ["end"] = 1694329200,
-	["startTime"] = {["month"] = 9,["monthDay"] = 3,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 9,["monthDay"] = 10,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 9,["monthDay"] = 3,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 9,["monthDay"] = 10,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1696143600, ["remappedID"] = 375, ["end"] = 1696748400,
-	["startTime"] = {["month"] = 10,["monthDay"] = 1,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 10,["monthDay"] = 8,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 10,["monthDay"] = 1,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 10,["monthDay"] = 8,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1699167600, ["remappedID"] = 374, ["end"] = 1699772400,
-	["startTime"] = {["month"] = 11,["monthDay"] = 5,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 11,["monthDay"] = 12,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 11,["monthDay"] = 5,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 11,["monthDay"] = 12,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1701586800, ["remappedID"] = 375, ["end"] = 1702191600,
-	["startTime"] = {["month"] = 12,["monthDay"] = 3,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 12,["monthDay"] = 10,["weekday"] = 1,["year"] = 2023,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 12,["monthDay"] = 3,["weekday"] = 1,["year"] = 2023},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 12,["monthDay"] = 10,["weekday"] = 1,["year"] = 2023}
 },
 {
 	["start"] = 1704610800, ["remappedID"] = 374, ["end"] = 1705215600,
-	["startTime"] = {["month"] = 1,["monthDay"] = 7,["weekday"] = 1,["year"] = 2024,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 1,["monthDay"] = 14,["weekday"] = 1,["year"] = 2024,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 1,["monthDay"] = 7,["weekday"] = 1,["year"] = 2024},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 1,["monthDay"] = 14,["weekday"] = 1,["year"] = 2024}
 },
 {
 	["start"] = 1707030000, ["remappedID"] = 375, ["end"] = 1707634800,
-	["startTime"] = {["month"] = 2,["monthDay"] = 4,["weekday"] = 1,["year"] = 2024,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 2,["monthDay"] = 11,["weekday"] = 1,["year"] = 2024,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 2,["monthDay"] = 4,["weekday"] = 1,["year"] = 2024},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 2,["monthDay"] = 11,["weekday"] = 1,["year"] = 2024}
 },
 {
 	["start"] = 1709449200, ["remappedID"] = 374, ["end"] = 1710054000,
-	["startTime"] = {["month"] = 3,["monthDay"] = 3,["weekday"] = 1,["year"] = 2024,["minute"] = 0,["hour"] = 0},
-	["endTime"] = {["month"] = 3,["monthDay"] = 10,["weekday"] = 1,["year"] = 2024,["minute"] = 0,["hour"] = 0}
+	["startTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 3,["monthDay"] = 3,["weekday"] = 1,["year"] = 2024},
+	["endTime"] = {["hour"] = 0,["minute"] = 0,["month"] = 3,["monthDay"] = 10,["weekday"] = 1,["year"] = 2024}
 }});
 
 local a = L.HEADER_ICONS;
@@ -318,10 +318,10 @@ for key,value in pairs({
 	[-1000178] = "Interface/Icons/Inv_hammer_25",
 	[-1000179] = "Interface/Icons/inv_stone_02",
 	[-1000180] = "Interface/Icons/spell_holiday_tow_spicecloud",
-	[-1000190] = _.asset("Promotion_Blizzcon"),
-	[-1000191] = _.asset("Promotion_Collector"),
-	[-1000208] = "Interface/Icons/Inv_drink_10",
-	[-1000209] = "Interface/Icons/Spell_Misc_Drink",
+	[-1000185] = _.asset("Promotion_Blizzcon"),
+	[-1000186] = _.asset("Promotion_Collector"),
+	[-1000203] = "Interface/Icons/Inv_drink_10",
+	[-1000204] = "Interface/Icons/Spell_Misc_Drink",
 }) do a[key] = value; end
 
 local a = L.HEADER_NAMES;
@@ -396,10 +396,10 @@ for key,value in pairs({
 	[-1000178] = "The Scepter of the Shifting Sands",
 	[-1000179] = "The Scourge Invasion",
 	[-1000180] = "The Silithyst Must Flow",
-	[-1000190] = "BlizzCon",
-	[-1000191] = "Collector's Edition",
-	[-1000208] = "iCoke",
-	[-1000209] =  AUCTION_CATEGORY_MISCELLANEOUS,
+	[-1000185] = "BlizzCon",
+	[-1000186] = "Collector's Edition",
+	[-1000203] = "iCoke",
+	[-1000204] =  AUCTION_CATEGORY_MISCELLANEOUS,
 }) do a[key] = value; end
 
 local a = L.HEADER_DESCRIPTIONS;
@@ -416,8 +416,8 @@ for key,value in pairs({
 	[-1000178] = "In addition to all players on a realm working towards completing the War Effort, one player had to create the Scepter of the Shifting Sands - a very difficult task that could only be solved by a server's top guild back when the questline was added. After the war effort was finished and the army of the Alliance and the Horde arrived in Silithus, the Scepter of the Shifting Sands could be used on the Scarab Gong. Doing so resulted in the opening of Ahn'Qiraj. The first player to bang the Scarab Gong on each server would be rewarded with the Scarab Lord title (in Burning Crusade, the title will not be available in Classic!) and the Black Qiraji Resonating Crystal mount. Anyone else who followed them within 10 hours was rewarded with the title as well.\n\nAlthough it is still possible to complete the questline for the Scepter of the Shifting Sands after the gates have been opened on your server, doing so will not reward neither the Black Qiraji Resonating Crystal nor the Scarab Lord title.",
 	[-1000179] = "The Scourge Invasion was a world event in Patch 1.11 and again during the Wrath of the Lich King Pre-Patch during 3.0.1 that heralded the opening of Naxxramas, the citadel of the dreaded Kel'Thuzad.\n\nSeveral regions of Azeroth came under attack by Scourge forces. Members of the Argent Dawn organized a worldwide counter to the Scourge invasion, keeping an eye out for any necropolis sightings and passing on their information to all adventurers willing to aid them in their struggle.\n\nWith each victory against the Scourge, the defense grows stronger. As more and more invasion attempts are beaten back by the defenders, the Argent Dawn will be able to bestow increasingly more powerful blessings upon those fighting the invaders. If the mortal races focus on clearing the Scourge camps all over the world that have sprung up beneath each necropolis, perhaps the invasion can effectively be halted or even repelled. Those who wish to take up arms against the undead invaders should speak with a representative of the Argent Dawn to learn what regions need help and how the defense is holding up.",
 	[-1000180] = "The Silithyst Must Flow is the name of the world PvP event in Silithus, where players of both factions must try and secure as much Silithyst as possible. Silithyst is a red crystalline dust that reaches the surface through geysers exclusive to the Silithus desert. Both the Alliance and the Horde have taken an interest in this new substance, and researchers on both sides have discovered unique and valuable properties in the dust. The Horde and Alliance camps in the region have both been outfitted with turn-in stations where players can unload the Silithyst they collect.",
-	[-1000208] = "These were only available through the 2006 iCoke Promotion (China Only)",
-	[-1000209] = "This section is for miscellaneous promotions that took place in the real world or something to do with account management.",
+	[-1000203] = "These were only available through the 2006 iCoke Promotion (China Only)",
+	[-1000204] = "This section is for miscellaneous promotions that took place in the real world or something to do with account management.",
 }) do a[key] = value; end
 
 local a = L.HEADER_LORE;
@@ -475,7 +475,7 @@ for key,value in pairs({
 	[-1000169] = "Concours de pêche de Strangleronce",
 	[-1000176] = "Effort de guerre d’Ahn'Qiraj",
 	[-1000178] = "Le Sceptre des Sables changeants",
-	[-1000191] = "Edition Collector",
+	[-1000186] = "Edition Collector",
 }) do a[key] = value; end
 end
 
@@ -537,7 +537,7 @@ for key,value in pairs({
 	[-1000176] = "Война в Ан'Кираже",
 	[-1000178] = "Скипетр Зыбучих песков",
 	[-1000179] = "Вторжение Плети",
-	[-1000191] = "Коллекционное издание",
+	[-1000186] = "Коллекционное издание",
 }) do a[key] = value; end
 end
 
@@ -564,9 +564,9 @@ for key,value in pairs({
 	[-1000178] = "流沙节杖",
 	[-1000179] = "天灾入侵",
 	[-1000180] = "希利苏斯流沙",
-	[-1000190] = "暴雪嘉年华",
-	[-1000191] = "典藏版",
-	[-1000208] = "可口可乐活动",
+	[-1000185] = "暴雪嘉年华",
+	[-1000186] = "典藏版",
+	[-1000203] = "可口可乐活动",
 }) do a[key] = value; end
 end
 
