@@ -72,21 +72,10 @@ for key,value in pairs({
 
 -- Programmatic Event Scheduling
 _.Modules.Events.SetEventInformation(590, {
-{
-	["start"] = 1667754000, ["end"] = 1669827600,
-	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 11,["monthDay"] = 6,["weekday"] = 1,["year"] = 2022},
-	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 11,["monthDay"] = 30,["weekday"] = 4,["year"] = 2022}
-},
-{
-	["start"] = 1699290000, ["end"] = 1701363600,
-	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 11,["monthDay"] = 6,["weekday"] = 2,["year"] = 2023},
-	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 11,["monthDay"] = 30,["weekday"] = 5,["year"] = 2023}
-},
-{
-	["start"] = 1730912400, ["end"] = 1732986000,
-	["startTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 11,["monthDay"] = 6,["weekday"] = 4,["year"] = 2024},
-	["endTime"] = {["hour"] = 10,["minute"] = 0,["month"] = 11,["monthDay"] = 30,["weekday"] = 7,["year"] = 2024}
-}});
+	_.Modules.Events.CreateSchedule({["hour"]=10,["minute"]=0,["month"]=11,["monthDay"]=6,["weekday"]=1,["year"]=2022},{["hour"]=10,["minute"]=0,["month"]=11,["monthDay"]=30,["weekday"]=4,["year"]=2022}),
+	_.Modules.Events.CreateSchedule({["hour"]=10,["minute"]=0,["month"]=11,["monthDay"]=6,["weekday"]=2,["year"]=2023},{["hour"]=10,["minute"]=0,["month"]=11,["monthDay"]=30,["weekday"]=5,["year"]=2023}),
+	_.Modules.Events.CreateSchedule({["hour"]=10,["minute"]=0,["month"]=11,["monthDay"]=6,["weekday"]=4,["year"]=2024},{["hour"]=10,["minute"]=0,["month"]=11,["monthDay"]=30,["weekday"]=7,["year"]=2024})
+});
 
 local a = L.HEADER_ICONS;
 for key,value in pairs({
