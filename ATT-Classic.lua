@@ -6996,22 +6996,37 @@ app.ClearItemCache = function()
 end
 local collectibleAsCostForItem = function(t)
 	local id = t.itemID;
-	local results = app.SearchForField("itemIDAsCost", id, true);
+	local results = app.SearchForField("itemIDAsCost", id);
 	if results and #results > 0 then
+		local costTotal = 0;
 		if not t.parent or not t.parent.saved then
 			for _,ref in pairs(results) do
 				if ref.itemID ~= id and app.RecursiveGroupRequirementsFilter(ref) then
 					if ref.key == "instanceID" or ((ref.key == "difficultyID" or ref.key == "mapID" or ref.key == "headerID") and (ref.parent and GetRelativeValue(ref.parent, "instanceID"))) then
-						return app.CollectibleQuests;
-					elseif ref.collectible and not ref.collected then
-						return true;
-					elseif ref.total and ref.total > ref.progress then
-						return true;
+						if costTotal < 1 then	-- This is for Keys
+							costTotal = costTotal + 1;
+						end
+					elseif (ref.collectible and not ref.collected) or (ref.total and ref.total > ref.progress) then
+						if ref.cost then
+							for k,v in ipairs(ref.cost) do
+								if v[2] == id and v[1] == "i" then
+									costTotal = costTotal + (v[3] or 1);
+								end
+							end
+						end
+						if ref.providers then
+							for k,v in ipairs(ref.providers) do
+								if v[2] == id and v[1] == "i" then
+									costTotal = costTotal + 1;
+								end
+							end
+						end
 					end
 				end
 			end
 		end
-		return false;
+		t.costTotal = costTotal;
+		return costTotal > 0;
 	elseif t.simplemeta then
 		-- If no references to the item were used as a cost evaluation, then simplify the meta.
 		setmetatable(t, t.simplemeta);
@@ -7019,69 +7034,8 @@ local collectibleAsCostForItem = function(t)
 	end
 end;
 local collectedAsCostForItem = function(t)
-	local id, any, partial = t.itemID;
-	local results = app.SearchForField("itemIDAsCost", id, true);
-	if results and #results > 0 then
-		local itemCount = t.GetItemCount(t) or 0;
-		for _,ref in pairs(results) do
-			if ref.itemID ~= id and app.RecursiveDefaultClassAndRaceFilter(ref) then
-				if ref.key == "instanceID" or ((ref.key == "difficultyID" or ref.key == "mapID" or ref.key == "headerID") and (ref.parent and GetRelativeValue(ref.parent, "instanceID"))) then
-					if app.CollectibleQuests and itemCount == 0 then
-						return false;
-					end
-				elseif ref.collectible and ref.collected ~= 1 then
-					if ref.cost then
-						for k,v in ipairs(ref.cost) do
-							if v[2] == id and v[1] == "i" then
-								if itemCount >= (v[3] or 1) then
-									partial = true;
-								else
-									return false;
-								end
-							end
-						end
-					end
-					if ref.providers then
-						for k,v in ipairs(ref.providers) do
-							if v[2] == id and v[1] == "i" then
-								if itemCount > 0 and (not ref.objectiveID or ref.saved) then
-									partial = true;
-								else
-									return false;
-								end
-							end
-						end
-					end
-				elseif (ref.total and ref.total > 0 and not GetRelativeField(t, "parent", ref) and ref.progress < ref.total) then
-					if ref.cost then
-						for k,v in ipairs(ref.cost) do
-							if v[2] == id and v[1] == "i" then
-								if itemCount >= (v[3] or 1) then
-									partial = true;
-								else
-									return false;
-								end
-							end
-						end
-					end
-					if ref.providers then
-						for k,v in ipairs(ref.providers) do
-							if v[2] == id and v[1] == "i" then
-								if itemCount > 0 then
-									partial = true;
-								else
-									return false;
-								end
-							end
-						end
-					end
-				end
-				any = true;
-			end
-		end
-		if any then
-			return partial and 2 or 1;
-		end
+	if t.costTotal and t.costTotal > 0 then
+		return t.GetItemCount(t) >= t.costTotal;
 	end
 end;
 local collectibleAsQuest = function(t)
@@ -7203,7 +7157,7 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 	end,
 	collected = function(t)
 		if t.collectedAsCost == false then
-			return 0;
+			return;
 		end
 		return collectedAsRWP(t);
 	end,
