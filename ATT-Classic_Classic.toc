@@ -15,6 +15,7 @@ lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
 src\base.lua
 locales\en.lua
 src\Modules\Events.lua
+src\Modules\PVP Ranks.lua
 db\Presets.lua
 db\Classic\CategoryDB.lua
 db\Classic\ObjectDB.lua

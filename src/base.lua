@@ -207,15 +207,225 @@ function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
 end
 
 -- Lib Helpers
+local keysByPriority = {	-- Sorted by frequency of use.
+	"itemID",
+	"questID",
+	"npcID",
+	"creatureID",
+	"objectID",
+	"mapID",
+	"currencyID",
+	"spellID",
+	"classID",
+	"professionID",
+	"categoryID",
+	"illusionID",
+	"headerID",
+};
+local function GetKey(t)
+	for i,key in ipairs(keysByPriority) do
+		if rawget(t, key) then
+			return key;
+		end
+	end
+	for i,key in ipairs(keysByPriority) do
+		if t[key] then	-- This goes a bit deeper.
+			return key;
+		end
+	end
+end
+local DefaultFields = {
+	-- Cloned groups will not directly have a parent, but they will instead have a sourceParent, so fill in with that instead
+	["parent"] = function(t)
+		return t.sourceParent;
+	end,
+	-- A semi-unique string value that identifies this object based on its key, or text if it doesn't have one.
+	["hash"] = function(t)
+		local key = t.key or GetKey(t);
+		if key then
+			return key .. t[key];
+		end
+		return t.text;
+	end,
+	-- Default text should be a valid link or the name
+	["text"] = function(t)
+		return t.link or t.name;
+	end,
+	-- Whether or not something is repeatable.
+	["repeatable"] = function(t)
+		return t.isDaily or t.isWeekly or t.isMonthly or t.isYearly or t.isWorldQuest;
+	end,
+	["progress"] = function(t) return 0; end,
+	["total"] = function(t) return 0; end,
+};
+
+local constructor = function(id, t, typeID)
+	if t then
+		if not t.g and t[1] then
+			return { g=t, [typeID]=id };
+		else
+			t[typeID] = id;
+			return t;
+		end
+	else
+		return {[typeID] = id};
+	end
+end
+
 -- Creates a Base Object Table which will evaluate the provided set of 'fields' (each field value being a keyed function)
-app.BaseObjectFields = function(fields)
+app.BaseObjectFields = function(fields, className)
+	if not className then
+		print("A Class Name must be declared when using BaseObjectFields");
+	end
+	local class = { __type = function() return className; end };
+	if fields then
+		for key,method in pairs(fields) do
+			class[key] = method;
+		end
+	end
+	
+	-- Inject the default fields into the class
+	for key,method in pairs(DefaultFields) do
+		if not rawget(class, key) then
+			class[key] = method;
+		end
+	end
 	return {
-	__index = function(t, key)
-		_cache = rawget(fields, key);
-		return _cache and _cache(t);
+		__index = function(t, key)
+			_cache = rawget(class, key);
+			return _cache and _cache(t);
+		end
+	};
+	--[[
+	return {
+		__index = function(t, key)
+			_cache = rawget(fields, key);
+			return _cache and _cache(t);
+		end
+	};
+	]]--
+end
+app.BaseClass = app.BaseObjectFields(nil, "BaseClass");
+
+app.CreateClass = function(className, classKey, fields, ...)
+	-- Validate arguments
+	if not className then
+		print("A Class Name must be declared when using CreateClass");
+	end
+	if not classKey then
+		print("A Class Key must be declared when using CreateClass");
+	end
+	if not fields then
+		print("Fields must be declared when using CreateClass");
+	end
+	
+	-- Ensure that a key field exists!
+	if not fields.key then
+		fields.key = function() return classKey; end;
+	end
+	
+	-- If this object supports collectibleAsCost, that means it needs a way to fallback to a version of itself without any cost evaluations should it detect that it doesn't use it anywhere.
+	if fields.collectibleAsCost then
+		local simpleclass = {};
+		for key,method in pairs(fields) do
+			simpleclass[key] = method;
+		end
+		simpleclass.collectibleAsCost = function(t) return false; end;
+		simpleclass.collectedAsCost = nil;
+		local simplemeta = app.BaseObjectFields(simpleclass, "Simple" .. className);
+		fields.simplemeta = function(t) return simplemeta; end;
+	end
+	
+	local args = { ... };
+	local total = #args;
+	if total > 0 then
+		local conditionals = {};
+		for i=1,total,3 do
+			local class = args[i + 1];
+			table.insert(conditionals, args[i + 2]);
+			if class then
+				for key,method in pairs(fields) do
+					if not rawget(class, key) then
+						class[key] = method;
+					end
+				end
+				if class.collectibleAsCost then
+					local simpleclass = {};
+					for key,method in pairs(class) do
+						simpleclass[key] = method;
+					end
+					simpleclass.collectibleAsCost = function(t) return false; end;
+					simpleclass.collectedAsCost = nil;
+					local simplemeta = app.BaseObjectFields(simpleclass, "Simple" .. className .. args[i]);
+					class.simplemeta = function(t) return simplemeta; end;
+				end
+				table.insert(conditionals, app.BaseObjectFields(class, className .. args[i]));
+			else
+				table.insert(conditionals, {});
+			end
+		end
+		total = #conditionals;
+		fields.conditionals = conditionals;
+		local Class = app.BaseObjectFields(fields, className);
+		return function(id, t)
+			if t then
+				t = constructor(id, t, classKey);
+				for i=1,total,2 do
+					if conditionals[i](t) then
+						return setmetatable(t, conditionals[i + 1]);
+					end
+				end
+			else
+				t = constructor(id, t, classKey);
+			end
+			return setmetatable(t, Class);
+		end, Class;
+	else
+		local Class = app.BaseObjectFields(fields, className);
+		return function(id, t)
+			return setmetatable(constructor(id, t, classKey), Class);
+		end, Class;
+	end
+end
+
+--[[
+-- Proof of Concept with Class Conditionals
+local fields = {
+	["name"] = function(t)
+		return "Loki";
+	end,
+	["OnTest"] = function()
+		return function(t)
+			print(t.name .. " (" .. t.__type .. "): I'm a god!");
+		end
+	end,
+};
+local fieldsWithArgs = {
+	OnTest = function()
+		return function(t)
+			print(t.name .. " (" .. t.__type .. "): I'm a variant!");
+		end
 	end
 };
+local fieldsWithFeeling = {
+	OnTest = function()
+		return function(t)
+			print(t.name .. " (" .. t.__type .. "): I'm a variant... with feeling!");
+		end
+	end
+};
+app.CreateExample = app.CreateClass("Example", "exampleID", fields,
+	"WithArgs", fieldsWithArgs, (function(t) return t.args; end),
+	"WithFeeling", fieldsWithFeeling, (function(t) return t.feeling; end));
+
+for i,instance in ipairs({
+	app.CreateExample(1),
+	app.CreateExample(2, { name = "Alligator Loki", args = "I'm a Crocodile!" }),
+	app.CreateExample(3, { name = "Sylvie", feeling = "Pretty Neat" }),
+}) do
+	instance.OnTest(instance);
 end
+]]--
 
 -- Define Modules
 app.Modules = {};

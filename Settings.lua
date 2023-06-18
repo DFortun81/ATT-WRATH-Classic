@@ -515,13 +515,15 @@ settings.UpdateMode = function(self)
 		app.CollectibleIllusions = true;
 		app.CollectibleLoot = true;
 		app.CollectibleMounts = true;
-		app.CollectiblePVPRanks = true;
 		app.CollectibleQuests = true;
 		app.CollectibleRecipes = true;
 		app.CollectibleReputations = true;
 		app.CollectibleRWP = true;
 		app.CollectibleTitles = true;
 		app.CollectibleToys = true;
+		
+		-- Modules
+		app.Modules.PVPRanks.SetCollectible(true);
 	else
 		app.VisibilityFilter = app.ObjectVisibilityFilter;
 		app.GroupFilter = app.FilterItemClass;
@@ -548,13 +550,15 @@ settings.UpdateMode = function(self)
 		app.CollectibleIllusions = self:Get("Thing:Illusions");
 		app.CollectibleLoot = self:Get("Thing:Loot");
 		app.CollectibleMounts = self:Get("Thing:Mounts");
-		app.CollectiblePVPRanks = self:Get("Thing:PVPRanks");
 		app.CollectibleQuests = self:Get("Thing:Quests");
 		app.CollectibleRecipes = self:Get("Thing:Recipes");
 		app.CollectibleReputations = self:Get("Thing:Reputations");
 		app.CollectibleRWP = self:Get("Thing:RWP");
 		app.CollectibleTitles = self:Get("Thing:Titles");
 		app.CollectibleToys = self:Get("Thing:Toys");
+		
+		-- Modules
+		app.Modules.PVPRanks.SetCollectible(self:Get("Thing:PVPRanks"));
 
 		if self:Get("AccountMode") then
 			app.ItemTypeFilter = app.NoFilter;
