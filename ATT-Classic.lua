@@ -4073,7 +4073,7 @@ local function RefreshSaves()
 	end
 	
 	-- Mark that we're done now.
-	app:UpdateWindows(nil, true);
+	app:UpdateWindows(false, false);
 end
 local function RefreshSkills()
 	-- Store Skill Data
@@ -13400,7 +13400,13 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 				end
 			end
 		end
+		
+		local lastMapID = -1;
 		self.SetMapID = function(self, mapID)
+			if self.mapID == lastMapID then
+				return;
+			end
+			lastMapID = self.mapID;
 			self.mapID = mapID;
 			self:SetVisible(true);
 			self:Update();
@@ -13572,7 +13578,14 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 				
 				-- Check to see completion...
 				BuildGroups(self.data, self.data.g);
+				
+				self.data.progress = 0;
+				self.data.total = 0;
+				self.data.back = 1;
+				self.data.indent = 0;
 				UpdateGroups(self.data, self.data.g);
+				self.data.visible = true;
+				UpdateWindow(self, false, false);
 			end
 			
 			-- If we don't have any map data on this area, report it to the chat window.
@@ -13600,7 +13613,6 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 		end
 		local function OpenMiniList(id, show)
 			-- Determine whether or not to forcibly reshow the mini list.
-			local self = app:GetWindow("CurrentInstance");
 			if not self:IsVisible() then
 				if app.Settings:GetTooltipSetting("Auto:MiniList") then
 					if not self.openedOnLogin and not show then
@@ -13646,7 +13658,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 			OpenMiniList(mapID);
 		end
 		local function RefreshLocation()
-			if app.Settings:GetTooltipSetting("Auto:MiniList") or app:GetWindow("CurrentInstance"):IsVisible() then
+			if app.Settings:GetTooltipSetting("Auto:MiniList") or self:IsVisible() then
 				StartCoroutine("RefreshLocation", RefreshLocationCoroutine);
 			end
 		end
@@ -13663,7 +13675,6 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 		app.RefreshLocation = RefreshLocation;
 		self:SetScript("OnEvent", function(self, e, ...)
 			RefreshLocation();
-			self:Update(true, true);
 		end);
 		self:RegisterEvent("ZONE_CHANGED");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
@@ -13673,14 +13684,9 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 		if self.mapID ~= self.displayedMapID then
 			self.displayedMapID = self.mapID;
 			self:Rebuild();
+		else
+			UpdateWindow(self, false, fromTrigger);
 		end
-		self.data.progress = 0;
-		self.data.total = 0;
-		self.data.back = 1;
-		self.data.indent = 0;
-		UpdateGroups(self.data, self.data.g);
-		self.data.visible = true;
-		UpdateWindow(self, true, fromTrigger);
 	end
 end);
 app:GetWindow("Dailies", UIParent, function(self)
@@ -16639,7 +16645,6 @@ app.events.VARIABLES_LOADED = function()
 	app:RegisterEvent("QUEST_WATCH_UPDATE");
 	app:RegisterEvent("CRITERIA_UPDATE");
 	StartCoroutine("RefreshSaves", RefreshSaves);
-	app:RefreshDataCompletely();
 	app:RefreshLocation();
 	
 	if GroupBulletinBoard_Addon then
