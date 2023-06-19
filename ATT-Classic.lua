@@ -4147,7 +4147,6 @@ local function RefreshCollections()
 		end
 		
 		RefreshSkills();
-		app:GetDataCache();
 		app:RefreshDataCompletely();
 		app.print("Done refreshing collection.");
 	end);
@@ -9764,9 +9763,9 @@ local function MinimapButtonOnEnter(self)
 		GameTooltip:AddDoubleLine(left, right, 1, 1, 1);
 		GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1);
 		GameTooltipIcon:SetSize(72,72);
-		GameTooltipIcon.icon:SetTexture(reference.preview or reference.icon);
 		GameTooltipIcon:ClearAllPoints();
 		GameTooltipIcon:SetPoint("TOPRIGHT", GameTooltip, "TOPLEFT", 0, 0);
+		GameTooltipIcon.icon:SetTexture(reference.preview or reference.icon);
 		local texcoord = reference.texcoord;
 		if texcoord then
 			GameTooltipIcon.icon:SetTexCoord(texcoord[1], texcoord[2], texcoord[3], texcoord[4]);
@@ -11865,7 +11864,7 @@ function app:GetDataCache()
 		-- Now build the hidden "Unsorted" Window's Data
 		local unsortedData = {
 			text = L["TITLE"],
-			title = "Unsorted",
+			title = "Unsorted" .. DESCRIPTION_SEPARATOR .. app.Version,
 			icon = app.asset("logo_32x32"),
 			preview = app.asset("Discord_2_128"),
 			description = "This data hasn't been implemented yet.",
@@ -12547,7 +12546,7 @@ function app:GetDataCache()
 		
 		-- Build Unsorted as well!
 		BuildGroups(unsortedData, unsortedData.g);
-		CacheFields(unsortedData);
+		--CacheFields(unsortedData);
 		app:GetWindow("Unsorted").data = unsortedData;
 		
 		-- All future calls to this function will return the root data.
@@ -12577,7 +12576,6 @@ function app:RefreshData(fromTrigger)
 		-- Send an Update to the Windows to Rebuild their Row Data
 		if app.forceFullDataRefresh then
 			app.forceFullDataRefresh = nil;
-			app:GetDataCache();
 			if app.RefreshAchievementCollection then
 				app.RefreshAchievementCollection();
 			end
