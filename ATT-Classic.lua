@@ -3619,24 +3619,6 @@ local function AttachTooltip(self)
 					self:Show();
 					return true;
 				end
-				
-				-- Addons Menu?
-				if numLines == 2 then
-					local leftSide = _G[self:GetName() .. "TextLeft1"];
-					if leftSide and leftSide:GetText() and strsplit(" ", leftSide:GetText()) == appName then
-						self:ClearLines();
-						local reference = app:GetDataCache();
-						if reference then
-							local left, right = strsplit(DESCRIPTION_SEPARATOR, reference.title);
-							self:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
-							self:AddDoubleLine(left, right, 1, 1, 1);
-							self:AddLine(reference.description, 0.4, 0.8, 1, 1);
-						else
-							self:AddDoubleLine(L["TITLE"], "Click to load addon.", 1, 1, 1);
-						end
-						return true;
-					end
-				end
 			end
 		end
 	end
