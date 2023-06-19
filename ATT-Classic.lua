@@ -3623,12 +3623,17 @@ local function AttachTooltip(self)
 				-- Addons Menu?
 				if numLines == 2 then
 					local leftSide = _G[self:GetName() .. "TextLeft1"];
-					if leftSide and leftSide:GetText() == "ATT-Classic" then
-						local reference = app:GetDataCache();
+					if leftSide and leftSide:GetText() and strsplit(" ", leftSide:GetText()) == "ATT-Classic" then
 						self:ClearLines();
-						self:AddDoubleLine(L["TITLE"], GetProgressColorText(reference.progress, reference.total), 1, 1, 1);
-						self:AddDoubleLine(app.Settings:GetModeString(), app.GetNumberOfItemsUntilNextPercentage(reference.progress, reference.total), 1, 1, 1);
-						self:AddLine(reference.description, 0.4, 0.8, 1, 1);
+						local reference = app:GetDataCache();
+						if reference then
+							local left, right = strsplit(DESCRIPTION_SEPARATOR, reference.title);
+							self:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
+							self:AddDoubleLine(left, right, 1, 1, 1);
+							self:AddLine(reference.description, 0.4, 0.8, 1, 1);
+						else
+							self:AddDoubleLine(L["TITLE"], "Click to load addon.", 1, 1, 1);
+						end
 						return true;
 					end
 				end
@@ -9750,25 +9755,31 @@ local function MinimapButtonOnClick(self, button)
 	end
 end
 local function MinimapButtonOnEnter(self)
-	local reference = app:GetDataCache();
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT");
 	GameTooltip:ClearLines();
-	GameTooltip:AddDoubleLine(L["TITLE"], GetProgressColorText(reference.progress, reference.total));
-	GameTooltip:AddDoubleLine(app.Settings:GetModeString(), app.GetNumberOfItemsUntilNextPercentage(reference.progress, reference.total), 1, 1, 1);
-	GameTooltip:AddLine(L["DESCRIPTION"], 0.4, 0.8, 1, 1);
+	local reference = app:GetDataCache();
+	if reference then
+		local left, right = strsplit(DESCRIPTION_SEPARATOR, reference.title);
+		GameTooltip:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
+		GameTooltip:AddDoubleLine(left, right, 1, 1, 1);
+		GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1);
+		GameTooltipIcon:SetSize(72,72);
+		GameTooltipIcon.icon:SetTexture(reference.preview or reference.icon);
+		GameTooltipIcon:ClearAllPoints();
+		GameTooltipIcon:SetPoint("TOPRIGHT", GameTooltip, "TOPLEFT", 0, 0);
+		local texcoord = reference.texcoord;
+		if texcoord then
+			GameTooltipIcon.icon:SetTexCoord(texcoord[1], texcoord[2], texcoord[3], texcoord[4]);
+		else
+			GameTooltipIcon.icon:SetTexCoord(0, 1, 0, 1);
+		end
+		GameTooltipIcon:Show();
+	else
+		GameTooltip:AddDoubleLine(L["TITLE"], "Click to load addon.", 1, 1, 1);
+		GameTooltipIcon:Hide();
+	end
 	GameTooltip:AddLine(L["MINIMAP_MOUSEOVER_TEXT"], 1, 1, 1);
 	GameTooltip:Show();
-	GameTooltipIcon:SetSize(72,72);
-	GameTooltipIcon.icon:SetTexture(reference.preview or reference.icon);
-	GameTooltipIcon:ClearAllPoints();
-	GameTooltipIcon:SetPoint("TOPRIGHT", GameTooltip, "TOPLEFT", 0, 0);
-	local texcoord = reference.texcoord;
-	if texcoord then
-		GameTooltipIcon.icon:SetTexCoord(texcoord[1], texcoord[2], texcoord[3], texcoord[4]);
-	else
-		GameTooltipIcon.icon:SetTexCoord(0, 1, 0, 1);
-	end
-	GameTooltipIcon:Show();
 end
 local function MinimapButtonOnLeave()
 	GameTooltip:Hide();
@@ -10785,7 +10796,7 @@ local function RowOnEnter(self)
 		if title then
 			local left, right = strsplit(DESCRIPTION_SEPARATOR, title);
 			if right then
-				GameTooltip:AddDoubleLine(left, right);
+				GameTooltip:AddDoubleLine(left, right, 1, 1, 1);
 			else
 				GameTooltip:AddLine(title, 1, 1, 1);
 			end
@@ -11536,33 +11547,34 @@ function app:UpdateWindowColors()
 	end
 end
 function app:GetDataCache()
-	-- Update the Row Data by filtering raw data
-	local allData = app:GetWindow("Prime").data;
-	if not allData or not allData.total and app.Categories then
-		allData = setmetatable({}, {
+	if app.Categories then
+		local rootData = setmetatable({
+			text = L["TITLE"],
+			icon = app.asset("logo_32x32"),
+			preview = app.asset("Discord_2_128"),
+			description = L["DESCRIPTION"],
+			font = "GameFontNormalLarge",
+			expanded = true,
+			visible = true,
+			progress = 0,
+			total = 0,
+			g = {},
+		}, {
 			__index = function(t, key)
 				if key == "title" then
 					return app.Settings:GetModeString() .. DESCRIPTION_SEPARATOR .. app.GetNumberOfItemsUntilNextPercentage(t.progress, t.total);
+				elseif key == "progressText" then
+					return GetProgressColorText(t.progress, t.total);
 				else
 					-- Something that isn't dynamic.
 					return table[key];
 				end
 			end
 		});
-		allData.expanded = true;
-		allData.icon = app.asset("logo_32x32");
-		allData.preview = app.asset("Discord_2_128");
-		allData.text = L["TITLE"];
-		allData.description = L["DESCRIPTION"];
-		allData.visible = true;
-		allData.font = "GameFontNormalLarge";
-		allData.progress = 0;
-		allData.total = 0;
-		local g, db = {};
-		allData.g = g;
+		local g = rootData.g;
 		
 		-- Dungeons & Raids
-		db = {};
+		local db = {};
 		db.text = GROUP_FINDER;
 		db.icon = app.asset("Category_D&R");
 		db.g = app.Categories.Instances;
@@ -11849,59 +11861,22 @@ function app:GetDataCache()
 		table.insert(g, db);
 		]]--
 		
-		-- The Main Window's Data
-		BuildGroups(allData, allData.g);
-		app:GetWindow("Prime").data = allData;
-		CacheFields(allData);
-		
-		-- Determine how many tierID instances could be found
-		local tierCounter = 0;
-		for key,value in pairs(fieldCache["tierID"]) do
-			tierCounter = tierCounter + 1;
-		end
-		if tierCounter == 1 then
-			-- Purge the Tier Objects. This is the Classic Layout style.
-			for key,values in pairs(fieldCache["tierID"]) do
-				for j,value in ipairs(values) do
-					local parent = value.parent;
-					if parent then
-						-- Remove the tier object reference.
-						for i=#parent.g,1,-1 do
-							if parent.g[i] == value then
-								table.remove(parent.g, i);
-								break;
-							end
-						end
-						
-						-- Feed the children to its parent.
-						if value.g then
-							for i,child in ipairs(value.g) do
-								child.parent = parent;
-								table.insert(parent.g, child);
-							end
-						end
-					end
-				end
-			end
-			
-			-- Wipe out the tier object cache.
-			fieldCache["tierID"] = {};
-		end
 		
 		-- Now build the hidden "Unsorted" Window's Data
-		allData = {};
-		allData.expanded = true;
-		allData.icon = app.asset("logo_32x32");
-		allData.preview = app.asset("Discord_2_128");
-		allData.font = "GameFontNormalLarge";
-		allData.text = L["TITLE"];
-		allData.title = "Unsorted";
-		allData.description = "This data hasn't been implemented yet.";
-		allData.visible = true;
-		allData.progress = 0;
-		allData.total = 0;
-		local g, db = {};
-		allData.g = g;
+		local unsortedData = {
+			text = L["TITLE"],
+			title = "Unsorted",
+			icon = app.asset("logo_32x32"),
+			preview = app.asset("Discord_2_128"),
+			description = "This data hasn't been implemented yet.",
+			font = "GameFontNormalLarge",
+			expanded = true,
+			visible = true,
+			progress = 0,
+			total = 0,
+			g = {},
+		};
+		g = unsortedData.g;
 		
 		-- Never Implemented
 		if app.Categories.NeverImplemented then
@@ -11920,9 +11895,6 @@ function app:GetDataCache()
 			db.text = "Unsorted";
 			table.insert(g, db);
 		end
-		BuildGroups(allData, allData.g);
-		app:GetWindow("Unsorted").data = allData;
-		CacheFields(allData);
 		
 		local calculateAccessibility = function(source)
 			local score = 0;
@@ -12241,7 +12213,7 @@ function app:GetDataCache()
 			end
 			insertionSort(self.g, achievementSort, true);
 		end
-		achievementsCategory:OnUpdate();
+		--achievementsCategory:OnUpdate();
 		
 		-- Update Battle Pet data.
 		battlePetsCategory.OnUpdate = function(self)
@@ -12325,7 +12297,7 @@ function app:GetDataCache()
 				insertionSort(petType.g, sortByTextSafely);
 			end
 		end
-		battlePetsCategory:OnUpdate();
+		--battlePetsCategory:OnUpdate();
 		
 		-- Update Faction data.
 		factionsCategory.OnUpdate = function(self)
@@ -12349,7 +12321,7 @@ function app:GetDataCache()
 			end
 			insertionSort(self.g, sortByTextSafely);
 		end
-		factionsCategory:OnUpdate();
+		--factionsCategory:OnUpdate();
 		
 		-- Update Flight Path data.
 		app.CacheFlightPathData();
@@ -12383,7 +12355,7 @@ function app:GetDataCache()
 			end
 			insertionSort(self.g, sortByTextSafely);
 		end;
-		flightPathsCategory:OnUpdate();
+		--flightPathsCategory:OnUpdate();
 		
 		-- Update Mount data.
 		mountsCategory.OnUpdate = function(self)
@@ -12421,7 +12393,7 @@ function app:GetDataCache()
 				end
 			end
 		end
-		mountsCategory:OnUpdate();
+		--mountsCategory:OnUpdate();
 		
 		-- Update Title data.
 		titlesCategory.OnUpdate = function(self)
@@ -12477,7 +12449,7 @@ function app:GetDataCache()
 				end
 			end
 		end
-		titlesCategory:OnUpdate();
+		--titlesCategory:OnUpdate();
 		
 		-- Update Toy data.
 		toyCategory.OnUpdate = function(self)
@@ -12507,7 +12479,7 @@ function app:GetDataCache()
 				end
 			end
 		end
-		toyCategory:OnUpdate();
+		--toyCategory:OnUpdate();
 		
 		-- Check for Vendors missing Coordinates
 		--[[
@@ -12531,11 +12503,59 @@ function app:GetDataCache()
 			end
 		end
 		]]--
+		
+		
+		
+		-- Now that we have data, build the structure for the main window.
+		BuildGroups(rootData, rootData.g);
+		CacheFields(rootData);
+		app:GetWindow("Prime").data = rootData;
+		
+		-- Determine how many tierID instances could be found
+		local tierCounter = 0;
+		for key,value in pairs(fieldCache["tierID"]) do
+			tierCounter = tierCounter + 1;
+		end
+		if tierCounter == 1 then
+			-- Purge the Tier Objects. This is the Classic Layout style.
+			for key,values in pairs(fieldCache["tierID"]) do
+				for j,value in ipairs(values) do
+					local parent = value.parent;
+					if parent then
+						-- Remove the tier object reference.
+						for i=#parent.g,1,-1 do
+							if parent.g[i] == value then
+								table.remove(parent.g, i);
+								break;
+							end
+						end
+						
+						-- Feed the children to its parent.
+						if value.g then
+							for i,child in ipairs(value.g) do
+								child.parent = parent;
+								table.insert(parent.g, child);
+							end
+						end
+					end
+				end
+			end
+			
+			-- Wipe out the tier object cache.
+			fieldCache["tierID"] = {};
+		end
+		
+		-- Build Unsorted as well!
+		BuildGroups(unsortedData, unsortedData.g);
+		CacheFields(unsortedData);
+		app:GetWindow("Unsorted").data = unsortedData;
+		
+		-- All future calls to this function will return the root data.
+		app.GetDataCache = function()
+			return rootData;
+		end
+		return rootData;
 	end
-	app.GetDataCache = function()
-		return app:GetWindow("Prime").data;
-	end
-	return allData;
 end
 function app:RefreshData(fromTrigger)
 	app.countdown = app.countdown or 0;
