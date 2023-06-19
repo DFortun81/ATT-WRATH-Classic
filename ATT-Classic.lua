@@ -8120,16 +8120,16 @@ app.NPCDisplayIDFromID = NPCDisplayIDFromID;
 
 -- NPC & Title Name Harvesting Lib (https://us.battle.net/forums/en/wow/topic/20758497390?page=1#post-4, Thanks Gello!)
 local NPCTitlesFromID = {};
-local NPCHarvester = CreateFrame("GameTooltip", "ATTCNPCHarvester", UIParent, "GameTooltipTemplate");
+local ATTCNPCHarvester = CreateFrame("GameTooltip", "ATTCNPCHarvester", UIParent, "GameTooltipTemplate");
 local NPCNameFromID = setmetatable({}, { __index = function(t, id)
 	if id > 0 then
-		NPCHarvester:SetOwner(UIParent,"ANCHOR_NONE")
-		NPCHarvester:SetHyperlink(format("unit:Creature-0-0-0-0-%d-0000000000",id))
+		ATTCNPCHarvester:SetOwner(UIParent,"ANCHOR_NONE")
+		ATTCNPCHarvester:SetHyperlink(format("unit:Creature-0-0-0-0-%d-0000000000",id))
 		local title = ATTCNPCHarvesterTextLeft1:GetText();
-		if title and NPCHarvester:NumLines() > 2 then
+		if title and ATTCNPCHarvester:NumLines() > 2 then
 			rawset(NPCTitlesFromID, id, ATTCNPCHarvesterTextLeft2:GetText());
 		end
-		NPCHarvester:Hide();
+		ATTCNPCHarvester:Hide();
 		if title and title ~= RETRIEVING_DATA then
 			rawset(t, id, title);
 			return title;
@@ -15814,8 +15814,8 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 							
 							if craftType ~= "none" then
 								-- Attempt to harvest the item associated with this craft.
-								GameTooltip.SetCraftSpell(NPCHarvester, craftIndex);
-								local link, craftedItemID = select(2, NPCHarvester:GetItem());
+								GameTooltip.SetCraftSpell(ATTCNPCHarvester, craftIndex);
+								local link, craftedItemID = select(2, ATTCNPCHarvester:GetItem());
 								if link then craftedItemID = GetItemInfoInstant(link); end
 								
 								-- Cache the Reagents used to make this item.
