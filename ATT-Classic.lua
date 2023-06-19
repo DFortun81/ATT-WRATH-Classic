@@ -11884,6 +11884,7 @@ function app:GetDataCache()
 			db.g = app.Categories.NeverImplemented;
 			db.text = "Never Implemented";
 			table.insert(g, db);
+			CacheFields(db);
 		end
 		
 		-- Unsorted
@@ -12546,7 +12547,6 @@ function app:GetDataCache()
 		
 		-- Build Unsorted as well!
 		BuildGroups(unsortedData, unsortedData.g);
-		--CacheFields(unsortedData);
 		app:GetWindow("Unsorted").data = unsortedData;
 		
 		-- All future calls to this function will return the root data.
