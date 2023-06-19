@@ -5,10 +5,11 @@
 --------------------------------------------------------------------------------
 -- This is a hidden frame that intercepts all of the event notifications that we have registered for.
 local name, app = ...;
+local assetRootPath = "Interface\\Addons\\" .. name .. "\\assets\\";
 function app:GetName() return name; end
 _G["ATTC"] = app;
 app.asset = function(path)
-	return "Interface\\Addons\\ATT-Classic\\assets\\" .. path;
+	return assetRootPath .. path;
 end
 
 -- Create an Event Processor.

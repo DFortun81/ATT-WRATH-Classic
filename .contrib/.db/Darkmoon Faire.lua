@@ -98,7 +98,7 @@ root("Holidays", applyevent(EVENTS.DARKMOON_FAIRE, n(DARKMOON_FAIRE_HEADER, {	--
 	["groups"] = {
 		n(FACTIONS, {
 			faction(909, {	-- Darkmoon Faire
-				["icon"] = asset("Event_dmf"),
+				["icon"] = [[~_.asset("Event_dmf")]],
 				["OnTooltip"] = OnTooltipForDarkmoonFaire,
 			}),
 		}),
