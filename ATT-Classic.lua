@@ -782,20 +782,18 @@ local function BuildSourceTextForTSM(group, l)
 	end
 	return L["TITLE"];
 end
-local function CloneData(data)
-	local clone = setmetatable({}, getmetatable(data));
-	for key,value in pairs(data) do
-		rawset(clone, key, value);
-	end
-	if data.g then
-		clone.g = {};
-		for i,group in ipairs(data.g) do
-			local child = CloneData(group);
+local function CloneReference(group)
+	local clone = {};
+	if group.g then
+		local g = {};
+		for i,group in ipairs(group.g) do
+			local child = CloneReference(group);
 			child.parent = clone;
-			tinsert(clone.g, child);
+			tinsert(g, child);
 		end
+		clone.g = g;
 	end
-	return clone;
+	return setmetatable(clone, { __index = group });
 end
 local function RawCloneData(data)
 	local clone = {};
@@ -1686,7 +1684,7 @@ ResolveSymbolicLink = function(o)
 						for k,s in ipairs(cache) do
 							local ref = ResolveSymbolicLink(s);
 							if ref then
-								local cs = CloneData(s);
+								local cs = CloneReference(s);
 								if not cs.g then cs.g = {}; end
 								for i,m in ipairs(ref) do
 									table.insert(cs.g, m);
@@ -9930,7 +9928,7 @@ function app:CreateMiniListForGroup(group, retried)
 				end
 			end
 			
-			local mainQuest = CloneData(group);
+			local mainQuest = CloneReference(group);
 			if group.parent then mainQuest.sourceParent = group.parent; end
 			if mainQuest.sym then
 				mainQuest.collectible = true;
@@ -9963,7 +9961,7 @@ function app:CreateMiniListForGroup(group, retried)
 					for i=1,#searchResults,1 do
 						local searchResult = searchResults[i];
 						if searchResult.questID == questID and searchResult.sourceQuests then
-							searchResult = CloneData(searchResult);
+							searchResult = CloneReference(searchResult);
 							searchResult.collectible = true;
 							searchResult.g = g;
 							mainQuest = searchResult;
@@ -10002,7 +10000,7 @@ function app:CreateMiniListForGroup(group, retried)
 								end
 							end
 							if found then
-								sourceQuest = CloneData(found);
+								sourceQuest = CloneReference(found);
 								sourceQuest.collectible = true;
 								sourceQuest.visible = true;
 								sourceQuest.hideText = true;
@@ -10111,7 +10109,7 @@ function app:CreateMiniListForGroup(group, retried)
 				["hideText"] = true
 			};
 		elseif group.sym then
-			popout.data = CloneData(group);
+			popout.data = CloneReference(group);
 			popout.data.collectible = true;
 			popout.data.visible = true;
 			popout.data.progress = 0;
@@ -10144,7 +10142,7 @@ function app:CreateMiniListForGroup(group, retried)
 		end
 		
 		-- Clone the data and then insert it into the Raw Data table.
-		popout.data = CloneData(popout.data);
+		popout.data = CloneReference(popout.data);
 		popout.data.hideText = true;
 		popout.data.visible = true;
 		popout.data.indent = 0;
@@ -10159,7 +10157,7 @@ function app:CreateMiniListForGroup(group, retried)
 					local searchResult = searchResults[i];
 					if searchResult.achievementID == achievementID and searchResult.criteriaID then
 						if not popout.data.g then popout.data.g = {}; end
-						MergeObject(popout.data.g, CloneData(searchResult));
+						MergeObject(popout.data.g, CloneReference(searchResult));
 					end
 				end
 			end
@@ -10261,7 +10259,7 @@ function app:CreateMiniListForGroup(group, retried)
 						costItem = app.CreateItem(c[2]);
 					end
 					if costItem then
-						costItem = CloneData(costItem);
+						costItem = CloneReference(costItem);
 						costItem.visible = true;
 						costItem.OnUpdate = app.AlwaysShowUpdate;
 						MergeObject(costGroup.g, costItem);
@@ -12700,7 +12698,7 @@ function app:BuildFlatSearchFilteredResponse(groups, filter, t)
 	if groups then
 		for i,group in ipairs(groups) do
 			if filter(group) then
-				tinsert(t, CloneData(group));
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				app:BuildFlatSearchFilteredResponse(group.g, filter, t);
 			end
@@ -12712,7 +12710,7 @@ function app:BuildFlatSearchResponse(groups, field, value, t)
 		for i,group in ipairs(groups) do
 			local v = group[field];
 			if v and (v == value or (field == "requireSkill" and app.SpellIDToSkillID[app.SpecializationSpellIDs[v] or 0] == value)) then
-				tinsert(t, CloneData(group));
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				app:BuildFlatSearchResponse(group.g, field, value, t);
 			end
@@ -12723,7 +12721,7 @@ function app:BuildFlatSearchResponseForField(groups, field, t)
 	if groups then
 		for i,group in ipairs(groups) do
 			if group[field] then
-				tinsert(t, CloneData(group));
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				app:BuildFlatSearchResponseForField(group.g, field, t);
 			end
@@ -12736,7 +12734,7 @@ function app:BuildSearchFilteredResponse(groups, filter)
 		for i,group in ipairs(groups) do
 			if filter(group) then
 				if not t then t = {}; end
-				tinsert(t, CloneData(group));
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				local response = app:BuildSearchFilteredResponse(group.g, filter);
 				if response then
@@ -12755,7 +12753,7 @@ function app:BuildSearchResponse(groups, field, value)
 			local v = group[field];
 			if v and (v == value or (field == "requireSkill" and app.SpellIDToSkillID[app.SpecializationSpellIDs[v] or 0] == value)) then
 				if not t then t = {}; end
-				tinsert(t, setmetatable({}, { __index = group }));	-- CloneData(group)
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				local response = app:BuildSearchResponse(group.g, field, value);
 				if response then
@@ -12773,7 +12771,7 @@ function app:BuildSearchResponseForField(groups, field)
 		for i,group in ipairs(groups) do
 			if group[field] then
 				if not t then t = {}; end
-				tinsert(t, setmetatable({}, { __index = group }));	-- CloneData(group) 
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				local response = app:BuildSearchResponseForField(group.g, field);
 				if response then
@@ -13446,7 +13444,7 @@ app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
 						elseif key == "g" then
 							local g = {};
 							for i,o in ipairs(value) do
-								o = CloneData(o);
+								o = CloneReference(o);
 								ExpandGroupsRecursively(o, false);
 								tinsert(g, o);
 							end
@@ -15901,7 +15899,7 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 						if group.spellID == craftSkillID or group.spellID == tradeSkillID then
 							local cache = self.cache[group.spellID];
 							if not cache then
-								cache = CloneData(group);
+								cache = CloneReference(group);
 								self.cache[group.spellID] = cache;
 								local searchResults = ResolveSymbolicLink(group);
 								if searchResults and #searchResults then
@@ -17001,7 +16999,7 @@ app.events.ADDON_LOADED = function(addonName)
 						for itemID2,count in pairs(reagentCache[itemID][2]) do
 							local searchResults = app.SearchForField("itemID", itemID2);
 							if searchResults and #searchResults > 0 then
-								table.insert(entry.g, CloneData(searchResults[1]));
+								table.insert(entry.g, CloneReference(searchResults[1]));
 							end
 						end
 					else
