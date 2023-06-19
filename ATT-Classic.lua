@@ -11869,6 +11869,28 @@ function app:GetDataCache()
 			CacheFields(db);
 		end
 		
+		-- Hidden Achievement Triggers
+		if app.Categories.HiddenAchievementTriggers then
+			db = {};
+			db.g = app.Categories.HiddenAchievementTriggers;
+			db.name = "Hidden Achievement Triggers";
+			db.text = db.name;
+			db.description = "Hidden Achievement Triggers";
+			db._hqt = true;
+			tinsert(g, db);
+		end
+		
+		if app.Categories.HiddenQuestTriggers then
+			db = {};
+			db.g = app.Categories.HiddenQuestTriggers;
+			db.name = "Hidden Quest Triggers";--L["HIDDEN_QUEST_TRIGGERS"];
+			db.text = db.name;
+			db.description = "These quests are triggered by completing things in the game.";--L["HIDDEN_QUEST_TRIGGERS_DESC"];
+			db._hqt = true;
+			tinsert(g, db);
+			CacheFields(db);
+		end
+		
 		-- Unsorted
 		if app.Categories.Unsorted then
 			db = {};
@@ -11878,6 +11900,7 @@ function app:GetDataCache()
 			table.insert(g, db);
 		end
 		
+		-- Prepare Dynamic Categories
 		local calculateAccessibility = function(source)
 			local score = 0;
 			if source.nmr then
@@ -12029,8 +12052,6 @@ function app:GetDataCache()
 			MergeObject(header.g, inst);
 			return inst;
 		end
-		
-		-- Update Achievement data.
 		local function cacheAchievementData(self, categories, g)
 			if g then
 				for i,o in ipairs(g) do
@@ -12195,9 +12216,6 @@ function app:GetDataCache()
 			end
 			insertionSort(self.g, achievementSort, true);
 		end
-		--achievementsCategory:OnUpdate();
-		
-		-- Update Battle Pet data.
 		battlePetsCategory.OnUpdate = function(self)
 			local petTypes = {};
 			for i,petType in ipairs(self.g) do
@@ -12279,9 +12297,6 @@ function app:GetDataCache()
 				insertionSort(petType.g, sortByTextSafely);
 			end
 		end
-		--battlePetsCategory:OnUpdate();
-		
-		-- Update Faction data.
 		factionsCategory.OnUpdate = function(self)
 			for i,_ in pairs(fieldCache["factionID"]) do
 				if not self.factions[i] then
@@ -12303,10 +12318,6 @@ function app:GetDataCache()
 			end
 			insertionSort(self.g, sortByTextSafely);
 		end
-		--factionsCategory:OnUpdate();
-		
-		-- Update Flight Path data.
-		app.CacheFlightPathData();
 		flightPathsCategory.OnUpdate = function(self)
 			for i,_ in pairs(fieldCache.flightPathID) do
 				if not self.fps[i] then
@@ -12337,9 +12348,6 @@ function app:GetDataCache()
 			end
 			insertionSort(self.g, sortByTextSafely);
 		end;
-		--flightPathsCategory:OnUpdate();
-		
-		-- Update Mount data.
 		mountsCategory.OnUpdate = function(self)
 			local headers = {};
 			for i,header in ipairs(self.g) do
@@ -12375,9 +12383,6 @@ function app:GetDataCache()
 				end
 			end
 		end
-		--mountsCategory:OnUpdate();
-		
-		-- Update Title data.
 		titlesCategory.OnUpdate = function(self)
 			local headers = {};
 			for i,header in ipairs(self.g) do
@@ -12431,9 +12436,6 @@ function app:GetDataCache()
 				end
 			end
 		end
-		--titlesCategory:OnUpdate();
-		
-		-- Update Toy data.
 		toyCategory.OnUpdate = function(self)
 			local headers = {};
 			for i,header in ipairs(self.g) do
@@ -12461,32 +12463,6 @@ function app:GetDataCache()
 				end
 			end
 		end
-		--toyCategory:OnUpdate();
-		
-		-- Check for Vendors missing Coordinates
-		--[[
-		local searchResults = SearchForFieldContainer("creatureID");
-		if searchResults then
-			local missingCoordinates = {};
-			for npcID,_ in pairs(searchResults) do
-				for i,data in ipairs(_) do
-					if not data.coords and data.parent then
-						if data.parent.headerID == app.HeaderConstants.VENDORS or data.parent.headerID == app.HeaderConstants.RARES then 
-							-- If this is a rare or vendor with no coordinates
-							tinsert(missingCoordinates, npcID);
-							break;
-						end
-					end
-				end
-			end
-			insertionSort(missingCoordinates);
-			for i,npcID in ipairs(missingCoordinates) do
-				print("NPC ID " .. npcID .. " is missing coordinates.");
-			end
-		end
-		]]--
-		
-		
 		
 		-- Now that we have data, build the structure for the main window.
 		BuildGroups(rootData, rootData.g);
@@ -12530,6 +12506,31 @@ function app:GetDataCache()
 		-- Build Unsorted as well!
 		BuildGroups(unsortedData, unsortedData.g);
 		app:GetWindow("Unsorted").data = unsortedData;
+		app.CacheFlightPathData();
+		
+		
+		-- Check for Vendors missing Coordinates
+		--[[
+		local searchResults = SearchForFieldContainer("creatureID");
+		if searchResults then
+			local missingCoordinates = {};
+			for npcID,_ in pairs(searchResults) do
+				for i,data in ipairs(_) do
+					if not data.coords and data.parent then
+						if data.parent.headerID == app.HeaderConstants.VENDORS or data.parent.headerID == app.HeaderConstants.RARES then 
+							-- If this is a rare or vendor with no coordinates
+							tinsert(missingCoordinates, npcID);
+							break;
+						end
+					end
+				end
+			end
+			insertionSort(missingCoordinates);
+			for i,npcID in ipairs(missingCoordinates) do
+				print("NPC ID " .. npcID .. " is missing coordinates.");
+			end
+		end
+		]]--
 		
 		-- All future calls to this function will return the root data.
 		app.GetDataCache = function()
@@ -12754,7 +12755,7 @@ function app:BuildSearchResponse(groups, field, value)
 			local v = group[field];
 			if v and (v == value or (field == "requireSkill" and app.SpellIDToSkillID[app.SpecializationSpellIDs[v] or 0] == value)) then
 				if not t then t = {}; end
-				tinsert(t, CloneData(group));
+				tinsert(t, setmetatable({}, { __index = group }));	-- CloneData(group)
 			elseif group.g then
 				local response = app:BuildSearchResponse(group.g, field, value);
 				if response then
@@ -12772,7 +12773,7 @@ function app:BuildSearchResponseForField(groups, field)
 		for i,group in ipairs(groups) do
 			if group[field] then
 				if not t then t = {}; end
-				tinsert(t, CloneData(group));
+				tinsert(t, setmetatable({}, { __index = group }));	-- CloneData(group) 
 			elseif group.g then
 				local response = app:BuildSearchResponseForField(group.g, field);
 				if response then
