@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 --				Copyright 2017-2023 Dylan Fortune (Crieve-Sargeras)           --
 --------------------------------------------------------------------------------
-local app = select(2, ...);
+local appName, app = ...;
 local L = app.L;
 
 -- Cache information about the player.
@@ -3623,7 +3623,7 @@ local function AttachTooltip(self)
 				-- Addons Menu?
 				if numLines == 2 then
 					local leftSide = _G[self:GetName() .. "TextLeft1"];
-					if leftSide and leftSide:GetText() and strsplit(" ", leftSide:GetText()) == "ATT-Classic" then
+					if leftSide and leftSide:GetText() and strsplit(" ", leftSide:GetText()) == appName then
 						self:ClearLines();
 						local reference = app:GetDataCache();
 						if reference then
@@ -14940,7 +14940,7 @@ app:GetWindow("SoftReserves", UIParent, function(self)
 			local softReserves = {
 				['text'] = "Soft Reserves",
 				['icon'] = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
-				["description"] = "The soft reservation list submitted by your raid group. This is managed through the Master Looter, should they have ATT-Classic installed. If not, this feature will not function.\n\nML: Members of your raid without ATT-Classic installed can whisper you '!sr <itemlink>' or '!sr <itemID>' to Soft Reserve an item.",
+				["description"] = "The soft reservation list submitted by your raid group. This is managed through the Master Looter, should they have " .. appName .. " installed. If not, this feature will not function.\n\nML: Members of your raid without " .. appName .. " installed can whisper you '!sr <itemlink>' or '!sr <itemID>' to Soft Reserve an item.",
 				['visible'] = true, 
 				['expanded'] = true,
 				['back'] = 1,
@@ -16365,7 +16365,7 @@ app:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
 
 -- Define Event Behaviours
 app.events.VARIABLES_LOADED = function()
-	app.Version = GetAddOnMetadata("ATT-Classic", "Version");
+	app.Version = GetAddOnMetadata(appName, "Version");
 	ATTClassicAD = _G["ATTClassicAD"];	-- For account-wide data.
 	if not ATTClassicAD then
 		ATTClassicAD = { };

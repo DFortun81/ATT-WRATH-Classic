@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 --				Copyright 2017-2023 Dylan Fortune (Crieve-Sargeras)           --
 --------------------------------------------------------------------------------
-local app = select(2, ...);
+local appName, app = ...;
 local L = app.L;
 
 -- Binding Localizations
@@ -653,7 +653,7 @@ settings.title = f;
 f = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
 f:SetPoint("TOPRIGHT", settings, "TOPRIGHT", -8, -8);
 f:SetJustifyH("RIGHT");
-f:SetText("Crieve-Atiesh\nv" .. GetAddOnMetadata("ATT-Classic", "Version"));
+f:SetText("Crieve-Atiesh\nv" .. GetAddOnMetadata(appName, "Version"));
 f:Show();
 settings.version = f;
 
