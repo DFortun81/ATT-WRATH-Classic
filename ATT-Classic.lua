@@ -12494,15 +12494,44 @@ function app:RefreshDataQuietly(fromTrigger)
 	app.countdown = 30;
 	app:RefreshData(fromTrigger);
 end
-function app:GetWindow(suffix, parent, onUpdate)
+function app:GetWindow(suffix, settings)
 	local window = app.Windows[suffix];
-	if not window then
+	if not window and settings then
 		-- Create the window instance.
-		window = CreateFrame("FRAME", app:GetName() .. "-Window-" .. suffix, parent or UIParent, BackdropTemplateMixin and "BackdropTemplate");
+		window = CreateFrame("FRAME", app:GetName() .. "-Window-" .. suffix, settings.parent or UIParent, BackdropTemplateMixin and "BackdropTemplate");
 		app.Windows[suffix] = window;
 		window.Suffix = suffix;
 		window.Toggle = ToggleWindow;
-		window.Update = onUpdate or UpdateWindow;
+		local OnUpdate = settings.OnUpdate or UpdateWindow;
+		if settings.Silent then
+			--[[
+			window.Update = function(self, ...)
+				if self:IsVisible() then
+					print("UpdateWindow: " .. suffix, ...);
+					local lastUpdate = GetTimePreciseSec();
+					local result = OnUpdate(self, ...);
+					print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+					return result;
+				end
+			end
+			]]--
+			window.Update = function(self, ...)
+				if self:IsVisible() then
+					return OnUpdate(self, ...);
+				end
+			end
+		else
+			--[[
+			window.Update = function(self, ...)
+				print("UpdateWindow: " .. suffix, ...);
+				local lastUpdate = GetTimePreciseSec();
+				local result = OnUpdate(self, ...);
+				print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+				return result;
+			end
+			]]--
+			window.Update = OnUpdate;
+		end
 		window.SetVisible = SetWindowVisibility;
 		
 		if ATTClassicSettings then
@@ -12692,10 +12721,18 @@ function app:BuildSearchResponseForField(groups, field)
 end
 
 -- Create the Primary Collection Window (this allows you to save the size and location)
-app:GetWindow("Prime"):SetSize(425, 305);
-app:GetWindow("Unsorted");
-app:GetWindow("Attuned", UIParent, function(self)
-	if self:IsVisible() then
+app:GetWindow("Prime", {
+	parent = UIParent,
+	--Silent = true,
+}):SetSize(425, 305);
+app:GetWindow("Unsorted", {
+	parent = UIParent,
+	Silent = true,
+});
+app:GetWindow("Attuned", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			
@@ -13130,9 +13167,11 @@ app:GetWindow("Attuned", UIParent, function(self)
 		app.GroupFilter = groupFilter;
 		app.VisibilityFilter = visibilityFilter;
 	end
-end);
-app:GetWindow("Breadcrumbs", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("Breadcrumbs", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.dirty = true;
@@ -13186,9 +13225,11 @@ app:GetWindow("Breadcrumbs", UIParent, function(self)
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
 		UpdateWindow(self, true);
 	end
-end);
-app:GetWindow("CosmicInfuser", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("CosmicInfuser", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.data = {
@@ -13258,345 +13299,350 @@ app:GetWindow("CosmicInfuser", UIParent, function(self)
 		UpdateGroups(self.data, self.data.g);
 		UpdateWindow(self, true);
 	end
-end);
-app:GetWindow("CurrentInstance", UIParent, function(self, force, fromTrigger)
-	if not self.initialized then
-		self.initialized = true;
-		self.openedOnLogin = false;
-		self.data = app.CreateMap(946, {
-			['text'] = "Mini List",
-			['icon'] = "Interface\\Icons\\INV_Misc_Map06.blp", 
-			["description"] = "This list contains the relevant information for your current zone.",
-			['visible'] = true, 
-			['expanded'] = true,
-			['g'] = {
-				{
-					['text'] = "Update Location Now",
-					['icon'] = "Interface\\Icons\\INV_Misc_Map_01",
-					['description'] = "If you wish to forcibly refresh the data without changing zones, click this button now!",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						Push(self, "Rebuild", self.Rebuild);
-						return true;
-					end,
+});
+app:GetWindow("CurrentInstance", {
+	parent = UIParent,
+	OnUpdate = function(self, force, fromTrigger)
+		if not self.initialized then
+			self.initialized = true;
+			self.openedOnLogin = false;
+			self.data = app.CreateMap(946, {
+				['text'] = "Mini List",
+				['icon'] = "Interface\\Icons\\INV_Misc_Map06.blp", 
+				["description"] = "This list contains the relevant information for your current zone.",
+				['visible'] = true, 
+				['expanded'] = true,
+				['g'] = {
+					{
+						['text'] = "Update Location Now",
+						['icon'] = "Interface\\Icons\\INV_Misc_Map_01",
+						['description'] = "If you wish to forcibly refresh the data without changing zones, click this button now!",
+						['visible'] = true,
+						['OnClick'] = function(row, button)
+							Push(self, "Rebuild", self.Rebuild);
+							return true;
+						end,
+					},
 				},
-			},
-		});
-		local IsSameMap = function(data, results)
-			if data.mapID then
-				-- Exact same map?
-				if data.mapID == results.mapID then
-					return true;
-				end
-				
-				-- Does the result map have an array of associated maps and this map is in there?
-				if results.maps and contains(results.maps, data.mapID) then
-					return true;
-				end
-			end
-			if data.maps then
-				-- Does the old map data contain this map?
-				if contains(data.maps, results.mapID) then
-					return true;
-				end
-				
-				-- Does the result map have an array of associated maps and this map is in there?
-				if results.maps and containsAny(results.maps, data.maps) then
-					return true;
-				end
-			end
-		end
-		
-		local lastMapID = -1;
-		self.SetMapID = function(self, mapID)
-			if self.mapID == lastMapID then
-				return;
-			end
-			lastMapID = self.mapID;
-			self.mapID = mapID;
-			self:SetVisible(true);
-			self:Update();
-		end
-		self.Rebuild = function(self)
-			local results = SearchForField("mapID", self.mapID);
-			if results then
-				-- Simplify the returned groups
-				local groups = {};
-				local header = { mapID = self.mapID, g = groups };
-				local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
-				table.insert(groups, achievementsHeader);
-				local explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, { ["g"] = {} });
-				table.insert(groups, explorationHeader);
-				local factionsHeader = app.CreateNPC(app.HeaderConstants.FACTIONS, { ["g"] = {} });
-				table.insert(groups, factionsHeader);
-				local flightPathsHeader = app.CreateNPC(app.HeaderConstants.FLIGHT_PATHS, { ["g"] = {} });
-				table.insert(groups, flightPathsHeader);
-				local questsHeader = app.CreateNPC(app.HeaderConstants.QUESTS, { ["g"] = {} });
-				table.insert(groups, questsHeader);
-				local raresHeader = app.CreateNPC(app.HeaderConstants.RARES, { ["g"] = {} });
-				table.insert(groups, raresHeader);
-				local vendorsHeader = app.CreateNPC(app.HeaderConstants.VENDORS, { ["g"] = {} });
-				table.insert(groups, vendorsHeader);
-				local zoneDropsHeader = app.CreateNPC(app.HeaderConstants.ZONE_DROPS, { ["g"] = {} });
-				table.insert(groups, zoneDropsHeader);
-				for i, group in ipairs(results) do
-					local clone = {};
-					for key,value in pairs(group) do
-						if key == "maps" then
-							local maps = {};
-							for i,mapID in ipairs(value) do
-								tinsert(maps, mapID);
-							end
-							clone[key] = maps;
-						elseif key == "g" then
-							local g = {};
-							for i,o in ipairs(value) do
-								o = CloneReference(o);
-								ExpandGroupsRecursively(o, false);
-								tinsert(g, o);
-							end
-							clone[key] = g;
-						else
-							clone[key] = value;
-						end
+			});
+			local IsSameMap = function(data, results)
+				if data.mapID then
+					-- Exact same map?
+					if data.mapID == results.mapID then
+						return true;
 					end
-					local c = GetRelativeValue(group, "c");
-					if c then clone.c = c; end
-					local r = GetRelativeValue(group, "r");
-					if r then clone.r = r; end
-					setmetatable(clone, getmetatable(group));
 					
-					if group.key == "mapID" or group.key == "instanceID" then
-						header.key = group.key;
-						header[group.key] = group[group.key];
-						MergeObject({header}, clone);
-					elseif group.key == "npcID" then
-						if GetRelativeField(group, "headerID", app.HeaderConstants.VENDORS) or GetRelativeField(group, "headerID", -173) then	-- It's a Vendor. (or a timewaking vendor)
-							MergeObject(vendorsHeader.g, clone, 1);
-						elseif GetRelativeField(group, "headerID", app.HeaderConstants.QUESTS) then	-- It's a Quest.
-							MergeObject(questsHeader.g, clone, 1);
-						else
-							MergeObject(groups, clone);
+					-- Does the result map have an array of associated maps and this map is in there?
+					if results.maps and contains(results.maps, data.mapID) then
+						return true;
+					end
+				end
+				if data.maps then
+					-- Does the old map data contain this map?
+					if contains(data.maps, results.mapID) then
+						return true;
+					end
+					
+					-- Does the result map have an array of associated maps and this map is in there?
+					if results.maps and containsAny(results.maps, data.maps) then
+						return true;
+					end
+				end
+			end
+			
+			local lastMapID = -1;
+			self.SetMapID = function(self, mapID)
+				if self.mapID == lastMapID then
+					return;
+				end
+				lastMapID = self.mapID;
+				self.mapID = mapID;
+				self:SetVisible(true);
+				self:Update();
+			end
+			self.Rebuild = function(self)
+				local results = SearchForField("mapID", self.mapID);
+				if results then
+					-- Simplify the returned groups
+					local groups = {};
+					local header = { mapID = self.mapID, g = groups };
+					local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
+					table.insert(groups, achievementsHeader);
+					local explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, { ["g"] = {} });
+					table.insert(groups, explorationHeader);
+					local factionsHeader = app.CreateNPC(app.HeaderConstants.FACTIONS, { ["g"] = {} });
+					table.insert(groups, factionsHeader);
+					local flightPathsHeader = app.CreateNPC(app.HeaderConstants.FLIGHT_PATHS, { ["g"] = {} });
+					table.insert(groups, flightPathsHeader);
+					local questsHeader = app.CreateNPC(app.HeaderConstants.QUESTS, { ["g"] = {} });
+					table.insert(groups, questsHeader);
+					local raresHeader = app.CreateNPC(app.HeaderConstants.RARES, { ["g"] = {} });
+					table.insert(groups, raresHeader);
+					local vendorsHeader = app.CreateNPC(app.HeaderConstants.VENDORS, { ["g"] = {} });
+					table.insert(groups, vendorsHeader);
+					local zoneDropsHeader = app.CreateNPC(app.HeaderConstants.ZONE_DROPS, { ["g"] = {} });
+					table.insert(groups, zoneDropsHeader);
+					for i, group in ipairs(results) do
+						local clone = {};
+						for key,value in pairs(group) do
+							if key == "maps" then
+								local maps = {};
+								for i,mapID in ipairs(value) do
+									tinsert(maps, mapID);
+								end
+								clone[key] = maps;
+							elseif key == "g" then
+								local g = {};
+								for i,o in ipairs(value) do
+									o = CloneReference(o);
+									ExpandGroupsRecursively(o, false);
+									tinsert(g, o);
+								end
+								clone[key] = g;
+							else
+								clone[key] = value;
+							end
 						end
-					elseif group.key == "criteriaID" then
-						clone.achievementID = group.achievementID;
-						MergeObject(achievementsHeader.g, clone);
-					elseif group.key == "achievementID" then
-						MergeObject(achievementsHeader.g, clone);
-					elseif group.key == "questID" then
-						MergeObject(questsHeader.g, clone, 1);
-					elseif group.key == "factionID" then
-						MergeObject(factionsHeader.g, clone);
-					elseif group.key == "explorationID" then
-						MergeObject(explorationHeader.g, clone);
-					elseif group.key == "flightPathID" then
-						MergeObject(flightPathsHeader.g, clone);
-					elseif group.key == "itemID" then
-						if GetRelativeField(group, "headerID", app.HeaderConstants.ZONE_DROPS) then
-							MergeObject(zoneDropsHeader.g, clone);
-						else
-							local requireSkill = GetRelativeValue(group, "requireSkill");
-							if requireSkill then
-								clone = app.CreateProfession(requireSkill, { g = { clone } });
-								MergeObject(groups, clone);
+						local c = GetRelativeValue(group, "c");
+						if c then clone.c = c; end
+						local r = GetRelativeValue(group, "r");
+						if r then clone.r = r; end
+						setmetatable(clone, getmetatable(group));
+						
+						if group.key == "mapID" or group.key == "instanceID" then
+							header.key = group.key;
+							header[group.key] = group[group.key];
+							MergeObject({header}, clone);
+						elseif group.key == "npcID" then
+							if GetRelativeField(group, "headerID", app.HeaderConstants.VENDORS) or GetRelativeField(group, "headerID", -173) then	-- It's a Vendor. (or a timewaking vendor)
+								MergeObject(vendorsHeader.g, clone, 1);
+							elseif GetRelativeField(group, "headerID", app.HeaderConstants.QUESTS) then	-- It's a Quest.
+								MergeObject(questsHeader.g, clone, 1);
 							else
 								MergeObject(groups, clone);
 							end
-						end
-					elseif group.key == "headerID" then
-						if not GetRelativeValue(group, "instanceID") then
+						elseif group.key == "criteriaID" then
+							clone.achievementID = group.achievementID;
+							MergeObject(achievementsHeader.g, clone);
+						elseif group.key == "achievementID" then
+							MergeObject(achievementsHeader.g, clone);
+						elseif group.key == "questID" then
+							MergeObject(questsHeader.g, clone, 1);
+						elseif group.key == "factionID" then
+							MergeObject(factionsHeader.g, clone);
+						elseif group.key == "explorationID" then
+							MergeObject(explorationHeader.g, clone);
+						elseif group.key == "flightPathID" then
+							MergeObject(flightPathsHeader.g, clone);
+						elseif group.key == "itemID" then
+							if GetRelativeField(group, "headerID", app.HeaderConstants.ZONE_DROPS) then
+								MergeObject(zoneDropsHeader.g, clone);
+							else
+								local requireSkill = GetRelativeValue(group, "requireSkill");
+								if requireSkill then
+									clone = app.CreateProfession(requireSkill, { g = { clone } });
+									MergeObject(groups, clone);
+								else
+									MergeObject(groups, clone);
+								end
+							end
+						elseif group.key == "headerID" then
+							if not GetRelativeValue(group, "instanceID") then
+								MergeObject(groups, clone);
+							end
+						else
 							MergeObject(groups, clone);
 						end
+					end
+					
+					-- Swap out the map data for the header.
+					results = (header.key == "instanceID" and app.CreateInstance or app.CreateMap)(header.mapID, header);
+					
+					if IsSameMap(self.data, results) then
+						ReapplyExpand(self.data.g, results.g);
 					else
-						MergeObject(groups, clone);
+						ExpandGroupsRecursively(results, true);
 					end
-				end
-				
-				-- Swap out the map data for the header.
-				results = (header.key == "instanceID" and app.CreateInstance or app.CreateMap)(header.mapID, header);
-				
-				if IsSameMap(self.data, results) then
-					ReapplyExpand(self.data.g, results.g);
-				else
-					ExpandGroupsRecursively(results, true);
-				end
-				
-				for key,value in pairs(self.data) do
-					self.data[key] = nil;
-				end
-				for key,value in pairs(results) do
-					self.data[key] = value;
-				end
-				
-				self.data.e = nil;
-				self.data.u = nil;
-				self.data.mapID = self.mapID;
-				setmetatable(self.data,
-					self.data.classID and app.BaseCharacterClass
-					or app.BaseMap);
-				
-				-- Move all "isRaid" entries to the top of the list.
-				if results.g then
-					local bottom = {};
-					local top = {};
-					for i=#results.g,1,-1 do
-						local o = results.g[i];
-						if o.key == "factionID" then
-							table.remove(results.g, i);
-							MergeObject(factionsHeader.g, o, 1);
-						elseif o.key == "flightPathID" then
-							table.remove(results.g, i);
-							MergeObject(flightPathsHeader.g, o, 1);
-						elseif o.key == "questID" then
-							table.remove(results.g, i);
-							MergeObject(questsHeader.g, o, 1);
+					
+					for key,value in pairs(self.data) do
+						self.data[key] = nil;
+					end
+					for key,value in pairs(results) do
+						self.data[key] = value;
+					end
+					
+					self.data.e = nil;
+					self.data.u = nil;
+					self.data.mapID = self.mapID;
+					setmetatable(self.data,
+						self.data.classID and app.BaseCharacterClass
+						or app.BaseMap);
+					
+					-- Move all "isRaid" entries to the top of the list.
+					if results.g then
+						local bottom = {};
+						local top = {};
+						for i=#results.g,1,-1 do
+							local o = results.g[i];
+							if o.key == "factionID" then
+								table.remove(results.g, i);
+								MergeObject(factionsHeader.g, o, 1);
+							elseif o.key == "flightPathID" then
+								table.remove(results.g, i);
+								MergeObject(flightPathsHeader.g, o, 1);
+							elseif o.key == "questID" then
+								table.remove(results.g, i);
+								MergeObject(questsHeader.g, o, 1);
+							end
+						end
+						for i=#results.g,1,-1 do
+							local o = results.g[i];
+							if o.isRaid then
+								table.remove(results.g, i);
+								table.insert(top, o);
+							elseif o.g and #o.g < 1 and o.key == "headerID" then
+								table.remove(results.g, i);
+							end
+						end
+						for i,o in ipairs(top) do
+							table.insert(results.g, 1, o);
+						end
+						for i,o in ipairs(bottom) do
+							table.insert(results.g, o);
 						end
 					end
-					for i=#results.g,1,-1 do
-						local o = results.g[i];
-						if o.isRaid then
-							table.remove(results.g, i);
-							table.insert(top, o);
-						elseif o.g and #o.g < 1 and o.key == "headerID" then
-							table.remove(results.g, i);
-						end
-					end
-					for i,o in ipairs(top) do
-						table.insert(results.g, 1, o);
-					end
-					for i,o in ipairs(bottom) do
-						table.insert(results.g, o);
-					end
-				end
-				
-				local difficultyID = (IsInInstance() and select(3, GetInstanceInfo())) or (EJ_GetDifficulty and EJ_GetDifficulty()) or 0;
-				if difficultyID ~= 0 then
-					for _,row in ipairs(header.g) do
-						if row.difficultyID or row.difficulties then
-							if (row.difficultyID or -1) == difficultyID or (row.difficulties and containsValue(row.difficulties, difficultyID)) then
-								if not row.expanded then ExpandGroupsRecursively(row, true, true); expanded = true; end
-							elseif row.expanded then
-								ExpandGroupsRecursively(row, false, true);
+					
+					local difficultyID = (IsInInstance() and select(3, GetInstanceInfo())) or (EJ_GetDifficulty and EJ_GetDifficulty()) or 0;
+					if difficultyID ~= 0 then
+						for _,row in ipairs(header.g) do
+							if row.difficultyID or row.difficulties then
+								if (row.difficultyID or -1) == difficultyID or (row.difficulties and containsValue(row.difficulties, difficultyID)) then
+									if not row.expanded then ExpandGroupsRecursively(row, true, true); expanded = true; end
+								elseif row.expanded then
+									ExpandGroupsRecursively(row, false, true);
+								end
 							end
 						end
 					end
+					
+					-- Check to see completion...
+					BuildGroups(self.data, self.data.g);
+					
+					self.data.progress = 0;
+					self.data.total = 0;
+					self.data.back = 1;
+					self.data.indent = 0;
+					UpdateGroups(self.data, self.data.g);
+					self.data.visible = true;
+					UpdateWindow(self, false, false);
 				end
 				
-				-- Check to see completion...
-				BuildGroups(self.data, self.data.g);
-				
-				self.data.progress = 0;
-				self.data.total = 0;
-				self.data.back = 1;
-				self.data.indent = 0;
-				UpdateGroups(self.data, self.data.g);
-				self.data.visible = true;
-				UpdateWindow(self, false, false);
-			end
-			
-			-- If we don't have any map data on this area, report it to the chat window.
-			if not results then
-				local mapID = self.mapID;
-				print("No map found for this location ", app.GetMapName(mapID), " [", mapID, "]");
-				
-				local mapInfo = C_Map.GetMapInfo(mapID);
-				if mapInfo then
-					local mapPath = mapInfo.name or ("Map ID #" .. mapID);
-					mapID = mapInfo.parentMapID;
-					while mapID do
-						mapInfo = C_Map.GetMapInfo(mapID);
-						if mapInfo then
-							mapPath = (mapInfo.name or ("Map ID #" .. mapID)) .. " > " .. mapPath;
-							mapID = mapInfo.parentMapID;
-						else
-							break;
+				-- If we don't have any map data on this area, report it to the chat window.
+				if not results then
+					local mapID = self.mapID;
+					print("No map found for this location ", app.GetMapName(mapID), " [", mapID, "]");
+					
+					local mapInfo = C_Map.GetMapInfo(mapID);
+					if mapInfo then
+						local mapPath = mapInfo.name or ("Map ID #" .. mapID);
+						mapID = mapInfo.parentMapID;
+						while mapID do
+							mapInfo = C_Map.GetMapInfo(mapID);
+							if mapInfo then
+								mapPath = (mapInfo.name or ("Map ID #" .. mapID)) .. " > " .. mapPath;
+								mapID = mapInfo.parentMapID;
+							else
+								break;
+							end
 						end
+						print("Path: ", mapPath);
 					end
-					print("Path: ", mapPath);
+					print("Please report this to the ATT Discord! Thanks! ", app.Version);
 				end
-				print("Please report this to the ATT Discord! Thanks! ", app.Version);
 			end
-		end
-		local function OpenMiniList(id, show)
-			-- Determine whether or not to forcibly reshow the mini list.
-			if not self:IsVisible() then
-				if app.Settings:GetTooltipSetting("Auto:MiniList") then
-					if not self.openedOnLogin and not show then
-						self.openedOnLogin = true;
-						show = true;
+			local function OpenMiniList(id, show)
+				-- Determine whether or not to forcibly reshow the mini list.
+				if not self:IsVisible() then
+					if app.Settings:GetTooltipSetting("Auto:MiniList") then
+						if not self.openedOnLogin and not show then
+							self.openedOnLogin = true;
+							show = true;
+						end
+					else
+						self.openedOnLogin = false;
 					end
+					if show then self:Show(); end
 				else
-					self.openedOnLogin = false;
+					show = true;
 				end
-				if show then self:Show(); end
+				if self.mapID == id then
+					return; -- Haha JK BRO
+				end
+				
+				-- Cache that we're in the current map ID.
+				self.mapID = id;
+				self:Update();
+			end
+			local function OpenMiniListForCurrentZone()
+				OpenMiniList(app.GetCurrentMapID(), true);
+			end
+			local function RefreshLocationCoroutine()
+				-- Wait for a few moments for the map to update.
+				local waitTimer = 30;
+				while waitTimer > 0 do
+					coroutine.yield();
+					waitTimer = waitTimer - 1;
+				end
+				
+				-- While the player is in combat, wait for combat to end.
+				while InCombatLockdown() do coroutine.yield(); end
+				
+				-- Acquire the new map ID.
+				local mapID = app.GetCurrentMapID();
+				while not mapID or mapID < 0 do
+					coroutine.yield();
+					mapID = app.GetCurrentMapID();
+				end
+				app.CurrentMapID = mapID;
+				OpenMiniList(mapID);
+			end
+			local function RefreshLocation()
+				if app.Settings:GetTooltipSetting("Auto:MiniList") or self:IsVisible() then
+					StartCoroutine("RefreshLocation", RefreshLocationCoroutine);
+				end
+			end
+			local function ToggleMiniListForCurrentZone()
+				local self = app:GetWindow("CurrentInstance");
+				if self:IsVisible() then
+					self:Hide();
+				else
+					OpenMiniListForCurrentZone();
+				end
+			end
+			app.OpenMiniListForCurrentZone = OpenMiniListForCurrentZone;
+			app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
+			app.RefreshLocation = RefreshLocation;
+			self:SetScript("OnEvent", function(self, e, ...)
+				RefreshLocation();
+			end);
+			self:RegisterEvent("ZONE_CHANGED");
+			self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+		end
+		if self:IsVisible() then
+			-- Update the window and all of its row data
+			if self.mapID ~= self.displayedMapID then
+				self.displayedMapID = self.mapID;
+				self:Rebuild();
 			else
-				show = true;
+				UpdateWindow(self, false, fromTrigger);
 			end
-			if self.mapID == id then
-				return; -- Haha JK BRO
-			end
-			
-			-- Cache that we're in the current map ID.
-			self.mapID = id;
-			self:Update();
-		end
-		local function OpenMiniListForCurrentZone()
-			OpenMiniList(app.GetCurrentMapID(), true);
-		end
-		local function RefreshLocationCoroutine()
-			-- Wait for a few moments for the map to update.
-			local waitTimer = 30;
-			while waitTimer > 0 do
-				coroutine.yield();
-				waitTimer = waitTimer - 1;
-			end
-			
-			-- While the player is in combat, wait for combat to end.
-			while InCombatLockdown() do coroutine.yield(); end
-			
-			-- Acquire the new map ID.
-			local mapID = app.GetCurrentMapID();
-			while not mapID or mapID < 0 do
-				coroutine.yield();
-				mapID = app.GetCurrentMapID();
-			end
-			app.CurrentMapID = mapID;
-			OpenMiniList(mapID);
-		end
-		local function RefreshLocation()
-			if app.Settings:GetTooltipSetting("Auto:MiniList") or self:IsVisible() then
-				StartCoroutine("RefreshLocation", RefreshLocationCoroutine);
-			end
-		end
-		local function ToggleMiniListForCurrentZone()
-			local self = app:GetWindow("CurrentInstance");
-			if self:IsVisible() then
-				self:Hide();
-			else
-				OpenMiniListForCurrentZone();
-			end
-		end
-		app.OpenMiniListForCurrentZone = OpenMiniListForCurrentZone;
-		app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
-		app.RefreshLocation = RefreshLocation;
-		self:SetScript("OnEvent", function(self, e, ...)
-			RefreshLocation();
-		end);
-		self:RegisterEvent("ZONE_CHANGED");
-		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-	end
-	if self:IsVisible() then
-		-- Update the window and all of its row data
-		if self.mapID ~= self.displayedMapID then
-			self.displayedMapID = self.mapID;
-			self:Rebuild();
-		else
-			UpdateWindow(self, false, fromTrigger);
 		end
 	end
-end);
-app:GetWindow("Dailies", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("Dailies", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.dirty = true;
@@ -13663,270 +13709,275 @@ app:GetWindow("Dailies", UIParent, function(self)
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
 		UpdateWindow(self, true);
 	end
-end);
+});
 
 -- Uncomment this section if you need to enable Debugger:
 --[[
-app:GetWindow("Debugger", UIParent, function(self)
-	if not self.initialized then
-		self.initialized = true;
-		self.AddObject = function(self, info)
-			-- Bubble Up the Maps
-			local mapInfo;
-			local mapID = app.CurrentMapID;
-			if mapID then
-				local pos = C_Map.GetPlayerMapPosition(mapID, "player");
-				if pos then
-					local px, py = pos:GetXY();
-					info.coord = { px * 100, py * 100, mapID };
-				end
-				repeat
-					mapInfo = C_Map.GetMapInfo(mapID);
-					if mapInfo then
-						info = { ["mapID"] = mapInfo.mapID, ["g"] = { info } };
-						mapID = mapInfo.parentMapID
-					end
-				until not mapInfo or not mapID;
-			end
-			
-			MergeClone(self.data.g, info);
-			MergeObject(self.rawData, info);
-			self:Update();
-		end
-		self.data = {
-			['text'] = "Session History",
-			['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
-			["description"] = "This keeps a visual record of all of the quests, maps, loot, and vendors that you have come into contact with since the session was started.",
-			['visible'] = true, 
-			['expanded'] = true,
-			['back'] = 1,
-			['options'] = {
-				{
-					['text'] = "Clear History",
-					['icon'] = "Interface\\Icons\\Ability_Rogue_FeignDeath.blp", 
-					["description"] = "Click this to fully clear this window.\n\nNOTE: If you click this by accident, use the dynamic Restore Buttons that this generates to reapply the data that was cleared.\n\nWARNING: If you reload the UI, the data stored in the Reload Button will be lost forever!",
-					['visible'] = true,
-					['count'] = 0,
-					['OnClick'] = function(row, button)
-						local copy = {};
-						for i,o in ipairs(self.rawData) do
-							tinsert(copy, o);
-						end
-						if #copy < 1 then
-							app.print("There is nothing to clear.");
-							return true;
-						end
-						row.ref.count = row.ref.count + 1;
-						tinsert(self.data.options, {
-							['text'] = "Restore Button " .. row.ref.count,
-							['icon'] = "Interface\\Icons\\ability_monk_roll.blp", 
-							["description"] = "Click this to restore your cleared data.\n\nNOTE: Each Restore Button houses different data.\n\nWARNING: This data will be lost forever when you reload your UI!",
-							['visible'] = true,
-							['data'] = copy,
-							['OnClick'] = function(row, button)
-								for i,info in ipairs(row.ref.data) do
-									MergeClone(self.data.g, info);
-									MergeObject(self.rawData, info);
-								end
-								self:Update();
-								return true;
-							end,
-						});
-						wipe(self.rawData);
-						wipe(self.data.g);
-						for i=#self.data.options,1,-1 do
-							tinsert(self.data.g, 1, self.data.options[i]);
-						end
-						self:Update();
-						return true;
-					end,
-				},
-			},
-			['g'] = {},
-		};
-		self.rawData = {};
-		
-		-- Setup Event Handlers and register for events
-		self:SetScript("OnEvent", function(self, e, ...)
-			--print(e, ...);
-			if e == "VARIABLES_LOADED" then
-				if not ATTClassicDebugData then
-					ATTClassicDebugData = app.GetDataMember("Debugger", {});
-					app.SetDataMember("Debugger", nil);
-				end
-				self.rawData = ATTClassicDebugData;
-				self.data.g = CreateObject(self.rawData);
-				for i=#self.data.options,1,-1 do
-					tinsert(self.data.g, 1, self.data.options[i]);
-				end
-				self:Update();
-			elseif e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
+app:GetWindow("Debugger", {
+	parent = UIParent,
+	OnUpdate = function(self, ...)
+		if not self.initialized then
+			self.initialized = true;
+			self.AddObject = function(self, info)
 				-- Bubble Up the Maps
-				local mapInfo, info;
+				local mapInfo;
 				local mapID = app.CurrentMapID;
 				if mapID then
+					local pos = C_Map.GetPlayerMapPosition(mapID, "player");
+					if pos then
+						local px, py = pos:GetXY();
+						info.coord = { px * 100, py * 100, mapID };
+					end
 					repeat
-						info = { ["mapID"] = mapID, ["g"] = info and { info } or nil };
 						mapInfo = C_Map.GetMapInfo(mapID);
 						if mapInfo then
-							mapID = mapInfo.parentMapID;
+							info = { ["mapID"] = mapInfo.mapID, ["g"] = { info } };
+							mapID = mapInfo.parentMapID
 						end
 					until not mapInfo or not mapID;
-					
-					MergeClone(self.data.g, info);
-					MergeObject(self.rawData, info);
-					self:Update();
 				end
-			elseif e == "MERCHANT_SHOW" or e == "MERCHANT_UPDATE" then
-				C_Timer.After(0.6, function()
-					local guid = UnitGUID("npc");
-					local ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
-					if guid then ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
-					if npcID then
-						npcID = tonumber(npcID);
-						
-						-- Ignore vendor mount...
-						if npcID == 62822 then
+				
+				MergeClone(self.data.g, info);
+				MergeObject(self.rawData, info);
+				self:Update();
+			end
+			self.data = {
+				['text'] = "Session History",
+				['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
+				["description"] = "This keeps a visual record of all of the quests, maps, loot, and vendors that you have come into contact with since the session was started.",
+				['visible'] = true, 
+				['expanded'] = true,
+				['back'] = 1,
+				['options'] = {
+					{
+						['text'] = "Clear History",
+						['icon'] = "Interface\\Icons\\Ability_Rogue_FeignDeath.blp", 
+						["description"] = "Click this to fully clear this window.\n\nNOTE: If you click this by accident, use the dynamic Restore Buttons that this generates to reapply the data that was cleared.\n\nWARNING: If you reload the UI, the data stored in the Reload Button will be lost forever!",
+						['visible'] = true,
+						['count'] = 0,
+						['OnClick'] = function(row, button)
+							local copy = {};
+							for i,o in ipairs(self.rawData) do
+								tinsert(copy, o);
+							end
+							if #copy < 1 then
+								app.print("There is nothing to clear.");
+								return true;
+							end
+							row.ref.count = row.ref.count + 1;
+							tinsert(self.data.options, {
+								['text'] = "Restore Button " .. row.ref.count,
+								['icon'] = "Interface\\Icons\\ability_monk_roll.blp", 
+								["description"] = "Click this to restore your cleared data.\n\nNOTE: Each Restore Button houses different data.\n\nWARNING: This data will be lost forever when you reload your UI!",
+								['visible'] = true,
+								['data'] = copy,
+								['OnClick'] = function(row, button)
+									for i,info in ipairs(row.ref.data) do
+										MergeClone(self.data.g, info);
+										MergeObject(self.rawData, info);
+									end
+									self:Update();
+									return true;
+								end,
+							});
+							wipe(self.rawData);
+							wipe(self.data.g);
+							for i=#self.data.options,1,-1 do
+								tinsert(self.data.g, 1, self.data.options[i]);
+							end
+							self:Update();
 							return true;
-						end
+						end,
+					},
+				},
+				['g'] = {},
+			};
+			self.rawData = {};
+			
+			-- Setup Event Handlers and register for events
+			self:SetScript("OnEvent", function(self, e, ...)
+				--print(e, ...);
+				if e == "VARIABLES_LOADED" then
+					if not ATTClassicDebugData then
+						ATTClassicDebugData = app.GetDataMember("Debugger", {});
+						app.SetDataMember("Debugger", nil);
+					end
+					self.rawData = ATTClassicDebugData;
+					self.data.g = CreateObject(self.rawData);
+					for i=#self.data.options,1,-1 do
+						tinsert(self.data.g, 1, self.data.options[i]);
+					end
+					self:Update();
+				elseif e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
+					-- Bubble Up the Maps
+					local mapInfo, info;
+					local mapID = app.CurrentMapID;
+					if mapID then
+						repeat
+							info = { ["mapID"] = mapID, ["g"] = info and { info } or nil };
+							mapInfo = C_Map.GetMapInfo(mapID);
+							if mapInfo then
+								mapID = mapInfo.parentMapID;
+							end
+						until not mapInfo or not mapID;
 						
-						local numItems = GetMerchantNumItems();
-						--print("MERCHANT DETAILS", ty, npcID, numItems);
-						
-						local rawGroups = {};
-						for i=1,numItems,1 do
-							local link = GetMerchantItemLink(i);
-							if link then
-								local name, texture, cost, quantity, numAvailable, isPurchasable, isUsable, extendedCost = GetMerchantItemInfo(i);
-								if extendedCost then
-									cost = {};
-									local itemCount = GetMerchantItemCostInfo(i);
-									for j=1,itemCount,1 do
-										local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(i, j);
-										if itemLink then
-											-- print("  ", itemValue, itemLink, gsub(itemLink, "\124", "\124\124"));
-											local m = itemLink:match("currency:(%d+)");
-											if m then
-												-- Parse as a CURRENCY.
-												tinsert(cost, {"c", tonumber(m), itemValue});
-											else
-												-- Parse as an ITEM.
-												tinsert(cost, {"i", tonumber(itemLink:match("item:(%d+)")), itemValue});
+						MergeClone(self.data.g, info);
+						MergeObject(self.rawData, info);
+						self:Update();
+					end
+				elseif e == "MERCHANT_SHOW" or e == "MERCHANT_UPDATE" then
+					C_Timer.After(0.6, function()
+						local guid = UnitGUID("npc");
+						local ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
+						if guid then ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
+						if npcID then
+							npcID = tonumber(npcID);
+							
+							-- Ignore vendor mount...
+							if npcID == 62822 then
+								return true;
+							end
+							
+							local numItems = GetMerchantNumItems();
+							--print("MERCHANT DETAILS", ty, npcID, numItems);
+							
+							local rawGroups = {};
+							for i=1,numItems,1 do
+								local link = GetMerchantItemLink(i);
+								if link then
+									local name, texture, cost, quantity, numAvailable, isPurchasable, isUsable, extendedCost = GetMerchantItemInfo(i);
+									if extendedCost then
+										cost = {};
+										local itemCount = GetMerchantItemCostInfo(i);
+										for j=1,itemCount,1 do
+											local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(i, j);
+											if itemLink then
+												-- print("  ", itemValue, itemLink, gsub(itemLink, "\124", "\124\124"));
+												local m = itemLink:match("currency:(%d+)");
+												if m then
+													-- Parse as a CURRENCY.
+													tinsert(cost, {"c", tonumber(m), itemValue});
+												else
+													-- Parse as an ITEM.
+													tinsert(cost, {"i", tonumber(itemLink:match("item:(%d+)")), itemValue});
+												end
 											end
 										end
 									end
+									
+									-- Parse as an ITEM LINK.
+									table.insert(rawGroups, {["itemID"] = tonumber(link:match("item:(%d+)")), ["cost"] = cost});
 								end
-								
-								-- Parse as an ITEM LINK.
-								table.insert(rawGroups, {["itemID"] = tonumber(link:match("item:(%d+)")), ["cost"] = cost});
+							end
+							
+							local info = { [(ty == "GameObject") and "objectID" or "npcID"] = npcID };
+							info.faction = UnitFactionGroup("npc");
+							info.text = UnitName("npc");
+							info.g = rawGroups;
+							self:AddObject(info);
+						end
+					end);
+				elseif e == "GOSSIP_SHOW" then
+					local guid = UnitGUID("npc");
+					if guid then
+						local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
+						if npcID then
+							npcID = tonumber(npcID);
+							--print("GOSSIP_SHOW", type, npcID);
+							if type == "GameObject" then
+								info = { ["objectID"] = npcID, ["text"] = UnitName("npc") };
+							else
+								info = { ["npcID"] = npcID };
+								info.name = UnitName("npc");
+							end
+							info.faction = UnitFactionGroup("npc");
+							self:AddObject(info);
+						end
+					end
+				elseif e == "QUEST_DETAIL" then
+					local questStartItemID = ...;
+					local questID = GetQuestID();
+					if questID == 0 then return false; end
+					local npc = "questnpc";
+					local guid = UnitGUID(npc);
+					if not guid then
+						npc = "npc";
+						guid = UnitGUID(npc);
+					end
+					local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
+					if guid then type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
+					-- print("QUEST_DETAIL", questStartItemID, " => Quest #", questID, type, npcID);
+					
+					local rawGroups = {};
+					for i=1,GetNumQuestRewards(),1 do
+						local link = GetQuestItemLink("reward", i);
+						if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
+					end
+					for i=1,GetNumQuestChoices(),1 do
+						local link = GetQuestItemLink("choice", i);
+						if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
+					end
+					for i=1,GetNumQuestLogRewardSpells(questID),1 do
+						local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
+						if spellID then
+							if isTradeskillSpell then
+								table.insert(rawGroups, { ["recipeID"] = spellID, ["name"] = name });
+							else
+								table.insert(rawGroups, { ["spellID"] = spellID, ["name"] = name });
 							end
 						end
-						
-						local info = { [(ty == "GameObject") and "objectID" or "npcID"] = npcID };
-						info.faction = UnitFactionGroup("npc");
-						info.text = UnitName("npc");
-						info.g = rawGroups;
-						self:AddObject(info);
 					end
-				end);
-			elseif e == "GOSSIP_SHOW" then
-				local guid = UnitGUID("npc");
-				if guid then
-					local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
+					
+					local info = { ["questID"] = questID, ["description"] = GetQuestText(), ["objectives"] = GetObjectiveText(), ["g"] = rawGroups };
+					if questStartItemID and questStartItemID > 0 then info.itemID = questStartItemID; end
 					if npcID then
 						npcID = tonumber(npcID);
-						--print("GOSSIP_SHOW", type, npcID);
 						if type == "GameObject" then
-							info = { ["objectID"] = npcID, ["text"] = UnitName("npc") };
+							info = { ["objectID"] = npcID, ["text"] = UnitName(npc), ["g"] = { info } };
 						else
-							info = { ["npcID"] = npcID };
-							info.name = UnitName("npc");
+							info.qgs = {npcID};
+							info.name = UnitName(npc);
 						end
-						info.faction = UnitFactionGroup("npc");
-						self:AddObject(info);
+						info.faction = UnitFactionGroup(npc);
+					end
+					self:AddObject(info);
+				elseif e == "CHAT_MSG_LOOT" then
+					local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
+					local itemString = string.match(msg, "item[%-?%d:]+");
+					if itemString then
+						self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
 					end
 				end
-			elseif e == "QUEST_DETAIL" then
-				local questStartItemID = ...;
-				local questID = GetQuestID();
-				if questID == 0 then return false; end
-				local npc = "questnpc";
-				local guid = UnitGUID(npc);
-				if not guid then
-					npc = "npc";
-					guid = UnitGUID(npc);
-				end
-				local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
-				if guid then type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
-				-- print("QUEST_DETAIL", questStartItemID, " => Quest #", questID, type, npcID);
-				
-				local rawGroups = {};
-				for i=1,GetNumQuestRewards(),1 do
-					local link = GetQuestItemLink("reward", i);
-					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
-				end
-				for i=1,GetNumQuestChoices(),1 do
-					local link = GetQuestItemLink("choice", i);
-					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
-				end
-				for i=1,GetNumQuestLogRewardSpells(questID),1 do
-					local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
-					if spellID then
-						if isTradeskillSpell then
-							table.insert(rawGroups, { ["recipeID"] = spellID, ["name"] = name });
-						else
-							table.insert(rawGroups, { ["spellID"] = spellID, ["name"] = name });
-						end
-					end
-				end
-				
-				local info = { ["questID"] = questID, ["description"] = GetQuestText(), ["objectives"] = GetObjectiveText(), ["g"] = rawGroups };
-				if questStartItemID and questStartItemID > 0 then info.itemID = questStartItemID; end
-				if npcID then
-					npcID = tonumber(npcID);
-					if type == "GameObject" then
-						info = { ["objectID"] = npcID, ["text"] = UnitName(npc), ["g"] = { info } };
-					else
-						info.qgs = {npcID};
-						info.name = UnitName(npc);
-					end
-					info.faction = UnitFactionGroup(npc);
-				end
-				self:AddObject(info);
-			elseif e == "CHAT_MSG_LOOT" then
-				local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
-				local itemString = string.match(msg, "item[%-?%d:]+");
-				if itemString then
-					self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
-				end
-			end
-		end);
-		self:RegisterEvent("VARIABLES_LOADED");
-		self:RegisterEvent("GOSSIP_SHOW");
-		self:RegisterEvent("QUEST_DETAIL");
-		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
-		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-		self:RegisterEvent("ZONE_CHANGED");
-		self:RegisterEvent("MERCHANT_SHOW");
-		self:RegisterEvent("MERCHANT_UPDATE");
-		self:RegisterEvent("CHAT_MSG_LOOT");
-		--self:RegisterAllEvents();
+			end);
+			self:RegisterEvent("VARIABLES_LOADED");
+			self:RegisterEvent("GOSSIP_SHOW");
+			self:RegisterEvent("QUEST_DETAIL");
+			self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
+			self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+			self:RegisterEvent("ZONE_CHANGED");
+			self:RegisterEvent("MERCHANT_SHOW");
+			self:RegisterEvent("MERCHANT_UPDATE");
+			self:RegisterEvent("CHAT_MSG_LOOT");
+			--self:RegisterAllEvents();
+		end
+		
+		-- Update the window and all of its row data
+		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
+		for i,g in ipairs(self.data.g) do
+			if g.OnUpdate then g.OnUpdate(g); end
+		end
+		self.data.index = 0;
+		self.data.back = 1;
+		self.data.indent = 0;
+		BuildGroups(self.data, self.data.g);
+		UpdateWindow(self, true);
 	end
-	
-	-- Update the window and all of its row data
-	if self.data.OnUpdate then self.data.OnUpdate(self.data); end
-	for i,g in ipairs(self.data.g) do
-		if g.OnUpdate then g.OnUpdate(g); end
-	end
-	self.data.index = 0;
-	self.data.back = 1;
-	self.data.indent = 0;
-	BuildGroups(self.data, self.data.g);
-	UpdateWindow(self, true);
-end);
+});
 ]]--
-app:GetWindow("ItemFilter", UIParent, function(self)
-	if self:IsVisible() then
+app:GetWindow("ItemFilter", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.dirty = true;
@@ -14022,9 +14073,11 @@ app:GetWindow("ItemFilter", UIParent, function(self)
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
 		UpdateWindow(self, true);
 	end
-end);
-app:GetWindow("ItemFinder", UIParent, function(self, ...)
-	if self:IsVisible() then
+});
+app:GetWindow("ItemFinder", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.data = {
@@ -14084,9 +14137,11 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 		UpdateWindow(self, ...);
 		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
 	end
-end);
-app:GetWindow("Objects", UIParent, function(self, ...)
-	if self:IsVisible() then
+});
+app:GetWindow("Objects", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			local db = {};
@@ -14121,9 +14176,11 @@ app:GetWindow("Objects", UIParent, function(self, ...)
 		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
 		app.VisibilityFilter = visibilityFilter;
 	end
-end);
-app:GetWindow("Quests", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("Quests", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.dirty = true;
@@ -14177,9 +14234,11 @@ app:GetWindow("Quests", UIParent, function(self)
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
 		UpdateWindow(self);
 	end
-end);
-app:GetWindow("RaidAssistant", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("RaidAssistant", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.ignoreNoEntries = true;
@@ -14414,9 +14473,11 @@ app:GetWindow("RaidAssistant", UIParent, function(self)
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
 	end
-end);
-app:GetWindow("Random", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("Random", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			local function SearchRecursively(group, field, temp)
@@ -14761,9 +14822,11 @@ app:GetWindow("Random", UIParent, function(self)
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
 	end
-end);
-app:GetWindow("RWP", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("RWP", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.dirty = true;
@@ -14817,9 +14880,11 @@ app:GetWindow("RWP", UIParent, function(self)
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
 		UpdateWindow(self);
 	end
-end);
-app:GetWindow("SoftReserves", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("SoftReserves", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			self.dirty = true;
@@ -15339,9 +15404,11 @@ app:GetWindow("SoftReserves", UIParent, function(self)
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
 	end
-end);
-app:GetWindow("Sync", UIParent, function(self)
-	if self:IsVisible() then
+});
+app:GetWindow("Sync", {
+	parent = UIParent,
+	Silent = true,
+	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
 			
@@ -15587,365 +15654,40 @@ app:GetWindow("Sync", UIParent, function(self)
 		app.GroupFilter = groupFilter;
 		app.VisibilityFilter = visibilityFilter;
 	end
-end);
-app:GetWindow("Tradeskills", UIParent, function(self, ...)
-	if not self.initialized then
-		self.initialized = true;
-		self:SetMovable(false);
-		self:SetUserPlaced(false);
-		self:SetClampedToScreen(false);
-		self:RegisterEvent("CRAFT_SHOW");
-		self:RegisterEvent("CRAFT_UPDATE");
-		self:RegisterEvent("CRAFT_CLOSE");
-		self:RegisterEvent("TRADE_SKILL_SHOW");
-		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
-		self:RegisterEvent("TRADE_SKILL_CLOSE");
-		self:RegisterEvent("LEARNED_SPELL_IN_TAB");
-		self:RegisterEvent("NEW_RECIPE_LEARNED");
-		self:RegisterEvent("SKILL_LINES_CHANGED");
-		self.wait = 5;
-		self.cache = {};
-		self.header = {
-			['text'] = "Profession List",
-			['icon'] = "Interface\\Icons\\INV_Scroll_04", 
-			["description"] = "Open your professions to cache them.",
-			['visible'] = true, 
-			['expanded'] = true,
-			["indent"] = 0,
-			['back'] = 1,
-			['g'] = { },
-		};
-		self.data = self.header;
-		self.previousCraftSkillID = 0;
-		self.previousTradeSkillID = 0;
-		self.CacheRecipes = function(self)
-			-- If it's not yours, don't take credit for it.
-			if IsTradeSkillLinked and IsTradeSkillLinked() then
-				return;
-			end
-			if C_TradeSkillUI then
-				if (C_TradeSkillUI.IsTradeSkillLinked and C_TradeSkillUI.IsTradeSkillLinked())
-				or (C_TradeSkillUI.IsTradeSkillGuild and C_TradeSkillUI.IsTradeSkillGuild()) then
-					return;
-				end
-			end
-			
-			-- Cache Learned Spells
-			local skillCache = fieldCache["spellID"];
-			if skillCache then
-				-- Cache learned recipes and reagents
-				local reagentCache = app.GetDataMember("Reagents", {});
-				local learned, craftSkillID, tradeSkillID = 0, 0, 0;
-				rawset(app.SpellNameToSpellID, 0, nil);
-				app.GetSpellName(0);
-				
-				if CraftFrame and CraftFrame:IsVisible() then
-					-- Crafting Skills (Enchanting and Beast Training Only)
-					local craftSkillName, craftSkillLevel, craftSkillMaxLevel = GetCraftDisplaySkillLine();
-					if craftSkillName and craftSkillName ~= "UNKNOWN" then
-						local shouldShowSpellRanks = craftSkillLevel and craftSkillLevel ~= math.max(300, craftSkillMaxLevel);
-						craftSkillID = app.SpellNameToSpellID[craftSkillName] or 0;
-						if craftSkillID == 0 then
-							app.print("Could not find spellID for", craftSkillName, GetLocale(), "! Please report this to the ATT Discord!");
-						end
-					elseif CraftFrameTitleText then
-						craftSkillName = CraftFrameTitleText:GetText();
-						craftSkillID = app.SpellNameToSpellID[craftSkillName] or 0;
-						if craftSkillID == 0 then
-							app.print("Could not find spellID for", craftSkillName, GetLocale(), "! Please report this to the ATT Discord!");
-						end
-					else
-						craftSkillID = 0;
-					end
-				end
-				
-				if TradeSkillFrame and TradeSkillFrame:IsVisible() then
-					-- Trade Skills (Non-Enchanting)
-					local tradeSkillName, tradeSkillLevel, tradeSkillMaxLevel = GetTradeSkillLine();
-					if tradeSkillName and tradeSkillName ~= "UNKNOWN" then
-						local shouldShowSpellRanks = tradeSkillLevel and tradeSkillLevel ~= math.max(300, tradeSkillMaxLevel);
-						tradeSkillID = app.SpellNameToSpellID[tradeSkillName] or 0;
-						if tradeSkillID == 2656 then	-- Smelting, point this to Mining.
-							tradeSkillID = 2575;
-						elseif tradeSkillID == 0 then
-							app.print("Could not find spellID for", tradeSkillName, GetLocale(), "! Please report this to the ATT Discord!");
-						end
-					else
-						tradeSkillID = 0;
-					end
-				end
-				
-				if Skillet and Skillet.currentTrade and tradeSkillID == 0 and craftSkillID == 0 then
-					if Skillet.isCraft then
-						craftSkillID = Skillet.currentTrade;
-					else
-						tradeSkillID = Skillet.currentTrade;
-					end
-				end
-				
-				if craftSkillID ~= 0 then
-					local spellName = GetSpellInfo(craftSkillID);
-					for _,spellID in pairs(app.SkillIDToSpellID) do
-						if GetSpellInfo(spellID) == spellName then
-							craftSkillID = spellID;
-							break;
-						end
-					end
-					
-					local numberOfCrafts, spellID = GetNumCrafts();
-					for craftIndex = 1,numberOfCrafts do
-						spellID = 0;
-						local craftName, craftSubSpellName, craftType, numAvailable, isExpanded, trainingPointCost, requiredLevel = GetCraftInfo(craftIndex);
-						if craftType == "optimal" or craftType == "medium" or craftType == "easy" or craftType == "trivial" or craftType == "used" or craftType == "none" then
-							spellID = craftSubSpellName and (select(7, GetSpellInfo(craftName, craftSubSpellName)) or app.SpellNameToSpellID[craftName .. " (" .. craftSubSpellName .. ")"]) or app.SpellNameToSpellID[craftName];
-							if spellID then
-								if spellID == 44153 then spellID = 44155;	-- Fix the Flying Machine spellID.
-								elseif spellID == 44151 then spellID = 44157;	-- Fix the Turbo Flying Machine spellID.
-								elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
-								app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(craftType) or nil;
-								app.CurrentCharacter.Spells[spellID] = 1;
-								if not ATTAccountWideData.Spells[spellID] then
-									ATTAccountWideData.Spells[spellID] = 1;
-									learned = learned + 1;
-								end
-								if not skillCache[spellID] then
-									if tradeSkillID ~= 773 then
-										app.print("Missing " .. craftName .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
-									end
-									skillCache[spellID] = { {} };
-								end
-							elseif tradeSkillID ~= 773 then
-								app.print("Missing " .. craftName .. " spellID in ATT Database. Please report it!");
-							end
-							
-							if craftType ~= "none" then
-								-- Attempt to harvest the item associated with this craft.
-								GameTooltip.SetCraftSpell(ATTCNPCHarvester, craftIndex);
-								local link, craftedItemID = select(2, ATTCNPCHarvester:GetItem());
-								if link then craftedItemID = GetItemInfoInstant(link); end
-								
-								-- Cache the Reagents used to make this item.
-								for i=1,GetCraftNumReagents(craftIndex) do
-									local itemID = GetItemInfoInstant(GetCraftReagentItemLink(craftIndex, i));
-									if itemID then
-										-- Make sure a cache table exists for this item.
-										local _, _, reagentCount = GetCraftReagentInfo(craftIndex, i);
-										if not reagentCache[itemID] then reagentCache[itemID] = { {}, {} }; end
-										
-										-- Index 1: The Recipe Skill IDs
-										if spellID then reagentCache[itemID][1][spellID] = reagentCount; end
-										
-										-- Index 2: The Crafted Item IDs
-										if craftedItemID then reagentCache[itemID][2][craftedItemID] = reagentCount; end
-									end
-								end
-							end
-						end
-					end
-				end
-				
-				if tradeSkillID ~= 0 then
-					local spellName = GetSpellInfo(tradeSkillID);
-					for _,spellID in pairs(app.SkillIDToSpellID) do
-						if GetSpellInfo(spellID) == spellName then
-							tradeSkillID = spellID;
-							break;
-						end
-					end
-					local numTradeSkills = GetNumTradeSkills();
-					for skillIndex = 1,numTradeSkills do
-						local skillName, skillType, numAvailable, isExpanded = GetTradeSkillInfo(skillIndex);
-						if skillType == "optimal" or skillType == "medium" or skillType == "easy" or skillType == "trivial" or skillType == "used" or skillType == "none" then
-							local spellID = app.SpellNameToSpellID[skillName];
-							if spellID then
-								if spellID == 44153 then spellID = 44155;	-- Fix the Flying Machine spellID.
-								elseif spellID == 44151 then spellID = 44157;	-- Fix the Turbo Flying Machine spellID.
-								elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
-								app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(skillType) or nil;
-								app.CurrentCharacter.Spells[spellID] = 1;
-								if not ATTAccountWideData.Spells[spellID] then
-									ATTAccountWideData.Spells[spellID] = 1;
-									learned = learned + 1;
-								end
-								if not skillCache[spellID] then
-									if tradeSkillID ~= 773 then
-										app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
-									end
-									skillCache[spellID] = { {} };
-								end
-							elseif tradeSkillID ~= 773 then
-								app.print("Missing " .. (skillName or "[??]") .. " spellID in ATT Database. Please report it!");
-							end
-							
-							-- Cache the Reagents used to make this item.
-							local tradeSkillItemLink = GetTradeSkillItemLink(skillIndex);
-							if tradeSkillItemLink then
-								local craftedItemID = GetItemInfoInstant(tradeSkillItemLink);
-								for i=1,GetTradeSkillNumReagents(skillIndex) do
-									local reagentCount = select(3, GetTradeSkillReagentInfo(skillIndex, i));
-									local itemID = GetItemInfoInstant(GetTradeSkillReagentItemLink(skillIndex, i));
-									
-									-- Make sure a cache table exists for this item.
-									-- Index 1: The Recipe Skill IDs
-									-- Index 2: The Crafted Item IDs
-									if not reagentCache[itemID] then reagentCache[itemID] = { {}, {} }; end
-									if spellID then reagentCache[itemID][1][spellID] = reagentCount; end
-									if craftedItemID then reagentCache[itemID][2][craftedItemID] = reagentCount; end
-								end
-							end
-						end
-					end
-				end
-				
-				-- Open the Tradeskill list for this Profession
-				if app.Categories.Professions and (craftSkillID ~= 0 or tradeSkillID ~= 0) and (craftSkillID ~= self.previousCraftSkillID or tradeSkillID ~= self.previousTradeSkillID) then
-					self.previousCraftSkillID = craftSkillID;
-					self.previousTradeSkillID = tradeSkillID;
-					local g = {};
-					for i,group in ipairs(app.Categories.Professions) do
-						if group.spellID == craftSkillID or group.spellID == tradeSkillID then
-							local cache = self.cache[group.spellID];
-							if not cache then
-								cache = CloneReference(group);
-								self.cache[group.spellID] = cache;
-								local searchResults = ResolveSymbolicLink(group);
-								if searchResults and #searchResults then
-									for j,o in ipairs(searchResults) do
-										tinsert(cache.g, o);
-									end
-								end
-							end
-							table.insert(g, cache);
-						end
-					end
-					if #g > 0 then
-						if #g == 1 then
-							self.data = g[1];
-						else
-							self.data = self.header;
-							self.data.g = g;
-							for i,entry in ipairs(g) do
-								entry.indent = nil;
-							end
-						end
-						self.data.indent = 0;
-						self.data.visible = true;
-						BuildGroups(self.data, self.data.g);
-						app.UpdateGroups(self.data, self.data.g);
-						if not self.data.expanded then
-							self.data.expanded = true;
-							ExpandGroupsRecursively(self.data, true);
-						end
-						self:Update();
-					end
-				end
-			
-				-- If something new was "learned", then refresh the data.
-				if learned > 0 then
-					app.print("Cached " .. learned .. " known recipes!");
-					wipe(searchCache);
-					app:RefreshDataQuietly(true);
-				end
-			end
-		end
-		self.RefreshRecipes = function(self)
-			if app.CollectibleRecipes then
-				self.wait = 5;
-				StartCoroutine("RefreshingRecipes", function()
-					while self.wait > 0 do
-						self.wait = self.wait - 1;
-						coroutine.yield();
-					end
-					while not self:IsVisible() do
-						coroutine.yield();
-					end
-					
-					self:CacheRecipes();
-					self:Update();
-					wipe(searchCache);
-				end);
-			end
-		end
-		
-		-- Skillet support.
-		self.SkilletSupported = nil;
-		
-		-- TSM Shenanigans
-		self.TSMCraftingVisible = nil;
-		self.SetTSMCraftingVisible = function(self, visible)
-			visible = not not visible;
-			if visible == self.TSMCraftingVisible then
-				return;
-			end
-			self.TSMCraftingVisible = visible;
-			self:UpdateFrameVisibility();
-			StartCoroutine("UpdateTradeSkills", function()
-				while InCombatLockdown() do coroutine.yield(); end
-				coroutine.yield();
-				self:Update();
-			end);
-		end
-		self.UpdateDefaultFrameVisibility = function(self)
-			-- Skillet compatibility
-			if SkilletFrame then
-				if not self.SkilletSupported then
-					Skillet["ATTC"] = { ["Update"] = function() self:Update(); end };
-					Skillet:RegisterUpdatePlugin("ATTC");
-					self.SkilletSupported = true;
-				end
-				self:SetParent(SkilletFrame);
-				self:SetPoint("TOPLEFT", SkilletFrame, "TOPRIGHT", 0, 0);
-				self:SetPoint("BOTTOMLEFT", SkilletFrame, "BOTTOMRIGHT", 0, 0);
-				self:SetMovable(false);
-				return true;
-			elseif CraftFrame and CraftFrame:IsVisible() then
-				-- Default Alignment on the Craft UI.
-				self:ClearAllPoints();
-				self:SetPoint("TOPLEFT", CraftFrame, "TOPRIGHT", -37, -11);
-				self:SetPoint("BOTTOMLEFT", CraftFrame, "BOTTOMRIGHT", -37, 72);
-				self:SetMovable(false);
-				return true;
-			elseif TradeSkillFrame and TradeSkillFrame:IsVisible() then
-				-- Default Alignment on the TradeSkill UI.
-				self:ClearAllPoints();
-				self:SetPoint("TOPLEFT", TradeSkillFrame, "TOPRIGHT", -37, -11);
-				self:SetPoint("BOTTOMLEFT", TradeSkillFrame, "BOTTOMRIGHT", -37, 72);
-				self:SetMovable(false);
-				return true;
-			end
-		end
-		self.UpdateFrameVisibility = function(self)
-			self:SetMovable(true);
-			self:ClearAllPoints();
-			if self.TSMCraftingVisible and self.cachedTSMFrame then
-				if self.cachedTSMFrame.queue and self.cachedTSMFrame.queue:IsShown() then
-					self:SetPoint("TOPLEFT", self.cachedTSMFrame.queue, "TOPRIGHT", 0, 0);
-					self:SetPoint("BOTTOMLEFT", self.cachedTSMFrame.queue, "BOTTOMRIGHT", 0, 0);
-				else
-					self:SetPoint("TOPLEFT", self.cachedTSMFrame, "TOPRIGHT", 0, 0);
-					self:SetPoint("BOTTOMLEFT", self.cachedTSMFrame, "BOTTOMRIGHT", 0, 0);
-				end
-				self:SetMovable(false);
-				return true;
-			elseif self:UpdateDefaultFrameVisibility() then
-				return true;
-			else
-				self:SetMovable(false);
-				StartCoroutine("TSMWHY", function()
-					while InCombatLockdown() or not TradeSkillFrame do coroutine.yield(); end
-					StartCoroutine("TSMWHYPT2", function()
-						local thing = self.TSMCraftingVisible;
-						self.TSMCraftingVisible = nil;
-						self:SetTSMCraftingVisible(thing);
-					end);
-				end);
-			end
-		end
-		-- Setup Event Handlers and register for events
-		self:SetScript("OnEvent", function(self, e, ...)
-			if e == "TRADE_SKILL_LIST_UPDATE" or e == "SKILL_LINES_CHANGED" then
-				self:Update();
-			elseif e == "TRADE_SKILL_SHOW" or e == "CRAFT_SHOW" then
+});
+app:GetWindow("Tradeskills", {
+	parent = UIParent,
+	OnUpdate = function(self, ...)
+		if not self.initialized then
+			self.initialized = true;
+			self:SetMovable(false);
+			self:SetUserPlaced(false);
+			self:SetClampedToScreen(false);
+			self:RegisterEvent("CRAFT_SHOW");
+			self:RegisterEvent("CRAFT_UPDATE");
+			self:RegisterEvent("CRAFT_CLOSE");
+			self:RegisterEvent("TRADE_SKILL_SHOW");
+			self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
+			self:RegisterEvent("TRADE_SKILL_CLOSE");
+			self:RegisterEvent("LEARNED_SPELL_IN_TAB");
+			self:RegisterEvent("NEW_RECIPE_LEARNED");
+			self:RegisterEvent("SKILL_LINES_CHANGED");
+			self.wait = 5;
+			self.cache = {};
+			self.header = {
+				['text'] = "Profession List",
+				['icon'] = "Interface\\Icons\\INV_Scroll_04", 
+				["description"] = "Open your professions to cache them.",
+				['visible'] = true, 
+				['expanded'] = true,
+				["indent"] = 0,
+				['back'] = 1,
+				['g'] = { },
+			};
+			self.data = self.header;
+			self.previousCraftSkillID = 0;
+			self.previousTradeSkillID = 0;
+			self.CacheRecipes = function(self)
 				-- If it's not yours, don't take credit for it.
 				if IsTradeSkillLinked and IsTradeSkillLinked() then
 					return;
@@ -15956,131 +15698,457 @@ app:GetWindow("Tradeskills", UIParent, function(self, ...)
 						return;
 					end
 				end
-				if self.TSMCraftingVisible == nil then
-					self:SetTSMCraftingVisible(false);
-				end
-				self:UpdateFrameVisibility();
-				if app.Settings:GetTooltipSetting("Auto:ProfessionList") then
-					self:SetVisible(true);
-				end
-				RefreshSkills();
-				self:RefreshRecipes();
-			elseif e == "NEW_RECIPE_LEARNED" or e == "LEARNED_SPELL_IN_TAB" then
-				local spellID = ...;
-				if spellID then
-					local previousState = ATTAccountWideData.Spells[spellID];
-					ATTAccountWideData.Spells[spellID] = 1;
-					if not app.CurrentCharacter.Spells[spellID] then
-						app.CurrentCharacter.Spells[spellID] = 1;
-						if not previousState or not app.Settings:Get("AccountWide:Recipes") then
-							app:PlayFanfare();
+				
+				-- Cache Learned Spells
+				local skillCache = fieldCache["spellID"];
+				if skillCache then
+					-- Cache learned recipes and reagents
+					local reagentCache = app.GetDataMember("Reagents", {});
+					local learned, craftSkillID, tradeSkillID = 0, 0, 0;
+					rawset(app.SpellNameToSpellID, 0, nil);
+					local shouldUpdate = false;
+					app.GetSpellName(0);
+					
+					if CraftFrame and CraftFrame:IsVisible() then
+						-- Crafting Skills (Enchanting and Beast Training Only)
+						local craftSkillName, craftSkillLevel, craftSkillMaxLevel = GetCraftDisplaySkillLine();
+						if craftSkillName and craftSkillName ~= "UNKNOWN" then
+							local shouldShowSpellRanks = craftSkillLevel and craftSkillLevel ~= math.max(300, craftSkillMaxLevel);
+							craftSkillID = app.SpellNameToSpellID[craftSkillName] or 0;
+							if craftSkillID == 0 then
+								app.print("Could not find spellID for", craftSkillName, GetLocale(), "! Please report this to the ATT Discord!");
+							end
+						elseif CraftFrameTitleText then
+							craftSkillName = CraftFrameTitleText:GetText();
+							craftSkillID = app.SpellNameToSpellID[craftSkillName] or 0;
+							if craftSkillID == 0 then
+								app.print("Could not find spellID for", craftSkillName, GetLocale(), "! Please report this to the ATT Discord!");
+							end
+						else
+							craftSkillID = 0;
 						end
+					end
+					
+					if TradeSkillFrame and TradeSkillFrame:IsVisible() then
+						-- Trade Skills (Non-Enchanting)
+						local tradeSkillName, tradeSkillLevel, tradeSkillMaxLevel = GetTradeSkillLine();
+						if tradeSkillName and tradeSkillName ~= "UNKNOWN" then
+							local shouldShowSpellRanks = tradeSkillLevel and tradeSkillLevel ~= math.max(300, tradeSkillMaxLevel);
+							tradeSkillID = app.SpellNameToSpellID[tradeSkillName] or 0;
+							if tradeSkillID == 2656 then	-- Smelting, point this to Mining.
+								tradeSkillID = 2575;
+							elseif tradeSkillID == 0 then
+								app.print("Could not find spellID for", tradeSkillName, GetLocale(), "! Please report this to the ATT Discord!");
+							end
+						else
+							tradeSkillID = 0;
+						end
+					end
+					
+					if Skillet and Skillet.currentTrade and tradeSkillID == 0 and craftSkillID == 0 then
+						if Skillet.isCraft then
+							craftSkillID = Skillet.currentTrade;
+						else
+							tradeSkillID = Skillet.currentTrade;
+						end
+					end
+					
+					if craftSkillID ~= 0 then
+						local spellName = GetSpellInfo(craftSkillID);
+						for _,spellID in pairs(app.SkillIDToSpellID) do
+							if GetSpellInfo(spellID) == spellName then
+								craftSkillID = spellID;
+								break;
+							end
+						end
+						
+						local numberOfCrafts, spellID = GetNumCrafts();
+						for craftIndex = 1,numberOfCrafts do
+							spellID = 0;
+							local craftName, craftSubSpellName, craftType, numAvailable, isExpanded, trainingPointCost, requiredLevel = GetCraftInfo(craftIndex);
+							if craftType == "optimal" or craftType == "medium" or craftType == "easy" or craftType == "trivial" or craftType == "used" or craftType == "none" then
+								spellID = craftSubSpellName and (select(7, GetSpellInfo(craftName, craftSubSpellName)) or app.SpellNameToSpellID[craftName .. " (" .. craftSubSpellName .. ")"]) or app.SpellNameToSpellID[craftName];
+								if spellID then
+									if spellID == 44153 then spellID = 44155;	-- Fix the Flying Machine spellID.
+									elseif spellID == 44151 then spellID = 44157;	-- Fix the Turbo Flying Machine spellID.
+									elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
+									app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(craftType) or nil;
+									app.CurrentCharacter.Spells[spellID] = 1;
+									if not ATTAccountWideData.Spells[spellID] then
+										ATTAccountWideData.Spells[spellID] = 1;
+										learned = learned + 1;
+									end
+									if not skillCache[spellID] then
+										if tradeSkillID ~= 773 then
+											app.print("Missing " .. craftName .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
+										end
+										skillCache[spellID] = { {} };
+									end
+								elseif tradeSkillID ~= 773 then
+									app.print("Missing " .. craftName .. " spellID in ATT Database. Please report it!");
+								end
+								
+								if craftType ~= "none" then
+									-- Attempt to harvest the item associated with this craft.
+									GameTooltip.SetCraftSpell(ATTCNPCHarvester, craftIndex);
+									local link, craftedItemID = select(2, ATTCNPCHarvester:GetItem());
+									if link then craftedItemID = GetItemInfoInstant(link); end
+									
+									-- Cache the Reagents used to make this item.
+									for i=1,GetCraftNumReagents(craftIndex) do
+										local itemID = GetItemInfoInstant(GetCraftReagentItemLink(craftIndex, i));
+										if itemID then
+											-- Make sure a cache table exists for this item.
+											local _, _, reagentCount = GetCraftReagentInfo(craftIndex, i);
+											if not reagentCache[itemID] then reagentCache[itemID] = { {}, {} }; end
+											
+											-- Index 1: The Recipe Skill IDs
+											if spellID then reagentCache[itemID][1][spellID] = reagentCount; end
+											
+											-- Index 2: The Crafted Item IDs
+											if craftedItemID then reagentCache[itemID][2][craftedItemID] = reagentCount; end
+										end
+									end
+								end
+							end
+						end
+					end
+					
+					if tradeSkillID ~= 0 then
+						local spellName = GetSpellInfo(tradeSkillID);
+						for _,spellID in pairs(app.SkillIDToSpellID) do
+							if GetSpellInfo(spellID) == spellName then
+								tradeSkillID = spellID;
+								break;
+							end
+						end
+						local numTradeSkills = GetNumTradeSkills();
+						for skillIndex = 1,numTradeSkills do
+							local skillName, skillType, numAvailable, isExpanded = GetTradeSkillInfo(skillIndex);
+							if skillType == "optimal" or skillType == "medium" or skillType == "easy" or skillType == "trivial" or skillType == "used" or skillType == "none" then
+								local spellID = app.SpellNameToSpellID[skillName];
+								if spellID then
+									if spellID == 44153 then spellID = 44155;	-- Fix the Flying Machine spellID.
+									elseif spellID == 44151 then spellID = 44157;	-- Fix the Turbo Flying Machine spellID.
+									elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
+									app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(skillType) or nil;
+									app.CurrentCharacter.Spells[spellID] = 1;
+									if not ATTAccountWideData.Spells[spellID] then
+										ATTAccountWideData.Spells[spellID] = 1;
+										learned = learned + 1;
+									end
+									if not skillCache[spellID] then
+										if tradeSkillID ~= 773 then
+											app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
+										end
+										skillCache[spellID] = { {} };
+									end
+								elseif tradeSkillID ~= 773 then
+									app.print("Missing " .. (skillName or "[??]") .. " spellID in ATT Database. Please report it!");
+								end
+								
+								-- Cache the Reagents used to make this item.
+								local tradeSkillItemLink = GetTradeSkillItemLink(skillIndex);
+								if tradeSkillItemLink then
+									local craftedItemID = GetItemInfoInstant(tradeSkillItemLink);
+									for i=1,GetTradeSkillNumReagents(skillIndex) do
+										local reagentCount = select(3, GetTradeSkillReagentInfo(skillIndex, i));
+										local itemID = GetItemInfoInstant(GetTradeSkillReagentItemLink(skillIndex, i));
+										
+										-- Make sure a cache table exists for this item.
+										-- Index 1: The Recipe Skill IDs
+										-- Index 2: The Crafted Item IDs
+										if not reagentCache[itemID] then reagentCache[itemID] = { {}, {} }; end
+										if spellID then reagentCache[itemID][1][spellID] = reagentCount; end
+										if craftedItemID then reagentCache[itemID][2][craftedItemID] = reagentCount; end
+									end
+								end
+							end
+						end
+					end
+					
+					-- Open the Tradeskill list for this Profession
+					if app.Categories.Professions and (craftSkillID ~= 0 or tradeSkillID ~= 0) and (craftSkillID ~= self.previousCraftSkillID or tradeSkillID ~= self.previousTradeSkillID) then
+						self.previousCraftSkillID = craftSkillID;
+						self.previousTradeSkillID = tradeSkillID;
+						local g = {};
+						for i,group in ipairs(app.Categories.Professions) do
+							if group.spellID == craftSkillID or group.spellID == tradeSkillID then
+								local cache = self.cache[group.spellID];
+								if not cache then
+									cache = CloneReference(group);
+									self.cache[group.spellID] = cache;
+									local searchResults = ResolveSymbolicLink(group);
+									if searchResults and #searchResults then
+										for j,o in ipairs(searchResults) do
+											tinsert(cache.g, o);
+										end
+									end
+								end
+								table.insert(g, cache);
+							end
+						end
+						if #g > 0 then
+							if #g == 1 then
+								self.data = g[1];
+							else
+								self.data = self.header;
+								self.data.g = g;
+								for i,entry in ipairs(g) do
+									entry.indent = nil;
+								end
+							end
+							self.data.indent = 0;
+							self.data.visible = true;
+							BuildGroups(self.data, self.data.g);
+							app.UpdateGroups(self.data, self.data.g);
+							if not self.data.expanded then
+								self.data.expanded = true;
+								ExpandGroupsRecursively(self.data, true);
+							end
+							shouldUpdate = true;
+						end
+					end
+				
+					-- If something new was "learned", then refresh the data.
+					if learned > 0 then
+						app.print("Cached " .. learned .. " known recipes!");
+						wipe(searchCache);
 						app:RefreshDataQuietly(true);
+					elseif shouldUpdate then
+						self:Update();
 					end
-					self:RefreshRecipes();
 				end
-			elseif e == "TRADE_SKILL_CLOSE" or e == "CRAFT_CLOSE" then
-				StartCoroutine("TSMWHY3", function()
-					self:RefreshRecipes();
-					if not self:UpdateFrameVisibility() then
-						self:SetVisible(false);
-					end
+			end
+			self.RefreshRecipes = function(self)
+				if app.CollectibleRecipes then
+					self.wait = 5;
+					StartCoroutine("RefreshingRecipes", function()
+						while self.wait > 0 do
+							self.wait = self.wait - 1;
+							coroutine.yield();
+						end
+						while not self:IsVisible() do
+							coroutine.yield();
+						end
+						
+						wipe(searchCache);
+						self:CacheRecipes();
+					end);
+				end
+			end
+			
+			-- Skillet support.
+			self.SkilletSupported = nil;
+			
+			-- TSM Shenanigans
+			self.TSMCraftingVisible = nil;
+			self.SetTSMCraftingVisible = function(self, visible)
+				visible = not not visible;
+				if visible == self.TSMCraftingVisible then
+					return;
+				end
+				self.TSMCraftingVisible = visible;
+				self:UpdateFrameVisibility();
+				StartCoroutine("UpdateTradeSkills", function()
+					while InCombatLockdown() do coroutine.yield(); end
+					coroutine.yield();
+					self:Update();
 				end);
 			end
-		end);
-		return;
-	end
-	if self:IsVisible() then
-		if TSM_API and TSMAPI_FOUR then
-			if not self.cachedTSMFrame then
-				for i,f in ipairs({UIParent:GetChildren()}) do
-					if f.headerBgCenter then
-						self.cachedTSMFrame = f;
-						local oldSetVisible = f.SetVisible;
-						local oldShow = f.Show;
-						local oldHide = f.Hide;
-						f.SetVisible = function(s, visible)
-							oldSetVisible(s, visible);
-							self:SetTSMCraftingVisible(visible);
-						end
-						f.Hide = function(s)
-							oldHide(s);
-							self:SetTSMCraftingVisible(false);
-						end
-						f.Show = function(s)
-							oldShow(s);
-							self:SetTSMCraftingVisible(true);
-						end
-						if self.gettinMadAtDumbNamingConventions then
-							TSMAPI_FOUR.UI.NewElement = self.OldNewElement;
-							self.gettinMadAtDumbNamingConventions = nil;
-							self.OldNewElement = nil;
-						end
-						self:SetTSMCraftingVisible(f:IsShown());
+			self.UpdateDefaultFrameVisibility = function(self)
+				-- Skillet compatibility
+				if SkilletFrame then
+					if not self.SkilletSupported then
+						Skillet["ATTC"] = { ["Update"] = function() self:Update(); end };
+						Skillet:RegisterUpdatePlugin("ATTC");
+						self.SkilletSupported = true;
+					end
+					self:SetParent(SkilletFrame);
+					self:SetPoint("TOPLEFT", SkilletFrame, "TOPRIGHT", 0, 0);
+					self:SetPoint("BOTTOMLEFT", SkilletFrame, "BOTTOMRIGHT", 0, 0);
+					self:SetMovable(false);
+					return true;
+				elseif CraftFrame and CraftFrame:IsVisible() then
+					-- Default Alignment on the Craft UI.
+					self:ClearAllPoints();
+					self:SetPoint("TOPLEFT", CraftFrame, "TOPRIGHT", -37, -11);
+					self:SetPoint("BOTTOMLEFT", CraftFrame, "BOTTOMRIGHT", -37, 72);
+					self:SetMovable(false);
+					return true;
+				elseif TradeSkillFrame and TradeSkillFrame:IsVisible() then
+					-- Default Alignment on the TradeSkill UI.
+					self:ClearAllPoints();
+					self:SetPoint("TOPLEFT", TradeSkillFrame, "TOPRIGHT", -37, -11);
+					self:SetPoint("BOTTOMLEFT", TradeSkillFrame, "BOTTOMRIGHT", -37, 72);
+					self:SetMovable(false);
+					return true;
+				end
+			end
+			self.UpdateFrameVisibility = function(self)
+				self:SetMovable(true);
+				self:ClearAllPoints();
+				if self.TSMCraftingVisible and self.cachedTSMFrame then
+					if self.cachedTSMFrame.queue and self.cachedTSMFrame.queue:IsShown() then
+						self:SetPoint("TOPLEFT", self.cachedTSMFrame.queue, "TOPRIGHT", 0, 0);
+						self:SetPoint("BOTTOMLEFT", self.cachedTSMFrame.queue, "BOTTOMRIGHT", 0, 0);
+					else
+						self:SetPoint("TOPLEFT", self.cachedTSMFrame, "TOPRIGHT", 0, 0);
+						self:SetPoint("BOTTOMLEFT", self.cachedTSMFrame, "BOTTOMRIGHT", 0, 0);
+					end
+					self:SetMovable(false);
+					return true;
+				elseif self:UpdateDefaultFrameVisibility() then
+					return true;
+				else
+					self:SetMovable(false);
+					StartCoroutine("TSMWHY", function()
+						while InCombatLockdown() or not TradeSkillFrame do coroutine.yield(); end
+						StartCoroutine("TSMWHYPT2", function()
+							local thing = self.TSMCraftingVisible;
+							self.TSMCraftingVisible = nil;
+							self:SetTSMCraftingVisible(thing);
+						end);
+					end);
+				end
+			end
+			-- Setup Event Handlers and register for events
+			self:SetScript("OnEvent", function(self, e, ...)
+				if e == "TRADE_SKILL_LIST_UPDATE" or e == "SKILL_LINES_CHANGED" then
+					self:Update();
+				elseif e == "TRADE_SKILL_SHOW" or e == "CRAFT_SHOW" then
+					-- If it's not yours, don't take credit for it.
+					if IsTradeSkillLinked and IsTradeSkillLinked() then
 						return;
 					end
-				end
-				if not self.gettinMadAtDumbNamingConventions then
-					self.gettinMadAtDumbNamingConventions = true;
-					self.OldNewElement = TSMAPI_FOUR.UI.NewElement;
-					TSMAPI_FOUR.UI.NewElement = function(...)
-						StartCoroutine("UpdateTradeSkills", function()
-							while InCombatLockdown() do coroutine.yield(); end
-							coroutine.yield();
-							self:Update();
-						end);
-						return self.OldNewElement(...);
-					end
-				end
-			end
-		elseif TSMCraftingTradeSkillFrame then
-			if not self.cachedTSMFrame then
-				local f = TSMCraftingTradeSkillFrame;
-				self.cachedTSMFrame = f;
-				local oldSetVisible = f.SetVisible;
-				local oldShow = f.Show;
-				local oldHide = f.Hide;
-				f.SetVisible = function(s, visible)
-					oldSetVisible(s, visible);
-					self:SetTSMCraftingVisible(visible);
-				end
-				f.Hide = function(s)
-					oldHide(s);
-					self:SetTSMCraftingVisible(false);
-				end
-				f.Show = function(s)
-					oldShow(s);
-					self:SetTSMCraftingVisible(true);
-				end
-				if f.queueBtn then
-					local setScript = f.queueBtn.SetScript;
-					f.queueBtn.SetScript = function(s, e, callback)
-						if e == "OnClick" then
-							setScript(s, e, function(...)
-								if callback then callback(...); end
-								
-								local thing = self.TSMCraftingVisible;
-								self.TSMCraftingVisible = nil;
-								self:SetTSMCraftingVisible(thing);
-							end);
-						else
-							setScript(s, e, callback);
+					if C_TradeSkillUI then
+						if (C_TradeSkillUI.IsTradeSkillLinked and C_TradeSkillUI.IsTradeSkillLinked())
+						or (C_TradeSkillUI.IsTradeSkillGuild and C_TradeSkillUI.IsTradeSkillGuild()) then
+							return;
 						end
 					end
-					f.queueBtn:SetScript("OnClick", f.queueBtn:GetScript("OnClick"));
+					if self.TSMCraftingVisible == nil then
+						self:SetTSMCraftingVisible(false);
+					end
+					self:UpdateFrameVisibility();
+					if app.Settings:GetTooltipSetting("Auto:ProfessionList") then
+						self:SetVisible(true);
+					end
+					RefreshSkills();
+					self:RefreshRecipes();
+				elseif e == "NEW_RECIPE_LEARNED" or e == "LEARNED_SPELL_IN_TAB" then
+					local spellID = ...;
+					if spellID then
+						local previousState = ATTAccountWideData.Spells[spellID];
+						ATTAccountWideData.Spells[spellID] = 1;
+						if not app.CurrentCharacter.Spells[spellID] then
+							app.CurrentCharacter.Spells[spellID] = 1;
+							if not previousState or not app.Settings:Get("AccountWide:Recipes") then
+								app:PlayFanfare();
+							end
+							app:RefreshDataQuietly(true);
+						else
+							self:RefreshRecipes();
+						end
+					end
+				elseif e == "TRADE_SKILL_CLOSE" or e == "CRAFT_CLOSE" then
+					StartCoroutine("TSMWHY3", function()
+						self:RefreshRecipes();
+						if not self:UpdateFrameVisibility() then
+							self:SetVisible(false);
+						end
+					end);
 				end
-				self:SetTSMCraftingVisible(f:IsShown());
-				return;
-			end
+			end);
+			return;
 		end
-		
-		-- Update the window and all of its row data
-		self.data.progress = 0;
-		self.data.total = 0;
-		UpdateGroups(self.data, self.data.g);
-		UpdateWindow(self, ...);
+		if self:IsVisible() then
+			if TSM_API and TSMAPI_FOUR then
+				if not self.cachedTSMFrame then
+					for i,f in ipairs({UIParent:GetChildren()}) do
+						if f.headerBgCenter then
+							self.cachedTSMFrame = f;
+							local oldSetVisible = f.SetVisible;
+							local oldShow = f.Show;
+							local oldHide = f.Hide;
+							f.SetVisible = function(s, visible)
+								oldSetVisible(s, visible);
+								self:SetTSMCraftingVisible(visible);
+							end
+							f.Hide = function(s)
+								oldHide(s);
+								self:SetTSMCraftingVisible(false);
+							end
+							f.Show = function(s)
+								oldShow(s);
+								self:SetTSMCraftingVisible(true);
+							end
+							if self.gettinMadAtDumbNamingConventions then
+								TSMAPI_FOUR.UI.NewElement = self.OldNewElement;
+								self.gettinMadAtDumbNamingConventions = nil;
+								self.OldNewElement = nil;
+							end
+							self:SetTSMCraftingVisible(f:IsShown());
+							return;
+						end
+					end
+					if not self.gettinMadAtDumbNamingConventions then
+						self.gettinMadAtDumbNamingConventions = true;
+						self.OldNewElement = TSMAPI_FOUR.UI.NewElement;
+						TSMAPI_FOUR.UI.NewElement = function(...)
+							StartCoroutine("UpdateTradeSkills", function()
+								while InCombatLockdown() do coroutine.yield(); end
+								coroutine.yield();
+								self:Update();
+							end);
+							return self.OldNewElement(...);
+						end
+					end
+				end
+			elseif TSMCraftingTradeSkillFrame then
+				if not self.cachedTSMFrame then
+					local f = TSMCraftingTradeSkillFrame;
+					self.cachedTSMFrame = f;
+					local oldSetVisible = f.SetVisible;
+					local oldShow = f.Show;
+					local oldHide = f.Hide;
+					f.SetVisible = function(s, visible)
+						oldSetVisible(s, visible);
+						self:SetTSMCraftingVisible(visible);
+					end
+					f.Hide = function(s)
+						oldHide(s);
+						self:SetTSMCraftingVisible(false);
+					end
+					f.Show = function(s)
+						oldShow(s);
+						self:SetTSMCraftingVisible(true);
+					end
+					if f.queueBtn then
+						local setScript = f.queueBtn.SetScript;
+						f.queueBtn.SetScript = function(s, e, callback)
+							if e == "OnClick" then
+								setScript(s, e, function(...)
+									if callback then callback(...); end
+									
+									local thing = self.TSMCraftingVisible;
+									self.TSMCraftingVisible = nil;
+									self:SetTSMCraftingVisible(thing);
+								end);
+							else
+								setScript(s, e, callback);
+							end
+						end
+						f.queueBtn:SetScript("OnClick", f.queueBtn:GetScript("OnClick"));
+					end
+					self:SetTSMCraftingVisible(f:IsShown());
+					return;
+				end
+			end
+			UpdateWindow(self, ...);
+		end
 	end
-end);
+});
 GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
 GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
 GameTooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
@@ -16629,7 +16697,10 @@ app.events.ADDON_LOADED = function(addonName)
 		frame:SetPoint("BOTTOMRIGHT", AuctionFrame, -8, 36);
 		
 		-- Create the movable Auction Data window.
-		local window = app:GetWindow("AuctionData", AuctionFrame);
+		local window = app:GetWindow("AuctionData", {
+			parent = AuctionFrame,
+			Silent = true,
+		});
 		window:ClearAllPoints();
 		window:SetPoint("TOPLEFT", AuctionFrame, "TOPRIGHT", 0, -10);
 		window:SetPoint("BOTTOMLEFT", AuctionFrame, "BOTTOMRIGHT", 0, 10);
