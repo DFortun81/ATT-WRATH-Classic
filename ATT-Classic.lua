@@ -3138,6 +3138,7 @@ end
 CacheFields = function(group)
 	_CacheFields(group);
 	wipe(currentMaps);
+	return group;
 end
 app.CacheField = CacheField;
 app.CacheFields = CacheFields;
@@ -7256,7 +7257,7 @@ itemHarvesterFields.text = function(t)
 				spellName, spellID = GetItemSpell(t.itemID);
 				if spellName == "Learning" then spellID = nil; end	-- RIP.
 			end
-			setmetatable(t, t.conditions[2]);
+			--setmetatable(t, t.conditions[2]);
 			local info = {
 				["name"] = itemName,
 				["itemID"] = t.itemID,
@@ -11546,354 +11547,9 @@ function app:GetDataCache()
 			end
 		});
 		local g = rootData.g;
+		local db;
 		
-		-- Dungeons & Raids
-		local db = {};
-		db.text = GROUP_FINDER;
-		db.icon = app.asset("Category_D&R");
-		db.g = app.Categories.Instances;
-		table.insert(g, db);
-		
-		-- Zones
-		if app.Categories.Zones then
-			db = {};
-			db.mapID = 947;
-			db.text = BUG_CATEGORY2;
-			db.icon = app.asset("Category_Zones");
-			db.g = app.Categories.Zones;
-			table.insert(g, db);
-		end
-		
-		-- World Drops
-		if app.Categories.WorldDrops then
-			db = {};
-			db.isWorldDropCategory = true;
-			db.text = TRANSMOG_SOURCE_4;
-			db.icon = app.asset("Category_WorldDrops");
-			db.g = app.Categories.WorldDrops;
-			table.insert(g, db);
-		end
-		
-		-- Craftables
-		if app.Categories.Craftables then
-			db = {};
-			db.expanded = false;
-			db.isCraftedCategory = true;
-			db.text = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM;
-			db.icon = app.asset("Category_Crafting");
-			db.DontEnforceSkillRequirements = true;
-			db.g = app.Categories.Craftables;
-			table.insert(g, db);
-		end
-		
-		-- Professions
-		if app.Categories.Professions then
-			db = {};
-			db.expanded = false;
-			db.text = TRADE_SKILLS;
-			db.icon = app.asset("Category_Professions");
-			db.description = "This section will only show your character's professions outside of Account and Debug Mode.";
-			db.g = app.Categories.Professions;
-			table.insert(g, db);
-		end
-
-		-- In-Game Store
-		if app.Categories.InGameShop then
-			db = app.CreateNPC(app.HeaderConstants.IN_GAME_SHOP, app.Categories.InGameShop);
-			db.expanded = false;
-			table.insert(g, db);
-		end
-		
-		-- Skills
-		if app.Categories.Skills then
-			db = {};
-			db.expanded = false;
-			db.text = SKILLS;
-			db.icon = "Interface\\ICONS\\SPELL_NATURE_THUNDERCLAP";
-			db.g = app.Categories.Skills;
-			table.insert(g, db);
-		end
-		
-		-- PvP
-		if app.Categories.PVP then
-			db = app.CreateNPC(app.HeaderConstants.PVP, app.Categories.PVP);
-			db.isPVPCategory = true;
-			table.insert(g, db);
-		end
-		
-		-- Factions (Dynamic)
-		local factionsCategory = app.CreateNPC(app.HeaderConstants.FACTIONS, {});
-		factionsCategory.g = {};
-		factionsCategory.factions = {};
-		factionsCategory.expanded = false;
-		table.insert(g, factionsCategory);
-		
-		-- Flight Paths (Dynamic)
-		local flightPathsCategory = {};
-		flightPathsCategory.g = {};
-		flightPathsCategory.fps = {};
-		flightPathsCategory.expanded = false;
-		flightPathsCategory.icon = app.asset("Category_FlightPaths");
-		flightPathsCategory.text = "Flight Paths";
-		table.insert(g, flightPathsCategory);
-		
-		-- Expansion Features
-		if app.Categories.ExpansionFeatures and #app.Categories.ExpansionFeatures > 0 then
-			db = {};
-			db.text = "Expansion Features";
-			db.icon = app.asset("Category_ExpansionFeatures");
-			db.g = app.Categories.ExpansionFeatures;
-			table.insert(g, db);
-		end
-		
-		-- Holidays
-		if app.Categories.Holidays then
-			db = app.CreateNPC(app.HeaderConstants.HOLIDAYS, app.Categories.Holidays);
-			db.description = "These events occur at consistent dates around the year based on and themed around real world holiday events.";
-			db.OnUpdate = function(t)
-				local now = C_DateAndTime.GetServerTimeLocal();
-				table.sort(t.g, function(a, b)
-					return (a.nextEvent and a.nextEvent.start or 0) < (b.nextEvent and b.nextEvent.start or 0);
-				end);
-				local temp = {};
-				for i=#t.g,1,-1 do
-					local a = t.g[i];
-					if a and a.nextEvent and a.nextEvent["end"] < now then
-						table.remove(t.g, i);
-						tinsert(temp, a);
-					end
-				end
-				for i=#temp,1,-1 do
-					tinsert(t.g, temp[i]);
-				end
-			end
-			db.isHolidayCategory = true;
-			db.expanded = false;
-			table.insert(g, db);
-		end
-		
-		-- World Events
-		if app.Categories.WorldEvents then
-			db = {};
-			db.text = BATTLE_PET_SOURCE_7;
-			db.description = "These events occur at different times in the game's timeline, typically as one time server wide events. Special celebrations such as Anniversary events and such may be found within this category.";
-			db.icon = app.asset("Category_Event");
-			db.g = app.Categories.WorldEvents;
-			db.isEventCategory = true;
-			db.expanded = false;
-			table.insert(g, db);
-		end
-		
-		-- Promotions
-		if app.Categories.Promotions then
-			db = {};
-			db.isPromotionCategory = true;
-			db.text = BATTLE_PET_SOURCE_8;
-			db.description = "This section is for real world promotions that seeped extremely rare content into the game prior to some of them appearing within the In-Game Shop.";
-			db.icon = app.asset("Category_Promo");
-			db.g = app.Categories.Promotions;
-			db.expanded = false;
-			table.insert(g, db);
-		end
-		
-		-- Achievements
-		local achievementsCategory = app.CreateFilter(105, app.Categories.Achievements or {});
-		achievementsCategory.description = "This section isn't a thing until Wrath, but by popular demand and my own insanity, I've added this section so you can track your progress for at least one of the big ticket achievements if you have the stomach for it.";
-		app.Categories.Achievements = achievementsCategory.g;
-		achievementsCategory.expanded = false;
-		achievementsCategory.achievements = {};
-		table.insert(g, achievementsCategory);
-		
-		-- Battle Pets
-		local battlePetsCategory = {};
-		battlePetsCategory.g = {};
-		battlePetsCategory.battlepets = {};
-		for _,petTypeID in ipairs({9,8,5,2,7,3,1,6,10,4}) do
-			table.insert(battlePetsCategory.g, app.CreatePetType(petTypeID));
-		end
-		battlePetsCategory.expanded = false;
-		battlePetsCategory.text = AUCTION_CATEGORY_BATTLE_PETS;
-		battlePetsCategory.icon = app.asset("Category_PetJournal");
-		table.insert(g, battlePetsCategory);
-		
-		-- Mounts
-		local mountsCategory = {};
-		mountsCategory.g = {};
-		mountsCategory.mounts = {};
-		mountsCategory.expanded = false;
-		mountsCategory.text = MOUNTS;
-		mountsCategory.icon = app.asset("Category_Mounts");
-		table.insert(g, mountsCategory);
-		
-		-- Titles
-		local titlesCategory = {};
-		titlesCategory.g = {};
-		titlesCategory.titles = {};
-		titlesCategory.expanded = false;
-		titlesCategory.text = PAPERDOLL_SIDEBAR_TITLES;
-		titlesCategory.icon = app.asset("Category_Titles");
-		table.insert(g, titlesCategory);
-		
-		-- Toys
-		local toyCategory = {};
-		toyCategory.g = {};
-		toyCategory.toys = {};
-		toyCategory.expanded = false;
-		toyCategory.text = TOY_BOX;
-		toyCategory.icon = app.asset("Category_ToyBox");
-		table.insert(g, toyCategory);
-		
-		-- Track Deaths!
-		table.insert(g, app:CreateDeathClass());
-		
-		-- Yourself.
-		table.insert(g, app.CreateUnit("player", {
-			["description"] = "Awarded for logging in.\n\nGood job! YOU DID IT!\n\nOnly visible while in Debug Mode.",
-			["races"] = { app.RaceIndex },
-			["c"] = { app.ClassIndex },
-			["r"] = app.FactionID,
-			["collected"] = 1,
-			["nmr"] = false,
-			["OnUpdate"] = function(self)
-				self.lvl = app.Level;
-				if app.Settings:Get("DebugMode") then
-					self.collectible = true;
-				else
-					self.collectible = false;
-				end
-			end
-		}));
-		
-		-- Items (Dynamic)
-		--[[
-		db = {};
-		db.g = (function()
-			local cache = GetTempDataMember("ITEM_CACHE");
-			if not cache then
-				cache = {};
-				SetTempDataMember("ITEM_CACHE", cache);
-				for i=1,40000,1 do
-					tinsert(cache, app.CreateItem(i));
-				end
-			end
-			return cache;
-		end)();
-		db.expanded = false;
-		db.text = "All Items (Dynamic)";
-		table.insert(g, db);
-		
-		-- Factions (Dynamic)
-		db = {};
-		db.g = (function()
-			local cache = {};
-			--local datas = {};
-			for i=1,929,1 do
-				local faction = app.CreateFaction(i);
-				tinsert(cache, faction);
-			end
-			--SetDataMember("FactionDB", datas);
-			return cache;
-		end)();
-		db.expanded = false;
-		db.text = "Factions (Dynamic)";
-		table.insert(g, db);
-		]]--
-		
-		-- NPCs (Dynamic)
-		--[[
-		db = {};
-		db.g = (function()
-			local cache = GetTempDataMember("NPC_CACHE");
-			if not cache then
-				cache = {};
-				SetTempDataMember("NPC_CACHE", cache);
-				for i=1,40000,1 do
-					tinsert(cache, app.CreateNPC(i));
-				end
-			end
-			return cache;
-		end)();
-		db.expanded = false;
-		db.text = "Non-Player Characters";
-		table.insert(g, db);
-		
-		-- Quests (Dynamic)
-		db = {};
-		db.g = (function()
-			local cache = GetTempDataMember("QUEST_CACHE");
-			if not cache then
-				cache = {};
-				SetTempDataMember("QUEST_CACHE", cache);
-				for i=1,40000,1 do
-					tinsert(cache, app.CreateQuest(i));
-				end
-			end
-			return cache;
-		end)();
-		db.expanded = false;
-		db.text = "Quests";
-		table.insert(g, db);
-		]]--
-		
-		
-		-- Now build the hidden "Unsorted" Window's Data
-		local unsortedData = {
-			text = L["TITLE"],
-			title = "Unsorted" .. DESCRIPTION_SEPARATOR .. app.Version,
-			icon = app.asset("logo_32x32"),
-			preview = app.asset("Discord_2_128"),
-			description = "This data hasn't been implemented yet.",
-			font = "GameFontNormalLarge",
-			expanded = true,
-			visible = true,
-			progress = 0,
-			total = 0,
-			g = {},
-		};
-		g = unsortedData.g;
-		
-		-- Never Implemented
-		if app.Categories.NeverImplemented then
-			db = {};
-			db.expanded = false;
-			db.g = app.Categories.NeverImplemented;
-			db.text = "Never Implemented";
-			table.insert(g, db);
-			CacheFields(db);
-		end
-		
-		-- Hidden Achievement Triggers
-		if app.Categories.HiddenAchievementTriggers then
-			db = {};
-			db.g = app.Categories.HiddenAchievementTriggers;
-			db.name = "Hidden Achievement Triggers";
-			db.text = db.name;
-			db.description = "Hidden Achievement Triggers";
-			db._hqt = true;
-			tinsert(g, db);
-		end
-		
-		if app.Categories.HiddenQuestTriggers then
-			db = {};
-			db.g = app.Categories.HiddenQuestTriggers;
-			db.name = "Hidden Quest Triggers";--L["HIDDEN_QUEST_TRIGGERS"];
-			db.text = db.name;
-			db.description = "These quests are triggered by completing things in the game.";--L["HIDDEN_QUEST_TRIGGERS_DESC"];
-			db._hqt = true;
-			tinsert(g, db);
-			CacheFields(db);
-		end
-		
-		-- Unsorted
-		if app.Categories.Unsorted then
-			db = {};
-			db.g = app.Categories.Unsorted;
-			db.expanded = false;
-			db.text = "Unsorted";
-			table.insert(g, db);
-		end
-		
-		-- Prepare Dynamic Categories
+		-- Dynamic Category Helper Functions (TODO: Move this)
 		local calculateAccessibility = function(source)
 			local score = 0;
 			if source.nmr then
@@ -12106,39 +11762,245 @@ function app:GetDataCache()
 			end
 			return sortByNameSafely(a, b);
 		end;
-		achievementsCategory.OnUpdate = function(self)
-			local categories = {};
-			categories[-1] = self;
-			cacheAchievementData(self, categories, self.g);
-			for i,_ in pairs(fieldCache["achievementID"]) do
-				if not self.achievements[i] then
-					local achievement = app.CreateAchievement(tonumber(i));
-					local sources = {};
-					for j,o in ipairs(_) do
-						MergeClone(sources, o);
-						if o.parent then
-							achievement.sourceParent = o.parent;
-							if not o.sourceQuests then
-								local questID = GetRelativeValue(o, "questID");
-								if questID then
-									if not achievement.sourceQuests then
-										achievement.sourceQuests = {};
-									end
-									if not contains(achievement.sourceQuests, questID) then
-										tinsert(achievement.sourceQuests, questID);
-									end
-								else
-									local sourceQuests = GetRelativeValue(o, "sourceQuests");
-									if sourceQuests then
+		
+		-- Dungeons & Raids
+		if app.Categories.Instances then
+			table.insert(g, {
+				text = GROUP_FINDER,
+				icon = app.asset("Category_D&R"),
+				g = app.Categories.Instances
+			});
+		end
+		
+		-- Outdoor Zones
+		if app.Categories.Zones then
+			table.insert(g, {
+				mapID = 947,
+				text = BUG_CATEGORY2,
+				icon = app.asset("Category_Zones"),
+				g = app.Categories.Zones
+			});
+		end
+		
+		-- World Drops
+		if app.Categories.WorldDrops then
+			table.insert(g, {
+				text = TRANSMOG_SOURCE_4,
+				icon = app.asset("Category_WorldDrops"),
+				g = app.Categories.WorldDrops,
+				isWorldDropCategory = true
+			});
+		end
+		
+		-- Crafted Items
+		if app.Categories.Craftables then
+			table.insert(g, {
+				text = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM,
+				icon = app.asset("Category_Crafting"),
+				DontEnforceSkillRequirements = true,
+				g = app.Categories.Craftables,
+				isCraftedCategory = true
+			});
+		end
+		
+		-- Professions
+		if app.Categories.Professions then
+			table.insert(g, {
+				text = TRADE_SKILLS,
+				icon = app.asset("Category_Professions"),
+				description = "This section will only show your character's professions outside of Account and Debug Mode.",
+				g = app.Categories.Professions
+			});
+		end
+
+		-- In-Game Store
+		if app.Categories.InGameShop then
+			table.insert(g, app.CreateNPC(app.HeaderConstants.IN_GAME_SHOP, {
+				g = app.Categories.InGameShop,
+				expanded = false
+			}));
+		end
+		
+		-- Skills
+		if app.Categories.Skills then
+			table.insert(g, {
+				text = SKILLS,
+				icon = "Interface\\ICONS\\SPELL_NATURE_THUNDERCLAP",
+				g = app.Categories.Skills
+			});
+		end
+		
+		-- PvP
+		if app.Categories.PVP then
+			table.insert(g, app.CreateNPC(app.HeaderConstants.PVP, {
+				g = app.Categories.PVP,
+				isPVPCategory = true
+			}));
+		end
+		
+		-- Factions (Dynamic)
+		table.insert(g, app.CreateNPC(app.HeaderConstants.FACTIONS, {
+			factions = {},
+			g = {},
+			OnUpdate = function(self)
+				for i,_ in pairs(fieldCache["factionID"]) do
+					if not self.factions[i] then
+						local faction = app.CreateFaction(tonumber(i));
+						for j,o in ipairs(_) do
+							if o.key == "factionID" then
+								for key,value in pairs(o) do faction[key] = value; end
+							end
+						end
+						self.factions[i] = faction;
+						if not faction.u or faction.u ~= 1 then
+							faction.progress = nil;
+							faction.total = nil;
+							faction.g = nil;
+							faction.parent = self;
+							tinsert(self.g, faction);
+						end
+					end
+				end
+				insertionSort(self.g, sortByTextSafely);
+				--self.OnUpdate = nil;
+			end
+		}));
+		
+		-- Flight Paths (Dynamic)
+		table.insert(g, {
+			text = "Flight Paths",
+			icon = app.asset("Category_FlightPaths"),
+			fps = {},
+			g = {},
+			OnUpdate = function(self)
+				for i,_ in pairs(fieldCache.flightPathID) do
+					if not self.fps[i] then
+						local fp = app.CreateFlightPath(tonumber(i));
+						for j,o in ipairs(_) do
+							for key,value in pairs(o) do fp[key] = value; end
+						end
+						self.fps[i] = fp;
+						if not fp.u or fp.u ~= 1 then
+							fp.g = nil;
+							fp.maps = nil;
+							fp.parent = self;
+							tinsert(self.g, fp);
+						end
+					end
+				end
+				for i,_ in pairs(ATTClassicAD.LocalizedFlightPathDB) do
+					if not self.fps[i] then
+						local fp = app.CreateFlightPath(tonumber(i));
+						self.fps[i] = fp;
+						if not _.u or _.u ~= 1 then
+							fp.r = _.r;
+							fp.u = _.u;
+							fp.parent = self;
+							tinsert(self.g, fp);
+						end
+					end
+				end
+				insertionSort(self.g, sortByTextSafely);
+				--self.OnUpdate = nil;
+			end
+		});
+		
+		-- Expansion Features
+		if app.Categories.ExpansionFeatures and #app.Categories.ExpansionFeatures > 0 then
+			table.insert(g, {
+				text = "Expansion Features",
+				icon = app.asset("Category_ExpansionFeatures"),
+				g = app.Categories.ExpansionFeatures
+			});
+		end
+		
+		-- Holidays
+		if app.Categories.Holidays then
+			table.insert(g, app.CreateNPC(app.HeaderConstants.HOLIDAYS, {
+				description = "These events occur at consistent dates around the year based on and themed around real world holiday events.",
+				g = app.Categories.Holidays,
+				OnUpdate = function(t)
+					local now = C_DateAndTime.GetServerTimeLocal();
+					table.sort(t.g, function(a, b)
+						return (a.nextEvent and a.nextEvent.start or 0) < (b.nextEvent and b.nextEvent.start or 0);
+					end);
+					local temp = {};
+					for i=#t.g,1,-1 do
+						local a = t.g[i];
+						if a and a.nextEvent and a.nextEvent["end"] < now then
+							table.remove(t.g, i);
+							tinsert(temp, a);
+						end
+					end
+					for i=#temp,1,-1 do
+						tinsert(t.g, temp[i]);
+					end
+				end,
+				isHolidayCategory = true,
+			}));
+		end
+		
+		-- World Events
+		if app.Categories.WorldEvents then
+			table.insert(g, {
+				text = BATTLE_PET_SOURCE_7;
+				icon = app.asset("Category_Event"),
+				description = "These events occur at different times in the game's timeline, typically as one time server wide events. Special celebrations such as Anniversary events and such may be found within this category.",
+				g = app.Categories.WorldEvents,
+				isEventCategory = true,
+			});
+		end
+		
+		-- Promotions
+		if app.Categories.Promotions then
+			table.insert(g, {
+				text = BATTLE_PET_SOURCE_8,
+				icon = app.asset("Category_Promo"),
+				description = "This section is for real world promotions that seeped extremely rare content into the game prior to some of them appearing within the In-Game Shop.",
+				g = app.Categories.Promotions,
+				isPromotionCategory = true
+			});
+		end
+		
+		-- Achievements (Dynamic)
+		app.Categories.Achievements = app.Categories.Achievements or {};
+		local achievementsCategory = app.CreateFilter(105, {
+			g = app.Categories.Achievements,
+			achievements = {},
+			OnUpdate = function(self)
+				local categories = {};
+				categories[-1] = self;
+				cacheAchievementData(self, categories, self.g);
+				for i,_ in pairs(fieldCache["achievementID"]) do
+					if not self.achievements[i] then
+						local achievement = app.CreateAchievement(tonumber(i));
+						local sources = {};
+						for j,o in ipairs(_) do
+							MergeClone(sources, o);
+							if o.parent then
+								achievement.sourceParent = o.parent;
+								if not o.sourceQuests then
+									local questID = GetRelativeValue(o, "questID");
+									if questID then
 										if not achievement.sourceQuests then
 											achievement.sourceQuests = {};
-											for k,questID in ipairs(sourceQuests) do
-												tinsert(achievement.sourceQuests, questID);
-											end
-										else
-											for k,questID in ipairs(sourceQuests) do
-												if not contains(achievement.sourceQuests, questID) then
+										end
+										if not contains(achievement.sourceQuests, questID) then
+											tinsert(achievement.sourceQuests, questID);
+										end
+									else
+										local sourceQuests = GetRelativeValue(o, "sourceQuests");
+										if sourceQuests then
+											if not achievement.sourceQuests then
+												achievement.sourceQuests = {};
+												for k,questID in ipairs(sourceQuests) do
 													tinsert(achievement.sourceQuests, questID);
+												end
+											else
+												for k,questID in ipairs(sourceQuests) do
+													if not contains(achievement.sourceQuests, questID) then
+														tinsert(achievement.sourceQuests, questID);
+													end
 												end
 											end
 										end
@@ -12146,320 +12008,392 @@ function app:GetDataCache()
 								end
 							end
 						end
-					end
-					local count = #sources;
-					if count == 1 then
-						for key,value in pairs(sources[1]) do
-							achievement[key] = value;
+						local count = #sources;
+						if count == 1 then
+							for key,value in pairs(sources[1]) do
+								achievement[key] = value;
+							end
+						elseif count > 1 then
+							-- Find the most accessible version of the thing.
+							insertionSort(sources, sortByAccessibility);
+							for key,value in pairs(sources[1]) do
+								achievement[key] = value;
+							end
 						end
-					elseif count > 1 then
-						-- Find the most accessible version of the thing.
-						insertionSort(sources, sortByAccessibility);
-						for key,value in pairs(sources[1]) do
-							achievement[key] = value;
+						self.achievements[i] = achievement;
+						achievement.progress = nil;
+						achievement.total = nil;
+						achievement.g = nil;
+						achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
+						if not achievement.u or achievement.u ~= 1 then
+							tinsert(achievement.parent.g, achievement);
 						end
-					end
-					self.achievements[i] = achievement;
-					achievement.progress = nil;
-					achievement.total = nil;
-					achievement.g = nil;
-					achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
-					if not achievement.u or achievement.u ~= 1 then
-						tinsert(achievement.parent.g, achievement);
 					end
 				end
-			end
-			if GetCategoryList then
-				local unsortedData = app:GetWindow("Unsorted").data;
-				for _,categoryID in ipairs(GetCategoryList()) do
-					local numAchievements = GetCategoryNumAchievements(categoryID);
-					if numAchievements > 0 then
-						for i=1,numAchievements,1 do
-							local achievementID, name = GetAchievementInfo(categoryID, i);
-							if achievementID and not self.achievements[achievementID] then
-								local achievement = app.CreateAchievement(achievementID);
-								self.achievements[i] = achievement;
-								achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
-								achievement.description = "@CRIEVE: This achievement has not been sourced yet.";
-								if not achievement.u or achievement.u ~= 1 then
-									tinsert(achievement.parent.g, achievement);
-								end
-								tinsert(unsortedData, achievement);
-								local numCriteria = GetAchievementNumCriteria(achievementID);
-								if numCriteria > 0 then
-									local g = {};
-									for j=1,numCriteria,1 do
-										local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, j);
-										local criteriaObject = app.CreateAchievementCriteria(criteriaID);
-										criteriaObject.parent = achievement;
-										table.insert(g, criteriaObject);
+				if GetCategoryList then
+					local unsortedData = app:GetWindow("Unsorted").data;
+					for _,categoryID in ipairs(GetCategoryList()) do
+						local numAchievements = GetCategoryNumAchievements(categoryID);
+						if numAchievements > 0 then
+							for i=1,numAchievements,1 do
+								local achievementID, name = GetAchievementInfo(categoryID, i);
+								if achievementID and not self.achievements[achievementID] then
+									local achievement = app.CreateAchievement(achievementID);
+									self.achievements[i] = achievement;
+									achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
+									achievement.description = "@CRIEVE: This achievement has not been sourced yet.";
+									if not achievement.u or achievement.u ~= 1 then
+										tinsert(achievement.parent.g, achievement);
 									end
-									achievement.g = g;
+									tinsert(unsortedData, achievement);
+									local numCriteria = GetAchievementNumCriteria(achievementID);
+									if numCriteria > 0 then
+										local g = {};
+										for j=1,numCriteria,1 do
+											local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, j);
+											local criteriaObject = app.CreateAchievementCriteria(criteriaID);
+											criteriaObject.parent = achievement;
+											table.insert(g, criteriaObject);
+										end
+										achievement.g = g;
+									end
+									CacheFields(achievement);
+									
+									-- Put a copy in Unsorted.
+									achievement = app.CreateAchievement(achievementID);
+									achievement.parent = unsortedData;
+									tinsert(unsortedData.g, achievement);
 								end
-								CacheFields(achievement);
-								
-								-- Put a copy in Unsorted.
-								achievement = app.CreateAchievement(achievementID);
-								achievement.parent = unsortedData;
-								tinsert(unsortedData.g, achievement);
 							end
 						end
 					end
 				end
+				insertionSort(self.g, achievementSort, true);
+				--self.OnUpdate = nil;
 			end
-			insertionSort(self.g, achievementSort, true);
+		});
+		if not (GetCategoryInfo and GetCategoryInfo(92) ~= "") then
+			achievementsCategory.description = "This section isn't a thing until Wrath, but by popular demand and my own insanity, I've added this section so you can track your progress for at least one of the big ticket achievements if you have the stomach for it.";
 		end
-		battlePetsCategory.OnUpdate = function(self)
-			local petTypes = {};
-			for i,petType in ipairs(self.g) do
-				if petType.petTypeID and petType.key == "petTypeID" then
-					petTypes[petType.petTypeID] = petType;
-					if not petType.g then
-						petType.g = {};
+		table.insert(g, achievementsCategory);
+		
+		-- Battle Pets (Dynamic)
+		local battlePetsCategory = {
+			text = AUCTION_CATEGORY_BATTLE_PETS,
+			icon = app.asset("Category_PetJournal"),
+			battlepets = {},
+			g = {},
+			OnUpdate = function(self)
+				local petTypes = {};
+				for i,petType in ipairs(self.g) do
+					if petType.petTypeID and petType.key == "petTypeID" then
+						petTypes[petType.petTypeID] = petType;
+						if not petType.g then
+							petType.g = {};
+						end
 					end
 				end
-			end
-			for i,_ in pairs(fieldCache["speciesID"]) do
-				if not self.battlepets[i] then
-					local battlepet = app.CreateSpecies(tonumber(i));
-					local sources = {};
-					for j,o in ipairs(_) do
-						MergeClone(sources, o);
-						local coords = GetRelativeValue(o, "coords");
-						if coords then
-							if not battlepet.coords then
-								battlepet.coords = { unpack(coords) };
-							elseif battlepet.coords ~= coords then
-								for i,coord in ipairs(coords) do
-									tinsert(battlepet.coords, coord);
+				for i,_ in pairs(fieldCache["speciesID"]) do
+					if not self.battlepets[i] then
+						local battlepet = app.CreateSpecies(tonumber(i));
+						local sources = {};
+						for j,o in ipairs(_) do
+							MergeClone(sources, o);
+							local coords = GetRelativeValue(o, "coords");
+							if coords then
+								if not battlepet.coords then
+									battlepet.coords = { unpack(coords) };
+								elseif battlepet.coords ~= coords then
+									for i,coord in ipairs(coords) do
+										tinsert(battlepet.coords, coord);
+									end
 								end
 							end
-						end
-						if o.parent and not o.sourceQuests then
-							local questID = GetRelativeValue(o, "questID");
-							if questID then
-								if not battlepet.sourceQuests then
-									battlepet.sourceQuests = {};
-								end
-								if not contains(battlepet.sourceQuests, questID) then
-									tinsert(battlepet.sourceQuests, questID);
-								end
-							else
-								local sourceQuests = GetRelativeValue(o, "sourceQuests");
-								if sourceQuests then
+							if o.parent and not o.sourceQuests then
+								local questID = GetRelativeValue(o, "questID");
+								if questID then
 									if not battlepet.sourceQuests then
 										battlepet.sourceQuests = {};
-										for k,questID in ipairs(sourceQuests) do
-											tinsert(battlepet.sourceQuests, questID);
-										end
-									else
-										for k,questID in ipairs(sourceQuests) do
-											if not contains(battlepet.sourceQuests, questID) then
+									end
+									if not contains(battlepet.sourceQuests, questID) then
+										tinsert(battlepet.sourceQuests, questID);
+									end
+								else
+									local sourceQuests = GetRelativeValue(o, "sourceQuests");
+									if sourceQuests then
+										if not battlepet.sourceQuests then
+											battlepet.sourceQuests = {};
+											for k,questID in ipairs(sourceQuests) do
 												tinsert(battlepet.sourceQuests, questID);
+											end
+										else
+											for k,questID in ipairs(sourceQuests) do
+												if not contains(battlepet.sourceQuests, questID) then
+													tinsert(battlepet.sourceQuests, questID);
+												end
 											end
 										end
 									end
 								end
 							end
 						end
-					end
-					local count = #sources;
-					if count == 1 then
-						for key,value in pairs(sources[1]) do
-							battlepet[key] = value;
+						local count = #sources;
+						if count == 1 then
+							for key,value in pairs(sources[1]) do
+								battlepet[key] = value;
+							end
+						elseif count > 1 then
+							-- Find the most accessible version of the thing.
+							insertionSort(sources, sortByAccessibility);
+							for key,value in pairs(sources[1]) do
+								battlepet[key] = value;
+							end
 						end
-					elseif count > 1 then
-						-- Find the most accessible version of the thing.
-						insertionSort(sources, sortByAccessibility);
-						for key,value in pairs(sources[1]) do
-							battlepet[key] = value;
+						self.battlepets[i] = battlepet;
+						battlepet.progress = nil;
+						battlepet.total = nil;
+						battlepet.g = nil;
+						battlepet.parent = battlepet.petTypeID and petTypes[battlepet.petTypeID] or self;
+						if not battlepet.u or battlepet.u ~= 1 then
+							tinsert(battlepet.parent.g, battlepet);
 						end
-					end
-					self.battlepets[i] = battlepet;
-					battlepet.progress = nil;
-					battlepet.total = nil;
-					battlepet.g = nil;
-					battlepet.parent = battlepet.petTypeID and petTypes[battlepet.petTypeID] or self;
-					if not battlepet.u or battlepet.u ~= 1 then
-						tinsert(battlepet.parent.g, battlepet);
 					end
 				end
+				insertionSort(self.g, sortByTextSafely);
+				for i,petType in pairs(petTypes) do
+					insertionSort(petType.g, sortByTextSafely);
+				end
+				--self.OnUpdate = nil;
 			end
-			insertionSort(self.g, sortByTextSafely);
-			for i,petType in pairs(petTypes) do
-				insertionSort(petType.g, sortByTextSafely);
-			end
+		};
+		for _,petTypeID in ipairs({9,8,5,2,7,3,1,6,10,4}) do
+			table.insert(battlePetsCategory.g, app.CreatePetType(petTypeID));
 		end
-		factionsCategory.OnUpdate = function(self)
-			for i,_ in pairs(fieldCache["factionID"]) do
-				if not self.factions[i] then
-					local faction = app.CreateFaction(tonumber(i));
-					for j,o in ipairs(_) do
-						if o.key == "factionID" then
-							for key,value in pairs(o) do faction[key] = value; end
+		table.insert(g, battlePetsCategory);
+		
+		-- Mounts
+		table.insert(g, {
+			text = MOUNTS,
+			icon = app.asset("Category_Mounts"),
+			mounts = {},
+			g = {},
+			OnUpdate = function(self)
+				local headers = {};
+				for i,header in ipairs(self.g) do
+					if header.headerID then
+						headers[header.headerID] = header;
+						if not header.g then
+							header.g = {};
 						end
 					end
-					self.factions[i] = faction;
-					if not faction.u or faction.u ~= 1 then
-						faction.progress = nil;
-						faction.total = nil;
-						faction.g = nil;
-						faction.parent = self;
-						tinsert(self.g, faction);
-					end
 				end
-			end
-			insertionSort(self.g, sortByTextSafely);
-		end
-		flightPathsCategory.OnUpdate = function(self)
-			for i,_ in pairs(fieldCache.flightPathID) do
-				if not self.fps[i] then
-					local fp = app.CreateFlightPath(tonumber(i));
-					for j,o in ipairs(_) do
-						for key,value in pairs(o) do fp[key] = value; end
-					end
-					self.fps[i] = fp;
-					if not fp.u or fp.u ~= 1 then
-						fp.g = nil;
-						fp.maps = nil;
-						fp.parent = self;
-						tinsert(self.g, fp);
-					end
-				end
-			end
-			for i,_ in pairs(ATTClassicAD.LocalizedFlightPathDB) do
-				if not self.fps[i] then
-					local fp = app.CreateFlightPath(tonumber(i));
-					self.fps[i] = fp;
-					if not _.u or _.u ~= 1 then
-						fp.r = _.r;
-						fp.u = _.u;
-						fp.parent = self;
-						tinsert(self.g, fp);
-					end
-				end
-			end
-			insertionSort(self.g, sortByTextSafely);
-		end;
-		mountsCategory.OnUpdate = function(self)
-			local headers = {};
-			for i,header in ipairs(self.g) do
-				if header.headerID then
-					headers[header.headerID] = header;
-					if not header.g then
-						header.g = {};
-					end
-				end
-			end
-			for i,_ in pairs(fieldCache["spellID"]) do
-				if ((_[1].f and _[1].f == 100) or (_[1].filterID and _[1].filterID == 100)) and not self.mounts[i] then
-					local mount = app.CreateMount(tonumber(i));
-					self.mounts[i] = buildCategoryEntry(self, headers, _, mount);
-					if mount.u and mount.u < 3 then
-						for j,o in ipairs(_) do
-							if o.itemID and not o.u or o.u >= 3 then
-								mount.u = nil;
+				for i,_ in pairs(fieldCache["spellID"]) do
+					if ((_[1].f and _[1].f == 100) or (_[1].filterID and _[1].filterID == 100)) and not self.mounts[i] then
+						local mount = app.CreateMount(tonumber(i));
+						self.mounts[i] = buildCategoryEntry(self, headers, _, mount);
+						if mount.u and mount.u < 3 then
+							for j,o in ipairs(_) do
+								if o.itemID and not o.u or o.u >= 3 then
+									mount.u = nil;
+								end
 							end
 						end
 					end
 				end
-			end
-			insertionSort(self.g, sortByTextSafely);
-			for i,header in pairs(headers) do
-				insertionSort(header.g, sortByTextSafely);
-			end
-			for i=#self.g,1,-1 do
-				header = self.g[i];
-				if header.g and #header.g < 1 and header.headerID then
-					headers[header.headerID] = nil;
-					table.remove(self.g, i);
-				end
-			end
-		end
-		titlesCategory.OnUpdate = function(self)
-			local headers = {};
-			for i,header in ipairs(self.g) do
-				if header.headerID and header.key == "headerID" then
-					headers[header.headerID] = header;
-					if not header.g then
-						header.g = {};
-					end
-				end
-			end
-			for i,_ in pairs(fieldCache["titleID"]) do
-				local titleID = tonumber(i);
-				if not self.titles[titleID] then
-					local titleIDs = _[1].titleIDs;
-					if titleIDs then
-						for index,j in ipairs(titleIDs) do
-							if not self.titles[j] then
-								local titleObject = app.CreateTitle(j, { ["playerGender"] = index == 1 and 2 or 3 });
-								self.titles[j] = buildCategoryEntry(self, headers, _, titleObject);
-								titleObject.OnUpdate = titleObject.OnUpdateForSpecificGender;
-							end
-						end
-					else
-						self.titles[titleID] = buildCategoryEntry(self, headers, _, app.CreateTitle(titleID));
-					end
-				end
-			end
-			if not headers[app.HeaderConstants.HONOR_TITLES] then
-				local searchResults = SearchForField("headerID", app.HeaderConstants.HONOR_TITLES);
-				if searchResults and #searchResults > 0 then
-					header = app.CreateNPC(app.HeaderConstants.HONOR_TITLES);
-					headers[app.HeaderConstants.HONOR_TITLES] = header;
-					tinsert(self.g, header);
-					header.parent = self;
-					header.u = searchResults[1].u;
-					header.g = searchResults[1].g;
-					header.ignoreSort = true;
-				end
-			end
-			insertionSort(self.g, sortByTextSafely);
-			for i,header in pairs(headers) do
-				if not header.ignoreSort then
+				insertionSort(self.g, sortByTextSafely);
+				for i,header in pairs(headers) do
 					insertionSort(header.g, sortByTextSafely);
 				end
-			end
-			for i=#self.g,1,-1 do
-				header = self.g[i];
-				if header.g and #header.g < 1 and header.headerID and header.key == "headerID" then
-					headers[header.headerID] = nil;
-					table.remove(self.g, i);
-				end
-			end
-		end
-		toyCategory.OnUpdate = function(self)
-			local headers = {};
-			for i,header in ipairs(self.g) do
-				if header.headerID and header.key == "headerID" then
-					headers[header.headerID] = header;
-					if not header.g then
-						header.g = {};
+				for i=#self.g,1,-1 do
+					header = self.g[i];
+					if header.g and #header.g < 1 and header.headerID then
+						headers[header.headerID] = nil;
+						table.remove(self.g, i);
 					end
 				end
+				--self.OnUpdate = nil;
 			end
-			for i,_ in pairs(fieldCache["toyID"]) do
-				if not self.toys[i] and i < 160000 then
-					self.toys[i] = buildCategoryEntry(self, headers, _, app.CreateToy(tonumber(i)));
+		});
+		
+		-- Titles (Dynamic)
+		table.insert(g, {
+			text = PAPERDOLL_SIDEBAR_TITLES,
+			icon = app.asset("Category_Titles"),
+			titles = {},
+			g = {},
+			OnUpdate = function(self)
+				local headers = {};
+				for i,header in ipairs(self.g) do
+					if header.headerID and header.key == "headerID" then
+						headers[header.headerID] = header;
+						if not header.g then
+							header.g = {};
+						end
+					end
+				end
+				for i,_ in pairs(fieldCache["titleID"]) do
+					local titleID = tonumber(i);
+					if not self.titles[titleID] then
+						local titleIDs = _[1].titleIDs;
+						if titleIDs then
+							for index,j in ipairs(titleIDs) do
+								if not self.titles[j] then
+									local titleObject = app.CreateTitle(j, { ["playerGender"] = index == 1 and 2 or 3 });
+									self.titles[j] = buildCategoryEntry(self, headers, _, titleObject);
+									titleObject.OnUpdate = titleObject.OnUpdateForSpecificGender;
+								end
+							end
+						else
+							self.titles[titleID] = buildCategoryEntry(self, headers, _, app.CreateTitle(titleID));
+						end
+					end
+				end
+				if not headers[app.HeaderConstants.HONOR_TITLES] then
+					local searchResults = SearchForField("headerID", app.HeaderConstants.HONOR_TITLES);
+					if searchResults and #searchResults > 0 then
+						header = app.CreateNPC(app.HeaderConstants.HONOR_TITLES);
+						headers[app.HeaderConstants.HONOR_TITLES] = header;
+						tinsert(self.g, header);
+						header.parent = self;
+						header.u = searchResults[1].u;
+						header.g = searchResults[1].g;
+						header.ignoreSort = true;
+					end
+				end
+				insertionSort(self.g, sortByTextSafely);
+				for i,header in pairs(headers) do
+					if not header.ignoreSort then
+						insertionSort(header.g, sortByTextSafely);
+					end
+				end
+				for i=#self.g,1,-1 do
+					header = self.g[i];
+					if header.g and #header.g < 1 and header.headerID and header.key == "headerID" then
+						headers[header.headerID] = nil;
+						table.remove(self.g, i);
+					end
+				end
+				--self.OnUpdate = nil;
+			end
+		});
+		
+		-- Toys (Dynamic)
+		table.insert(g, {
+			text = TOY_BOX,
+			icon = app.asset("Category_ToyBox"),
+			toys = {},
+			g = {},
+			OnUpdate = function(self)
+				local headers = {};
+				for i,header in ipairs(self.g) do
+					if header.headerID and header.key == "headerID" then
+						headers[header.headerID] = header;
+						if not header.g then
+							header.g = {};
+						end
+					end
+				end
+				for i,_ in pairs(fieldCache["toyID"]) do
+					if not self.toys[i] and i < 160000 then
+						self.toys[i] = buildCategoryEntry(self, headers, _, app.CreateToy(tonumber(i)));
+					end
+				end
+				insertionSort(self.g, sortByTextSafely);
+				for i,header in pairs(headers) do
+					insertionSort(header.g, sortByTextSafely);
+				end
+				for i=#self.g,1,-1 do
+					header = self.g[i];
+					if header.g and #header.g < 1 and header.headerID and header.key == "headerID" then
+						headers[header.headerID] = nil;
+						table.remove(self.g, i);
+					end
+				end
+				--self.OnUpdate = nil;
+			end,
+		});
+		
+		-- Track Deaths!
+		table.insert(g, app:CreateDeathClass());
+		
+		-- Yourself.
+		table.insert(g, app.CreateUnit("player", {
+			description = "Awarded for logging in.\n\nGood job! YOU DID IT!\n\nOnly visible while in Debug Mode.",
+			races = { app.RaceIndex },
+			c = { app.ClassIndex },
+			r = app.FactionID,
+			collected = 1,
+			nmr = false,
+			OnUpdate = function(self)
+				self.lvl = app.Level;
+				if app.Settings:Get("DebugMode") then
+					self.collectible = true;
+				else
+					self.collectible = false;
 				end
 			end
-			insertionSort(self.g, sortByTextSafely);
-			for i,header in pairs(headers) do
-				insertionSort(header.g, sortByTextSafely);
-			end
-			for i=#self.g,1,-1 do
-				header = self.g[i];
-				if header.g and #header.g < 1 and header.headerID and header.key == "headerID" then
-					headers[header.headerID] = nil;
-					table.remove(self.g, i);
-				end
-			end
+		}));
+		
+		
+		-- Now build the hidden "Unsorted" Window's Data
+		local unsortedData = {
+			text = L["TITLE"],
+			title = "Unsorted" .. DESCRIPTION_SEPARATOR .. app.Version,
+			icon = app.asset("logo_32x32"),
+			preview = app.asset("Discord_2_128"),
+			description = "This data hasn't been implemented yet.",
+			font = "GameFontNormalLarge",
+			expanded = true,
+			visible = true,
+			progress = 0,
+			total = 0,
+			g = {},
+		};
+		g = unsortedData.g;
+		
+		-- Never Implemented
+		if app.Categories.NeverImplemented then
+			table.insert(g, CacheFields({
+				text = "Never Implemented",
+				g = app.Categories.NeverImplemented,
+			}));
+		end
+		
+		-- Hidden Achievement Triggers
+		if app.Categories.HiddenAchievementTriggers then
+			table.insert(g, {
+				text = "Hidden Achievement Triggers",
+				description = "Hidden Achievement Triggers",
+				g = app.Categories.HiddenAchievementTriggers,
+				_hqt = true,
+			});
+		end
+		
+		if app.Categories.HiddenQuestTriggers then
+			table.insert(g, CacheFields({
+				text = "Hidden Quest Triggers",--L["HIDDEN_QUEST_TRIGGERS"]
+				description = "These quests are triggered by completing things in the game.",--L["HIDDEN_QUEST_TRIGGERS_DESC"]
+				g = app.Categories.HiddenQuestTriggers,
+				_hqt = true
+			}));
+		end
+		
+		-- Unsorted
+		if app.Categories.Unsorted then
+			table.insert(g, {
+				text = "Unsorted",
+				g = app.Categories.Unsorted
+			});
 		end
 		
 		-- Now that we have data, build the structure for the main window.
+		print("GetDataCache P1", (GetTimePreciseSec() - lastUpdate) * 10000);
+		local lastUpdate = GetTimePreciseSec();
 		BuildGroups(rootData, rootData.g);
+		print("BuildGroups", (GetTimePreciseSec() - lastUpdate) * 10000);
+		local lastUpdate = GetTimePreciseSec();
 		CacheFields(rootData);
+		print("CacheFields", (GetTimePreciseSec() - lastUpdate) * 10000);
 		app:GetWindow("Prime").data = rootData;
 		
 		-- Determine how many tierID instances could be found
@@ -12499,31 +12433,9 @@ function app:GetDataCache()
 		-- Build Unsorted as well!
 		BuildGroups(unsortedData, unsortedData.g);
 		app:GetWindow("Unsorted").data = unsortedData;
+		
+		-- TODO: Move this to a startup runner
 		app.CacheFlightPathData();
-		
-		
-		-- Check for Vendors missing Coordinates
-		--[[
-		local searchResults = SearchForFieldContainer("creatureID");
-		if searchResults then
-			local missingCoordinates = {};
-			for npcID,_ in pairs(searchResults) do
-				for i,data in ipairs(_) do
-					if not data.coords and data.parent then
-						if data.parent.headerID == app.HeaderConstants.VENDORS or data.parent.headerID == app.HeaderConstants.RARES then 
-							-- If this is a rare or vendor with no coordinates
-							tinsert(missingCoordinates, npcID);
-							break;
-						end
-					end
-				end
-			end
-			insertionSort(missingCoordinates);
-			for i,npcID in ipairs(missingCoordinates) do
-				print("NPC ID " .. npcID .. " is missing coordinates.");
-			end
-		end
-		]]--
 		
 		-- All future calls to this function will return the root data.
 		app.GetDataCache = function()
@@ -14115,56 +14027,56 @@ app:GetWindow("ItemFinder", UIParent, function(self, ...)
 	if self:IsVisible() then
 		if not self.initialized then
 			self.initialized = true;
-			local db = {};
-			db.g = {
-				{
-					['text'] = "Update Now",
-					['icon'] = app.asset("ability_monk_roll"),
-					["description"] = "Click this to update the listing. Doing so shall remove all invalid, grey, or white items.",
-					['visible'] = true,
-					['fails'] = 0,
-					['OnClick'] = function(row, button)
-						self:Update(true);
-						return true;
-					end,
-					['OnUpdate'] = app.AlwaysShowUpdate,
+			self.data = {
+				text = "Item Finder",
+				icon = app.asset("Achievement_Dungeon_GloryoftheRaider"),
+				description = "This is a contribution debug tool. NOT intended to be used by the majority of the player base.\n\nUsing this tool will lag your WoW every 5 seconds. Not sure why - likely a bad Blizzard Database thing.",
+				visible = true,
+				expanded = true,
+				progress = 0,
+				total = 0,
+				back = 1,
+				currentItemID = 60000,
+				minimumItemID = 0,
+				g = {
+					{
+						text = "Update Now",
+						icon = app.asset("ability_monk_roll"),
+						description = "Click this to update the listing. Doing so shall remove all invalid, grey, or white items.",
+						visible = true,
+						fails = 0,
+						OnClick = function(row, button)
+							self:Update(true);
+							return true;
+						end,
+						OnUpdate = app.AlwaysShowUpdate,
+					},
 				},
-			};
-			db.OnUpdate = function(t)
-				local g = t.g;
-				if g then
-					local count = #g;
-					if count > 0 then
-						for i=count,1,-1 do
-							if g[i].collected then
-								table.remove(g, i);
+				OnUpdate = function(header)
+					local g = header.g;
+					if g then
+						local count = #g;
+						if count > 0 then
+							for i=count,1,-1 do
+								if g[i].collected then
+									table.remove(g, i);
+								end
 							end
 						end
-					end
-					for count=#g,100 do
-						local i = db.currentItemID - 1;
-						if i > db.minimumItemID then
-							db.currentItemID = i;
-							local t = app.CreateItemHarvester(i);
-							t.parent = db;
-							tinsert(g, t);
+						for count=#g,100 do
+							local i = header.currentItemID - 1;
+							if i > header.minimumItemID then
+								header.currentItemID = i;
+								tinsert(g, app.CreateItemHarvester(i, {
+									parent = header
+								}));
+							end
 						end
+						self:DelayedUpdate(true);
+						self.delayRemaining = 1;
 					end
-					self:DelayedUpdate(true);
-					self.delayRemaining = 1;
 				end
-			end;
-			db.text = "Item Finder";
-			db.icon = app.asset("Achievement_Dungeon_GloryoftheRaider");
-			db.description = "This is a contribution debug tool. NOT intended to be used by the majority of the player base.\n\nUsing this tool will lag your WoW every 5 seconds. Not sure why - likely a bad Blizzard Database thing.";
-			db.visible = true;
-			db.expanded = true;
-			db.progress = 0;
-			db.total = 0;
-			db.back = 1;
-			db.currentItemID = 60000;
-			db.minimumItemID = 0;
-			self.data = db;
+			};
 		end
 		self.data.progress = 0;
 		self.data.total = 0;
