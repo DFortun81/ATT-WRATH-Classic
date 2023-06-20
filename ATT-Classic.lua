@@ -700,6 +700,21 @@ local achievementTooltipText = {
 	[17300] = "DPA",	-- Defense Protocol Alpha: The Oculus
 	[17301] = "DPA",	-- Defense Protocol Alpha: Utgarde Pinnacle
 	[17302] = "DPA",	-- Defense Protocol Alpha: The Culling of Stratholme
+	
+	[18590] = "DPB",	-- Defense Protocol Beta: Utgarde Keep
+	[18591] = "DPB",	-- Defense Protocol Beta: The Nexus
+	[18592] = "DPB",	-- Defense Protocol Beta: Azjol-Nerub
+	[18593] = "DPB",	-- Defense Protocol Beta: Ahn'kahet: The Old Kingdom
+	[18594] = "DPB",	-- Defense Protocol Beta: Drak'Tharon Keep
+	[18595] = "DPB",	-- Defense Protocol Beta: The Violet Hold
+	[18596] = "DPB",	-- Defense Protocol Beta: Gundrak
+	[18597] = "DPB",	-- Defense Protocol Beta: Halls of Stone
+	[18598] = "DPB",	-- Defense Protocol Beta: Halls of Lightning
+	[18599] = "DPB",	-- Defense Protocol Beta: The Oculus
+	[18600] = "DPB",	-- Defense Protocol Beta: Utgarde Pinnacle
+	[18601] = "DPB",	-- Defense Protocol Beta: The Culling of Stratholme
+	[18677] = "DPB",	-- Defense Protocol Beta: Trial of the Champion (A)
+	[18678] = "DPB",	-- Defense Protocol Beta: Trial of the Champion (H)
 };
 local function BuildGroups(parent)
 	if parent.g then
@@ -11240,7 +11255,7 @@ local function RowOnEnter(self)
 			GameTooltip:AddLine("This is a breadcrumb quest.");
 		end
 		
-		--GameTooltip:AddDoubleLine("Type", reference.__type);
+		GameTooltip:AddDoubleLine("Type", reference.__type);
 		
 		-- Show lockout information about an Instance (Raid or Dungeon)
 		local locks = reference.locks;
