@@ -9739,12 +9739,9 @@ end
 local function MinimapButtonOnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT");
 	GameTooltip:ClearLines();
+	
 	local reference = app:GetDataCache();
 	if reference then
-		local left, right = strsplit(DESCRIPTION_SEPARATOR, reference.title);
-		GameTooltip:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
-		GameTooltip:AddDoubleLine(left, right, 1, 1, 1);
-		GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1);
 		GameTooltipIcon:SetSize(72,72);
 		GameTooltipIcon:ClearAllPoints();
 		GameTooltipIcon:SetPoint("TOPRIGHT", GameTooltip, "TOPLEFT", 0, 0);
@@ -9756,6 +9753,17 @@ local function MinimapButtonOnEnter(self)
 			GameTooltipIcon.icon:SetTexCoord(0, 1, 0, 1);
 		end
 		GameTooltipIcon:Show();
+		
+		local prime = app:GetWindow("Prime");
+		if prime and prime.forceFullDataRefresh then
+			GameTooltip:AddDoubleLine(reference.text, L["MAIN_LIST_REQUIRES_REFRESH"], 1, 1, 1);
+			GameTooltip:AddLine("Click to refresh addon.", 1, 1, 1);
+		else
+			local left, right = strsplit(DESCRIPTION_SEPARATOR, reference.title);
+			GameTooltip:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
+			GameTooltip:AddDoubleLine(left, right, 1, 1, 1);
+			GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1);
+		end
 	else
 		GameTooltip:AddDoubleLine(L["TITLE"], "Click to load addon.", 1, 1, 1);
 		GameTooltipIcon:Hide();
@@ -11527,9 +11535,12 @@ local function UpdateWindowColor(self, suffix)
 	self:SetBackdropColor(0, 0, 0, 1);
 end
 function app:UpdateWindows(force, fromTrigger)
+	print("UpdateWindows: ", force, fromTrigger);
+	local lastUpdate = GetTimePreciseSec();
 	for name, window in pairs(app.Windows) do
 		window:Update(force, fromTrigger);
 	end
+	print("UpdateWindows: ", (GetTimePreciseSec() - lastUpdate) * 10000);
 end
 function app:UpdateWindowColors()
 	for suffix, window in pairs(app.Windows) do
@@ -12513,18 +12524,20 @@ function app:GetWindow(suffix, settings)
 		window.Suffix = suffix;
 		window.Toggle = ToggleWindow;
 		local OnUpdate = settings.OnUpdate or UpdateWindow;
+		window.ApplyUpdate = OnUpdate;	-- You can force an update with this.
 		if settings.Silent then
-			--[[
-			window.Update = function(self, ...)
+			window.Update = function(self, force, fromTrigger)
 				if self:IsVisible() then
-					print("UpdateWindow: " .. suffix, ...);
+					print("UpdateWindow: " .. suffix, force, fromTrigger);
 					local lastUpdate = GetTimePreciseSec();
-					local result = OnUpdate(self, ...);
+					local result = OnUpdate(self, force, fromTrigger);
 					print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 					return result;
+				else
+					self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
 				end
 			end
-			]]--
+			--[[
 			window.Update = function(self, force, fromTrigger)
 				if self:IsVisible() then
 					return OnUpdate(self, force, fromTrigger);
@@ -12532,8 +12545,8 @@ function app:GetWindow(suffix, settings)
 					self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
 				end
 			end
+			]]--
 		else
-			--[[
 			window.Update = function(self, ...)
 				print("UpdateWindow: " .. suffix, ...);
 				local lastUpdate = GetTimePreciseSec();
@@ -12541,8 +12554,7 @@ function app:GetWindow(suffix, settings)
 				print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 				return result;
 			end
-			]]--
-			window.Update = OnUpdate;
+			--window.Update = OnUpdate;
 		end
 		window.SetVisible = SetWindowVisibility;
 		
@@ -12738,7 +12750,7 @@ end
 -- Create the Primary Collection Window (this allows you to save the size and location)
 app:GetWindow("Prime", {
 	parent = UIParent,
-	--Silent = true,
+	Silent = true,
 }):SetSize(425, 305);
 app:GetWindow("Unsorted", {
 	parent = UIParent,
