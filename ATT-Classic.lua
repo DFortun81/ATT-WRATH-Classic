@@ -2926,6 +2926,7 @@ local cacheMapID = function(group, mapID)
 	else
 		currentMaps[mapID] = currentMaps[mapID] + 1;
 	end
+	return true;
 end;
 local cacheObjectID = function(group, value)
 	-- WARNING: DEV ONLY START
@@ -3034,10 +3035,13 @@ fieldConverters = {
 		for i,mapID in ipairs(value) do
 			cacheMapID(group, mapID);
 		end
+		return true;
 	end,
 	["coord"] = function(group, coord)
-		if coord[3] and not (group.instanceID or group.mapID or group.objectiveID) then 
-		cacheMapID(group, coord[3]); end
+		if coord[3] and not (group.instanceID or group.mapID or group.objectiveID) then
+			cacheMapID(group, coord[3]);
+			return true;
+		end
 	end,
 	["coords"] = function(group, value)
 		if not (group.instanceID or group.mapID or group.objectiveID) then
@@ -3045,6 +3049,7 @@ fieldConverters = {
 				if coord[3] then cacheMapID(group, coord[3]); end
 			end
 		end
+		return true;
 	end,
 	["cost"] = function(group, value)
 		if type(value) == "number" then
@@ -3103,39 +3108,36 @@ local mapKeyConverters = {
 		end
 	end,
 };
-CacheFields = function(group)
-	local n = 0;
-	local clone, mapKeys, key, value, hasG = {};
+local function _CacheFields(group)
+	local mapKeys, value, hasG;
 	for key,value in pairs(group) do
 		if key == "g" then
 			hasG = true;
 		else
-			n = n + 1
-			rawset(clone, n, key);
-		end
-	end
-	for i=1,n,1 do
-		key = rawget(clone, i);
-		_cache = rawget(fieldConverters, key);
-		if _cache then
-			value = rawget(group, key);
-			_cache(group, value);
-			if rawget(mapKeyConverters, key) then
-				if not mapKeys then mapKeys = {}; end
-				mapKeys[key] = value;
+			_cache = fieldConverters[key];
+			if _cache then
+				value = group[key];
+				if _cache(group, value) then
+					if not mapKeys then mapKeys = {}; end
+					mapKeys[key] = value;
+				end
 			end
 		end
 	end
 	if hasG then
-		for i,subgroup in ipairs(rawget(group, "g")) do
-			CacheFields(subgroup);
+		for i,subgroup in ipairs(group.g) do
+			_CacheFields(subgroup);
 		end
 	end
 	if mapKeys then
 		for key,value in pairs(mapKeys) do
-			rawget(mapKeyConverters, key)(group, value);
+			mapKeyConverters[key](group, value);
 		end
 	end
+end
+CacheFields = function(group)
+	_CacheFields(group);
+	wipe(currentMaps);
 end
 app.CacheField = CacheField;
 app.CacheFields = CacheFields;
