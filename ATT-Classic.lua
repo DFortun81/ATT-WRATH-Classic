@@ -182,80 +182,72 @@ local attData;
 local ATTCTempData = {}; 	-- For temporary data.
 local ATTClassicAD = {};			-- For account-wide data.
 local function SetDataMember(member, data)
-	rawset(ATTClassicAD, member, data);
+	ATTClassicAD[member] = data;
 end
 local function GetDataMember(member, default)
-	attData = rawget(ATTClassicAD, member);
+	attData = ATTClassicAD[member];
 	if attData == nil then
-		rawset(ATTClassicAD, member, default);
+		ATTClassicAD[member] = default;
 		return default;
 	else
 		return attData;
 	end
 end
 local function SetTempDataMember(member, data)
-	rawset(ATTCTempData, member, data);
+	ATTCTempData[member] = data;
 end
 local function GetTempDataMember(member, default)
-	attData = rawget(ATTCTempData, member);
+	attData = ATTCTempData[member];
 	if attData == nil then
-		rawset(ATTCTempData, member, default);
+		ATTCTempData[member] = default;
 		return default;
 	else
 		return attData;
 	end
 end
 local function SetDataSubMember(member, submember, data)
-	attData = rawget(ATTClassicAD, member);
+	attData = ATTClassicAD[member];
 	if attData == nil then
-		attData = {};
-		rawset(attData, submember, data);
-		rawset(ATTClassicAD, member, attData);
+		ATTClassicAD[member] = { [submember] = data };
 	else
-		rawset(attData, submember, data);
+		attData[submember] = data;
 	end
 end
 local function GetDataSubMember(member, submember, default)
-	attData = rawget(ATTClassicAD,member);
+	attData = ATTClassicAD[member];
 	if attData then
-		attData = rawget(attData, submember);
+		attData = attData[submember];
 		if attData == nil then
-			rawset(rawget(ATTClassicAD,member), submember, default);
+			ATTClassicAD[member][submember] = default;
 			return default;
 		else
 			return attData;
 		end
 	else
-		attData = {};
-		rawset(attData, submember, default);
-		rawset(ATTClassicAD, member, attData);
+		ATTClassicAD[member] = { [submember] = default };
 		return default;
 	end
 end
 local function SetTempDataSubMember(member, submember, data)
-	attData = rawget(ATTCTempData, member);
+	attData = ATTCTempData[member];
 	if attData == nil then
-		attData = {};
-		rawset(attData, submember, data);
-		rawset(ATTCTempData, member, attData);
+		ATTCTempData[member] = { [submember] = data };
 	else
-		rawset(attData, submember, data);
+		attData[submember] = data;
 	end
 end
 local function GetTempDataSubMember(member, submember, default)
-	attData = rawget(ATTCTempData,member);
+	attData = ATTCTempData[member];
 	if attData then
-		attData = rawget(attData, submember);
+		attData = attData[submember];
 		if attData == nil then
-			rawset(rawget(ATTCTempData,member), submember, default);
+			ATTCTempData[member][submember] = default;
 			return default;
 		else
 			return attData;
 		end
 	else
-		attData = {};
-		rawset(attData, submember, default);
-		rawset(ATTCTempData, member, attData);
+		ATTCTempData[member] = { [submember] = default };
 		return default;
 	end
 end
@@ -798,7 +790,7 @@ end
 local function RawCloneData(data)
 	local clone = {};
 	for key,value in pairs(data) do
-		rawset(clone, key, value);
+		clone[key] = value;
 	end
 	return clone;
 end
@@ -7887,7 +7879,7 @@ app.SortExplorationDB = function()
 end
 local createMap, mapClass = app.CreateClass("Map", "mapID", {
 	["text"] = function(t)
-		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return t.headerID and app.NPCNameFromID[t.headerID] or app.GetMapName(t.mapID);
@@ -7909,7 +7901,7 @@ local createMap, mapClass = app.CreateClass("Map", "mapID", {
 	["locks"] = function(t)
 		local locks = app.CurrentCharacter.Lockouts[t.name];
 		if locks then
-			rawset(t, "locks", locks);
+			t.locks = locks;
 			return locks;
 		end
 	end,
@@ -7979,14 +7971,14 @@ app.CreateMap = function(id, t)
 		end
 	end
 	if t.creatureID and t.creatureID < 0 then
-		rawset(t, "headerID", t.creatureID);
-		rawset(t, "creatureID", nil);
+		t.headerID = t.creatureID;
+		t.creatureID = nil;
 	end
 	return map;
 end
 app.CreateInstance = app.CreateClass("Instance", "instanceID", {
 	["text"] = function(t)
-		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return t.headerID and app.NPCNameFromID[t.headerID] or app.GetMapName(t.mapID);
@@ -8008,7 +8000,7 @@ app.CreateInstance = app.CreateClass("Instance", "instanceID", {
 	["locks"] = function(t)
 		local locks = app.CurrentCharacter.Lockouts[t.name];
 		if locks then
-			rawset(t, "locks", locks);
+			t.locks = locks;
 			return locks;
 		end
 	end,
@@ -8134,7 +8126,7 @@ local createNPC = app.CreateClass("NPC", "npcID", {
 		return "npcID";
 	end,
 	["text"] = function(t)
-		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return NPCNameFromID[t.npcID] or RETRIEVING_DATA;
@@ -8169,7 +8161,7 @@ local createNPC = app.CreateClass("NPC", "npcID", {
 }, (function(t) return t.questID; end));
 local createCustomHeader = app.CreateClass("Header", "headerID", {
 	["text"] = function(t)
-		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return L["HEADER_NAMES"][t.headerID];
@@ -8229,11 +8221,11 @@ app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 		if typ then
 			local cache = app.SearchForField(typ, t.autoID);
 			if cache and #cache > 0 then
-				rawset(t, "result", cache[1]);
+				t.result = cache[1];
 				return cache[1];
 			else
 				cache = CreateObject({[typ] = t.autoID});
-				rawset(t, "result", cache);
+				t.result = cache;
 				return cache;
 			end
 		else
@@ -8241,7 +8233,7 @@ app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 			if cache then
 				cache = cache(t.autoID);
 				if cache then
-					rawset(t, "result", cache);
+					t.result = cache;
 					return cache;
 				end
 			end
@@ -8254,7 +8246,7 @@ end)();
 (function()
 app.CreateObject = app.CreateClass("Object", "objectID", {
 	["text"] = function(t)
-		return rawget(t, "isRaid") and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		if t.providers then
@@ -8384,13 +8376,13 @@ local LEATHERWORKING = ATTC.SkillIDToSpellID[165];
 local TAILORING = ATTC.SkillIDToSpellID[197];
 app.OnUpdateForOmarionsHandbook = function(t)
 	t.visible = true;
-	rawset(t, "collectible", nil);
+	t.collectible = nil;
 	if app.Settings:Get("DebugMode") or app.Settings:Get("AccountMode") or CompletedQuests[9233] or C_QuestLog.IsOnQuest(9233) then
 		return false;
 	else
 		for spellID,skills in pairs(app.CurrentCharacter.ActiveSkills) do
 			if (spellID == BLACKSMITHING or spellID == LEATHERWORKING or spellID == TAILORING) and skills[1] > 270 then
-				rawset(t, "collectible", false);
+				t.collectible = false;
 				t.visible = false;
 				return true;
 			end
@@ -8514,11 +8506,11 @@ local OnUpdateForLockCriteria = function(t)
 					end
 					criteriaRequired = criteriaRequired - 1;
 					if criteriaRequired <= 0 then
-						rawset(t, "locked", true);
+						t.locked = true;
 						-- if this was locked due to something other than a Quest specifically, indicate it cannot be done in Party Sync
 						if nonQuestLock then
 							-- app.PrintDebug("Automatic DisablePartySync", app:Linkify(questID, app.Colors.ChatLink, "search:questID:" .. questID))
-							rawset(t, "DisablePartySync", true);
+							t.DisablePartySync = true;
 						end
 						break;
 					end
@@ -8571,9 +8563,6 @@ local createQuest = app.CreateClass("Quest", "questID", {
 	end,
 	["link"] = function(t)
 		if t.questID then return "[" .. t.name .. " (".. t.questID .. ")]"; end
-	end,
-	["repeatable"] = function(t)
-		return rawget(t, "isDaily") or rawget(t, "isWeekly") or rawget(t, "isMonthly") or rawget(t, "isYearly");
 	end,
 	["collectible"] = function(t)
 		if app.CollectibleQuests then
@@ -8686,7 +8675,7 @@ app.CreateQuestWithFactionData = function(t)
 				tinsert(t.g, 1, o);
 			end
 		end
-		rawset(questData, "g", nil);
+		questData.g = nil;
 	end
 	if otherQuestData.g then
 		for _,o in ipairs(otherQuestData.g) do
@@ -8697,11 +8686,11 @@ app.CreateQuestWithFactionData = function(t)
 	-- Apply this quest's current data into the other faction's quest. (this is for tooltip caching and source quest resolution)
 	--for key,value in pairs(t) do otherQuestData[key] = value; end
 	setmetatable(otherQuestData, { __index = t });
-	rawset(t, "otherQuestData", otherQuestData);
+	t.otherQuestData = otherQuestData;
 	
 	-- Apply the faction specific quest data to this object.
 	for key,value in pairs(questData) do t[key] = value; end
-	rawset(t, "r", app.FactionID);
+	t.r = app.FactionID;
 	return createQuest(t.questID, t);
 end
 app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
@@ -9116,7 +9105,7 @@ end)();
 			local patch = math_floor(patch_decimal + 0.0001);
 			local rev = math_floor(10 * (patch_decimal - patch) + 0.0001);
 			-- print("tier cache",id,tierID,patch_decimal,patch,rev)
-			rawset(t, "text", tostring(tierID).."."..tostring(patch).."."..tostring(rev));
+			t.text = tostring(tierID).."."..tostring(patch).."."..tostring(rev);
 		end
 		return setmetatable(t, baseTier);
 	end
@@ -12159,13 +12148,13 @@ function app:GetDataCache()
 					local count = #sources;
 					if count == 1 then
 						for key,value in pairs(sources[1]) do
-							rawset(achievement, key, value);
+							achievement[key] = value;
 						end
 					elseif count > 1 then
 						-- Find the most accessible version of the thing.
 						insertionSort(sources, sortByAccessibility);
 						for key,value in pairs(sources[1]) do
-							rawset(achievement, key, value);
+							achievement[key] = value;
 						end
 					end
 					self.achievements[i] = achievement;
@@ -12275,13 +12264,13 @@ function app:GetDataCache()
 					local count = #sources;
 					if count == 1 then
 						for key,value in pairs(sources[1]) do
-							rawset(battlepet, key, value);
+							battlepet[key] = value;
 						end
 					elseif count > 1 then
 						-- Find the most accessible version of the thing.
 						insertionSort(sources, sortByAccessibility);
 						for key,value in pairs(sources[1]) do
-							rawset(battlepet, key, value);
+							battlepet[key] = value;
 						end
 					end
 					self.battlepets[i] = battlepet;
@@ -12305,7 +12294,7 @@ function app:GetDataCache()
 					local faction = app.CreateFaction(tonumber(i));
 					for j,o in ipairs(_) do
 						if o.key == "factionID" then
-							for key,value in pairs(o) do rawset(faction, key, value); end
+							for key,value in pairs(o) do faction[key] = value; end
 						end
 					end
 					self.factions[i] = faction;
@@ -12325,7 +12314,7 @@ function app:GetDataCache()
 				if not self.fps[i] then
 					local fp = app.CreateFlightPath(tonumber(i));
 					for j,o in ipairs(_) do
-						for key,value in pairs(o) do rawset(fp, key, value); end
+						for key,value in pairs(o) do fp[key] = value; end
 					end
 					self.fps[i] = fp;
 					if not fp.u or fp.u ~= 1 then
