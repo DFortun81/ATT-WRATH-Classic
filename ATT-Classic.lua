@@ -3378,7 +3378,7 @@ local function UpdateSearchResults(searchResults)
 		if fresh then
 			app:RefreshDataCompletely();
 		else
-			app:RefreshDataQuietly();
+			app:RefreshDataQuietly(true);
 		end
 	end
 end
@@ -9754,14 +9754,18 @@ local function MinimapButtonOnEnter(self)
 		end
 		GameTooltipIcon:Show();
 		
-		local prime = app:GetWindow("Prime");
-		if prime and prime.forceFullDataRefresh then
-			GameTooltip:AddDoubleLine(reference.text, L["MAIN_LIST_REQUIRES_REFRESH"], 1, 1, 1);
-			GameTooltip:AddLine("Click to refresh addon.", 1, 1, 1);
-		else
+		if reference.total > 0 then
 			local left, right = strsplit(DESCRIPTION_SEPARATOR, reference.title);
 			GameTooltip:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
 			GameTooltip:AddDoubleLine(left, right, 1, 1, 1);
+		else
+			GameTooltip:AddDoubleLine(reference.text, reference.progressText, 1, 1, 1);
+		end
+		
+		local prime = app:GetWindow("Prime");
+		if prime and prime.forceFullDataRefresh then
+			GameTooltip:AddDoubleLine("Update Pending", L["MAIN_LIST_REQUIRES_REFRESH"], 1, 0.4, 0.4);
+		else
 			GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1);
 		end
 	else
@@ -10587,7 +10591,6 @@ local function StartMovingOrSizing(self, fromChild)
 			self:StartSizing();
 			Push(self, "StartMovingOrSizing (Sizing)", function()
 				if self.isMoving then
-					--self:Update();
 					UpdateVisibleRowData(self);
 					return true;
 				end
@@ -11439,7 +11442,6 @@ local function OnScrollBarValueChanged(self, value)
 	local un = math.floor(value);
 	local up = un + 1;
 	self.CurrentValue = (up - value) > (-(un - value)) and un or up;
-	--self:GetParent():Update();
 	UpdateVisibleRowData(self:GetParent());
 end
 local function SetWindowVisibility(self, show)
@@ -17515,5 +17517,5 @@ app.events.QUEST_WATCH_UPDATE = function()
 end
 app.events.CRITERIA_UPDATE = function()
 	wipe(searchCache);
-	app:RefreshDataQuietly();
+	app:RefreshDataQuietly(true);
 end
