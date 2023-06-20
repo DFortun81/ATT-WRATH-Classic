@@ -776,6 +776,22 @@ local function BuildSourceTextForTSM(group, l)
 	end
 	return L["TITLE"];
 end
+local function CloneData(group)
+	local clone = setmetatable({}, getmetatable(group));
+	for key,value in pairs(group) do
+		clone[key] = value;
+	end
+	if group.g then
+		local g = {};
+		for i,group in ipairs(group.g) do
+			local child = CloneData(group);
+			child.parent = clone;
+			tinsert(g, child);
+		end
+		clone.g = g;
+	end
+	return clone;
+end
 local function CloneReference(group)
 	local clone = {};
 	if group.g then
