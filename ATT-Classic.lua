@@ -12733,6 +12733,12 @@ app:GetWindow("Prime", {
 app:GetWindow("Unsorted", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTUNSORTED1 = "/attunsorted";
+		SlashCmdList["ATTUNSORTED"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 });
 app:GetWindow("Attuned", {
 	parent = UIParent,
@@ -13182,6 +13188,12 @@ app:GetWindow("Attuned", {
 app:GetWindow("Breadcrumbs", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTBREADCRUMBS1 = "/attbreadcrumbs";
+		SlashCmdList["ATTBREADCRUMBS"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -13661,6 +13673,12 @@ app:GetWindow("CurrentInstance", {
 app:GetWindow("Dailies", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTDAILIES1 = "/attdailies";
+		SlashCmdList["ATTDAILIES"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -14199,6 +14217,12 @@ app:GetWindow("Objects", {
 app:GetWindow("Quests", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTQUESTS1 = "/attquests";
+		SlashCmdList["ATTQUESTS"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -14859,6 +14883,12 @@ app:GetWindow("Random", {
 app:GetWindow("RWP", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTRWP1 = "/attrwp";
+		SlashCmdList["ATTRWP"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -15704,6 +15734,14 @@ app:GetWindow("Sync", {
 });
 app:GetWindow("Tradeskills", {
 	parent = UIParent,
+	OnInit = function(self)
+		SLASH_ATTSKILLS1 = "/attskills";
+		SLASH_ATTSKILLS2 = "/atttradeskill";
+		SLASH_ATTSKILLS3 = "/attprofession";
+		SlashCmdList["ATTSKILLS"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
