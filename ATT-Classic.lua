@@ -121,14 +121,14 @@ local constructor = function(id, t, typeID)
 	end
 end
 local contains = function(arr, value)
-	for i,value2 in ipairs(arr) do
-		if value2 == value then return true; end
+	for i=1,#arr,1 do
+		if arr[i] == value then return true; end
 	end
 end
 local containsAny = function(arr, otherArr)
-	for i, v in ipairs(arr) do
-		for j, w in ipairs(otherArr) do
-			if v == w then return true; end
+	for i=1,#arr,1 do
+		for j=1,#otherArr,1 do
+			if arr[i] == otherArr[j] then return true; end
 		end
 	end
 end
@@ -3006,22 +3006,23 @@ fieldConverters = {
 	
 	-- Complex Converters
 	["crs"] = function(group, value)
-		for i,creatureID in ipairs(value) do
-			cacheCreatureID(group, creatureID);
+		for i=1,#value,1 do
+			cacheCreatureID(group, value[i]);
 		end
 	end,
 	["qgs"] = function(group, value)
-		for i,questGiverID in ipairs(value) do
-			cacheCreatureID(group, questGiverID);
+		for i=1,#value,1 do
+			cacheCreatureID(group, value[i]);
 		end
 	end,
 	["titleIDs"] = function(group, value)
-		for _,titleID in ipairs(value) do
-			CacheField(group, "titleID", titleID);
+		for i=1,#value,1 do
+			CacheField(group, "titleID", value[i]);
 		end
 	end,
 	["providers"] = function(group, value)
-		for k,v in pairs(value) do
+		for i=1,#value,1 do
+			local v = value[i];
 			if v[2] > 0 then
 				if v[1] == "n" then
 					cacheCreatureID(group, v[2]);
@@ -3034,36 +3035,39 @@ fieldConverters = {
 		end
 	end,
 	["maps"] = function(group, value)
-		for i,mapID in ipairs(value) do
-			cacheMapID(group, mapID);
+		for i=1,#value,1 do
+			cacheMapID(group, value[i]);
 		end
 		return true;
 	end,
 	["coord"] = function(group, coord)
-		if coord[3] and not (group.instanceID or group.mapID or group.objectiveID) then
+		if not (group.instanceID or group.mapID or group.objectiveID) then
 			cacheMapID(group, coord[3]);
 			return true;
 		end
 	end,
 	["coords"] = function(group, value)
 		if not (group.instanceID or group.mapID or group.objectiveID) then
-			for i,coord in ipairs(value) do
-				if coord[3] then cacheMapID(group, coord[3]); end
+			for i=1,#value,1 do
+				cacheMapID(group, value[i][3]);
 			end
+			return true;
 		end
-		return true;
 	end,
 	["cost"] = function(group, value)
 		if type(value) == "number" then
 			return;
 		else
-			for k,v in pairs(value) do
-				if v[1] == "i" and v[2] > 0 then
-					CacheField(group, "itemIDAsCost", v[2]);
-				elseif v[1] == "o" and v[2] > 0 then
-					cacheObjectID(group, v[2]);
-				elseif v[1] == "c" and v[2] > 0 then
-					CacheField(group, "currencyIDAsCost", v[2]);
+			for i=1,#value,1 do
+				local v = value[i];
+				if v[2] > 0 then
+					if v[1] == "i" then
+						CacheField(group, "itemIDAsCost", v[2]);
+					elseif v[1] == "o" then
+						cacheObjectID(group, v[2]);
+					elseif v[1] == "c" then
+						CacheField(group, "currencyIDAsCost", v[2]);
+					end
 				end
 			end
 		end
@@ -3084,8 +3088,8 @@ fieldConverters = {
 		end
 	end,
 	["sourceQuests"] = function(group, value)
-		for i,questID in ipairs(value) do
-			CacheField(group, "sourceQuestID", questID);
+		for i=1,#value,1 do
+			CacheField(group, "sourceQuestID", value[i]);
 		end
 	end,
 };
@@ -9619,7 +9623,8 @@ end
 UpdateGroups = function(parent, g)
 	if g then
 		local visible = false;
-		for key, group in ipairs(g) do
+		for i=1,#g,1 do
+			local group = g[i];
 			if group.OnUpdate then
 				if not group:OnUpdate(group) then
 					if UpdateGroup(parent, group) then
@@ -11452,8 +11457,8 @@ local function ProcessGroup(data, object)
 	if app.VisibilityFilter(object) then
 		tinsert(data, object);
 		if object.g and object.expanded then
-			for j, group in ipairs(object.g) do
-				ProcessGroup(data, group);
+			for i=1,#object.g,1 do
+				ProcessGroup(data, object.g[i]);
 			end
 		end
 	end
@@ -12391,8 +12396,8 @@ function app:GetDataCache()
 		
 		-- Now that we have data, build the structure for the main window.
 		--print("GetDataCache P1", (GetTimePreciseSec() - lastUpdate) * 10000);
-		BuildGroups(rootData);
 		CacheFields(rootData);
+		BuildGroups(rootData);
 		app:GetWindow("Prime").data = rootData;
 		
 		-- Determine how many tierID instances could be found
