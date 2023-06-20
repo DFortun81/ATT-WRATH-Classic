@@ -701,16 +701,17 @@ local achievementTooltipText = {
 	[17301] = "DPA",	-- Defense Protocol Alpha: Utgarde Pinnacle
 	[17302] = "DPA",	-- Defense Protocol Alpha: The Culling of Stratholme
 };
-local function BuildGroups(parent, g)
-	if g then
+local function BuildGroups(parent)
+	if parent.g then
 		-- Iterate through the groups
+		local g = parent.g;
 		for i=1,#g,1 do
 			-- Set the group's parent
 			local group = g[i];
 			group.parent = parent;
 			
 			-- Build the groups
-			BuildGroups(group, group.g);
+			BuildGroups(group);
 		end
 	end
 end
@@ -10317,7 +10318,7 @@ function app:CreateMiniListForGroup(group, retried)
 			end
 		end
 		
-		BuildGroups(popout.data, popout.data.g);
+		BuildGroups(popout.data);
 		UpdateGroups(popout.data, popout.data.g);
 		if group.parent then popout.data.sourceParent = group.parent; end
 	end
@@ -11524,6 +11525,7 @@ function app:UpdateWindowColors()
 end
 function app:GetDataCache()
 	if app.Categories then
+		local lastUpdate = GetTimePreciseSec();
 		local rootData = setmetatable({
 			text = L["TITLE"],
 			icon = app.asset("logo_32x32"),
@@ -12388,13 +12390,9 @@ function app:GetDataCache()
 		end
 		
 		-- Now that we have data, build the structure for the main window.
-		print("GetDataCache P1", (GetTimePreciseSec() - lastUpdate) * 10000);
-		local lastUpdate = GetTimePreciseSec();
-		BuildGroups(rootData, rootData.g);
-		print("BuildGroups", (GetTimePreciseSec() - lastUpdate) * 10000);
-		local lastUpdate = GetTimePreciseSec();
+		--print("GetDataCache P1", (GetTimePreciseSec() - lastUpdate) * 10000);
+		BuildGroups(rootData);
 		CacheFields(rootData);
-		print("CacheFields", (GetTimePreciseSec() - lastUpdate) * 10000);
 		app:GetWindow("Prime").data = rootData;
 		
 		-- Determine how many tierID instances could be found
@@ -12432,7 +12430,7 @@ function app:GetDataCache()
 		end
 		
 		-- Build Unsorted as well!
-		BuildGroups(unsortedData, unsortedData.g);
+		BuildGroups(unsortedData);
 		app:GetWindow("Unsorted").data = unsortedData;
 		
 		-- TODO: Move this to a startup runner
@@ -13159,7 +13157,7 @@ app:GetWindow("Attuned", {
 		app.GroupFilter = app.ObjectVisibilityFilter;
 		app.VisibilityFilter = app.ObjectVisibilityFilter;
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		for i,g in ipairs(self.data.g) do
 			if g.OnUpdate then g.OnUpdate(g, self); end
 		end
@@ -13206,14 +13204,14 @@ app:GetWindow("Breadcrumbs", {
 						data.total = 0;
 						data.indent = 0;
 						data.visible = true;
-						BuildGroups(data, data.g);
+						BuildGroups(data);
 						app.UpdateGroups(data, data.g);
 						if not data.expanded then
 							data.expanded = true;
 							ExpandGroupsRecursively(data, true);
 						end
 					end
-					BuildGroups(self.data, self.data.g);
+					BuildGroups(self.data);
 					UpdateWindow(self, true);
 				end,
 				['options'] = { },
@@ -13296,7 +13294,7 @@ app:GetWindow("CosmicInfuser", {
 		self.data.total = 0;
 		self.data.indent = 0;
 		self.data.back = 1;
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		UpdateGroups(self.data, self.data.g);
 		UpdateWindow(self, true);
 	end
@@ -13527,7 +13525,7 @@ app:GetWindow("CurrentInstance", {
 					end
 					
 					-- Check to see completion...
-					BuildGroups(self.data, self.data.g);
+					BuildGroups(self.data);
 					
 					self.data.progress = 0;
 					self.data.total = 0;
@@ -13676,7 +13674,7 @@ app:GetWindow("Dailies", {
 						end
 						data.indent = 0;
 						data.visible = true;
-						BuildGroups(data, data.g);
+						BuildGroups(data);
 						app.UpdateGroups(data, data.g);
 						if not data.expanded then
 							data.expanded = true;
@@ -13687,7 +13685,7 @@ app:GetWindow("Dailies", {
 					-- Update the groups without forcing Debug Mode.
 					local incompleteFilter = app.ShowIncompleteThings;
 					app.ShowIncompleteThings = app.Filter;
-					BuildGroups(self.data, self.data.g);
+					BuildGroups(self.data);
 					UpdateWindow(self, true);
 					app.ShowIncompleteThings = incompleteFilter;
 				end,
@@ -13970,7 +13968,7 @@ app:GetWindow("Debugger", {
 		self.data.index = 0;
 		self.data.back = 1;
 		self.data.indent = 0;
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		UpdateWindow(self, true);
 	end
 });
@@ -14009,7 +14007,7 @@ app:GetWindow("ItemFilter", {
 						end
 						data.indent = 0;
 						data.visible = true;
-						BuildGroups(data, data.g);
+						BuildGroups(data);
 						app.UpdateGroups(data, data.g);
 						if not data.expanded then
 							data.expanded = true;
@@ -14020,7 +14018,7 @@ app:GetWindow("ItemFilter", {
 					-- Update the groups without forcing Debug Mode.
 					local visibilityFilter = app.VisibilityFilter;
 					app.VisibilityFilter = app.ObjectVisibilityFilter;
-					BuildGroups(self.data, self.data.g);
+					BuildGroups(self.data);
 					UpdateWindow(self, true);
 					app.VisibilityFilter = visibilityFilter;
 				end,
@@ -14164,7 +14162,7 @@ app:GetWindow("Objects", {
 			for _,objectID in ipairs(objectIDs) do
 				tinsert(db.g, app.CreateObject(objectID));
 			end
-			BuildGroups(db, db.g);
+			BuildGroups(db);
 		end
 		self.data.progress = 0;
 		self.data.total = 0;
@@ -14215,14 +14213,14 @@ app:GetWindow("Quests", {
 						data.total = 0;
 						data.indent = 0;
 						data.visible = true;
-						BuildGroups(data, data.g);
+						BuildGroups(data);
 						app.UpdateGroups(data, data.g);
 						if not data.expanded then
 							data.expanded = true;
 							ExpandGroupsRecursively(data, true);
 						end
 					end
-					BuildGroups(self.data, self.data.g);
+					BuildGroups(self.data);
 					UpdateWindow(self, true);
 				end,
 				['options'] = { },
@@ -14470,7 +14468,7 @@ app:GetWindow("RaidAssistant", {
 			if g.OnUpdate then g.OnUpdate(g, self); end
 		end
 		
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
 	end
@@ -14798,7 +14796,7 @@ app:GetWindow("Random", {
 				for i=#self.data.options,1,-1 do
 					tinsert(self.data.g, 1, self.data.options[i]);
 				end
-				BuildGroups(self.data, self.data.g);
+				BuildGroups(self.data);
 				if not no then self:Update(); end
 			end
 			self.Reroll = function(self)
@@ -14818,7 +14816,7 @@ app:GetWindow("Random", {
 		-- Update the groups without forcing Debug Mode.
 		local visibilityFilter = app.VisibilityFilter;
 		app.VisibilityFilter = app.ObjectVisibilityFilter;
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		UpdateGroups(self.data, self.data.g);
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
@@ -14861,14 +14859,14 @@ app:GetWindow("RWP", {
 						data.total = 0;
 						data.indent = 0;
 						data.visible = true;
-						BuildGroups(data, data.g);
+						BuildGroups(data);
 						app.UpdateGroups(data, data.g);
 						if not data.expanded then
 							data.expanded = true;
 							ExpandGroupsRecursively(data, true);
 						end
 					end
-					BuildGroups(self.data, self.data.g);
+					BuildGroups(self.data);
 					UpdateWindow(self, true);
 				end,
 				['options'] = { },
@@ -15401,7 +15399,7 @@ app:GetWindow("SoftReserves", {
 		-- Update the groups without forcing Debug Mode.
 		local visibilityFilter = app.VisibilityFilter;
 		app.VisibilityFilter = app.ObjectVisibilityFilter;
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		UpdateWindow(self, true);
 		app.VisibilityFilter = visibilityFilter;
 	end
@@ -15557,7 +15555,7 @@ app:GetWindow("Sync", {
 								});
 							end
 							insertionSort(data.g, syncHeader.Sort);
-							BuildGroups(data, data.g);
+							BuildGroups(data);
 							return app.AlwaysShowUpdate(data);
 						end,
 						['visible'] = true, 
@@ -15621,7 +15619,7 @@ app:GetWindow("Sync", {
 									['visible'] = true,
 								});
 							end
-							BuildGroups(data, data.g);
+							BuildGroups(data);
 							return app.AlwaysShowUpdate(data);
 						end,
 						['visible'] = true, 
@@ -15646,7 +15644,7 @@ app:GetWindow("Sync", {
 		app.GroupFilter = app.ObjectVisibilityFilter;
 		app.VisibilityFilter = app.ObjectVisibilityFilter;
 		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		BuildGroups(self.data, self.data.g);
+		BuildGroups(self.data);
 		for i,g in ipairs(self.data.g) do
 			if g.OnUpdate then g.OnUpdate(g, self); end
 		end
@@ -15901,7 +15899,7 @@ app:GetWindow("Tradeskills", {
 							end
 							self.data.indent = 0;
 							self.data.visible = true;
-							BuildGroups(self.data, self.data.g);
+							BuildGroups(self.data);
 							app.UpdateGroups(self.data, self.data.g);
 							if not self.data.expanded then
 								self.data.expanded = true;
@@ -17013,7 +17011,7 @@ app.events.ADDON_LOADED = function(addonName)
 			insertionSort(window.data.g, function(a, b)
 				return (b.priority or 0) > (a.priority or 0);
 			end);
-			BuildGroups(window.data, window.data.g);
+			BuildGroups(window.data);
 			UpdateGroups(window.data, window.data.g);
 			window:Show();
 			window:Update();
