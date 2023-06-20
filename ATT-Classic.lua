@@ -8665,15 +8665,14 @@ end),
 }, (function(t) return t.isBreadcrumb; end));
 app.CreateQuest = createQuest;
 app.CreateQuestWithFactionData = function(t)
+	local aqd, hqd = t.aqd, t.hqd;
 	local questData, otherQuestData;
 	if app.FactionID == Enum.FlightPathFaction.Horde then
-		questData = t.hqd;
-		otherQuestData = t.aqd;
-		otherQuestData.r = Enum.FlightPathFaction.Alliance;
+		questData = hqd;
+		otherQuestData = aqd;
 	else
-		questData = t.aqd;
-		otherQuestData = t.hqd;
-		otherQuestData.r = Enum.FlightPathFaction.Horde;
+		questData = aqd;
+		otherQuestData = hqd;
 	end
 	
 	-- Move over the quest data's groups.
@@ -8694,13 +8693,18 @@ app.CreateQuestWithFactionData = function(t)
 	end
 	
 	-- Apply this quest's current data into the other faction's quest. (this is for tooltip caching and source quest resolution)
-	--for key,value in pairs(t) do otherQuestData[key] = value; end
-	setmetatable(otherQuestData, { __index = t });
-	t.otherQuestData = otherQuestData;
+	for key,value in pairs(t) do 
+		if key ~= "g" then
+			otherQuestData[key] = value;
+		end
+	end
 	
 	-- Apply the faction specific quest data to this object.
 	for key,value in pairs(questData) do t[key] = value; end
-	t.r = app.FactionID;
+	aqd.r = Enum.FlightPathFaction.Alliance;
+	hqd.r = Enum.FlightPathFaction.Horde;
+	t.otherQuestData = otherQuestData;
+	otherQuestData.nmr = 1;
 	return createQuest(t.questID, t);
 end
 app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
