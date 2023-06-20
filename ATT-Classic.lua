@@ -12069,7 +12069,7 @@ function app:GetDataCache()
 					end
 				end
 				insertionSort(self.g, achievementSort, true);
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end
 		});
 		if not (GetCategoryInfo and GetCategoryInfo(92) ~= "") then
@@ -12163,7 +12163,7 @@ function app:GetDataCache()
 				for i,petType in pairs(petTypes) do
 					insertionSort(petType.g, sortByTextSafely);
 				end
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end
 		};
 		for _,petTypeID in ipairs({9,8,5,2,7,3,1,6,10,4}) do
@@ -12273,7 +12273,7 @@ function app:GetDataCache()
 						table.remove(self.g, i);
 					end
 				end
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end
 		});
 		
@@ -12309,7 +12309,7 @@ function app:GetDataCache()
 						table.remove(self.g, i);
 					end
 				end
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end,
 		});
 		
@@ -12474,7 +12474,7 @@ function app:RefreshData(fromTrigger)
 		app.refreshFromTrigger = nil;
 		
 		-- Send a message to your party members.
-		local data = app:GetWindow("Prime").data;
+		local data = app:GetDataCache();
 		local msg = "A\t" .. app.Version .. "\t" .. (data.progress or 0) .. "\t" .. (data.total or 0);
 		if app.lastProgressUpdateMessage ~= msg then
 			SendGroupMessage(msg);
@@ -13150,7 +13150,7 @@ app:GetWindow("Breadcrumbs", UIParent, function(self)
 					
 					local g = {};
 					if not data.results then
-						data.results = app:BuildSearchResponseForField(app:GetWindow("Prime").data.g, "isBreadcrumb");
+						data.results = app:BuildSearchResponseForField(app:GetDataCache().g, "isBreadcrumb");
 					end
 					if #data.results > 0 then
 						for i,result in ipairs(data.results) do
@@ -13615,7 +13615,7 @@ app:GetWindow("Dailies", UIParent, function(self)
 					
 					local g = {};
 					if not data.results then
-						data.results = app:BuildSearchResponse(app:GetWindow("Prime").data.g, "isDaily", 1);
+						data.results = app:BuildSearchResponse(app:GetDataCache().g, "isDaily", 1);
 					end
 					if #data.results > 0 then
 						for i,result in ipairs(data.results) do
@@ -13993,7 +13993,7 @@ app:GetWindow("ItemFilter", UIParent, function(self)
 								end
 							end
 							if f then
-								self.data.results = app:BuildSearchResponse(app:GetWindow("Prime").data.g, "f", f);
+								self.data.results = app:BuildSearchResponse(app:GetDataCache().g, "f", f);
 								row.ref.f = f;
 								self.dirty = true;
 							end
@@ -14141,7 +14141,7 @@ app:GetWindow("Quests", UIParent, function(self)
 					
 					local g = {};
 					if not data.results then
-						data.results = app:BuildSearchResponseForField(app:GetWindow("Prime").data.g, "questID");
+						data.results = app:BuildSearchResponseForField(app:GetDataCache().g, "questID");
 					end
 					if #data.results > 0 then
 						for i,result in ipairs(data.results) do
@@ -14454,7 +14454,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randomatt"];
 				else
 					local searchResults = {};
-					for i, subgroup in ipairs(app:GetWindow("Prime").data.g) do
+					for i, subgroup in ipairs(app:GetDataCache().g) do
 						SearchRecursivelyForEverything(subgroup, searchResults);
 					end
 					searchCache["randomatt"] = searchResults;
@@ -14466,7 +14466,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randomitem"];
 				else
 					local searchResults, dict, temp = {}, {} , {};
-					SearchRecursively(app:GetWindow("Prime").data, "itemID", searchResults);
+					SearchRecursively(app:GetDataCache(), "itemID", searchResults);
 					for i,o in pairs(searchResults) do
 						if not (o.saved or o.collected) and o.collectible then
 							tinsert(temp, o);
@@ -14481,7 +14481,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randomquest"];
 				else
 					local searchResults, dict, temp = {}, {} , {};
-					SearchRecursively(app:GetWindow("Prime").data, "questID", searchResults);
+					SearchRecursively(app:GetDataCache(), "questID", searchResults);
 					for i,o in pairs(searchResults) do
 						if not (o.saved or o.collected) and o.collectible then
 							tinsert(temp, o);
@@ -14496,7 +14496,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randominstance"];
 				else
 					local searchResults, dict, temp = {}, {} , {};
-					SearchRecursively(app:GetWindow("Prime").data, "mapID", searchResults);
+					SearchRecursively(app:GetDataCache(), "mapID", searchResults);
 					for i,o in pairs(searchResults) do
 						if not (o.saved or o.collected) and (((o.total or 0) - (o.progress or 0)) > 0) and not C_Map.GetMapInfo(o.mapID) then
 							tinsert(temp, o);
@@ -14511,7 +14511,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randomdungeon"];
 				else
 					local searchResults, dict, temp = {}, {} , {};
-					SearchRecursively(app:GetWindow("Prime").data, "mapID", searchResults);
+					SearchRecursively(app:GetDataCache(), "mapID", searchResults);
 					for i,o in pairs(searchResults) do
 						if not (o.saved or o.collected) and not o.isRaid and (((o.total or 0) - (o.progress or 0)) > 0) and not C_Map.GetMapInfo(o.mapID) then
 							tinsert(temp, o);
@@ -14526,7 +14526,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randomraid"];
 				else
 					local searchResults, dict, temp = {}, {} , {};
-					SearchRecursively(app:GetWindow("Prime").data, "mapID", searchResults);
+					SearchRecursively(app:GetDataCache(), "mapID", searchResults);
 					for i,o in pairs(searchResults) do
 						if not (o.saved or o.collected) and o.isRaid and (((o.total or 0) - (o.progress or 0)) > 0) and not C_Map.GetMapInfo(o.mapID) then
 							tinsert(temp, o);
@@ -14546,7 +14546,7 @@ app:GetWindow("Random", UIParent, function(self)
 					return searchCache["randomzone"];
 				else
 					local searchResults, dict, temp = {}, {} , {};
-					SearchRecursively(app:GetWindow("Prime").data, "mapID", searchResults);
+					SearchRecursively(app:GetDataCache(), "mapID", searchResults);
 					for i,o in pairs(searchResults) do
 						if not (o.saved or o.collected) and (((o.total or 0) - (o.progress or 0)) > 0) and not contains(excludedZones, o.mapID) then
 							tinsert(temp, o);
@@ -14588,7 +14588,7 @@ app:GetWindow("Random", UIParent, function(self)
 						['OnUpdate'] = app.AlwaysShowUpdate,
 					}, { __index = function(t, key)
 						if key == "text" or key == "icon" or key == "preview" or key == "texcoord" then
-							return app:GetWindow("Prime").data[key];
+							return app:GetDataCache()[key];
 						end
 					end}),
 					{
@@ -14781,7 +14781,7 @@ app:GetWindow("RWP", UIParent, function(self)
 					
 					local g = {};
 					if not data.results then
-						data.results = app:BuildSearchResponseForField(app:GetWindow("Prime").data.g, "rwp");
+						data.results = app:BuildSearchResponseForField(app:GetDataCache().g, "rwp");
 					end
 					if #data.results > 0 then
 						for i,result in ipairs(data.results) do
@@ -17198,8 +17198,10 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 						app:ReceiveSyncSummary(target, args, true);
 					end
 				else
-					local data = app:GetWindow("Prime").data;
-					response = "ATTC\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. app.Settings:GetShortModeString();
+					local data = app:GetDataCache();
+					if data then
+						response = "ATTC\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. app.Settings:GetShortModeString();
+					end
 				end
 				if response then SendResponseMessage("!\t" .. response, sender); end
 			elseif cmd == "!" then	-- Query Response
