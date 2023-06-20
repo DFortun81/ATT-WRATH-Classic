@@ -13704,7 +13704,7 @@ app:GetWindow("CurrentInstance", {
 		app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
 		app.RefreshLocation = RefreshLocation;
 		self:SetScript("OnEvent", function(self, e, ...)
-			print(e, ...);
+			--print(e, ...);
 			if e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
 				RefreshLocation();
 			else
