@@ -13704,8 +13704,19 @@ app:GetWindow("CurrentInstance", {
 		app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
 		app.RefreshLocation = RefreshLocation;
 		self:SetScript("OnEvent", function(self, e, ...)
-			RefreshLocation();
+			print(e, ...);
+			if e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
+				RefreshLocation();
+			else
+				self:DelayedUpdate();
+			end
 		end);
+		self:RegisterEvent("QUEST_ITEM_UPDATE");
+		self:RegisterEvent("QUEST_LOG_UPDATE");
+		self:RegisterEvent("QUEST_ACCEPTED");
+		self:RegisterEvent("QUEST_REMOVED");
+		self:RegisterEvent("QUEST_TURNED_IN");
+		self:RegisterEvent("QUEST_WATCH_UPDATE");
 		self:RegisterEvent("ZONE_CHANGED");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 		
@@ -17530,7 +17541,7 @@ app.events.QUEST_REMOVED = function(questID)
 end
 app.events.QUEST_TURNED_IN = function(questID)
 	local quest = fieldCache.questID[questID];
-	if quest and (not quest[1].repeatable or quest[1].isDaily or quest[1].isYearly) then
+	if quest and (not quest[1].repeatable or (quest[1].isDaily or quest[1].isMonthly or quest[1].isYearly)) then
 		CompletedQuests[questID] = true;
 		for questID,completed in pairs(DirtyQuests) do
 			app.QuestCompletionHelper(tonumber(questID));
@@ -17546,5 +17557,5 @@ app.events.QUEST_WATCH_UPDATE = function()
 end
 app.events.CRITERIA_UPDATE = function()
 	wipe(searchCache);
-	app:RefreshDataQuietly(true);
+	app:RefreshDataQuietly();
 end
