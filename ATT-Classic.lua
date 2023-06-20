@@ -9895,6 +9895,416 @@ app.CreateMinimapButton = CreateMinimapButton;
 
 -- Row Helper Functions
 local CreateRow;
+local function CreateSuffixForPopout(group)
+	return BuildSourceTextForChat(group, 0) .. " > " .. (group.text or "") .. (group.key and group[group.key] or "");
+end
+local function OnInitForPopout(self)
+	local group = self.reference;
+	if group.questID or group.sourceQuests then
+		-- This is a quest object. Let's show prereqs and breadcrumbs.
+		local questID = group.questID;
+		if questID and group.parent and group.parent.parent then
+			if group.parent.questID == questID then
+				group = group.parent;
+			end
+		end
+		
+		local mainQuest = CloneReference(group);
+		if group.parent then mainQuest.sourceParent = group.parent; end
+		if mainQuest.sym then
+			mainQuest.collectible = true;
+			mainQuest.visible = true;
+			mainQuest.progress = 0;
+			mainQuest.total = 0;
+			if not mainQuest.g then
+				local resolved = ResolveSymbolicLink(group);
+				if resolved then
+					for i=#resolved,1,-1 do
+						resolved[i] = CreateObject(resolved[i]);
+					end
+					mainQuest.g = resolved;
+				end
+			else
+				local resolved = ResolveSymbolicLink(group);
+				if resolved then
+					MergeObjects(mainQuest.g, resolved);
+				end
+			end
+		end
+		
+		if questID then mainQuest.collectible = true; end
+		local g = { mainQuest };
+		
+		-- Check to see if Source Quests are listed elsewhere.
+		if questID and not group.sourceQuests then
+			local searchResults = SearchForField("questID", questID);
+			if searchResults and #searchResults > 1 then
+				for i=1,#searchResults,1 do
+					local searchResult = searchResults[i];
+					if searchResult.questID == questID and searchResult.sourceQuests then
+						searchResult = CloneReference(searchResult);
+						searchResult.collectible = true;
+						searchResult.g = g;
+						mainQuest = searchResult;
+						g = { mainQuest };
+						break;
+					end
+				end
+			end
+		end
+		
+		-- Show Quest Prereqs
+		if mainQuest.sourceQuests then
+			local breakafter = 0;
+			local sourceQuests, sourceQuest, subSourceQuests, prereqs = mainQuest.sourceQuests;
+			while sourceQuests and #sourceQuests > 0 do
+				subSourceQuests = {}; prereqs = {};
+				for i,sourceQuestID in ipairs(sourceQuests) do
+					sourceQuest = sourceQuestID < 1 and SearchForField("creatureID", math.abs(sourceQuestID)) or SearchForField("questID", sourceQuestID);
+					if sourceQuest and #sourceQuest > 0 then
+						local found = nil;
+						for i=1,#sourceQuest,1 do
+							-- Only care about the first search result.
+							local sq = sourceQuest[i];
+							if sq and sq.questID and not sq.objectiveID then
+								questID = sq.questID;
+								if sq.parent and sq.parent.questID == questID then
+									sq = sq.parent;
+								end
+								if app.GroupFilter(sq) then
+									if app.RecursiveClassAndRaceFilter(sq) and questID == sourceQuestID then
+										if not found or (not found.sourceQuests and sq.sourceQuests) then
+											found = sq;
+										end
+									end
+								end
+							end
+						end
+						if found then
+							sourceQuest = CloneReference(found);
+							sourceQuest.collectible = true;
+							sourceQuest.visible = true;
+							sourceQuest.hideText = true;
+							if found.sourceQuests and #found.sourceQuests > 0 and (not found.saved or app.CollectedItemVisibilityFilter(sourceQuest)) then
+								-- Mark the sub source quest IDs as marked (as the same sub quest might point to 1 source quest ID)
+								for j, subsourceQuests in ipairs(found.sourceQuests) do
+									subSourceQuests[subsourceQuests] = true;
+								end
+							end
+						else
+							sourceQuest = nil;
+						end
+					elseif sourceQuestID > 0 then
+						-- Create a Quest Object.
+						sourceQuest = app.CreateQuest(sourceQuestID, { ['visible'] = true, ['collectible'] = true, ['hideText'] = true });
+					else
+						-- Create a NPC Object.
+						sourceQuest = app.CreateNPC(math.abs(sourceQuestID), { ['visible'] = true, ['hideText'] = true });
+					end
+					
+					-- If the quest was valid, attach it.
+					if sourceQuest then tinsert(prereqs, sourceQuest); end
+				end
+				
+				-- Convert the subSourceQuests table into an array
+				sourceQuests = {};
+				if #prereqs > 0 then
+					for sourceQuestID,i in pairs(subSourceQuests) do
+						tinsert(sourceQuests, tonumber(sourceQuestID));
+					end
+					tinsert(prereqs, {
+						["text"] = "Upon Completion",
+						["description"] = "The above quests need to be completed before being able to complete the quest(s) listed below.",
+						["icon"] = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
+						["visible"] = true,
+						["expanded"] = true,
+						["hideText"] = true,
+						["g"] = g,
+					});
+					g = prereqs;
+					breakafter = breakafter + 1;
+					if breakafter >= 100 then
+						app.print("Likely just broke out of an infinite source quest loop. Please report this to the ATT Discord!");
+						break;
+					end
+				end
+			end
+			
+			-- Clean up the recursive hierarchy. (this removed duplicates)
+			sourceQuests = {};
+			prereqs = g;
+			local orig = g;
+			while prereqs and #prereqs > 0 do
+				for i=#prereqs,1,-1 do
+					local o = prereqs[i];
+					if o.key then
+						sourceQuest = o.key .. o[o.key];
+						if sourceQuests[sourceQuest] then
+							-- Already exists in the hierarchy. Uh oh.
+							table.remove(prereqs, i);
+						else
+							sourceQuests[sourceQuest] = true;
+						end
+					end
+				end
+				
+				if #prereqs > 1 then
+					prereqs = prereqs[#prereqs];
+					if prereqs then prereqs = prereqs.g; end
+					orig = prereqs;
+				else
+					prereqs = prereqs[#prereqs];
+					if prereqs then prereqs = prereqs.g; end
+					orig[#orig].g = prereqs;
+				end
+			end
+			
+			-- Clean up standalone "Upon Completion" headers.
+			prereqs = g;
+			repeat
+				local n = #prereqs;
+				local lastprereq = prereqs[n];
+				if lastprereq.text == "Upon Completion" and n > 1 then
+					table.remove(prereqs, n);
+					local g = prereqs[n-1].g;
+					if not g then
+						g = {};
+						prereqs[n-1].g = g;
+					end
+					if lastprereq.g then
+						for i,data in ipairs(lastprereq.g) do
+							table.insert(g, data);
+						end
+					end
+					prereqs = g;
+				else
+					prereqs = lastprereq.g;
+				end
+			until not prereqs or #prereqs < 1;
+		end
+		self.data = {
+			text = "Quest Chain Requirements",
+			icon = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
+			description = "The following quests need to be completed before being able to complete the final quest.",
+			hideText = true,
+			g = g,
+		};
+	elseif group.sym then
+		self.data = CloneReference(group);
+		self.data.collectible = true;
+		self.data.visible = true;
+		self.data.progress = 0;
+		self.data.total = 0;
+		if not self.data.g then
+			local resolved = ResolveSymbolicLink(group);
+			if resolved then
+				for i=#resolved,1,-1 do
+					resolved[i] = CreateObject(resolved[i]);
+				end
+				self.data.g = resolved;
+			end
+		else
+			local resolved = ResolveSymbolicLink(group);
+			if resolved then
+				MergeObjects(self.data.g, resolved);
+			end
+		end
+	elseif group.g then
+		-- This is already a container with accurate numbers.
+		self.data = group;
+	else
+		-- This is a standalone item
+		group.visible = true;
+		if not group.g and (group.itemID or group.currencyID) then
+			local cmd = group.link or group.key .. ":" .. group[group.key];
+			group = GetCachedSearchResults(cmd, SearchForLink, cmd);
+		end
+		self.data = group;
+	end
+	
+	-- Clone the data and then insert it into the Raw Data table.
+	self.data = CloneReference(self.data);
+	self.data.hideText = true;
+	self.data.visible = true;
+	self.data.indent = 0;
+	self.data.total = 0;
+	self.data.progress = 0;
+	
+	-- If this is an achievement, build the criteria within it if possible.
+	if achievementID then
+		local searchResults = SearchForField("achievementID", achievementID);
+		if searchResults and #searchResults > 0 then
+			for i=1,#searchResults,1 do
+				local searchResult = searchResults[i];
+				if searchResult.achievementID == achievementID and searchResult.criteriaID then
+					if not self.data.g then self.data.g = {}; end
+					MergeObject(self.data.g, CloneReference(searchResult));
+				end
+			end
+		end
+	end
+	
+	--[[
+	local currencyID = group.currencyID;
+	if currencyID and not self.data.usedtobuy then
+		local searchResults = SearchForField("currencyIDAsCost", currencyID);
+		if searchResults and #searchResults > 0 then
+			local usedtobuy = {};
+			usedtobuy.g = {};
+			usedtobuy.text = "Used to Buy";
+			usedtobuy.icon = "Interface\\Icons\\INV_Misc_Coin_01";
+			usedtobuy.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
+			usedtobuy.OnTooltip = function(t)
+				local total = 0;
+				for _,o in ipairs(t.g) do
+					if o.visible then
+						if o.cost then
+							for k,v in ipairs(o.cost) do
+								if v[1] == "c" and v[2] == currencyID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+						if o.providers then
+							for k,v in ipairs(o.providers) do
+								if v[1] == "c" and v[2] == currencyID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+					end
+				end
+				GameTooltip:AddDoubleLine("Total Needed", total);
+			end
+			MergeObjects(usedtobuy.g, searchResults);
+			if not self.data.g then self.data.g = {}; end
+			tinsert(self.data.g, usedtobuy);
+			self.data.usedtobuy = usedtobuy;
+		end
+	end
+	
+	local itemID = group.itemID;
+	if itemID and not self.data.tradedin then
+		local searchResults = SearchForField("itemIDAsCost", itemID);
+		if searchResults and #searchResults > 0 then
+			local tradedin = {};
+			tradedin.g = {};
+			tradedin.text = "Used For";
+			tradedin.icon = "Interface\\Icons\\INV_Misc_Coin_01";
+			tradedin.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
+			tradedin.OnTooltip = function(t)
+				local total = 0;
+				for _,o in ipairs(t.g) do
+					if o.visible then
+						if o.cost then
+							for k,v in ipairs(o.cost) do
+								if v[1] == "i" and v[2] == itemID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+						if o.providers then
+							for k,v in ipairs(o.providers) do
+								if v[1] == "i" and v[2] == itemID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+					end
+				end
+				GameTooltip:AddDoubleLine("Total Needed", total);
+			end
+			MergeObjects(tradedin.g, searchResults);
+			if not self.data.g then self.data.g = {}; end
+			tinsert(self.data.g, tradedin);
+			self.data.tradedin = tradedin;
+		end
+	end
+	]]--
+	
+	if self.data.key then
+		if group.cost and type(group.cost) == "table" then
+			local costGroup = {
+				["text"] = "Cost",
+				["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
+				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+				["OnUpdate"] = app.AlwaysShowUpdate,
+				["g"] = {},
+			};
+			local costItem;
+			for i,c in ipairs(group.cost) do
+				costItem = nil;
+				if c[1] == "c" then
+					costItem = app.CreateCurrencyClass(c[2]);
+				elseif c[1] == "i" then
+					costItem = app.CreateItem(c[2]);
+				end
+				if costItem then
+					costItem = CloneReference(costItem);
+					costItem.visible = true;
+					costItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(costGroup.g, costItem);
+				end
+			end
+			if #costGroup.g > 0 then
+				if not self.data.g then self.data.g = {}; end
+				MergeObject(self.data.g, costGroup, 1);
+			end
+		end
+		
+		if group.providers or group.qgs or group.crs then
+			local sourceGroup = {
+				["text"] = "Sources",
+				["description"] = "The following contains all of the relevant sources.",
+				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+				["OnUpdate"] = app.AlwaysShowUpdate,
+				["g"] = {},
+			};
+			local sourceItem;
+			if group.providers then
+				for _,p in ipairs(group.providers) do
+					sourceItem = nil;
+					if p[1] == "n" then
+						sourceItem = app.CreateNPC(p[2]);
+					elseif p[1] == "o" then
+						sourceItem = app.CreateObject(p[2]);
+					elseif p[1] == "i" then
+						sourceItem = app.CreateItem(p[2]);
+					end
+					if sourceItem then
+						sourceItem.visible = true;
+						sourceItem.OnUpdate = app.AlwaysShowUpdate;
+						MergeObject(sourceGroup.g, sourceItem);
+					end
+				end
+			end
+			if group.crs then
+				for _,cr in ipairs(group.crs) do
+					sourceItem = app.CreateNPC(cr);
+					sourceItem.visible = true;
+					sourceItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(sourceGroup.g, sourceItem);
+				end
+			end
+			if group.qgs then
+				for _,qg in ipairs(group.qgs) do
+					sourceItem = app.CreateNPC(qg);
+					sourceItem.visible = true;
+					sourceItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(sourceGroup.g, sourceItem);
+				end
+			end
+			if #sourceGroup.g > 0 then
+				if not self.data.g then self.data.g = {}; end
+				MergeObject(self.data.g, sourceGroup, 1);
+			end
+		end
+	end
+	
+	BuildGroups(self.data);
+	UpdateGroups(self.data, self.data.g);
+	if group.parent then self.data.sourceParent = group.parent; end
+end
 function app:CreateMiniListForGroup(group, retried)
 	local achievementID = group.achievementID;
 	if achievementID and not retried then
@@ -9918,415 +10328,13 @@ function app:CreateMiniListForGroup(group, retried)
 	end
 	
 	-- Pop Out Functionality! :O
-	local suffix = BuildSourceTextForChat(group, 0) .. " > " .. (group.text or "") .. (group.key and group[group.key] or "");
-	local popout = app.Windows[suffix];
-	if not popout then
-		popout = app:GetWindow(suffix);
-		if group.questID or group.sourceQuests then
-			-- This is a quest object. Let's show prereqs and breadcrumbs.
-			local questID = group.questID;
-			if questID and group.parent and group.parent.parent then
-				if group.parent.questID == questID then
-					group = group.parent;
-				end
-			end
-			
-			local mainQuest = CloneReference(group);
-			if group.parent then mainQuest.sourceParent = group.parent; end
-			if mainQuest.sym then
-				mainQuest.collectible = true;
-				mainQuest.visible = true;
-				mainQuest.progress = 0;
-				mainQuest.total = 0;
-				if not mainQuest.g then
-					local resolved = ResolveSymbolicLink(group);
-					if resolved then
-						for i=#resolved,1,-1 do
-							resolved[i] = CreateObject(resolved[i]);
-						end
-						mainQuest.g = resolved;
-					end
-				else
-					local resolved = ResolveSymbolicLink(group);
-					if resolved then
-						MergeObjects(mainQuest.g, resolved);
-					end
-				end
-			end
-			
-			if questID then mainQuest.collectible = true; end
-			local g = { mainQuest };
-			
-			-- Check to see if Source Quests are listed elsewhere.
-			if questID and not group.sourceQuests then
-				local searchResults = SearchForField("questID", questID);
-				if searchResults and #searchResults > 1 then
-					for i=1,#searchResults,1 do
-						local searchResult = searchResults[i];
-						if searchResult.questID == questID and searchResult.sourceQuests then
-							searchResult = CloneReference(searchResult);
-							searchResult.collectible = true;
-							searchResult.g = g;
-							mainQuest = searchResult;
-							g = { mainQuest };
-							break;
-						end
-					end
-				end
-			end
-			
-			-- Show Quest Prereqs
-			if mainQuest.sourceQuests then
-				local breakafter = 0;
-				local sourceQuests, sourceQuest, subSourceQuests, prereqs = mainQuest.sourceQuests;
-				while sourceQuests and #sourceQuests > 0 do
-					subSourceQuests = {}; prereqs = {};
-					for i,sourceQuestID in ipairs(sourceQuests) do
-						sourceQuest = sourceQuestID < 1 and SearchForField("creatureID", math.abs(sourceQuestID)) or SearchForField("questID", sourceQuestID);
-						if sourceQuest and #sourceQuest > 0 then
-							local found = nil;
-							for i=1,#sourceQuest,1 do
-								-- Only care about the first search result.
-								local sq = sourceQuest[i];
-								if sq and sq.questID and not sq.objectiveID then
-									questID = sq.questID;
-									if sq.parent and sq.parent.questID == questID then
-										sq = sq.parent;
-									end
-									if app.GroupFilter(sq) then
-										if app.RecursiveClassAndRaceFilter(sq) and questID == sourceQuestID then
-											if not found or (not found.sourceQuests and sq.sourceQuests) then
-												found = sq;
-											end
-										end
-									end
-								end
-							end
-							if found then
-								sourceQuest = CloneReference(found);
-								sourceQuest.collectible = true;
-								sourceQuest.visible = true;
-								sourceQuest.hideText = true;
-								if found.sourceQuests and #found.sourceQuests > 0 and (not found.saved or app.CollectedItemVisibilityFilter(sourceQuest)) then
-									-- Mark the sub source quest IDs as marked (as the same sub quest might point to 1 source quest ID)
-									for j, subsourceQuests in ipairs(found.sourceQuests) do
-										subSourceQuests[subsourceQuests] = true;
-									end
-								end
-							else
-								sourceQuest = nil;
-							end
-						elseif sourceQuestID > 0 then
-							-- Create a Quest Object.
-							sourceQuest = app.CreateQuest(sourceQuestID, { ['visible'] = true, ['collectible'] = true, ['hideText'] = true });
-						else
-							-- Create a NPC Object.
-							sourceQuest = app.CreateNPC(math.abs(sourceQuestID), { ['visible'] = true, ['hideText'] = true });
-						end
-						
-						-- If the quest was valid, attach it.
-						if sourceQuest then tinsert(prereqs, sourceQuest); end
-					end
-					
-					-- Convert the subSourceQuests table into an array
-					sourceQuests = {};
-					if #prereqs > 0 then
-						for sourceQuestID,i in pairs(subSourceQuests) do
-							tinsert(sourceQuests, tonumber(sourceQuestID));
-						end
-						tinsert(prereqs, {
-							["text"] = "Upon Completion",
-							["description"] = "The above quests need to be completed before being able to complete the quest(s) listed below.",
-							["icon"] = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
-							["visible"] = true,
-							["expanded"] = true,
-							["hideText"] = true,
-							["g"] = g,
-						});
-						g = prereqs;
-						breakafter = breakafter + 1;
-						if breakafter >= 100 then
-							app.print("Likely just broke out of an infinite source quest loop. Please report this to the ATT Discord!");
-							break;
-						end
-					end
-				end
-				
-				-- Clean up the recursive hierarchy. (this removed duplicates)
-				sourceQuests = {};
-				prereqs = g;
-				local orig = g;
-				while prereqs and #prereqs > 0 do
-					for i=#prereqs,1,-1 do
-						local o = prereqs[i];
-						if o.key then
-							sourceQuest = o.key .. o[o.key];
-							if sourceQuests[sourceQuest] then
-								-- Already exists in the hierarchy. Uh oh.
-								table.remove(prereqs, i);
-							else
-								sourceQuests[sourceQuest] = true;
-							end
-						end
-					end
-					
-					if #prereqs > 1 then
-						prereqs = prereqs[#prereqs];
-						if prereqs then prereqs = prereqs.g; end
-						orig = prereqs;
-					else
-						prereqs = prereqs[#prereqs];
-						if prereqs then prereqs = prereqs.g; end
-						orig[#orig].g = prereqs;
-					end
-				end
-				
-				-- Clean up standalone "Upon Completion" headers.
-				prereqs = g;
-				repeat
-					local n = #prereqs;
-					local lastprereq = prereqs[n];
-					if lastprereq.text == "Upon Completion" and n > 1 then
-						table.remove(prereqs, n);
-						local g = prereqs[n-1].g;
-						if not g then
-							g = {};
-							prereqs[n-1].g = g;
-						end
-						if lastprereq.g then
-							for i,data in ipairs(lastprereq.g) do
-								table.insert(g, data);
-							end
-						end
-						prereqs = g;
-					else
-						prereqs = lastprereq.g;
-					end
-				until not prereqs or #prereqs < 1;
-			end
-			popout.data = {
-				["text"] = "Quest Chain Requirements",
-				["description"] = "The following quests need to be completed before being able to complete the final quest.",
-				["icon"] = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
-				["g"] = g,
-				["hideText"] = true
-			};
-		elseif group.sym then
-			popout.data = CloneReference(group);
-			popout.data.collectible = true;
-			popout.data.visible = true;
-			popout.data.progress = 0;
-			popout.data.total = 0;
-			if not popout.data.g then
-				local resolved = ResolveSymbolicLink(group);
-				if resolved then
-					for i=#resolved,1,-1 do
-						resolved[i] = CreateObject(resolved[i]);
-					end
-					popout.data.g = resolved;
-				end
-			else
-				local resolved = ResolveSymbolicLink(group);
-				if resolved then
-					MergeObjects(popout.data.g, resolved);
-				end
-			end
-		elseif group.g then
-			-- This is already a container with accurate numbers.
-			popout.data = group;
-		else
-			-- This is a standalone item
-			group.visible = true;
-			if not group.g and (group.itemID or group.currencyID) then
-				local cmd = group.link or group.key .. ":" .. group[group.key];
-				group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-			end
-			popout.data = group;
-		end
-		
-		-- Clone the data and then insert it into the Raw Data table.
-		popout.data = CloneReference(popout.data);
-		popout.data.hideText = true;
-		popout.data.visible = true;
-		popout.data.indent = 0;
-		popout.data.total = 0;
-		popout.data.progress = 0;
-		
-		-- If this is an achievement, build the criteria within it if possible.
-		if achievementID then
-			local searchResults = SearchForField("achievementID", achievementID);
-			if searchResults and #searchResults > 0 then
-				for i=1,#searchResults,1 do
-					local searchResult = searchResults[i];
-					if searchResult.achievementID == achievementID and searchResult.criteriaID then
-						if not popout.data.g then popout.data.g = {}; end
-						MergeObject(popout.data.g, CloneReference(searchResult));
-					end
-				end
-			end
-		end
-		
-		--[[
-		local currencyID = group.currencyID;
-		if currencyID and not popout.data.usedtobuy then
-			local searchResults = SearchForField("currencyIDAsCost", currencyID);
-			if searchResults and #searchResults > 0 then
-				local usedtobuy = {};
-				usedtobuy.g = {};
-				usedtobuy.text = "Used to Buy";
-				usedtobuy.icon = "Interface\\Icons\\INV_Misc_Coin_01";
-				usedtobuy.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
-				usedtobuy.OnTooltip = function(t)
-					local total = 0;
-					for _,o in ipairs(t.g) do
-						if o.visible then
-							if o.cost then
-								for k,v in ipairs(o.cost) do
-									if v[1] == "c" and v[2] == currencyID then
-										total = total + (v[3] or 1);
-									end
-								end
-							end
-							if o.providers then
-								for k,v in ipairs(o.providers) do
-									if v[1] == "c" and v[2] == currencyID then
-										total = total + (v[3] or 1);
-									end
-								end
-							end
-						end
-					end
-					GameTooltip:AddDoubleLine("Total Needed", total);
-				end
-				MergeObjects(usedtobuy.g, searchResults);
-				if not popout.data.g then popout.data.g = {}; end
-				tinsert(popout.data.g, usedtobuy);
-				popout.data.usedtobuy = usedtobuy;
-			end
-		end
-		
-		local itemID = group.itemID;
-		if itemID and not popout.data.tradedin then
-			local searchResults = SearchForField("itemIDAsCost", itemID);
-			if searchResults and #searchResults > 0 then
-				local tradedin = {};
-				tradedin.g = {};
-				tradedin.text = "Used For";
-				tradedin.icon = "Interface\\Icons\\INV_Misc_Coin_01";
-				tradedin.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
-				tradedin.OnTooltip = function(t)
-					local total = 0;
-					for _,o in ipairs(t.g) do
-						if o.visible then
-							if o.cost then
-								for k,v in ipairs(o.cost) do
-									if v[1] == "i" and v[2] == itemID then
-										total = total + (v[3] or 1);
-									end
-								end
-							end
-							if o.providers then
-								for k,v in ipairs(o.providers) do
-									if v[1] == "i" and v[2] == itemID then
-										total = total + (v[3] or 1);
-									end
-								end
-							end
-						end
-					end
-					GameTooltip:AddDoubleLine("Total Needed", total);
-				end
-				MergeObjects(tradedin.g, searchResults);
-				if not popout.data.g then popout.data.g = {}; end
-				tinsert(popout.data.g, tradedin);
-				popout.data.tradedin = tradedin;
-			end
-		end
-		]]--
-		
-		if popout.data.key then
-			if group.cost and type(group.cost) == "table" then
-				local costGroup = {
-					["text"] = "Cost",
-					["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
-					["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
-					["OnUpdate"] = app.AlwaysShowUpdate,
-					["g"] = {},
-				};
-				local costItem;
-				for i,c in ipairs(group.cost) do
-					costItem = nil;
-					if c[1] == "c" then
-						costItem = app.CreateCurrencyClass(c[2]);
-					elseif c[1] == "i" then
-						costItem = app.CreateItem(c[2]);
-					end
-					if costItem then
-						costItem = CloneReference(costItem);
-						costItem.visible = true;
-						costItem.OnUpdate = app.AlwaysShowUpdate;
-						MergeObject(costGroup.g, costItem);
-					end
-				end
-				if #costGroup.g > 0 then
-					if not popout.data.g then popout.data.g = {}; end
-					MergeObject(popout.data.g, costGroup, 1);
-				end
-			end
-			
-			if group.providers or group.qgs or group.crs then
-				local sourceGroup = {
-					["text"] = "Sources",
-					["description"] = "The following contains all of the relevant sources.",
-					["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
-					["OnUpdate"] = app.AlwaysShowUpdate,
-					["g"] = {},
-				};
-				local sourceItem;
-				if group.providers then
-					for _,p in ipairs(group.providers) do
-						sourceItem = nil;
-						if p[1] == "n" then
-							sourceItem = app.CreateNPC(p[2]);
-						elseif p[1] == "o" then
-							sourceItem = app.CreateObject(p[2]);
-						elseif p[1] == "i" then
-							sourceItem = app.CreateItem(p[2]);
-						end
-						if sourceItem then
-							sourceItem.visible = true;
-							sourceItem.OnUpdate = app.AlwaysShowUpdate;
-							MergeObject(sourceGroup.g, sourceItem);
-						end
-					end
-				end
-				if group.crs then
-					for _,cr in ipairs(group.crs) do
-						sourceItem = app.CreateNPC(cr);
-						sourceItem.visible = true;
-						sourceItem.OnUpdate = app.AlwaysShowUpdate;
-						MergeObject(sourceGroup.g, sourceItem);
-					end
-				end
-				if group.qgs then
-					for _,qg in ipairs(group.qgs) do
-						sourceItem = app.CreateNPC(qg);
-						sourceItem.visible = true;
-						sourceItem.OnUpdate = app.AlwaysShowUpdate;
-						MergeObject(sourceGroup.g, sourceItem);
-					end
-				end
-				if #sourceGroup.g > 0 then
-					if not popout.data.g then popout.data.g = {}; end
-					MergeObject(popout.data.g, sourceGroup, 1);
-				end
-			end
-		end
-		
-		BuildGroups(popout.data);
-		UpdateGroups(popout.data, popout.data.g);
-		if group.parent then popout.data.sourceParent = group.parent; end
-	end
+	local popout = app:GetWindow(CreateSuffixForPopout(group), {
+		Silent = true,
+		OnInit = function(self)
+			self.reference = group;
+			OnInitForPopout(self);
+		end,
+	});
 	if IsAltKeyDown() then
 		AddTomTomWaypoint(popout.data, false);
 	else
@@ -11201,7 +11209,7 @@ local function RowOnEnter(self)
 			GameTooltip:AddLine("This is a breadcrumb quest.");
 		end
 		
-		GameTooltip:AddDoubleLine("Type", reference.__type);
+		--GameTooltip:AddDoubleLine("Type", reference.__type);
 		
 		-- Show lockout information about an Instance (Raid or Dungeon)
 		local locks = reference.locks;
@@ -12517,9 +12525,11 @@ function app:GetWindow(suffix, settings)
 				end
 			end
 			]]--
-			window.Update = function(self, ...)
+			window.Update = function(self, force, fromTrigger)
 				if self:IsVisible() then
-					return OnUpdate(self, ...);
+					return OnUpdate(self, force, fromTrigger);
+				else
+					self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
 				end
 			end
 		else
@@ -12564,14 +12574,14 @@ function app:GetWindow(suffix, settings)
 		window:SetSize(300, 300);
 		window:SetUserPlaced(true);
 		window.data = {
-			['text'] = suffix,
-			['icon'] = "Interface\\Icons\\Ability_Spy.blp", 
-			['visible'] = true, 
-			['expanded'] = true,
-			['g'] = {
+			text = suffix,
+			icon = "Interface\\Icons\\Ability_Spy.blp", 
+			visible = true, 
+			expanded = true,
+			g = {
 				{
-					['text'] = "No data linked to listing.", 
-					['visible'] = true
+					text = "No data linked to listing.", 
+					visible = true
 				}
 			}
 		};
