@@ -2887,37 +2887,41 @@ local _cache;
 local currentMaps = {};
 local fieldCache_g,fieldCache_f, fieldConverters;
 CacheField = function(group, field, value)
-	fieldCache_g = rawget(fieldCache, field);
-	fieldCache_f = rawget(fieldCache_g, value);
+	fieldCache_g = fieldCache[field];
+	fieldCache_f = fieldCache_g[value];
 	if fieldCache_f then
 		tinsert(fieldCache_f, group);
 	else
-		rawset(fieldCache_g, value, {group});
+		fieldCache_g[value] = {group};
 	end
 end
 -- These are the fields we store.
-fieldCache["achievementID"] = {};
-fieldCache["creatureID"] = {};
-fieldCache["currencyID"] = {};
-fieldCache["currencyIDAsCost"] = {};
-fieldCache["explorationID"] = {};
-fieldCache["factionID"] = {};
-fieldCache["flightPathID"] = {};
-fieldCache["headerID"] = {};
-fieldCache["illusionID"] = {};
-fieldCache["itemID"] = {};
-fieldCache["itemIDAsCost"] = {};
-fieldCache["mapID"] = {};
-fieldCache["objectID"] = {};
-fieldCache["questID"] = {};
-fieldCache["requireSkill"] = {};
-fieldCache["sourceQuestID"] = {};
-fieldCache["speciesID"] = {};
-fieldCache["spellID"] = {};
-fieldCache["tierID"] = {};
-fieldCache["titleID"] = {};
-fieldCache["toyID"] = {};
-fieldCache["npcID"] = rawget(fieldCache, "creatureID");
+for w,f in ipairs({
+	"achievementID",
+	"creatureID",
+	"currencyID",
+	"currencyIDAsCost",
+	"explorationID",
+	"factionID",
+	"flightPathID",
+	"headerID",
+	"illusionID",
+	"itemID",
+	"itemIDAsCost",
+	"mapID",
+	"objectID",
+	"questID",
+	"requireSkill",
+	"sourceQuestID",
+	"speciesID",
+	"spellID",
+	"tierID",
+	"titleID",
+	"toyID"
+}) do
+	fieldCache[f] = {};
+end
+fieldCache["npcID"] = fieldCache.creatureID;
 local cacheCreatureID = function(group, value)
 	if value > 0 then
 		CacheField(group, "creatureID", value);
