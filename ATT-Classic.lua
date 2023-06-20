@@ -1400,6 +1400,7 @@ ResolveSymbolicLink = function(o)
 							end
 						end
 					else
+						print(BuildSourceTextForChat(o, 0));
 						print("Failed to select ", field, sym[i]);
 					end
 				end

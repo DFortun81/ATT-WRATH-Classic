@@ -1257,6 +1257,44 @@ root("Achievements", {
 				17301,	-- Defense Protocol Alpha: Utgarde Pinnacle
 			}},
 		})),
+		applyclassicphase(WRATH_PHASE_THREE, ach(18614, {	-- Defense Protocol Beta: Terminated (A)
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				18593,	-- Defense Protocol Beta: Ahn'kahet: The Old Kingdom
+				18592,	-- Defense Protocol Beta: Azjol-Nerub
+				18594,	-- Defense Protocol Beta: Drak'Tharon Keep
+				18596,	-- Defense Protocol Beta: Gundrak
+				18598,	-- Defense Protocol Beta: Halls of Lightning
+				18597,	-- Defense Protocol Beta: Halls of Stone
+				18601,	-- Defense Protocol Beta: The Culling of Stratholme
+				18591,	-- Defense Protocol Beta: The Nexus
+				18599,	-- Defense Protocol Beta: The Oculus
+				18595,	-- Defense Protocol Beta: The Violet Hold
+				18677,	-- Defense Protocol Beta: Trial of the Champion (A)
+				18590,	-- Defense Protocol Beta: Utgarde Keep
+				18600,	-- Defense Protocol Beta: Utgarde Pinnacle
+			}},
+			["races"] = ALLIANCE_ONLY,
+		})),
+		applyclassicphase(WRATH_PHASE_THREE, ach(18688, {	-- Defense Protocol Beta: Terminated (H)
+			-- Meta Achievement
+			["sym"] = {{"meta_achievement",
+				18593,	-- Defense Protocol Beta: Ahn'kahet: The Old Kingdom
+				18592,	-- Defense Protocol Beta: Azjol-Nerub
+				18594,	-- Defense Protocol Beta: Drak'Tharon Keep
+				18596,	-- Defense Protocol Beta: Gundrak
+				18598,	-- Defense Protocol Beta: Halls of Lightning
+				18597,	-- Defense Protocol Beta: Halls of Stone
+				18601,	-- Defense Protocol Beta: The Culling of Stratholme
+				18591,	-- Defense Protocol Beta: The Nexus
+				18599,	-- Defense Protocol Beta: The Oculus
+				18595,	-- Defense Protocol Beta: The Violet Hold
+				18678,	-- Defense Protocol Beta: Trial of the Champion (H)
+				18590,	-- Defense Protocol Beta: Utgarde Keep
+				18600,	-- Defense Protocol Beta: Utgarde Pinnacle
+			}},
+			["races"] = HORDE_ONLY,
+		})),
 		-- #endif
 		applyclassicphase(WRATH_PHASE_ONE, ach(2136, {	-- Glory of the Hero
 			-- Meta Achievement
