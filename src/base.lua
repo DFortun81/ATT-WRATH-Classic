@@ -5,17 +5,27 @@
 --------------------------------------------------------------------------------
 -- This is a hidden frame that intercepts all of the event notifications that we have registered for.
 local name, app = ...;
-local assetRootPath = "Interface\\Addons\\" .. name .. "\\assets\\";
 function app:GetName() return name; end
-_G["ATTC"] = app;
+local assetRootPath = "Interface\\Addons\\" .. name .. "\\assets\\";
 app.asset = function(path)
 	return assetRootPath .. path;
+end
+--app.Debugging = true;
+
+-- External API
+_G["ATTC"] = app;
+if not _G["AllTheThings"] then
+	_G["AllTheThings"] = app;
 end
 
 -- Create an Event Processor.
 local events = {};
 local _ = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
-_:SetScript("OnEvent", function(self, e, ...) (rawget(events, e) or print)(...); end);
+if app.Debugging then
+_:SetScript("OnEvent", function(self, e, ...) print(e, ...); (events[e] or print)(...); end);
+else
+_:SetScript("OnEvent", function(self, e, ...) (events[e] or print)(...); end);
+end
 _:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 0);
 _:SetSize(1, 1);
 _:Show();

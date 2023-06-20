@@ -11536,6 +11536,7 @@ local function UpdateWindowColor(self, suffix)
 	self:SetBackdropBorderColor(1, 1, 1, 1);
 	self:SetBackdropColor(0, 0, 0, 1);
 end
+if app.Debugging then
 function app:UpdateWindows(force, fromTrigger)
 	print("UpdateWindows: ", force, fromTrigger);
 	local lastUpdate = GetTimePreciseSec();
@@ -11543,6 +11544,13 @@ function app:UpdateWindows(force, fromTrigger)
 		window:Update(force, fromTrigger);
 	end
 	print("UpdateWindows: ", (GetTimePreciseSec() - lastUpdate) * 10000);
+end
+else
+function app:UpdateWindows(force, fromTrigger)
+	for name, window in pairs(app.Windows) do
+		window:Update(force, fromTrigger);
+	end
+end
 end
 function app:UpdateWindowColors()
 	for suffix, window in pairs(app.Windows) do
@@ -12528,27 +12536,28 @@ function app:GetWindow(suffix, settings)
 		local OnUpdate = settings.OnUpdate or UpdateWindow;
 		window.ApplyUpdate = OnUpdate;	-- You can force an update with this.
 		if settings.Silent then
-			window.Update = function(self, force, fromTrigger)
-				if self:IsVisible() then
-					print("UpdateWindow: " .. suffix, force, fromTrigger);
-					local lastUpdate = GetTimePreciseSec();
-					local result = OnUpdate(self, force, fromTrigger);
-					print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
-					return result;
-				else
-					self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
+			if app.Debugging then
+				window.Update = function(self, force, fromTrigger)
+					if self:IsVisible() then
+						print("UpdateWindow: " .. suffix, force, fromTrigger);
+						local lastUpdate = GetTimePreciseSec();
+						local result = OnUpdate(self, force, fromTrigger);
+						print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+						return result;
+					else
+						self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
+					end
+				end
+			else
+				window.Update = function(self, force, fromTrigger)
+					if self:IsVisible() then
+						return OnUpdate(self, force, fromTrigger);
+					else
+						self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
+					end
 				end
 			end
-			--[[
-			window.Update = function(self, force, fromTrigger)
-				if self:IsVisible() then
-					return OnUpdate(self, force, fromTrigger);
-				else
-					self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
-				end
-			end
-			]]--
-		else
+		elseif app.Debugging then
 			window.Update = function(self, ...)
 				print("UpdateWindow: " .. suffix, ...);
 				local lastUpdate = GetTimePreciseSec();
@@ -12556,7 +12565,8 @@ function app:GetWindow(suffix, settings)
 				print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 				return result;
 			end
-			--window.Update = OnUpdate;
+		else
+			window.Update = OnUpdate;
 		end
 		window.SetVisible = SetWindowVisibility;
 		
