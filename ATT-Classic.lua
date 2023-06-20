@@ -704,8 +704,9 @@ local achievementTooltipText = {
 local function BuildGroups(parent, g)
 	if g then
 		-- Iterate through the groups
-		for key, group in ipairs(g) do
+		for i=1,#g,1 do
 			-- Set the group's parent
+			local group = g[i];
 			group.parent = parent;
 			
 			-- Build the groups
