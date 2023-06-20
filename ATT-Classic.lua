@@ -11530,7 +11530,6 @@ function app:UpdateWindowColors()
 end
 function app:GetDataCache()
 	if app.Categories then
-		local lastUpdate = GetTimePreciseSec();
 		local rootData = setmetatable({
 			text = L["TITLE"],
 			icon = app.asset("logo_32x32"),
@@ -12395,7 +12394,6 @@ function app:GetDataCache()
 		end
 		
 		-- Now that we have data, build the structure for the main window.
-		--print("GetDataCache P1", (GetTimePreciseSec() - lastUpdate) * 10000);
 		CacheFields(rootData);
 		BuildGroups(rootData);
 		app:GetWindow("Prime").data = rootData;
@@ -12630,6 +12628,9 @@ function app:GetWindow(suffix, settings)
 		container.rows = {};
 		scrollbar:SetValue(1);
 		container:Show();
+		if settings.OnInit then
+			settings.OnInit(window);
+		end
 		window:Update();
 	end
 	return window;
@@ -12736,6 +12737,12 @@ app:GetWindow("Unsorted", {
 app:GetWindow("Attuned", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTUNED1 = "/attuned";
+		SlashCmdList["ATTUNED"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -13233,6 +13240,12 @@ app:GetWindow("Breadcrumbs", {
 app:GetWindow("CosmicInfuser", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTCMAPS1 = "/attmaps";
+		SlashCmdList["ATTCMAPS"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -13306,340 +13319,342 @@ app:GetWindow("CosmicInfuser", {
 });
 app:GetWindow("CurrentInstance", {
 	parent = UIParent,
-	OnUpdate = function(self, force, fromTrigger)
-		if not self.initialized then
-			self.initialized = true;
-			self.openedOnLogin = false;
-			self.data = app.CreateMap(946, {
-				['text'] = "Mini List",
-				['icon'] = "Interface\\Icons\\INV_Misc_Map06.blp", 
-				["description"] = "This list contains the relevant information for your current zone.",
-				['visible'] = true, 
-				['expanded'] = true,
-				['g'] = {
-					{
-						['text'] = "Update Location Now",
-						['icon'] = "Interface\\Icons\\INV_Misc_Map_01",
-						['description'] = "If you wish to forcibly refresh the data without changing zones, click this button now!",
-						['visible'] = true,
-						['OnClick'] = function(row, button)
-							Push(self, "Rebuild", self.Rebuild);
-							return true;
-						end,
-					},
+	Silent = true,
+	OnInit = function(self)
+		self.openedOnLogin = false;
+		self.data = app.CreateMap(946, {
+			['text'] = "Mini List",
+			['icon'] = "Interface\\Icons\\INV_Misc_Map06.blp", 
+			["description"] = "This list contains the relevant information for your current zone.",
+			['visible'] = true, 
+			['expanded'] = true,
+			['g'] = {
+				{
+					['text'] = "Update Location Now",
+					['icon'] = "Interface\\Icons\\INV_Misc_Map_01",
+					['description'] = "If you wish to forcibly refresh the data without changing zones, click this button now!",
+					['visible'] = true,
+					['OnClick'] = function(row, button)
+						Push(self, "Rebuild", self.Rebuild);
+						return true;
+					end,
 				},
-			});
-			local IsSameMap = function(data, results)
-				if data.mapID then
-					-- Exact same map?
-					if data.mapID == results.mapID then
-						return true;
-					end
-					
-					-- Does the result map have an array of associated maps and this map is in there?
-					if results.maps and contains(results.maps, data.mapID) then
-						return true;
-					end
+			},
+		});
+		local IsSameMap = function(data, results)
+			if data.mapID then
+				-- Exact same map?
+				if data.mapID == results.mapID then
+					return true;
 				end
-				if data.maps then
-					-- Does the old map data contain this map?
-					if contains(data.maps, results.mapID) then
-						return true;
-					end
-					
-					-- Does the result map have an array of associated maps and this map is in there?
-					if results.maps and containsAny(results.maps, data.maps) then
-						return true;
-					end
+				
+				-- Does the result map have an array of associated maps and this map is in there?
+				if results.maps and contains(results.maps, data.mapID) then
+					return true;
 				end
 			end
-			
-			local lastMapID = -1;
-			self.SetMapID = function(self, mapID)
-				if self.mapID == lastMapID then
-					return;
+			if data.maps then
+				-- Does the old map data contain this map?
+				if contains(data.maps, results.mapID) then
+					return true;
 				end
-				lastMapID = self.mapID;
-				self.mapID = mapID;
-				self:SetVisible(true);
-				self:Update();
+				
+				-- Does the result map have an array of associated maps and this map is in there?
+				if results.maps and containsAny(results.maps, data.maps) then
+					return true;
+				end
 			end
-			self.Rebuild = function(self)
-				local results = SearchForField("mapID", self.mapID);
-				if results then
-					-- Simplify the returned groups
-					local groups = {};
-					local header = { mapID = self.mapID, g = groups };
-					local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
-					table.insert(groups, achievementsHeader);
-					local explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, { ["g"] = {} });
-					table.insert(groups, explorationHeader);
-					local factionsHeader = app.CreateNPC(app.HeaderConstants.FACTIONS, { ["g"] = {} });
-					table.insert(groups, factionsHeader);
-					local flightPathsHeader = app.CreateNPC(app.HeaderConstants.FLIGHT_PATHS, { ["g"] = {} });
-					table.insert(groups, flightPathsHeader);
-					local questsHeader = app.CreateNPC(app.HeaderConstants.QUESTS, { ["g"] = {} });
-					table.insert(groups, questsHeader);
-					local raresHeader = app.CreateNPC(app.HeaderConstants.RARES, { ["g"] = {} });
-					table.insert(groups, raresHeader);
-					local vendorsHeader = app.CreateNPC(app.HeaderConstants.VENDORS, { ["g"] = {} });
-					table.insert(groups, vendorsHeader);
-					local zoneDropsHeader = app.CreateNPC(app.HeaderConstants.ZONE_DROPS, { ["g"] = {} });
-					table.insert(groups, zoneDropsHeader);
-					for i, group in ipairs(results) do
-						local clone = {};
-						for key,value in pairs(group) do
-							if key == "maps" then
-								local maps = {};
-								for i,mapID in ipairs(value) do
-									tinsert(maps, mapID);
-								end
-								clone[key] = maps;
-							elseif key == "g" then
-								local g = {};
-								for i,o in ipairs(value) do
-									o = CloneReference(o);
-									ExpandGroupsRecursively(o, false);
-									tinsert(g, o);
-								end
-								clone[key] = g;
-							else
-								clone[key] = value;
+		end
+		
+		local lastMapID = -1;
+		self.SetMapID = function(self, mapID)
+			if self.mapID == lastMapID then
+				return;
+			end
+			lastMapID = self.mapID;
+			self.mapID = mapID;
+			self:SetVisible(true);
+			self:Update();
+		end
+		self.Rebuild = function(self)
+			local results = SearchForField("mapID", self.mapID);
+			if results then
+				-- Simplify the returned groups
+				local groups = {};
+				local header = { mapID = self.mapID, g = groups };
+				local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
+				table.insert(groups, achievementsHeader);
+				local explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, { ["g"] = {} });
+				table.insert(groups, explorationHeader);
+				local factionsHeader = app.CreateNPC(app.HeaderConstants.FACTIONS, { ["g"] = {} });
+				table.insert(groups, factionsHeader);
+				local flightPathsHeader = app.CreateNPC(app.HeaderConstants.FLIGHT_PATHS, { ["g"] = {} });
+				table.insert(groups, flightPathsHeader);
+				local questsHeader = app.CreateNPC(app.HeaderConstants.QUESTS, { ["g"] = {} });
+				table.insert(groups, questsHeader);
+				local raresHeader = app.CreateNPC(app.HeaderConstants.RARES, { ["g"] = {} });
+				table.insert(groups, raresHeader);
+				local vendorsHeader = app.CreateNPC(app.HeaderConstants.VENDORS, { ["g"] = {} });
+				table.insert(groups, vendorsHeader);
+				local zoneDropsHeader = app.CreateNPC(app.HeaderConstants.ZONE_DROPS, { ["g"] = {} });
+				table.insert(groups, zoneDropsHeader);
+				for i, group in ipairs(results) do
+					local clone = {};
+					for key,value in pairs(group) do
+						if key == "maps" then
+							local maps = {};
+							for i,mapID in ipairs(value) do
+								tinsert(maps, mapID);
 							end
+							clone[key] = maps;
+						elseif key == "g" then
+							local g = {};
+							for i,o in ipairs(value) do
+								o = CloneReference(o);
+								ExpandGroupsRecursively(o, false);
+								tinsert(g, o);
+							end
+							clone[key] = g;
+						else
+							clone[key] = value;
 						end
-						local c = GetRelativeValue(group, "c");
-						if c then clone.c = c; end
-						local r = GetRelativeValue(group, "r");
-						if r then clone.r = r; end
-						setmetatable(clone, getmetatable(group));
-						
-						if group.key == "mapID" or group.key == "instanceID" then
-							header.key = group.key;
-							header[group.key] = group[group.key];
-							MergeObject({header}, clone);
-						elseif group.key == "npcID" then
-							if GetRelativeField(group, "headerID", app.HeaderConstants.VENDORS) or GetRelativeField(group, "headerID", -173) then	-- It's a Vendor. (or a timewaking vendor)
-								MergeObject(vendorsHeader.g, clone, 1);
-							elseif GetRelativeField(group, "headerID", app.HeaderConstants.QUESTS) then	-- It's a Quest.
-								MergeObject(questsHeader.g, clone, 1);
-							else
-								MergeObject(groups, clone);
-							end
-						elseif group.key == "criteriaID" then
-							clone.achievementID = group.achievementID;
-							MergeObject(achievementsHeader.g, clone);
-						elseif group.key == "achievementID" then
-							MergeObject(achievementsHeader.g, clone);
-						elseif group.key == "questID" then
+					end
+					local c = GetRelativeValue(group, "c");
+					if c then clone.c = c; end
+					local r = GetRelativeValue(group, "r");
+					if r then clone.r = r; end
+					setmetatable(clone, getmetatable(group));
+					
+					if group.key == "mapID" or group.key == "instanceID" then
+						header.key = group.key;
+						header[group.key] = group[group.key];
+						MergeObject({header}, clone);
+					elseif group.key == "npcID" then
+						if GetRelativeField(group, "headerID", app.HeaderConstants.VENDORS) or GetRelativeField(group, "headerID", -173) then	-- It's a Vendor. (or a timewaking vendor)
+							MergeObject(vendorsHeader.g, clone, 1);
+						elseif GetRelativeField(group, "headerID", app.HeaderConstants.QUESTS) then	-- It's a Quest.
 							MergeObject(questsHeader.g, clone, 1);
-						elseif group.key == "factionID" then
-							MergeObject(factionsHeader.g, clone);
-						elseif group.key == "explorationID" then
-							MergeObject(explorationHeader.g, clone);
-						elseif group.key == "flightPathID" then
-							MergeObject(flightPathsHeader.g, clone);
-						elseif group.key == "itemID" then
-							if GetRelativeField(group, "headerID", app.HeaderConstants.ZONE_DROPS) then
-								MergeObject(zoneDropsHeader.g, clone);
-							else
-								local requireSkill = GetRelativeValue(group, "requireSkill");
-								if requireSkill then
-									clone = app.CreateProfession(requireSkill, { g = { clone } });
-									MergeObject(groups, clone);
-								else
-									MergeObject(groups, clone);
-								end
-							end
-						elseif group.key == "headerID" then
-							if not GetRelativeValue(group, "instanceID") then
-								MergeObject(groups, clone);
-							end
 						else
 							MergeObject(groups, clone);
 						end
-					end
-					
-					-- Swap out the map data for the header.
-					results = (header.key == "instanceID" and app.CreateInstance or app.CreateMap)(header.mapID, header);
-					
-					if IsSameMap(self.data, results) then
-						ReapplyExpand(self.data.g, results.g);
-					else
-						ExpandGroupsRecursively(results, true);
-					end
-					
-					for key,value in pairs(self.data) do
-						self.data[key] = nil;
-					end
-					for key,value in pairs(results) do
-						self.data[key] = value;
-					end
-					
-					self.data.e = nil;
-					self.data.u = nil;
-					self.data.mapID = self.mapID;
-					setmetatable(self.data,
-						self.data.classID and app.BaseCharacterClass
-						or app.BaseMap);
-					
-					-- Move all "isRaid" entries to the top of the list.
-					if results.g then
-						local bottom = {};
-						local top = {};
-						for i=#results.g,1,-1 do
-							local o = results.g[i];
-							if o.key == "factionID" then
-								table.remove(results.g, i);
-								MergeObject(factionsHeader.g, o, 1);
-							elseif o.key == "flightPathID" then
-								table.remove(results.g, i);
-								MergeObject(flightPathsHeader.g, o, 1);
-							elseif o.key == "questID" then
-								table.remove(results.g, i);
-								MergeObject(questsHeader.g, o, 1);
-							end
-						end
-						for i=#results.g,1,-1 do
-							local o = results.g[i];
-							if o.isRaid then
-								table.remove(results.g, i);
-								table.insert(top, o);
-							elseif o.g and #o.g < 1 and o.key == "headerID" then
-								table.remove(results.g, i);
-							end
-						end
-						for i,o in ipairs(top) do
-							table.insert(results.g, 1, o);
-						end
-						for i,o in ipairs(bottom) do
-							table.insert(results.g, o);
-						end
-					end
-					
-					local difficultyID = (IsInInstance() and select(3, GetInstanceInfo())) or (EJ_GetDifficulty and EJ_GetDifficulty()) or 0;
-					if difficultyID ~= 0 then
-						for _,row in ipairs(header.g) do
-							if row.difficultyID or row.difficulties then
-								if (row.difficultyID or -1) == difficultyID or (row.difficulties and containsValue(row.difficulties, difficultyID)) then
-									if not row.expanded then ExpandGroupsRecursively(row, true, true); expanded = true; end
-								elseif row.expanded then
-									ExpandGroupsRecursively(row, false, true);
-								end
-							end
-						end
-					end
-					
-					-- Check to see completion...
-					BuildGroups(self.data);
-					
-					self.data.progress = 0;
-					self.data.total = 0;
-					self.data.back = 1;
-					self.data.indent = 0;
-					UpdateGroups(self.data, self.data.g);
-					self.data.visible = true;
-					UpdateWindow(self, false, false);
-				end
-				
-				-- If we don't have any map data on this area, report it to the chat window.
-				if not results then
-					local mapID = self.mapID;
-					print("No map found for this location ", app.GetMapName(mapID), " [", mapID, "]");
-					
-					local mapInfo = C_Map.GetMapInfo(mapID);
-					if mapInfo then
-						local mapPath = mapInfo.name or ("Map ID #" .. mapID);
-						mapID = mapInfo.parentMapID;
-						while mapID do
-							mapInfo = C_Map.GetMapInfo(mapID);
-							if mapInfo then
-								mapPath = (mapInfo.name or ("Map ID #" .. mapID)) .. " > " .. mapPath;
-								mapID = mapInfo.parentMapID;
+					elseif group.key == "criteriaID" then
+						clone.achievementID = group.achievementID;
+						MergeObject(achievementsHeader.g, clone);
+					elseif group.key == "achievementID" then
+						MergeObject(achievementsHeader.g, clone);
+					elseif group.key == "questID" then
+						MergeObject(questsHeader.g, clone, 1);
+					elseif group.key == "factionID" then
+						MergeObject(factionsHeader.g, clone);
+					elseif group.key == "explorationID" then
+						MergeObject(explorationHeader.g, clone);
+					elseif group.key == "flightPathID" then
+						MergeObject(flightPathsHeader.g, clone);
+					elseif group.key == "itemID" then
+						if GetRelativeField(group, "headerID", app.HeaderConstants.ZONE_DROPS) then
+							MergeObject(zoneDropsHeader.g, clone);
+						else
+							local requireSkill = GetRelativeValue(group, "requireSkill");
+							if requireSkill then
+								clone = app.CreateProfession(requireSkill, { g = { clone } });
+								MergeObject(groups, clone);
 							else
-								break;
+								MergeObject(groups, clone);
 							end
 						end
-						print("Path: ", mapPath);
-					end
-					print("Please report this to the ATT Discord! Thanks! ", app.Version);
-				end
-			end
-			local function OpenMiniList(id, show)
-				-- Determine whether or not to forcibly reshow the mini list.
-				if not self:IsVisible() then
-					if app.Settings:GetTooltipSetting("Auto:MiniList") then
-						if not self.openedOnLogin and not show then
-							self.openedOnLogin = true;
-							show = true;
+					elseif group.key == "headerID" then
+						if not GetRelativeValue(group, "instanceID") then
+							MergeObject(groups, clone);
 						end
 					else
-						self.openedOnLogin = false;
+						MergeObject(groups, clone);
 					end
-					if show then self:Show(); end
+				end
+				
+				-- Swap out the map data for the header.
+				results = (header.key == "instanceID" and app.CreateInstance or app.CreateMap)(header.mapID, header);
+				
+				if IsSameMap(self.data, results) then
+					ReapplyExpand(self.data.g, results.g);
 				else
-					show = true;
-				end
-				if self.mapID == id then
-					return; -- Haha JK BRO
+					ExpandGroupsRecursively(results, true);
 				end
 				
-				-- Cache that we're in the current map ID.
-				self.mapID = id;
-				self:Update();
-			end
-			local function OpenMiniListForCurrentZone()
-				OpenMiniList(app.GetCurrentMapID(), true);
-			end
-			local function RefreshLocationCoroutine()
-				-- Wait for a few moments for the map to update.
-				local waitTimer = 30;
-				while waitTimer > 0 do
-					coroutine.yield();
-					waitTimer = waitTimer - 1;
+				for key,value in pairs(self.data) do
+					self.data[key] = nil;
+				end
+				for key,value in pairs(results) do
+					self.data[key] = value;
 				end
 				
-				-- While the player is in combat, wait for combat to end.
-				while InCombatLockdown() do coroutine.yield(); end
+				self.data.e = nil;
+				self.data.u = nil;
+				self.data.mapID = self.mapID;
+				setmetatable(self.data,
+					self.data.classID and app.BaseCharacterClass
+					or app.BaseMap);
 				
-				-- Acquire the new map ID.
-				local mapID = app.GetCurrentMapID();
-				while not mapID or mapID < 0 do
-					coroutine.yield();
-					mapID = app.GetCurrentMapID();
+				-- Move all "isRaid" entries to the top of the list.
+				if results.g then
+					local bottom = {};
+					local top = {};
+					for i=#results.g,1,-1 do
+						local o = results.g[i];
+						if o.key == "factionID" then
+							table.remove(results.g, i);
+							MergeObject(factionsHeader.g, o, 1);
+						elseif o.key == "flightPathID" then
+							table.remove(results.g, i);
+							MergeObject(flightPathsHeader.g, o, 1);
+						elseif o.key == "questID" then
+							table.remove(results.g, i);
+							MergeObject(questsHeader.g, o, 1);
+						end
+					end
+					for i=#results.g,1,-1 do
+						local o = results.g[i];
+						if o.isRaid then
+							table.remove(results.g, i);
+							table.insert(top, o);
+						elseif o.g and #o.g < 1 and o.key == "headerID" then
+							table.remove(results.g, i);
+						end
+					end
+					for i,o in ipairs(top) do
+						table.insert(results.g, 1, o);
+					end
+					for i,o in ipairs(bottom) do
+						table.insert(results.g, o);
+					end
 				end
-				app.CurrentMapID = mapID;
-				OpenMiniList(mapID);
-			end
-			local function RefreshLocation()
-				if app.Settings:GetTooltipSetting("Auto:MiniList") or self:IsVisible() then
-					StartCoroutine("RefreshLocation", RefreshLocationCoroutine);
+				
+				local difficultyID = (IsInInstance() and select(3, GetInstanceInfo())) or (EJ_GetDifficulty and EJ_GetDifficulty()) or 0;
+				if difficultyID ~= 0 then
+					for _,row in ipairs(header.g) do
+						if row.difficultyID or row.difficulties then
+							if (row.difficultyID or -1) == difficultyID or (row.difficulties and containsValue(row.difficulties, difficultyID)) then
+								if not row.expanded then ExpandGroupsRecursively(row, true, true); expanded = true; end
+							elseif row.expanded then
+								ExpandGroupsRecursively(row, false, true);
+							end
+						end
+					end
 				end
+				
+				-- Check to see completion...
+				BuildGroups(self.data);
+				
+				self.data.progress = 0;
+				self.data.total = 0;
+				self.data.back = 1;
+				self.data.indent = 0;
+				UpdateGroups(self.data, self.data.g);
+				self.data.visible = true;
+				UpdateWindow(self, false, false);
 			end
-			local function ToggleMiniListForCurrentZone()
-				local self = app:GetWindow("CurrentInstance");
-				if self:IsVisible() then
-					self:Hide();
-				else
-					OpenMiniListForCurrentZone();
+			
+			-- If we don't have any map data on this area, report it to the chat window.
+			if not results then
+				local mapID = self.mapID;
+				print("No map found for this location ", app.GetMapName(mapID), " [", mapID, "]");
+				
+				local mapInfo = C_Map.GetMapInfo(mapID);
+				if mapInfo then
+					local mapPath = mapInfo.name or ("Map ID #" .. mapID);
+					mapID = mapInfo.parentMapID;
+					while mapID do
+						mapInfo = C_Map.GetMapInfo(mapID);
+						if mapInfo then
+							mapPath = (mapInfo.name or ("Map ID #" .. mapID)) .. " > " .. mapPath;
+							mapID = mapInfo.parentMapID;
+						else
+							break;
+						end
+					end
+					print("Path: ", mapPath);
 				end
+				print("Please report this to the ATT Discord! Thanks! ", app.Version);
 			end
-			app.OpenMiniListForCurrentZone = OpenMiniListForCurrentZone;
-			app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
-			app.RefreshLocation = RefreshLocation;
-			self:SetScript("OnEvent", function(self, e, ...)
-				RefreshLocation();
-			end);
-			self:RegisterEvent("ZONE_CHANGED");
-			self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 		end
-		if self:IsVisible() then
-			-- Update the window and all of its row data
-			if self.mapID ~= self.displayedMapID then
-				self.displayedMapID = self.mapID;
-				self:Rebuild();
+		local function OpenMiniList(id, show)
+			-- Determine whether or not to forcibly reshow the mini list.
+			if not self:IsVisible() then
+				if app.Settings:GetTooltipSetting("Auto:MiniList") then
+					if not self.openedOnLogin and not show then
+						self.openedOnLogin = true;
+						show = true;
+					end
+				else
+					self.openedOnLogin = false;
+				end
+				if show then self:Show(); end
 			else
-				UpdateWindow(self, false, fromTrigger);
+				show = true;
 			end
+			if self.mapID == id then
+				return; -- Haha JK BRO
+			end
+			
+			-- Cache that we're in the current map ID.
+			self.mapID = id;
+			self:Update();
+		end
+		local function OpenMiniListForCurrentZone()
+			OpenMiniList(app.GetCurrentMapID(), true);
+		end
+		local function RefreshLocationCoroutine()
+			-- Wait for a few moments for the map to update.
+			local waitTimer = 30;
+			while waitTimer > 0 do
+				coroutine.yield();
+				waitTimer = waitTimer - 1;
+			end
+			
+			-- While the player is in combat, wait for combat to end.
+			while InCombatLockdown() do coroutine.yield(); end
+			
+			-- Acquire the new map ID.
+			local mapID = app.GetCurrentMapID();
+			while not mapID or mapID < 0 do
+				coroutine.yield();
+				mapID = app.GetCurrentMapID();
+			end
+			app.CurrentMapID = mapID;
+			OpenMiniList(mapID);
+		end
+		local function RefreshLocation()
+			if app.Settings:GetTooltipSetting("Auto:MiniList") or self:IsVisible() then
+				StartCoroutine("RefreshLocation", RefreshLocationCoroutine);
+			end
+		end
+		local function ToggleMiniListForCurrentZone()
+			local self = app:GetWindow("CurrentInstance");
+			if self:IsVisible() then
+				self:Hide();
+			else
+				OpenMiniListForCurrentZone();
+			end
+		end
+		app.OpenMiniListForCurrentZone = OpenMiniListForCurrentZone;
+		app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
+		app.RefreshLocation = RefreshLocation;
+		self:SetScript("OnEvent", function(self, e, ...)
+			RefreshLocation();
+		end);
+		self:RegisterEvent("ZONE_CHANGED");
+		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+		
+		SLASH_ATTCMINI1 = "/attmini";
+		SLASH_ATTCMINI2 = "/attminilist";
+		SlashCmdList["ATTCMINI"] = ToggleMiniListForCurrentZone;
+	end,
+	OnUpdate = function(self, force, fromTrigger)
+		-- Update the window and all of its row data
+		if self.mapID ~= self.displayedMapID then
+			self.displayedMapID = self.mapID;
+			self:Rebuild();
+		else
+			UpdateWindow(self, force, fromTrigger);
 		end
 	end
 });
@@ -14242,6 +14257,13 @@ app:GetWindow("Quests", {
 app:GetWindow("RaidAssistant", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTCRA1 = "/attra";
+		SLASH_ATTCRA2 = "/attraid";
+		SlashCmdList["ATTCRA"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -14481,6 +14503,13 @@ app:GetWindow("RaidAssistant", {
 app:GetWindow("Random", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTCRAN1 = "/attran";
+		SLASH_ATTCRAN2 = "/attrandom";
+		SlashCmdList["ATTCRAN"] = function(cmd)
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -14888,6 +14917,20 @@ app:GetWindow("RWP", {
 app:GetWindow("SoftReserves", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTCSR1 = "/attsr";
+		SLASH_ATTCSR2 = "/attsoft";
+		SLASH_ATTCSR3 = "/attsoftreserve";
+		SLASH_ATTCSR4 = "/attsoftreserves";
+		SlashCmdList["ATTCSR"] = function(cmd)
+			if cmd and cmd ~= "" then
+				app:ParseSoftReserve(UnitGUID("player"), cmd, true, true);
+			else
+				-- Default command
+				self:Toggle();
+			end
+		end
+	end,
 	OnUpdate = function(self, ...)
 		if not self.initialized then
 			self.initialized = true;
@@ -16237,47 +16280,6 @@ SlashCmdList["ATTC"] = function(cmd)
 		-- Default command
 		app.ToggleMainList();
 	end
-end
-
-SLASH_ATTCMAPS1 = "/attmaps";
-SlashCmdList["ATTCMAPS"] = function(cmd)
-	app:GetWindow("CosmicInfuser"):Toggle();
-end
-
-SLASH_ATTCMINI1 = "/attmini";
-SLASH_ATTCMINI2 = "/attminilist";
-SlashCmdList["ATTCMINI"] = function(cmd)
-	app:ToggleMiniListForCurrentZone();
-end
-
-SLASH_ATTCRA1 = "/attra";
-SLASH_ATTCRA2 = "/attraid";
-SlashCmdList["ATTCRA"] = function(cmd)
-	app:GetWindow("RaidAssistant"):Toggle();
-end
-
-SLASH_ATTCRAN1 = "/attran";
-SLASH_ATTCRAN2 = "/attrandom";
-SlashCmdList["ATTCRAN"] = function(cmd)
-	app:GetWindow("Random"):Toggle();
-end
-
-SLASH_ATTCSR1 = "/attsr";
-SLASH_ATTCSR2 = "/attsoft";
-SLASH_ATTCSR3 = "/attsoftreserve";
-SLASH_ATTCSR4 = "/attsoftreserves";
-SlashCmdList["ATTCSR"] = function(cmd)
-	if cmd and cmd ~= "" then
-		app:ParseSoftReserve(UnitGUID("player"), cmd, true, true);
-	else
-		-- Default command
-		app:GetWindow("SoftReserves"):Toggle();
-	end
-end
-
-SLASH_ATTUNED1 = "/attuned";
-SlashCmdList["ATTUNED"] = function(cmd)
-	app:GetWindow("Attuned"):Toggle();
 end
 
 SLASH_ATTCU1 = "/attu";
