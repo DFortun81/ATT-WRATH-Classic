@@ -2896,7 +2896,7 @@ local CacheField, CacheFields;
 local _cache;
 (function()
 local currentMaps = {};
-local fieldCache_g,fieldCache_f, fieldConverters;
+local fieldCache_g,fieldCache_f, fieldConverters, _CacheFields;
 CacheField = function(group, field, value)
 	fieldCache_g = fieldCache[field];
 	fieldCache_f = fieldCache_g[value];
@@ -3003,7 +3003,7 @@ fieldConverters = {
 		CacheField(group, "questID", value);
 	end,
 	["otherQuestData"] = function(group, value)
-		CacheFields(value);
+		_CacheFields(value);
 	end,
 	["requireSkill"] = function(group, value)
 		CacheField(group, "requireSkill", value);
@@ -3060,16 +3060,16 @@ fieldConverters = {
 	["coord"] = function(group, coord)
 		if not (group.instanceID or group.mapID or group.objectiveID) then
 			cacheMapID(group, coord[3]);
-			return true;
 		end
+		return true;
 	end,
 	["coords"] = function(group, value)
 		if not (group.instanceID or group.mapID or group.objectiveID) then
 			for i=1,#value,1 do
 				cacheMapID(group, value[i][3]);
 			end
-			return true;
 		end
+		return true;
 	end,
 	["cost"] = function(group, value)
 		if type(value) == "number" then
@@ -3131,15 +3131,14 @@ local mapKeyConverters = {
 		end
 	end,
 };
-local function _CacheFields(group)
-	local mapKeys, value, hasG;
+_CacheFields = function(group)
+	local mapKeys, hasG;
 	for key,value in pairs(group) do
 		if key == "g" then
 			hasG = true;
 		else
 			_cache = fieldConverters[key];
 			if _cache then
-				value = group[key];
 				if _cache(group, value) then
 					if not mapKeys then mapKeys = {}; end
 					mapKeys[key] = value;
@@ -3159,8 +3158,8 @@ local function _CacheFields(group)
 	end
 end
 CacheFields = function(group)
-	_CacheFields(group);
 	wipe(currentMaps);
+	_CacheFields(group);
 	return group;
 end
 app.CacheField = CacheField;
@@ -13695,7 +13694,6 @@ app:GetWindow("CurrentInstance", {
 			end
 		end
 		local function ToggleMiniListForCurrentZone()
-			local self = app:GetWindow("CurrentInstance");
 			if self:IsVisible() then
 				self:Hide();
 			else
