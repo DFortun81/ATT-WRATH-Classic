@@ -2713,30 +2713,24 @@ AutomaticallySyncAccountDataCheckBox:SetATTTooltip("Enable this option if you wa
 AutomaticallySyncAccountDataCheckBox:SetPoint("TOPLEFT", SyncLabel, "BOTTOMLEFT", 4, 0);
 
 function tab:InitializeSyncWindow()
+	-- Synchronization Window
 	local syncWindow = app:GetWindow("Sync");
-	local syncWindow_Show,naughty = syncWindow.Show;
-	syncWindow.OnRefresh = syncWindow.Update;
-	syncWindow.Show = function(self)
-		if not naughty then
-			naughty = true;
-			syncWindow_Show(self);
-			self:Update();
-		end
-		naughty = nil;
-	end
 	syncWindow.CloseButton:Disable();
 	syncWindow:SetClampedToScreen(false);
 	syncWindow:SetUserPlaced(false);
 	syncWindow:SetToplevel(false);
 	syncWindow:SetMovable(false);
 	syncWindow:SetResizable(false);
+	syncWindow:ClearAllPoints();
 	syncWindow:SetParent(settings);
-	syncWindow.Refresh = function(self)
-		self:ClearAllPoints();
-		self:SetPoint("LEFT", SyncLabel, "LEFT", 0, 0);
-		self:SetPoint("RIGHT", SyncLabel, "LEFT", 300, 0);
-		self:SetPoint("TOP", AutomaticallySyncAccountDataCheckBox, "BOTTOM", 0, 4);
-		self:SetPoint("BOTTOM", settings, "BOTTOM", 0, 4);
+	syncWindow:SetPoint("LEFT", SyncLabel, "LEFT", 0, 0);
+	syncWindow:SetPoint("RIGHT", SyncLabel, "LEFT", 300, 0);
+	syncWindow:SetPoint("TOP", AutomaticallySyncAccountDataCheckBox, "BOTTOM", 0, 4);
+	syncWindow:SetPoint("BOTTOM", settings, "BOTTOM", 0, 4);
+	local ogMethod = syncWindow.Show;
+	syncWindow.Show = function(self)
+		ogMethod(self);
+		self:Update();
 	end
 	table.insert(tab.objects, syncWindow);
 end
