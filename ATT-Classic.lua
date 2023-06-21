@@ -2954,11 +2954,12 @@ local cacheCreatureID = function(group, value)
 	end
 end;
 local cacheMapID = function(group, mapID)
-	if not currentMaps[mapID] or currentMaps[mapID] == 0 then
+	local count = currentMaps[mapID] or 0;
+	if count == 0 then
 		currentMaps[mapID] = 1;
 		CacheField(group, "mapID", mapID);
 	else
-		currentMaps[mapID] = currentMaps[mapID] + 1;
+		currentMaps[mapID] = count + 1;
 	end
 	return true;
 end;
@@ -3073,18 +3074,18 @@ fieldConverters = {
 		return true;
 	end,
 	["coord"] = function(group, coord)
-		if not (group.instanceID or group.mapID or group.objectiveID) then
+		if coord[3] and not (group.instanceID or group.mapID or group.objectiveID) then
 			cacheMapID(group, coord[3]);
+			return true;
 		end
-		return true;
 	end,
-	["coords"] = function(group, value)
+	["coords"] = function(group, coords)
 		if not (group.instanceID or group.mapID or group.objectiveID) then
-			for i=1,#value,1 do
-				cacheMapID(group, value[i][3]);
+			for i,coord in ipairs(coords) do
+				if coord[3] then cacheMapID(group, coord[3]); end
 			end
+			return true;
 		end
-		return true;
 	end,
 	["cost"] = function(group, value)
 		if type(value) == "number" then
@@ -3125,8 +3126,11 @@ fieldConverters = {
 		end
 	end,
 };
-local uncacheMap = function(group, mapID)
-	currentMaps[mapID] = (currentMaps[mapID] or 0) - 1;
+local uncacheMap = function(group, mapID, field)
+	local count = currentMaps[mapID] or 0;
+	if count > 0 then
+		currentMaps[mapID] = count - 1;
+	end
 end;
 local mapKeyConverters = {
 	["mapID"] = uncacheMap,
@@ -3136,7 +3140,9 @@ local mapKeyConverters = {
 		end
 	end,
 	["coord"] = function(group, coord)
-		if coord[3] and not (group.instanceID or group.mapID or group.objectiveID) then uncacheMap(group, coord[3]); end
+		if coord[3] and not (group.instanceID or group.mapID or group.objectiveID) then
+			uncacheMap(group, coord[3]);
+		end
 	end,
 	["coords"] = function(group, coords)
 		if not (group.instanceID or group.mapID or group.objectiveID) then
@@ -3147,17 +3153,24 @@ local mapKeyConverters = {
 	end,
 };
 _CacheFields = function(group)
-	local mapKeys, hasG;
+	local n = 0;
+	local clone, mapKeys, key, value, hasG = {};
 	for key,value in pairs(group) do
 		if key == "g" then
 			hasG = true;
 		else
-			_cache = fieldConverters[key];
-			if _cache then
-				if _cache(group, value) then
-					if not mapKeys then mapKeys = {}; end
-					mapKeys[key] = value;
-				end
+			n = n + 1
+			clone[n] = key;
+		end
+	end
+	for i=1,n,1 do
+		key = clone[i];
+		_cache = fieldConverters[key];
+		if _cache then
+			value = group[key];
+			if _cache(group, value) then
+				if not mapKeys then mapKeys = {}; end
+				mapKeys[key] = value;
 			end
 		end
 	end
@@ -3175,6 +3188,7 @@ end
 CacheFields = function(group)
 	wipe(currentMaps);
 	_CacheFields(group);
+	wipe(currentMaps);
 	return group;
 end
 app.CacheField = CacheField;
