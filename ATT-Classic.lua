@@ -10587,16 +10587,16 @@ local function UpdateVisibleRowData(self)
 		
 		-- If the rows need to be processed again, do so next update.
 		if self.processingLinks then
-			StartCoroutine(self:GetName(), function()
+			StartCoroutine(self.Suffix, function()
 				while self.processingLinks do
 					self.processingLinks = nil;
 					coroutine.yield();
-					UpdateVisibleRowData(self);
+					self:Refresh();
 				end
 				if self.UpdateDone then
-					StartCoroutine(self:GetName()..":UpdateDone", function()
+					StartCoroutine(self.Suffix..":UpdateDone", function()
 						coroutine.yield();
-						StartCoroutine(self:GetName()..":UpdateDoneP2", function()
+						StartCoroutine(self.Suffix..":UpdateDoneP2", function()
 							coroutine.yield();
 							self:UpdateDone();
 						end);
@@ -10604,9 +10604,9 @@ local function UpdateVisibleRowData(self)
 				end
 			end);
 		elseif self.UpdateDone and rowCount > 5 then
-			StartCoroutine(self:GetName()..":UpdateDone", function()
+			StartCoroutine(self.Suffix..":UpdateDone", function()
 				coroutine.yield();
-				StartCoroutine(self:GetName()..":UpdateDoneP2", function()
+				StartCoroutine(self.Suffix..":UpdateDoneP2", function()
 					coroutine.yield();
 					self:UpdateDone();
 				end);
@@ -10641,7 +10641,7 @@ local function StartMovingOrSizing(self, fromChild)
 			self:StartSizing();
 			Push(self, "StartMovingOrSizing (Sizing)", function()
 				if self.isMoving then
-					UpdateVisibleRowData(self);
+					self:Refresh();
 					return true;
 				end
 			end);
@@ -11565,12 +11565,7 @@ local function UpdateWindow(self, force, fromTrigger)
 		else
 			self.missingData = nil;
 		end
-		
-		UpdateVisibleRowData(self);
-		if self.Refresh then self:Refresh(); end
 		return true;
-	else
-		UpdateVisibleRowData(self);
 	end
 end
 local function UpdateWindowColor(self, suffix)
@@ -12584,6 +12579,7 @@ function app:GetWindow(suffix, settings)
 						local lastUpdate = GetTimePreciseSec();
 						local result = OnUpdate(self, force, fromTrigger);
 						print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+						self:Refresh();
 						return result;
 					else
 						self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
@@ -12592,7 +12588,9 @@ function app:GetWindow(suffix, settings)
 			else
 				window.Update = function(self, force, fromTrigger)
 					if self:IsVisible() then
-						return OnUpdate(self, force, fromTrigger);
+						local result = OnUpdate(self, force, fromTrigger);
+						self:Refresh();
+						return result;
 					else
 						self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
 					end
@@ -12604,10 +12602,42 @@ function app:GetWindow(suffix, settings)
 				local lastUpdate = GetTimePreciseSec();
 				local result = OnUpdate(self, ...);
 				print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+				self:Refresh();
 				return result;
 			end
 		else
-			window.Update = OnUpdate;
+			window.Update = function(self, force, fromTrigger)
+				local result = OnUpdate(self, force, fromTrigger);
+				self:Refresh();
+				return result;
+			end
+		end
+		local defaultOnRefresh = UpdateVisibleRowData;
+		local onRefresh = settings.OnRefresh;
+		if onRefresh then
+			if app.Debugging then
+				window.Refresh = function(self)
+					print("Refresh: " .. suffix);
+					local lastUpdate = GetTimePreciseSec();
+					if onRefresh(self) then defaultOnRefresh(self); end
+					print("Refresh: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+				end
+			else
+				window.Refresh = function(self)
+					if onRefresh(self) then defaultOnRefresh(self); end
+				end
+			end
+		else
+			if app.Debugging then
+				window.Refresh = function(self)
+					print("Refresh: " .. suffix);
+					local lastUpdate = GetTimePreciseSec();
+					defaultOnRefresh(self);
+					print("Refresh: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+				end
+			else
+				window.Refresh = defaultOnRefresh;
+			end
 		end
 		window.SetVisible = SetWindowVisibility;
 		
@@ -12650,19 +12680,22 @@ function app:GetWindow(suffix, settings)
 			}
 		};
 		window:Hide();
-		local function DelayedUpdateCoroutine()
-			while window.delayRemaining > 0 do
-				coroutine.yield();
-				window.delayRemaining = window.delayRemaining - 1;
-			end
-			window:Update(true);
-		end
-		window.DelayedUpdate = function(self)
-			window.delayRemaining = 180;
-			StartCoroutine(window:GetName() .. ":DelayedUpdatePreWarm", function()
-				coroutine.yield();
-				StartCoroutine(window:GetName() .. ":DelayedUpdate", DelayedUpdateCoroutine);
+		local delays = {};
+		window.DelayedCall = function(self, method, delay)
+			delays[method] = delay or 60;
+			StartCoroutine(window.Suffix .. ":DelayedCall::" .. method, function()
+				while delays[method] > 0 do
+					coroutine.yield();
+					delays[method] = delays[method] - 1;
+				end
+				window[method](window);
 			end);
+		end
+		window.DelayedRefresh = function(self, delay)
+			self:DelayedCall("Refresh", delay or 5);
+		end
+		window.DelayedUpdate = function(self, delay)
+			self:DelayedCall("Update", delay or 60);
 		end
 		
 		-- The Close Button. It's assigned as a local variable so you can change how it behaves.
@@ -12686,17 +12719,19 @@ function app:GetWindow(suffix, settings)
 			scrollbar:SetScrollPercentage(0);
 			scrollbar:GetBackStepper():Hide();
 			scrollbar:GetBackStepper():EnableMouse(false);
-			scrollbar:GetForwardStepper():SetScript("OnMouseDown", function()
+			scrollbar:GetForwardStepper():Hide();
+			scrollbar:GetForwardStepper():EnableMouse(false);
+			scrollbar:SetScript("OnMouseDown", function()
 				StartMovingOrSizing(window);
 			end);
-			scrollbar:GetForwardStepper():SetScript("OnMouseUp", function()
+			scrollbar:SetScript("OnMouseUp", function()
 				StopMovingOrSizing(window);
 			end);
 			
-			local MaxDisplayedValue, TotalValue, Difference = 100, 100, 0;
+			local MaxDisplayedValue, TotalValue, Difference = 0, 0, 0;
 			scrollbar:RegisterCallback(BaseScrollBoxEvents.OnScroll, function(o, scrollPercentage)
-				window.CurrentIndex = math.floor(scrollPercentage * Difference);
-				UpdateVisibleRowData(window);
+				window.CurrentIndex = math.ceil(scrollPercentage * Difference);
+				window:Refresh();
 			end, window);
 			window:SetScript("OnMouseWheel", function(self, delta)
 				scrollbar:ScrollStepInDirection(-delta);
@@ -12707,14 +12742,18 @@ function app:GetWindow(suffix, settings)
 					TotalValue = totalValue;
 					
 					Difference = math.max(1, TotalValue - MaxDisplayedValue);
-					scrollbar:SetVisibleExtentPercentage(MaxDisplayedValue / Difference);
-					scrollbar:SetPanExtentPercentage(1 / Difference);
-					scrollbar:ScrollStepInDirection(-0.01);
-					scrollbar:ScrollStepInDirection(0.01);
-					scrollbar:Update();
-					scrollbar:GetForwardStepper():SetEnabled(false);
+					scrollbar:SetVisibleExtentPercentage(1 / Difference);
+					scrollbar:SetPanExtentPercentage(1 / (Difference + 1));
+					--scrollbar:GetForwardStepper():Enable(false);
 				end
 			end
+		
+			-- The Corner Grip. (this isn't actually used, but it helps indicate to players that they can do something)
+			local grip = scrollbar:CreateTexture(nil, "ARTWORK");
+			grip:SetTexture(app.asset("grip"));
+			grip:SetSize(20, 20);
+			grip:SetTexCoord(0,1,0,1);
+			grip:SetPoint("BOTTOMRIGHT", 0, 3);
 		else
 			closeButton:SetPoint("TOPRIGHT", window, "TOPRIGHT", 4, 3);
 			scrollbar = CreateFrame("Slider", nil, window, "UIPanelScrollBarTemplate");
@@ -12724,7 +12763,7 @@ function app:GetWindow(suffix, settings)
 				local un = math.floor(value);
 				local up = un + 1;
 				window.CurrentIndex = (up - value) > (-(un - value)) and un or up;
-				UpdateVisibleRowData(self:GetParent());
+				window:Refresh();
 			end);
 			scrollbar.back = scrollbar:CreateTexture(nil, "BACKGROUND");
 			scrollbar.back:SetColorTexture(0,0,0,0.4)
@@ -13892,252 +13931,251 @@ app:GetWindow("Dailies", {
 --[[
 app:GetWindow("Debugger", {
 	parent = UIParent,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			self.AddObject = function(self, info)
+	Silent = true,
+	OnInit = function(self, ...)
+		self.AddObject = function(self, info)
+			-- Bubble Up the Maps
+			local mapInfo;
+			local mapID = app.CurrentMapID;
+			if mapID then
+				local pos = C_Map.GetPlayerMapPosition(mapID, "player");
+				if pos then
+					local px, py = pos:GetXY();
+					info.coord = { px * 100, py * 100, mapID };
+				end
+				repeat
+					mapInfo = C_Map.GetMapInfo(mapID);
+					if mapInfo then
+						info = { ["mapID"] = mapInfo.mapID, ["g"] = { info } };
+						mapID = mapInfo.parentMapID
+					end
+				until not mapInfo or not mapID;
+			end
+			
+			MergeClone(self.data.g, info);
+			MergeObject(self.rawData, info);
+			self:Update();
+		end
+		self.data = {
+			['text'] = "Session History",
+			['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
+			["description"] = "This keeps a visual record of all of the quests, maps, loot, and vendors that you have come into contact with since the session was started.",
+			['visible'] = true, 
+			['expanded'] = true,
+			['back'] = 1,
+			['options'] = {
+				{
+					['text'] = "Clear History",
+					['icon'] = "Interface\\Icons\\Ability_Rogue_FeignDeath.blp", 
+					["description"] = "Click this to fully clear this window.\n\nNOTE: If you click this by accident, use the dynamic Restore Buttons that this generates to reapply the data that was cleared.\n\nWARNING: If you reload the UI, the data stored in the Reload Button will be lost forever!",
+					['visible'] = true,
+					['count'] = 0,
+					['OnClick'] = function(row, button)
+						local copy = {};
+						for i,o in ipairs(self.rawData) do
+							tinsert(copy, o);
+						end
+						if #copy < 1 then
+							app.print("There is nothing to clear.");
+							return true;
+						end
+						row.ref.count = row.ref.count + 1;
+						tinsert(self.data.options, {
+							['text'] = "Restore Button " .. row.ref.count,
+							['icon'] = "Interface\\Icons\\ability_monk_roll.blp", 
+							["description"] = "Click this to restore your cleared data.\n\nNOTE: Each Restore Button houses different data.\n\nWARNING: This data will be lost forever when you reload your UI!",
+							['visible'] = true,
+							['data'] = copy,
+							['OnClick'] = function(row, button)
+								for i,info in ipairs(row.ref.data) do
+									MergeClone(self.data.g, info);
+									MergeObject(self.rawData, info);
+								end
+								self:Update();
+								return true;
+							end,
+						});
+						wipe(self.rawData);
+						wipe(self.data.g);
+						for i=#self.data.options,1,-1 do
+							tinsert(self.data.g, 1, self.data.options[i]);
+						end
+						self:Update();
+						return true;
+					end,
+				},
+			},
+			['g'] = {},
+		};
+		self.rawData = {};
+		
+		-- Setup Event Handlers and register for events
+		self:SetScript("OnEvent", function(self, e, ...)
+			--print(e, ...);
+			if e == "VARIABLES_LOADED" then
+				if not ATTClassicDebugData then
+					ATTClassicDebugData = app.GetDataMember("Debugger", {});
+					app.SetDataMember("Debugger", nil);
+				end
+				self.rawData = ATTClassicDebugData;
+				self.data.g = CreateObject(self.rawData);
+				for i=#self.data.options,1,-1 do
+					tinsert(self.data.g, 1, self.data.options[i]);
+				end
+				self:Update();
+			elseif e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
 				-- Bubble Up the Maps
-				local mapInfo;
+				local mapInfo, info;
 				local mapID = app.CurrentMapID;
 				if mapID then
-					local pos = C_Map.GetPlayerMapPosition(mapID, "player");
-					if pos then
-						local px, py = pos:GetXY();
-						info.coord = { px * 100, py * 100, mapID };
-					end
 					repeat
+						info = { ["mapID"] = mapID, ["g"] = info and { info } or nil };
 						mapInfo = C_Map.GetMapInfo(mapID);
 						if mapInfo then
-							info = { ["mapID"] = mapInfo.mapID, ["g"] = { info } };
-							mapID = mapInfo.parentMapID
+							mapID = mapInfo.parentMapID;
 						end
 					until not mapInfo or not mapID;
-				end
-				
-				MergeClone(self.data.g, info);
-				MergeObject(self.rawData, info);
-				self:Update();
-			end
-			self.data = {
-				['text'] = "Session History",
-				['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider.blp"), 
-				["description"] = "This keeps a visual record of all of the quests, maps, loot, and vendors that you have come into contact with since the session was started.",
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['options'] = {
-					{
-						['text'] = "Clear History",
-						['icon'] = "Interface\\Icons\\Ability_Rogue_FeignDeath.blp", 
-						["description"] = "Click this to fully clear this window.\n\nNOTE: If you click this by accident, use the dynamic Restore Buttons that this generates to reapply the data that was cleared.\n\nWARNING: If you reload the UI, the data stored in the Reload Button will be lost forever!",
-						['visible'] = true,
-						['count'] = 0,
-						['OnClick'] = function(row, button)
-							local copy = {};
-							for i,o in ipairs(self.rawData) do
-								tinsert(copy, o);
-							end
-							if #copy < 1 then
-								app.print("There is nothing to clear.");
-								return true;
-							end
-							row.ref.count = row.ref.count + 1;
-							tinsert(self.data.options, {
-								['text'] = "Restore Button " .. row.ref.count,
-								['icon'] = "Interface\\Icons\\ability_monk_roll.blp", 
-								["description"] = "Click this to restore your cleared data.\n\nNOTE: Each Restore Button houses different data.\n\nWARNING: This data will be lost forever when you reload your UI!",
-								['visible'] = true,
-								['data'] = copy,
-								['OnClick'] = function(row, button)
-									for i,info in ipairs(row.ref.data) do
-										MergeClone(self.data.g, info);
-										MergeObject(self.rawData, info);
-									end
-									self:Update();
-									return true;
-								end,
-							});
-							wipe(self.rawData);
-							wipe(self.data.g);
-							for i=#self.data.options,1,-1 do
-								tinsert(self.data.g, 1, self.data.options[i]);
-							end
-							self:Update();
-							return true;
-						end,
-					},
-				},
-				['g'] = {},
-			};
-			self.rawData = {};
-			
-			-- Setup Event Handlers and register for events
-			self:SetScript("OnEvent", function(self, e, ...)
-				--print(e, ...);
-				if e == "VARIABLES_LOADED" then
-					if not ATTClassicDebugData then
-						ATTClassicDebugData = app.GetDataMember("Debugger", {});
-						app.SetDataMember("Debugger", nil);
-					end
-					self.rawData = ATTClassicDebugData;
-					self.data.g = CreateObject(self.rawData);
-					for i=#self.data.options,1,-1 do
-						tinsert(self.data.g, 1, self.data.options[i]);
-					end
+					
+					MergeClone(self.data.g, info);
+					MergeObject(self.rawData, info);
 					self:Update();
-				elseif e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
-					-- Bubble Up the Maps
-					local mapInfo, info;
-					local mapID = app.CurrentMapID;
-					if mapID then
-						repeat
-							info = { ["mapID"] = mapID, ["g"] = info and { info } or nil };
-							mapInfo = C_Map.GetMapInfo(mapID);
-							if mapInfo then
-								mapID = mapInfo.parentMapID;
-							end
-						until not mapInfo or not mapID;
+				end
+			elseif e == "MERCHANT_SHOW" or e == "MERCHANT_UPDATE" then
+				C_Timer.After(0.6, function()
+					local guid = UnitGUID("npc");
+					local ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
+					if guid then ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
+					if npcID then
+						npcID = tonumber(npcID);
 						
-						MergeClone(self.data.g, info);
-						MergeObject(self.rawData, info);
-						self:Update();
-					end
-				elseif e == "MERCHANT_SHOW" or e == "MERCHANT_UPDATE" then
-					C_Timer.After(0.6, function()
-						local guid = UnitGUID("npc");
-						local ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
-						if guid then ty, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
-						if npcID then
-							npcID = tonumber(npcID);
-							
-							-- Ignore vendor mount...
-							if npcID == 62822 then
-								return true;
-							end
-							
-							local numItems = GetMerchantNumItems();
-							--print("MERCHANT DETAILS", ty, npcID, numItems);
-							
-							local rawGroups = {};
-							for i=1,numItems,1 do
-								local link = GetMerchantItemLink(i);
-								if link then
-									local name, texture, cost, quantity, numAvailable, isPurchasable, isUsable, extendedCost = GetMerchantItemInfo(i);
-									if extendedCost then
-										cost = {};
-										local itemCount = GetMerchantItemCostInfo(i);
-										for j=1,itemCount,1 do
-											local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(i, j);
-											if itemLink then
-												-- print("  ", itemValue, itemLink, gsub(itemLink, "\124", "\124\124"));
-												local m = itemLink:match("currency:(%d+)");
-												if m then
-													-- Parse as a CURRENCY.
-													tinsert(cost, {"c", tonumber(m), itemValue});
-												else
-													-- Parse as an ITEM.
-													tinsert(cost, {"i", tonumber(itemLink:match("item:(%d+)")), itemValue});
-												end
+						-- Ignore vendor mount...
+						if npcID == 62822 then
+							return true;
+						end
+						
+						local numItems = GetMerchantNumItems();
+						--print("MERCHANT DETAILS", ty, npcID, numItems);
+						
+						local rawGroups = {};
+						for i=1,numItems,1 do
+							local link = GetMerchantItemLink(i);
+							if link then
+								local name, texture, cost, quantity, numAvailable, isPurchasable, isUsable, extendedCost = GetMerchantItemInfo(i);
+								if extendedCost then
+									cost = {};
+									local itemCount = GetMerchantItemCostInfo(i);
+									for j=1,itemCount,1 do
+										local itemTexture, itemValue, itemLink = GetMerchantItemCostItem(i, j);
+										if itemLink then
+											-- print("  ", itemValue, itemLink, gsub(itemLink, "\124", "\124\124"));
+											local m = itemLink:match("currency:(%d+)");
+											if m then
+												-- Parse as a CURRENCY.
+												tinsert(cost, {"c", tonumber(m), itemValue});
+											else
+												-- Parse as an ITEM.
+												tinsert(cost, {"i", tonumber(itemLink:match("item:(%d+)")), itemValue});
 											end
 										end
 									end
-									
-									-- Parse as an ITEM LINK.
-									table.insert(rawGroups, {["itemID"] = tonumber(link:match("item:(%d+)")), ["cost"] = cost});
 								end
-							end
-							
-							local info = { [(ty == "GameObject") and "objectID" or "npcID"] = npcID };
-							info.faction = UnitFactionGroup("npc");
-							info.text = UnitName("npc");
-							info.g = rawGroups;
-							self:AddObject(info);
-						end
-					end);
-				elseif e == "GOSSIP_SHOW" then
-					local guid = UnitGUID("npc");
-					if guid then
-						local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
-						if npcID then
-							npcID = tonumber(npcID);
-							--print("GOSSIP_SHOW", type, npcID);
-							if type == "GameObject" then
-								info = { ["objectID"] = npcID, ["text"] = UnitName("npc") };
-							else
-								info = { ["npcID"] = npcID };
-								info.name = UnitName("npc");
-							end
-							info.faction = UnitFactionGroup("npc");
-							self:AddObject(info);
-						end
-					end
-				elseif e == "QUEST_DETAIL" then
-					local questStartItemID = ...;
-					local questID = GetQuestID();
-					if questID == 0 then return false; end
-					local npc = "questnpc";
-					local guid = UnitGUID(npc);
-					if not guid then
-						npc = "npc";
-						guid = UnitGUID(npc);
-					end
-					local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
-					if guid then type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
-					-- print("QUEST_DETAIL", questStartItemID, " => Quest #", questID, type, npcID);
-					
-					local rawGroups = {};
-					for i=1,GetNumQuestRewards(),1 do
-						local link = GetQuestItemLink("reward", i);
-						if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
-					end
-					for i=1,GetNumQuestChoices(),1 do
-						local link = GetQuestItemLink("choice", i);
-						if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
-					end
-					for i=1,GetNumQuestLogRewardSpells(questID),1 do
-						local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
-						if spellID then
-							if isTradeskillSpell then
-								table.insert(rawGroups, { ["recipeID"] = spellID, ["name"] = name });
-							else
-								table.insert(rawGroups, { ["spellID"] = spellID, ["name"] = name });
+								
+								-- Parse as an ITEM LINK.
+								table.insert(rawGroups, {["itemID"] = tonumber(link:match("item:(%d+)")), ["cost"] = cost});
 							end
 						end
+						
+						local info = { [(ty == "GameObject") and "objectID" or "npcID"] = npcID };
+						info.faction = UnitFactionGroup("npc");
+						info.text = UnitName("npc");
+						info.g = rawGroups;
+						self:AddObject(info);
 					end
-					
-					local info = { ["questID"] = questID, ["description"] = GetQuestText(), ["objectives"] = GetObjectiveText(), ["g"] = rawGroups };
-					if questStartItemID and questStartItemID > 0 then info.itemID = questStartItemID; end
+				end);
+			elseif e == "GOSSIP_SHOW" then
+				local guid = UnitGUID("npc");
+				if guid then
+					local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
 					if npcID then
 						npcID = tonumber(npcID);
+						--print("GOSSIP_SHOW", type, npcID);
 						if type == "GameObject" then
-							info = { ["objectID"] = npcID, ["text"] = UnitName(npc), ["g"] = { info } };
+							info = { ["objectID"] = npcID, ["text"] = UnitName("npc") };
 						else
-							info.qgs = {npcID};
-							info.name = UnitName(npc);
+							info = { ["npcID"] = npcID };
+							info.name = UnitName("npc");
 						end
-						info.faction = UnitFactionGroup(npc);
-					end
-					self:AddObject(info);
-				elseif e == "CHAT_MSG_LOOT" then
-					local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
-					local itemString = string.match(msg, "item[%-?%d:]+");
-					if itemString then
-						self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
+						info.faction = UnitFactionGroup("npc");
+						self:AddObject(info);
 					end
 				end
-			end);
-			self:RegisterEvent("VARIABLES_LOADED");
-			self:RegisterEvent("GOSSIP_SHOW");
-			self:RegisterEvent("QUEST_DETAIL");
-			self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
-			self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-			self:RegisterEvent("ZONE_CHANGED");
-			self:RegisterEvent("MERCHANT_SHOW");
-			self:RegisterEvent("MERCHANT_UPDATE");
-			self:RegisterEvent("CHAT_MSG_LOOT");
-			--self:RegisterAllEvents();
-		end
-		
+			elseif e == "QUEST_DETAIL" then
+				local questStartItemID = ...;
+				local questID = GetQuestID();
+				if questID == 0 then return false; end
+				local npc = "questnpc";
+				local guid = UnitGUID(npc);
+				if not guid then
+					npc = "npc";
+					guid = UnitGUID(npc);
+				end
+				local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid;
+				if guid then type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid); end
+				-- print("QUEST_DETAIL", questStartItemID, " => Quest #", questID, type, npcID);
+				
+				local rawGroups = {};
+				for i=1,GetNumQuestRewards(),1 do
+					local link = GetQuestItemLink("reward", i);
+					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
+				end
+				for i=1,GetNumQuestChoices(),1 do
+					local link = GetQuestItemLink("choice", i);
+					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
+				end
+				for i=1,GetNumQuestLogRewardSpells(questID),1 do
+					local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
+					if spellID then
+						if isTradeskillSpell then
+							table.insert(rawGroups, { ["recipeID"] = spellID, ["name"] = name });
+						else
+							table.insert(rawGroups, { ["spellID"] = spellID, ["name"] = name });
+						end
+					end
+				end
+				
+				local info = { ["questID"] = questID, ["description"] = GetQuestText(), ["objectives"] = GetObjectiveText(), ["g"] = rawGroups };
+				if questStartItemID and questStartItemID > 0 then info.itemID = questStartItemID; end
+				if npcID then
+					npcID = tonumber(npcID);
+					if type == "GameObject" then
+						info = { ["objectID"] = npcID, ["text"] = UnitName(npc), ["g"] = { info } };
+					else
+						info.qgs = {npcID};
+						info.name = UnitName(npc);
+					end
+					info.faction = UnitFactionGroup(npc);
+				end
+				self:AddObject(info);
+			elseif e == "CHAT_MSG_LOOT" then
+				local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
+				local itemString = string.match(msg, "item[%-?%d:]+");
+				if itemString then
+					self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
+				end
+			end
+		end);
+		self:RegisterEvent("VARIABLES_LOADED");
+		self:RegisterEvent("GOSSIP_SHOW");
+		self:RegisterEvent("QUEST_DETAIL");
+		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
+		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+		self:RegisterEvent("ZONE_CHANGED");
+		self:RegisterEvent("MERCHANT_SHOW");
+		self:RegisterEvent("MERCHANT_UPDATE");
+		self:RegisterEvent("CHAT_MSG_LOOT");
+		--self:RegisterAllEvents();
+	end,
+	OnUpdate = function(self, ...)
 		-- Update the window and all of its row data
 		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
 		for i,g in ipairs(self.data.g) do
@@ -14302,7 +14340,7 @@ app:GetWindow("ItemFinder", {
 								}));
 							end
 						end
-						self:DelayedUpdate(true);
+						self:DelayedUpdate();
 						self.delayRemaining = 1;
 					end
 				end
@@ -16367,7 +16405,7 @@ app:GetWindow("Tradeskills", {
 			end
 		end
 		UpdateWindow(self, ...);
-	end
+	end,
 });
 GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
 GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
