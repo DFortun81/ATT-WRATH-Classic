@@ -12553,8 +12553,8 @@ function app:RefreshData(fromTrigger)
 		app.refreshFromTrigger = nil;
 		
 		-- Send a message to your party members.
-		local data = app:GetDataCache();
-		local msg = "A\t" .. app.Version .. "\t" .. (data.progress or 0) .. "\t" .. (data.total or 0);
+		local data = (app.CurrentCharacter and app.CurrentCharacter.PrimeData) or app:GetDataCache();
+		msg = "A\t" .. app.Version .. "\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. data.modeString;
 		if app.lastProgressUpdateMessage ~= msg then
 			SendGroupMessage(msg);
 			SendGuildMessage(msg);
@@ -17506,9 +17506,12 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 						app:ReceiveSyncSummary(target, args, true);
 					end
 				else
-					local data = app:GetDataCache();
-					if data then
-						response = "ATTC\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. app.Settings:GetShortModeString();
+					local character = app.CurrentCharacter;
+					if character then
+						local data = character.PrimeData;
+						if data then
+							response = "ATTC\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. data.modeString;
+						end
 					end
 				end
 				if response then SendResponseMessage("!\t" .. response, sender); end
