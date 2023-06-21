@@ -10192,6 +10192,7 @@ local function OnInitForPopout(self)
 	self.data.progress = 0;
 	
 	-- If this is an achievement, build the criteria within it if possible.
+	local achievementID = group.achievementID;
 	if achievementID then
 		local searchResults = SearchForField("achievementID", achievementID);
 		if searchResults and #searchResults > 0 then
