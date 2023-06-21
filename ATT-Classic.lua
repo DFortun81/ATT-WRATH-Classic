@@ -11939,7 +11939,7 @@ function app:GetDataCache()
 					end
 				end
 				insertionSort(self.g, sortByTextSafely);
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end
 		}));
 		
@@ -11978,7 +11978,7 @@ function app:GetDataCache()
 					end
 				end
 				insertionSort(self.g, sortByTextSafely);
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end
 		});
 		
@@ -12288,7 +12288,7 @@ function app:GetDataCache()
 						table.remove(self.g, i);
 					end
 				end
-				--self.OnUpdate = nil;
+				self.OnUpdate = nil;
 			end
 		});
 		
