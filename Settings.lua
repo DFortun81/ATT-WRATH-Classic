@@ -2476,8 +2476,10 @@ MainListScaleSlider:SetScript("OnValueChanged", function(self, newValue)
 	if self.currentValue ~= newValue then
 		self.currentValue = newValue;
 		self.Label:SetText(newValue);
-		settings:SetTooltipSetting("MainListScale", newValue)
-		app:GetWindow("Prime"):SetScale(newValue);
+		settings:SetTooltipSetting("MainListScale", newValue);
+		local prime = app:GetWindow("Prime");
+		prime:SetScale(newValue);
+		prime:Refresh();
 	end
 end);
 
@@ -2509,6 +2511,7 @@ MiniListScaleSlider:SetScript("OnValueChanged", function(self, newValue)
 		for key,window in pairs(app.Windows) do
 			if key ~= "Prime" then
 				window:SetScale(newValue);
+				window:Refresh();
 			end
 		end
 	end
