@@ -6202,13 +6202,13 @@ end)();
 (function()
 app.CreateCurrencyClass = app.CreateClass("Currency", "currencyID", {
 	["text"] = function(t)
-		return t.link or GetCurrencyInfo(t.currencyID);
+		return GetCurrencyInfo(t.currencyID);
 	end,
 	["icon"] = function(t)
 		return select(3, GetCurrencyInfo(t.currencyID));
 	end,
 	["link"] = function(t)
-		return GetCurrencyLink(t.currencyID, 1);
+		return GetCurrencyLink(t.currencyID, 1);	-- WARNING: This is SUPER LAGGY. Do not use as text!
 	end,
 	["collectible"] = function(t)
 		return t.collectibleAsCost;
