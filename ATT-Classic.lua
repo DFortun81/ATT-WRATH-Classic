@@ -8500,6 +8500,7 @@ end)();
 
 -- Quest Lib
 (function()
+local C_QuestLog_GetQuestObjectives = C_QuestLog.GetQuestObjectives;
 local questRetries = {};
 local QuestTitleFromID = setmetatable({}, { __index = function(t, id)
 	local title = C_QuestLog.GetQuestInfo(id);
@@ -8794,7 +8795,7 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 	["name"] = function(t)
 		local questID = t.questID;
 		if questID then
-			local objectives = C_QuestLog.GetQuestObjectives(questID);
+			local objectives = C_QuestLog_GetQuestObjectives(questID);
 			if objectives then
 				local objective = objectives[t.objectiveID];
 				if objective then
@@ -8898,7 +8899,7 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 			-- If the player completed the quest, return.
 			if select(6, GetQuestLogTitle(index)) then return 1; end
 			
-			local objectives = C_QuestLog.GetQuestObjectives(questID);
+			local objectives = C_QuestLog_GetQuestObjectives(questID);
 			if objectives then
 				local objective = objectives[t.objectiveID];
 				if objective then
@@ -8915,7 +8916,7 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 		-- Check to see if the objective was completed.
 		local questID = t.questID;
 		if questID then
-			local objectives = C_QuestLog.GetQuestObjectives(questID);
+			local objectives = C_QuestLog_GetQuestObjectives(questID);
 			if objectives then
 				local objective = objectives[t.objectiveID];
 				if objective then
@@ -8940,6 +8941,34 @@ app.CompareQuestieDB = function()
 		end
 	else
 		print("Error: Questie not available. Please enable it!");
+	end
+end
+app.AddQuestObjectivesToTooltip = function(tooltip, reference)
+	local objectified = false;
+	local questLogIndex = GetQuestLogIndexByID(reference.questID);
+	if questLogIndex then
+		local lore, objective = GetQuestLogQuestText(questLogIndex);
+		if lore and app.Settings:GetTooltipSetting("Lore") then tooltip:AddLine(lore, 0.4, 0.8, 1, 1); end
+		if objective and app.Settings:GetTooltipSetting("Objectives") then
+			tooltip:AddLine(QUEST_OBJECTIVES, 1, 1, 1, 1);
+			tooltip:AddLine(objective, 0.4, 0.8, 1, 1);
+			objectified = true;
+		end
+	end
+	if not reference.saved and app.Settings:GetTooltipSetting("Objectives") then
+		local objectives = C_QuestLog_GetQuestObjectives(reference.questID);
+		if objectives and #objectives > 0 then
+			if not objectified then
+				tooltip:AddLine(QUEST_OBJECTIVES, 1, 1, 1, 1);
+			end
+			for i,objective in ipairs(objectives) do
+				local _ = objective.text;
+				if not _ or _:sub(1, 1) == " " then
+					_ = RETRIEVING_DATA;
+				end
+				tooltip:AddDoubleLine("  " .. _, GetCompletionIcon(objective.finished), 1, 1, 1, 1);
+			end
+		end
 	end
 end
 
@@ -10533,12 +10562,12 @@ local function SetRowData(self, row, data)
 	-- If the data has a texture, assign it.
 	if SetPortraitIcon(row.Texture, data) then
 		row.Texture:Show();
-		row.Label:SetPoint("LEFT", row.Texture, "RIGHT", 4, 0);
+		row.Label:SetPoint("LEFT", row.Texture, "RIGHT", 2, 0);
 		
 		-- If we have a texture, let's assign it.
 		if indicatorTexture then
 			row.Indicator:SetTexture(indicatorTexture);
-			row.Indicator:SetPoint("RIGHT", row.Texture, "LEFT", 4, 0);
+			row.Indicator:SetPoint("RIGHT", row.Texture, "LEFT", -2, 0);
 			row.Indicator:Show();
 		else
 			row.Indicator:Hide();
@@ -11158,32 +11187,7 @@ local function RowOnEnter(self)
 				end
 			end
 			if reference.questID and not reference.objectiveID then
-				local objectified = false;
-				local questLogIndex = GetQuestLogIndexByID(reference.questID);
-				if questLogIndex then
-					local lore, objective = GetQuestLogQuestText(questLogIndex);
-					if lore and app.Settings:GetTooltipSetting("Lore") then GameTooltip:AddLine(lore, 0.4, 0.8, 1, 1); end
-					if objective and app.Settings:GetTooltipSetting("Objectives") then
-						GameTooltip:AddLine(QUEST_OBJECTIVES, 1, 1, 1, 1);
-						GameTooltip:AddLine(objective, 0.4, 0.8, 1, 1);
-						objectified = true;
-					end
-				end
-				if not reference.saved and app.Settings:GetTooltipSetting("Objectives") then
-					local objectives = C_QuestLog.GetQuestObjectives(reference.questID);
-					if objectives and #objectives > 0 then
-						if not objectified then
-							GameTooltip:AddLine(QUEST_OBJECTIVES, 1, 1, 1, 1);
-						end
-						for i,objective in ipairs(objectives) do
-							local _ = objective.text;
-							if not _ or _:sub(1, 1) == " " then
-								_ = RETRIEVING_DATA;
-							end
-							GameTooltip:AddDoubleLine("  " .. _, GetCompletionIcon(objective.finished), 1, 1, 1, 1);
-						end
-					end
-				end
+				app.AddQuestObjectivesToTooltip(GameTooltip, reference);
 			end
 			if reference.u then
 				local reason = L["UNOBTAINABLE_ITEM_REASONS"][reference.u];

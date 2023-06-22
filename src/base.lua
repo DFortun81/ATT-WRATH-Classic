@@ -11,6 +11,7 @@ app.asset = function(path)
 	return assetRootPath .. path;
 end
 --app.Debugging = true;
+app.EmptyTable = {};
 
 -- External API
 _G["ATTC"] = app;
