@@ -10607,6 +10607,22 @@ local function SetRowData(self, row, data)
 		end
 	end
 	
+	-- Check to see what the text is currently
+	local text = data.text;
+	if text ~= row.text then
+		if not text then
+			text = RETRIEVING_DATA;
+			self.processingLinks = true;
+		elseif string.match(text, RETRIEVING_DATA) then
+			-- This means the link is still rendering
+			self.processingLinks = true;
+		else
+			row.text = text;
+		end
+		row.Label:SetText(text);
+		row:SetHeight(select(2, row.Label:GetFont()) + 4);
+	end
+	
 	-- If the data has a texture, assign it.
 	if SetPortraitIcon(row.Texture, data) then
 		row.Texture:Show();
@@ -10632,22 +10648,6 @@ local function SetRowData(self, row, data)
 		else
 			row.Indicator:Hide();
 		end
-	end
-	
-	-- Check to see what the text is currently
-	local text = data.text;
-	if text ~= row.text then
-		if not text then
-			text = RETRIEVING_DATA;
-			self.processingLinks = true;
-		elseif string.match(text, RETRIEVING_DATA) then
-			-- This means the link is still rendering
-			self.processingLinks = true;
-		else
-			row.text = text;
-		end
-		row.Label:SetText(text);
-		row:SetHeight(select(2, row.Label:GetFont()) + 4);
 	end
 end
 local function UpdateRowProgress(group)
