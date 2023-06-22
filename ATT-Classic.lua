@@ -12836,6 +12836,7 @@ function app:GetWindow(suffix, settings)
 					scrollbar:SetVisibleExtentPercentage(1 / Difference);
 					scrollbar:SetPanExtentPercentage(1 / (Difference + 1));
 					--scrollbar:GetForwardStepper():Enable(false);
+					scrollbar:Update();
 				end
 			end
 		
