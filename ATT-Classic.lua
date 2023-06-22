@@ -9809,7 +9809,7 @@ local function MinimapButtonOnEnter(self)
 		
 		local prime = app:GetWindow("Prime");
 		if prime and prime.forceFullDataRefresh then
-			GameTooltip:AddDoubleLine("Update Pending", L["MAIN_LIST_REQUIRES_REFRESH"], 1, 0.4, 0.4);
+			GameTooltip:AddDoubleLine("Updates Paused", L["MAIN_LIST_REQUIRES_REFRESH"], 1, 0.4, 0.4);
 		else
 			GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1);
 		end
@@ -10403,16 +10403,6 @@ function app:CreateMiniListForGroup(group, retried)
 	end
 	return popout;
 end
-local function ClearRowData(self)
-	self.ref = nil;
-	self.Background:Hide();
-	self.Texture:Hide();
-	self.Texture.Background:Hide();
-	self.Texture.Border:Hide();
-	self.Indicator:Hide();
-	self.Summary:Hide();
-	self.Label:Hide();
-end
 local function CalculateRowBack(data)
 	if data.back then return data.back; end
 	if data.parent then
@@ -10430,97 +10420,113 @@ local function CalculateRowIndent(data)
 	end
 end
 local function SetRowData(self, row, data)
-	ClearRowData(row);
-	if data then
-		local text = data.text;
-		if not text or text == RETRIEVING_DATA then
-			text = RETRIEVING_DATA;
-			self.processingLinks = true;
-		elseif string.find(text, "%[%]") or string.find(text, "%[" .. RETRIEVING_DATA .. "%]") then
-			-- This means the link is still rendering
-			text = RETRIEVING_DATA;
-			self.processingLinks = true;
-		end
-		local leftmost = row;
-		local relative = "LEFT";
-		local x = ((CalculateRowIndent(data) * 8) or 0) + 8;
-		local back = CalculateRowBack(data);
+	if row.ref ~= data then
+		-- New data, update everything
 		row.ref = data;
-		if back then
-			row.Background:SetAlpha(back or 0.2);
-			row.Background:Show();
+		if not data then
+			return;
 		end
-		if data.u then
-			local reason = L["UNOBTAINABLE_ITEM_REASONS"][data.u];
-			if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then
-				local texture = L["UNOBTAINABLE_ITEM_TEXTURES"][reason[1]];
-				if texture then
-					row.Indicator:SetTexture(texture);
-					row.Indicator:SetPoint("RIGHT", leftmost, relative, x, 0);
-					row.Indicator:Show();
-				end
-			end
-		elseif data.e then
-			local texture = L["UNOBTAINABLE_ITEM_TEXTURES"][4];
-			if texture then
-				row.Indicator:SetTexture(texture);
-				row.Indicator:SetPoint("RIGHT", leftmost, relative, x, 0);
-				row.Indicator:Show();
-			end
+		
+		local font = data.font or "GameFontNormal";
+		if font ~= row.lastFont then
+			row.Label:SetFontObject(font);
+			row.Summary:SetFontObject(font);
+			row.lastFont = font;
 		end
-		-- if data is quest and is currently accepted
-		if data.questID and GetQuestLogIndexByID(data.questID)>0 then
-			row.Indicator:SetTexture(app.asset("known_circle"));
-			row.Indicator:SetPoint("RIGHT", leftmost, relative, x, 0);
-			row.Indicator:Show();
-		end
-		if data.saved then
-			if data.parent and data.parent.locks or data.isDaily then
-				row.Indicator:SetTexture(app.asset("known"));
-			else
-				row.Indicator:SetTexture(app.asset("known_green"));
-			end
-			row.Indicator:SetPoint("RIGHT", leftmost, relative, x, 0);
-			row.Indicator:Show();
-		end
-		if SetPortraitIcon(row.Texture, data) then
-			row.Texture.Background:SetPoint("LEFT", leftmost, relative, x, 0);
-			row.Texture.Border:SetPoint("LEFT", leftmost, relative, x, 0);
-			row.Texture:SetPoint("LEFT", leftmost, relative, x, 0);
-			row.Texture:Show();
-			leftmost = row.Texture;
-			relative = "RIGHT";
-			x = 4;
-		end
-		local summary = GetProgressTextForRow(data) or data.summary;
-		if not summary then
-			if data.g and not data.expanded and #data.g > 0 then
-				summary = "+++";
-			else
-				summary = "---";
-			end
-		end
-		row.Summary:SetText(summary);
+		
+		-- Every valid row has a summary and label
+		row.Label:SetPoint("RIGHT", row.Summary, "LEFT", 0, 0);
 		row.Summary:Show();
-		row.Label:SetPoint("LEFT", leftmost, relative, x, 0);
-		if row.Summary and row.Summary:IsShown() then
-			row.Label:SetPoint("RIGHT", row.Summary, "LEFT", 0, 0);
-		else
-			row.Label:SetPoint("RIGHT");
-		end
-		row.Label:SetText(text);
-		if data.font then
-			row.Label:SetFontObject(data.font);
-			row.Summary:SetFontObject(data.font);
-		else
-			row.Label:SetFontObject("GameFontNormal");
-			row.Summary:SetFontObject("GameFontNormal");
-		end
-		row:SetHeight(select(2, row.Label:GetFont()) + 4);
 		row.Label:Show();
 		row:Show();
+		
+		-- Calculate the indent
+		local indent = ((CalculateRowIndent(data) * 8) or 0) + 8;
+		row.Texture.Background:SetPoint("LEFT", row, "LEFT", indent, 0);
+		row.Texture.Border:SetPoint("LEFT", row, "LEFT", indent, 0);
+		row.Texture:SetPoint("LEFT", row, "LEFT", indent, 0);
+		row.indent = indent;
+		
+		-- Calculate the back color
+		local back = CalculateRowBack(data);
+		if back then
+			row.back = back;
+			if back > 0 then
+				row.Background:SetAlpha(back);
+				row.Background:Show();
+			else
+				row.Background:Hide();
+			end
+		end
+	elseif not data then
+		return;	-- Already cleared
+	end
+	
+	-- Update the Summary Text (this will be the thing that updates the most)
+	-- TODO: Move this to a field?
+	row.Summary:SetText(data.summary or GetProgressTextForRow(data) or (data.g and not data.expanded and #data.g > 0 and "+++") or "---");
+	
+	-- Determine the Indicator Texture
+	-- TODO: Move this to a field?
+	local indicatorTexture = data.e and L["UNOBTAINABLE_ITEM_TEXTURES"][4];
+	if data.u then
+		local reason = L["UNOBTAINABLE_ITEM_REASONS"][data.u];
+		if reason and (not reason[5] or select(4, GetBuildInfo()) < reason[5]) then
+			indicatorTexture = L["UNOBTAINABLE_ITEM_TEXTURES"][reason[1]];
+		end
+	end
+	
+	-- If data is quest and is currently accepted or saved...
+	if data.questID and GetQuestLogIndexByID(data.questID) > 0 then
+		indicatorTexture = app.asset("known_circle");
+	elseif data.saved then
+		if data.parent and data.parent.locks or data.isDaily then
+			indicatorTexture = app.asset("known");
+		else
+			indicatorTexture = app.asset("known_green");
+		end
+	end
+	
+	-- If the data has a texture, assign it.
+	if SetPortraitIcon(row.Texture, data) then
+		row.Texture:Show();
+		row.Label:SetPoint("LEFT", row.Texture, "RIGHT", 4, 0);
+		
+		-- If we have a texture, let's assign it.
+		if indicatorTexture then
+			row.Indicator:SetTexture(indicatorTexture);
+			row.Indicator:SetPoint("RIGHT", row.Texture, "RIGHT", 4, 0);
+			row.Indicator:Show();
+		else
+			row.Indicator:Hide();
+		end
 	else
-		row:Hide();
+		row.Texture:Hide();
+		row.Label:SetPoint("LEFT", row, "LEFT", row.indent, 0);
+		
+		-- If we have a texture, let's assign it.
+		if indicatorTexture then
+			row.Indicator:SetTexture(indicatorTexture);
+			row.Indicator:SetPoint("RIGHT", row, "LEFT", row.indent, 0);
+			row.Indicator:Show();
+		else
+			row.Indicator:Hide();
+		end
+	end
+	
+	-- Check to see what the text is currently
+	local text = data.text;
+	if text ~= row.text then
+		if not text then
+			text = RETRIEVING_DATA;
+			self.processingLinks = true;
+		elseif string.match(text, RETRIEVING_DATA) then
+			-- This means the link is still rendering
+			self.processingLinks = true;
+		end
+		row.text = text;
+		row.Label:SetText(text);
+		row:SetHeight(select(2, row.Label:GetFont()) + 4);
 	end
 end
 local function UpdateRowProgress(group)
@@ -10573,9 +10579,18 @@ local function UpdateVisibleRowData(self)
 		end
 		
 		-- Hide the extra rows if any exist
+		local anyHidden = false;
 		for i=math.max(2, rowCount + 1),#container.rows do
-			ClearRowData(container.rows[i]);
-			container.rows[i]:Hide();
+			local row = container.rows[i];
+			if row:IsVisible() then
+				row:Hide();
+				anyHidden = true;
+			else
+				break;
+			end
+		end
+		if anyHidden then
+			self.ScrollBar:Update();
 		end
 		
 		totalRowCount = totalRowCount + 1;
@@ -11475,7 +11490,7 @@ CreateRow = function(self)
 	row.Texture.Border:SetWidth(row:GetHeight());
 	
 	-- Clear the Row Data Initially
-	ClearRowData(row);
+	SetRowData(self, row, nil);
 	return row;
 end
 
@@ -12693,21 +12708,24 @@ function app:GetWindow(suffix, settings)
 		};
 		window:Hide();
 		local delays = {};
-		window.DelayedCall = function(self, method, delay)
+		window.DelayedCall = function(self, method, delay, force)
 			delays[method] = delay or 60;
 			StartCoroutine(window.Suffix .. ":DelayedCall::" .. method, function()
 				while delays[method] > 0 do
 					coroutine.yield();
 					delays[method] = delays[method] - 1;
 				end
-				window[method](window);
+				while InCombatLockdown() do
+					coroutine.yield();
+				end
+				window[method](window, force);
 			end);
 		end
-		window.DelayedRefresh = function(self, delay)
-			self:DelayedCall("Refresh", delay or 5);
+		window.DelayedRefresh = function(self)
+			self:DelayedCall("Refresh", 5);
 		end
-		window.DelayedUpdate = function(self, delay)
-			self:DelayedCall("Update", delay or 60);
+		window.DelayedUpdate = function(self, force)
+			self:DelayedCall("Update", 60, force);
 		end
 		
 		-- The Close Button. It's assigned as a local variable so you can change how it behaves.
@@ -12742,8 +12760,11 @@ function app:GetWindow(suffix, settings)
 			
 			local MaxDisplayedValue, TotalValue, Difference = 0, 0, 0;
 			scrollbar:RegisterCallback(BaseScrollBoxEvents.OnScroll, function(o, scrollPercentage)
-				window.CurrentIndex = math.ceil(scrollPercentage * Difference);
-				window:Refresh();
+				local currentIndex = math.ceil(scrollPercentage * Difference);
+				if currentIndex ~= window.CurrentIndex then
+					window.CurrentIndex = math.ceil(scrollPercentage * Difference);
+					window:Refresh();
+				end
 			end, window);
 			window:SetScript("OnMouseWheel", function(self, delta)
 				scrollbar:ScrollStepInDirection(-delta);
@@ -13841,11 +13862,14 @@ app:GetWindow("CurrentInstance", {
 		app.ToggleMiniListForCurrentZone = ToggleMiniListForCurrentZone;
 		app.RefreshLocation = RefreshLocation;
 		self:SetScript("OnEvent", function(self, e, ...)
-			--print(e, ...);
 			if e == "ZONE_CHANGED" or e == "ZONE_CHANGED_NEW_AREA" then
 				RefreshLocation();
+			elseif e == "QUEST_WATCH_UPDATE" or e == "QUEST_ITEM_UPDATE" then
+				self:Refresh();
+			elseif e == "QUEST_ACCEPTED" or e == "QUEST_REMOVED" or "QUEST_LOG_UPDATE" then
+				self:DelayedUpdate(true);
 			else
-				self:DelayedUpdate();
+				self:Update();
 			end
 		end);
 		self:RegisterEvent("QUEST_ITEM_UPDATE");
@@ -14362,7 +14386,7 @@ app:GetWindow("ItemFinder", {
 								}));
 							end
 						end
-						self:DelayedUpdate();
+						self:DelayedUpdate(true);
 						self.delayRemaining = 1;
 					end
 				end
@@ -17526,7 +17550,7 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 							local c = tonumber(args[i + 1]);
 							if c == 1 then table.insert(processor, { target, "q", b }); end
 						end
-						app:GetWindow("Attuned"):DelayedUpdate();
+						app:GetWindow("Attuned"):DelayedUpdate(true);
 					elseif a == "sr" then
 						app:UpdateSoftReserve(args[3], tonumber(args[4]), tonumber(args[5]), true);
 					elseif a == "srml" then
