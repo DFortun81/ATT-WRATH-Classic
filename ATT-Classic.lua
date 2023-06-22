@@ -10515,6 +10515,7 @@ local function SetRowData(self, row, data)
 	if row.ref ~= data then
 		-- New data, update everything
 		row.ref = data;
+		row.summaryText = nil;
 		if not data then
 			row.Background:Hide();
 			row.Texture:Hide();
@@ -10562,8 +10563,28 @@ local function SetRowData(self, row, data)
 	end
 	
 	-- Update the Summary Text (this will be the thing that updates the most)
-	-- TODO: Move this to a field?
-	row.Summary:SetText(data.summary or GetProgressTextForRow(data) or (data.g and not data.expanded and #data.g > 0 and "+++") or "---");
+	local summary = data.summary or GetProgressTextForRow(data);
+	local oldSummary = row.summaryText;
+	if oldSummary then
+		if summary then
+			if oldSummary ~= summary then
+				row.Summary:SetText(summary);
+				row.summaryText = summary;
+				self.smudged = true;	-- Mark this as smudged, so that it knowns to Update the rows completely. (this means that something changed its state)
+			end
+		else
+			row.Summary:SetText((data.g and not data.expanded and #data.g > 0 and "+++") or "---");
+			row.summaryText = nil;
+			self.smudged = true;	-- Mark this as smudged, so that it knowns to Update the rows completely. (this means that something changed its state)
+		end
+	else
+		if summary then
+			row.Summary:SetText(summary);
+			row.summaryText = summary;
+		else
+			row.Summary:SetText((data.g and not data.expanded and #data.g > 0 and "+++") or "---");
+		end
+	end
 	
 	-- Determine the Indicator Texture
 	-- TODO: Move this to a field?
@@ -10695,6 +10716,12 @@ local function UpdateVisibleRowData(self)
 		
 		totalRowCount = totalRowCount + 1;
 		self:SetMinMaxValues(rowCount, totalRowCount);
+		
+		-- The data is smudged, meaning it needs to be Updated.
+		if self.smudged then
+			self.smudged = nil;
+			self:Update(true);
+		end
 		
 		-- If the rows need to be processed again, do so next update.
 		if self.processingLinks then
@@ -11620,6 +11647,10 @@ local function UpdateWindow(self, force, fromTrigger)
 	if self.data and (force or self:IsVisible()) then
 		self.data.expanded = true;
 		if self.forceFullDataRefresh then
+			local rows = self.Container.rows;
+			for i=1,#rows,1 do
+				SetRowData(self, rows[i], nil); 
+			end
 			self.data.progress = 0;
 			self.data.total = 0;
 			UpdateGroups(self.data, self.data.g);
@@ -12977,7 +13008,7 @@ function app:BuildFlatSearchResponseForField(groups, field, t)
 	if groups then
 		for i,group in ipairs(groups) do
 			if group[field] then
-				tinsert(t, CloneData(group));
+				tinsert(t, CloneReference(group));
 			elseif group.g then
 				app:BuildFlatSearchResponseForField(group.g, field, t);
 			end
@@ -13991,6 +14022,7 @@ app:GetWindow("CurrentInstance", {
 		self:RegisterEvent("QUEST_REMOVED");
 		self:RegisterEvent("QUEST_TURNED_IN");
 		self:RegisterEvent("QUEST_WATCH_UPDATE");
+		self:RegisterEvent("BAG_UPDATE_DELAYED");
 		self:RegisterEvent("ZONE_CHANGED");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 		
