@@ -313,7 +313,7 @@ settings.GetModeString = function(self)
 				totalThingCount = totalThingCount + 1;
 				if settings:Get(key) then
 					thingCount = thingCount + 1;
-					table.insert(things, string.sub(key, 7));
+					tinsert(things, string.sub(key, 7));
 				end
 			end
 		end
@@ -394,7 +394,7 @@ settings.Refresh = function(self)
 end
 settings.CreateCheckBox = function(self, text, OnRefresh, OnClick)
 	local cb = CreateFrame("CheckButton", self:GetName() .. "-" .. text, self, "InterfaceOptionsCheckButtonTemplate");
-	table.insert(self.MostRecentTab.objects, cb);
+	tinsert(self.MostRecentTab.objects, cb);
 	cb:SetScript("OnClick", OnClick);
 	cb.OnRefresh = OnRefresh;
 	cb.Text:SetText(text);
@@ -404,7 +404,7 @@ settings.CreateTab = function(self, text)
 	local id = #self.Tabs + 1;
 	local tab = CreateFrame('Button', self:GetName() .. '-Tab' .. id, self, 'OptionsFrameTabButtonTemplate');
 	if id > 1 then tab:SetPoint("TOPLEFT", self.Tabs[id - 1], "TOPRIGHT", 0, 0); end
-	table.insert(self.Tabs, tab);
+	tinsert(self.Tabs, tab);
 	self.MostRecentTab = tab;
 	tab.objects = {};
 	tab:SetID(id);
@@ -746,7 +746,7 @@ local ModeLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge
 ModeLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
 ModeLabel:SetJustifyH("LEFT");
 ModeLabel:Show();
-table.insert(settings.MostRecentTab.objects, ModeLabel);
+tinsert(settings.MostRecentTab.objects, ModeLabel);
 ModeLabel.OnRefresh = function(self)
 	self:SetText(settings:GetModeString());
 end;
@@ -799,7 +799,7 @@ FactionModeCheckBox:SetPoint("TOPLEFT", AccountModeCheckBox, "TOPLEFT", 140, 0);
 local PrecisionSlider = CreateFrame("Slider", "ATTPrecisionSlider", settings, "OptionsSliderTemplate");
 PrecisionSlider:SetPoint("RIGHT", settings, "RIGHT", -20, 0);
 PrecisionSlider:SetPoint("TOP", ModeLabel, "BOTTOM", 0, -12);
-table.insert(settings.MostRecentTab.objects, PrecisionSlider);
+tinsert(settings.MostRecentTab.objects, PrecisionSlider);
 settings.PrecisionSlider = PrecisionSlider;
 PrecisionSlider.tooltipText = 'Use this to customize your desired level of precision in percentage calculations.\n\nDefault: 2';
 PrecisionSlider:SetOrientation('HORIZONTAL');
@@ -827,7 +827,7 @@ end);
 local MinimapButtonSizeSlider = CreateFrame("Slider", "ATTMinimapButtonSizeSlider", settings, "OptionsSliderTemplate");
 MinimapButtonSizeSlider:SetPoint("RIGHT", settings, "RIGHT", -20, 0);
 MinimapButtonSizeSlider:SetPoint("TOP", PrecisionSlider, "BOTTOM", 0, -28);
-table.insert(settings.MostRecentTab.objects, MinimapButtonSizeSlider);
+tinsert(settings.MostRecentTab.objects, MinimapButtonSizeSlider);
 settings.MinimapButtonSizeSlider = MinimapButtonSizeSlider;
 MinimapButtonSizeSlider.tooltipText = 'Use this to customize the size of the Minimap Button.\n\nDefault: 36';
 MinimapButtonSizeSlider:SetOrientation('HORIZONTAL');
@@ -858,7 +858,7 @@ ThingsLabel:SetPoint("TOPLEFT", AccountModeCheckBox, "BOTTOMLEFT", 0, -16);
 ThingsLabel:SetJustifyH("LEFT");
 ThingsLabel:SetText("Which \"Things\" do you want to track?");
 ThingsLabel:Show();
-table.insert(settings.MostRecentTab.objects, ThingsLabel);
+tinsert(settings.MostRecentTab.objects, ThingsLabel);
 ThingsLabel.OnRefresh = function(self)
 	if settings:Get("DebugMode") then
 		self:SetAlpha(0.2);
@@ -1747,7 +1747,7 @@ ItemFiltersLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
 ItemFiltersLabel:SetJustifyH("LEFT");
 ItemFiltersLabel:SetText("Armor / Weapon Filters");
 ItemFiltersLabel:Show();
-table.insert(settings.MostRecentTab.objects, ItemFiltersLabel);
+tinsert(settings.MostRecentTab.objects, ItemFiltersLabel);
 
 -- Armor
 local last, xoffset, yoffset = ItemFiltersLabel, 0, -4;
@@ -1861,7 +1861,7 @@ f.OnRefresh = function(self)
 		self:Enable();
 	end
 end;
-table.insert(settings.MostRecentTab.objects, f);
+tinsert(settings.MostRecentTab.objects, f);
 settings.classdefaults = f;
 
 f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
@@ -1902,14 +1902,14 @@ f.OnRefresh = function(self)
 		self:Enable();
 	end
 end;
-table.insert(settings.MostRecentTab.objects, f);
+tinsert(settings.MostRecentTab.objects, f);
 
 local GeneralUnobtainableFiltersLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 GeneralUnobtainableFiltersLabel:SetPoint("TOPLEFT", line, "BOTTOMRIGHT", -200, -8);
 GeneralUnobtainableFiltersLabel:SetJustifyH("LEFT");
 GeneralUnobtainableFiltersLabel:SetText("|CFFFFAAAAGeneral Unobtainable Filters|r");
 GeneralUnobtainableFiltersLabel:Show();
-table.insert(settings.MostRecentTab.objects, GeneralUnobtainableFiltersLabel);
+tinsert(settings.MostRecentTab.objects, GeneralUnobtainableFiltersLabel);
 
 -- General Unobtainable Filters
 yoffset = -4;
@@ -1958,7 +1958,7 @@ ClassicPhasesLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
 ClassicPhasesLabel:SetJustifyH("LEFT");
 ClassicPhasesLabel:SetText("|CFFAAFFAAClassic Phases|r");
 ClassicPhasesLabel:Show();
-table.insert(settings.MostRecentTab.objects, ClassicPhasesLabel);
+tinsert(settings.MostRecentTab.objects, ClassicPhasesLabel);
 
 -- Classic Phases
 local last, xoffset, yoffset, spacing, vspacing = ClassicPhasesLabel, 0, -4, 8, 1;
@@ -1981,7 +1981,7 @@ TBCPhasesLabel:SetPoint("LEFT", line, "LEFT", 208, 0);
 TBCPhasesLabel:SetJustifyH("LEFT");
 TBCPhasesLabel:SetText("|CFFAAFFAATBC Phases|r");
 TBCPhasesLabel:Show();
-table.insert(settings.MostRecentTab.objects, TBCPhasesLabel);
+tinsert(settings.MostRecentTab.objects, TBCPhasesLabel);
 
 last, xoffset, yoffset = TBCPhasesLabel, 0, -4;
 for i,o in ipairs({ { 17, 0, 0 }, { 18, 0 }, {1801, spacing, -vspacing }, { 1802, spacing }, { 19, 0, -vspacing }, { 1901, spacing, -vspacing }, { 1902, spacing }, { 20, 0, -vspacing }, { 21, 0 }, {2101, spacing, -vspacing }, { 2102, spacing }, { 2103, spacing }, { 2104, spacing }, { 2105, spacing }, { 2106, spacing }, { 2107, spacing }, { 1601, spacing, -vspacing }, }) do
@@ -2003,7 +2003,7 @@ WrathPhasesLabel:SetPoint("LEFT", line, "LEFT", 408, 0);
 WrathPhasesLabel:SetJustifyH("LEFT");
 WrathPhasesLabel:SetText("|CFFAAFFAAWrath Phases|r");
 WrathPhasesLabel:Show();
-table.insert(settings.MostRecentTab.objects, WrathPhasesLabel);
+tinsert(settings.MostRecentTab.objects, WrathPhasesLabel);
 
 last, xoffset, yoffset = WrathPhasesLabel, 0, -4;
 for i,o in ipairs({ { 30, 0, 0 }, {3001, spacing, -vspacing }, { 31, 0, -vspacing }, {3101, spacing, -vspacing }, { 32, 0, -vspacing }, { 33, 0 }, {3301, spacing, -vspacing }, { 34, 0, -vspacing }, { 35, 0, -vspacing }, }) do
@@ -2031,7 +2031,7 @@ TooltipLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
 TooltipLabel:SetJustifyH("LEFT");
 TooltipLabel:SetText("Tooltips");
 TooltipLabel:Show();
-table.insert(settings.MostRecentTab.objects, TooltipLabel);
+tinsert(settings.MostRecentTab.objects, TooltipLabel);
 
 local EnableTooltipInformationCheckBox = settings:CreateCheckBox("|CFFADD8E6Enable Tooltip Integrations|r",
 function(self)
@@ -2390,7 +2390,7 @@ DebuggingLabel:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", -220, -8);
 DebuggingLabel:SetJustifyH("LEFT");
 DebuggingLabel:SetText("Debugging");
 DebuggingLabel:Show();
-table.insert(settings.MostRecentTab.objects, DebuggingLabel);
+tinsert(settings.MostRecentTab.objects, DebuggingLabel);
 local ids = {
 	["achievementID"] = "Achievement ID",
 	["artID"] = "Art ID",
@@ -2456,7 +2456,7 @@ end
 local MainListScaleSlider = CreateFrame("Slider", "ATTMainListScaleSlider", settings, "OptionsSliderTemplate");
 MainListScaleSlider:SetPoint("LEFT", DebuggingLabel, "LEFT", 0, 0);
 MainListScaleSlider:SetPoint("TOP", ShowRaceRequirementsCheckBox, "BOTTOM", 0, 0);
-table.insert(settings.MostRecentTab.objects, MainListScaleSlider);
+tinsert(settings.MostRecentTab.objects, MainListScaleSlider);
 settings.MainListScaleSlider = MainListScaleSlider;
 MainListScaleSlider.currentValue = 0;
 MainListScaleSlider.tooltipText = 'Use this to customize the scale of the Main List.\n\nDefault: 1';
@@ -2487,7 +2487,7 @@ end);
 local MiniListScaleSlider = CreateFrame("Slider", "ATTMiniListScaleSlider", settings, "OptionsSliderTemplate");
 MiniListScaleSlider:SetPoint("LEFT", DebuggingLabel, "LEFT", 0, 0);
 MiniListScaleSlider:SetPoint("TOP", MainListScaleSlider, "BOTTOM", 0, -32);
-table.insert(settings.MostRecentTab.objects, MiniListScaleSlider);
+tinsert(settings.MostRecentTab.objects, MiniListScaleSlider);
 settings.MiniListScaleSlider = MiniListScaleSlider;
 MiniListScaleSlider.currentValue = 0;
 MiniListScaleSlider.tooltipText = 'Use this to customize the scale of all Mini and Bitty Lists.\n\nDefault: 1';
@@ -2521,7 +2521,7 @@ end);
 local LocationsSlider = CreateFrame("Slider", "ATTLocationsSlider", settings, "OptionsSliderTemplate");
 LocationsSlider:SetPoint("LEFT", DebuggingLabel, "LEFT", 0, 0);
 LocationsSlider:SetPoint("TOP", MiniListScaleSlider, "BOTTOM", 0, -32);
-table.insert(settings.MostRecentTab.objects, LocationsSlider);
+tinsert(settings.MostRecentTab.objects, LocationsSlider);
 settings.LocationsSlider = LocationsSlider;
 LocationsSlider.tooltipText = 'Use this to customize the number of source locations to show in the tooltip.\n\nNOTE: This will also show "X" number of other sources based on how many, if that total is equivalent to the total number of displayed elements, then that will simply display the last source.\n\nDefault: 5';
 LocationsSlider:SetOrientation('HORIZONTAL');
@@ -2567,7 +2567,7 @@ ModulesLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
 ModulesLabel:SetJustifyH("LEFT");
 ModulesLabel:SetText("Modules & Mini Lists");
 ModulesLabel:Show();
-table.insert(settings.MostRecentTab.objects, ModulesLabel);
+tinsert(settings.MostRecentTab.objects, ModulesLabel);
 
 local ChangeSkipCutsceneState = function(self, checked)
 	if checked then
@@ -2650,7 +2650,7 @@ CelebrationsLabel:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", -50, -8);
 CelebrationsLabel:SetJustifyH("LEFT");
 CelebrationsLabel:SetText("Celebrations & Sound Effects");
 CelebrationsLabel:Show();
-table.insert(settings.MostRecentTab.objects, CelebrationsLabel);
+tinsert(settings.MostRecentTab.objects, CelebrationsLabel);
 
 local UseMasterAudioChannel = settings:CreateCheckBox("Use the Master Audio Channel",
 function(self)
@@ -2701,7 +2701,7 @@ SyncLabel:SetPoint("TOP", IntegrateWithLFGBulletinBoard, "BOTTOM", 0, -4);
 SyncLabel:SetJustifyH("LEFT");
 SyncLabel:SetText("Account Synchronization");
 SyncLabel:Show();
-table.insert(settings.MostRecentTab.objects, SyncLabel);
+tinsert(settings.MostRecentTab.objects, SyncLabel);
 
 local AutomaticallySyncAccountDataCheckBox = settings:CreateCheckBox("Automatically Sync Account Data",
 function(self)
@@ -2735,7 +2735,7 @@ function tab:InitializeSyncWindow()
 		ogMethod(self);
 		self:Update();
 	end
-	table.insert(tab.objects, syncWindow);
+	tinsert(tab.objects, syncWindow);
 end
 end)();
 
@@ -2750,5 +2750,5 @@ AboutText:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", -8, -8);
 AboutText:SetJustifyH("LEFT");
 AboutText:SetText(L["TITLE"] .. " |CFFFFFFFFis a collection tracking addon that shows you where and how to get everything in the game! We have a large community of users on our Discord (link at the bottom) where you can ask questions, submit suggestions as well as report bugs or missing items. If you find something collectible or a quest that isn't documented, you can tell us on the Discord, or for the more technical savvy, we have a Git that you may contribute directly to.\n\nWhile we do strive for completion, there's a lot of stuff getting added into the game each patch, so if we're missing something, please understand that we're a small team trying to keep up with changes as well as collect things ourselves. :D\n\nFeel free to ask me questions when I'm streaming and I'll try my best to answer it, even if it's not directly related to ATT (general WoW addon programming as well).\n\n- |r|Cffff8000Crieve (DFortun81 on GitHub)|CFFFFFFFF\n\nIf you wish to play with us, we're on Atiesh (Alliance) in the <All The Things> guild!|r\n\n\nContributors working on Classic:\n |CFFFFFFFF\nPr3vention, Avella, Mogwai, Crieve and Talonzor |r\n\n\n\nIf we're missing something, please let us know!\n\nStill lots of things to add, but thankfully there is a finite number of things in WoW Classic and TBC Classic, so we should eventually get it all!");
 AboutText:Show();
-table.insert(settings.MostRecentTab.objects, AboutText);
+tinsert(settings.MostRecentTab.objects, AboutText);
 end)();
