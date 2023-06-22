@@ -4108,7 +4108,7 @@ local function RefreshSaves()
 	end
 	
 	-- Mark that we're done now.
-	app:UpdateWindows(false, false);
+	app:RefreshDataQuietly();
 end
 local function RefreshSkills()
 	-- Store Skill Data
@@ -4186,58 +4186,6 @@ app.ToggleMainList = function()
 end
 app.RefreshCollections = RefreshCollections;
 app.OpenMainList = OpenMainList;
-
--- Tooltip Hooks
-(function()
-	local GameTooltip_SetCurrencyByID = GameTooltip.SetCurrencyByID;
-	GameTooltip.SetCurrencyByID = function(self, currencyID, count)
-		-- Make sure to call to base functionality
-		if GameTooltip_SetCurrencyByID then
-			GameTooltip_SetCurrencyByID(self, currencyID, count);
-		else
-			local results = SearchForField("currencyID", currencyID);
-			if results and #results > 0 then
-				GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
-			end
-		end
-		if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
-			AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, SearchForField, "currencyID", currencyID);
-			if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
-			self:Show();
-		end
-	end
-	local GameTooltip_SetCurrencyToken = GameTooltip.SetCurrencyToken;
-	GameTooltip.SetCurrencyToken = function(self, tokenID)
-		-- Make sure to call to base functionality
-		if GameTooltip_SetCurrencyToken then GameTooltip_SetCurrencyToken(self, tokenID); end
-		if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
-			-- Determine what kind of list data this is. (Blizzard is whack and using this API call for headers too...)
-			local name, isHeader = GetCurrencyListInfo(tokenID);
-			if not isHeader then
-				-- Determine which currencyID is the one that we're dealing with.
-				local cache = SearchForFieldContainer("currencyID");
-				if cache then
-					-- We only care about currencies in the addon at the moment.
-					for currencyID, _ in pairs(cache) do
-						-- Compare the name of the currency vs the name of the token
-						if GetCurrencyInfo(currencyID) == name then
-							if not GameTooltip_SetCurrencyToken then
-								local results = SearchForField("currencyID", currencyID);
-								if results and #results > 0 then
-									GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
-								end
-							end
-							AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, SearchForField, "currencyID", currencyID);
-							if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
-							self:Show();
-							break;
-						end
-					end
-				end
-			end
-		end
-	end
-end)();
 
 -- Achievement Lib
 (function()
@@ -6200,84 +6148,172 @@ end)();
 
 -- Currency Lib
 (function()
+local _GetCurrencyInfo, _GetCurrencyLink = GetCurrencyInfo, GetCurrencyLink;
+local CurrencyInfo = setmetatable({}, { __index = function(t, id)
+	local name, amount, icon = _GetCurrencyInfo(id);
+	if name then
+		local info = {
+			name = name,
+			icon = icon
+		}
+		rawset(t, id, info);
+		return info;
+	end
+end });
+local CurrencyCollectibleAsCost = setmetatable({}, { __index = function(t, id)
+	local results = app.SearchForField("currencyIDAsCost", id, true);
+	if results and #results > 0 then
+		for _,ref in pairs(results) do
+			if ref.currencyID ~= id and app.RecursiveGroupRequirementsFilter(ref) then
+				if ref.collectible and not ref.collected then
+					t[id] = true;
+					return true;
+				elseif ref.total and ref.total > ref.progress then
+					t[id] = true;
+					return true;
+				end
+			end
+		end
+	end
+	t[id] = false;
+	return false;
+end });
+local CurrencyCollectedAsCost = setmetatable({}, { __index = function(t, id)
+	local any, partial;
+	local results = app.SearchForField("currencyIDAsCost", id, true);
+	if results and #results > 0 then
+		local count = select(2, GetCurrencyInfo(id)) or 0;
+		for _,ref in pairs(results) do
+			if ref.currencyID ~= id and app.RecursiveDefaultClassAndRaceFilter(ref) then
+				if ref.collectible and ref.collected ~= 1 then
+					if ref.cost then
+						for k,v in ipairs(ref.cost) do
+							if v[2] == id and v[1] == "c" then
+								if count >= (v[3] or 1) then
+									partial = true;
+								else
+									t[id] = false;
+									return false;
+								end
+							end
+						end
+					end
+				elseif (ref.total and ref.total > 0 and not GetRelativeField(t, "parent", ref) and ref.progress < ref.total) then
+					if ref.cost then
+						for k,v in ipairs(ref.cost) do
+							if v[2] == id and v[1] == "c" then
+								if count >= (v[3] or 1) then
+									partial = true;
+								else
+									t[id] = false;
+									return false;
+								end
+							end
+						end
+					end
+				end
+				any = true;
+			end
+		end
+		if any then
+			t[id] = partial and 2 or 1;
+			return partial and 2 or 1;
+		end
+	end
+	t[id] = false;
+	return false;
+end });
+table.insert(app.EventHandlers.OnRecalculate, function()
+	wipe(CurrencyCollectibleAsCost);
+	wipe(CurrencyCollectedAsCost);
+end);
 app.CreateCurrencyClass = app.CreateClass("Currency", "currencyID", {
 	["text"] = function(t)
-		return GetCurrencyInfo(t.currencyID);
+		return t.info.name;
 	end,
 	["icon"] = function(t)
-		return select(3, GetCurrencyInfo(t.currencyID));
+		return t.info.icon;
+	end,
+	["info"] = function(t)
+		local info = CurrencyInfo[t.currencyID];
+		if info then
+			t.info = info;
+			return info;
+		end
+		return {};
 	end,
 	["link"] = function(t)
-		return GetCurrencyLink(t.currencyID, 1);	-- WARNING: This is SUPER LAGGY. Do not use as text!
+		return _GetCurrencyLink(t.currencyID);
 	end,
 	["collectible"] = function(t)
 		return t.collectibleAsCost;
 	end,
 	["collectibleAsCost"] = function(t)
-		local id = t.currencyID;
-		local results = app.SearchForField("currencyIDAsCost", id, true);
-		if results and #results > 0 then
-			if not t.parent or not t.parent.saved then
-				for _,ref in pairs(results) do
-					if ref.currencyID ~= id and app.RecursiveGroupRequirementsFilter(ref) then
-						if ref.collectible and not ref.collected then
-							return true;
-						elseif ref.total and ref.total > ref.progress then
-							return true;
-						end
-					end
-				end
+		if not t.parent or not t.parent.saved then
+			if CurrencyCollectibleAsCost[t.currencyID] then
+				return true;
+			elseif t.simplemeta then
+				setmetatable(t, t.simplemeta);
+				return false;
 			end
-			return false;
-		elseif t.simplemeta then
-			setmetatable(t, t.simplemeta);
-			return false;
 		end
 	end,
 	["collected"] = function(t)
 		return t.collectedAsCost;
 	end,
 	["collectedAsCost"] = function(t)
-		local id, any, partial = t.currencyID;
-		local results = app.SearchForField("currencyIDAsCost", id, true);
-		if results and #results > 0 then
-			local count = select(2, GetCurrencyInfo(id)) or 0;
-			for _,ref in pairs(results) do
-				if ref.currencyID ~= id and app.RecursiveDefaultClassAndRaceFilter(ref) then
-					if ref.collectible and ref.collected ~= 1 then
-						if ref.cost then
-							for k,v in ipairs(ref.cost) do
-								if v[2] == id and v[1] == "c" then
-									if count >= (v[3] or 1) then
-										partial = true;
-									else
-										return false;
-									end
-								end
-							end
-						end
-					elseif (ref.total and ref.total > 0 and not GetRelativeField(t, "parent", ref) and ref.progress < ref.total) then
-						if ref.cost then
-							for k,v in ipairs(ref.cost) do
-								if v[2] == id and v[1] == "c" then
-									if count >= (v[3] or 1) then
-										partial = true;
-									else
-										return false;
-									end
-								end
-							end
-						end
-					end
-					any = true;
-				end
-			end
-			if any then
-				return partial and 2 or 1;
-			end
-		end
+		return CurrencyCollectedAsCost[t.currencyID];
 	end,
 });
+
+local GameTooltip_SetCurrencyByID = GameTooltip.SetCurrencyByID;
+GameTooltip.SetCurrencyByID = function(self, currencyID, count)
+	-- Make sure to call to base functionality
+	if GameTooltip_SetCurrencyByID then
+		GameTooltip_SetCurrencyByID(self, currencyID, count);
+	else
+		local results = SearchForField("currencyID", currencyID);
+		if results and #results > 0 then
+			GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
+		end
+	end
+	if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
+		AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, SearchForField, "currencyID", currencyID);
+		if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
+		self:Show();
+	end
+end
+local GameTooltip_SetCurrencyToken = GameTooltip.SetCurrencyToken;
+GameTooltip.SetCurrencyToken = function(self, tokenID)
+	-- Make sure to call to base functionality
+	if GameTooltip_SetCurrencyToken then GameTooltip_SetCurrencyToken(self, tokenID); end
+	if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
+		-- Determine what kind of list data this is. (Blizzard is whack and using this API call for headers too...)
+		local name, isHeader = GetCurrencyListInfo(tokenID);
+		if not isHeader then
+			-- Determine which currencyID is the one that we're dealing with.
+			local cache = SearchForFieldContainer("currencyID");
+			if cache then
+				-- We only care about currencies in the addon at the moment.
+				for currencyID, _ in pairs(cache) do
+					-- Compare the name of the currency vs the name of the token
+					if _GetCurrencyInfo(currencyID) == name then
+						if not GameTooltip_SetCurrencyToken then
+							local results = SearchForField("currencyID", currencyID);
+							if results and #results > 0 then
+								GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
+							end
+						end
+						AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, SearchForField, "currencyID", currencyID);
+						if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
+						self:Show();
+						break;
+					end
+				end
+			end
+		end
+	end
+end
 end)();
 
 -- Death Tracker Lib
@@ -10424,6 +10460,13 @@ local function SetRowData(self, row, data)
 		-- New data, update everything
 		row.ref = data;
 		if not data then
+			row.Background:Hide();
+			row.Texture:Hide();
+			row.Texture.Background:Hide();
+			row.Texture.Border:Hide();
+			row.Indicator:Hide();
+			row.Summary:Hide();
+			row.Label:Hide();
 			return;
 		end
 		
@@ -10495,7 +10538,7 @@ local function SetRowData(self, row, data)
 		-- If we have a texture, let's assign it.
 		if indicatorTexture then
 			row.Indicator:SetTexture(indicatorTexture);
-			row.Indicator:SetPoint("RIGHT", row.Texture, "RIGHT", 4, 0);
+			row.Indicator:SetPoint("RIGHT", row.Texture, "LEFT", 4, 0);
 			row.Indicator:Show();
 		else
 			row.Indicator:Hide();
@@ -10507,7 +10550,7 @@ local function SetRowData(self, row, data)
 		-- If we have a texture, let's assign it.
 		if indicatorTexture then
 			row.Indicator:SetTexture(indicatorTexture);
-			row.Indicator:SetPoint("RIGHT", row, "LEFT", row.indent, 0);
+			row.Indicator:SetPoint("RIGHT", row, "RIGHT", row.indent, 0);
 			row.Indicator:Show();
 		else
 			row.Indicator:Hide();
@@ -10582,8 +10625,8 @@ local function UpdateVisibleRowData(self)
 		local anyHidden = false;
 		for i=math.max(2, rowCount + 1),#container.rows do
 			local row = container.rows[i];
-			if row:IsVisible() then
-				row:Hide();
+			if row.ref then
+				SetRowData(self, row, nil);
 				anyHidden = true;
 			else
 				break;
@@ -10741,7 +10784,7 @@ local function RowOnClick(self, button)
 				else
 					ExpandGroupsRecursively(reference, not reference.expanded, true);
 				end
-				app:UpdateWindows();
+				self:Update();
 				return true;
 			end
 		end
@@ -12538,8 +12581,8 @@ function app:GetDataCache()
 		return rootData;
 	end
 end
-function app:RefreshData(fromTrigger)
-	app.countdown = app.countdown or 0;
+local function RefreshData(fromTrigger)
+	app.countdown = 30;
 	app.refreshFromTrigger = app.refreshFromTrigger or fromTrigger;
 	if app.currentlyRefreshingData then return; end
 	--print("RefreshData(" .. tostring(fromTrigger or false) .. ")");
@@ -12561,6 +12604,11 @@ function app:RefreshData(fromTrigger)
 			if app.RefreshAchievementCollection then
 				app.RefreshAchievementCollection();
 			end
+		
+			-- Execute the OnRecalculate handlers.
+			for i,handler in ipairs(app.EventHandlers.OnRecalculate) do
+				handler();
+			end
 			app:UpdateWindows(true, app.refreshFromTrigger);
 		else
 			app:UpdateWindows(nil, app.refreshFromTrigger);
@@ -12580,13 +12628,11 @@ function app:RefreshData(fromTrigger)
 	end);
 end
 function app:RefreshDataCompletely(fromTrigger)
-	app.countdown = 30;
 	app.forceFullDataRefresh = true;
-	app:RefreshData(fromTrigger);
+	RefreshData(fromTrigger);
 end
 function app:RefreshDataQuietly(fromTrigger)
-	app.countdown = 30;
-	app:RefreshData(fromTrigger);
+	RefreshData(fromTrigger);
 end
 function app:GetWindow(suffix, settings)
 	local window = app.Windows[suffix];
@@ -17654,7 +17700,7 @@ app.events.PARTY_LOOT_METHOD_CHANGED = function()
 end
 app.events.PLAYER_LEVEL_UP = function(newLevel)
 	app.Level = newLevel;
-	app:UpdateWindows();
+	app:RefreshDataQuietly();
 	app.Settings:Refresh();
 end
 app.events.BOSS_KILL = function(id, name, ...)

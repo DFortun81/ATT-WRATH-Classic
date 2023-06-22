@@ -48,6 +48,11 @@ app.SetScript = function(self, ...)
 	end
 end
 
+-- Declare Event Handlers
+app.EventHandlers = {
+	OnRecalculate = {}
+};
+
 (function()
 local button = CreateFrame("BUTTON", nil, _);
 local checkbutton = CreateFrame("CHECKBUTTON", nil, _);
