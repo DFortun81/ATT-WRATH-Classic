@@ -4807,14 +4807,34 @@ end,
 		local quests = t.quests;
 		if not quests then
 			-- Grab the Continent
+			local response;
 			local results = SearchForField("mapID", mapID);
-			if not results or #results < 1 then return nil; end
+			if not results then
+				return nil;
+			else
+				local count = #results;
+				if count < 1 then
+					return nil;
+				elseif count > 1 then
+					-- Uh wasn't expecting this.
+					local bestResult;
+					for i=1,#results,1 do
+						local g = results[i].g;
+						if g and not bestResult or #g > #bestResult.g then
+							bestResult = results[i];
+						end
+					end
+					response = app:BuildSearchResponseForField(bestResult.g, "questID");
+				else
+					response = app:BuildSearchResponseForField(results[1].g, "questID");
+				end
+			end
 			
 			-- Grab all of the quests on that continent.
 			quests = {};
 			local dungeon_header = {text=GROUP_FINDER,icon = app.asset("Category_D&R"),description = "These are dungeon quests that involve the associated maps for the continent. They may or may not count towards the loremaster achievement. Just get it done and don't be lazy or complain to me.\n\n - Crieve"};
 			local zones_header = {text=BUG_CATEGORY2,icon = app.asset("Category_Zones"),description = "These are outdoor quests that involve the associated maps for the continent."};
-			local response = app:BuildSearchResponseForField(results[1].g, "questID");
+			
 			if response then
 				-- Get the quests list from the zone itself.
 				zones_header.g = response;
@@ -10670,7 +10690,7 @@ local function UpdateVisibleRowData(self)
 			end
 		end
 		if anyHidden then
-			self.ScrollBar:Update();
+			self:UpdateScrollBar();
 		end
 		
 		totalRowCount = totalRowCount + 1;
@@ -12658,6 +12678,14 @@ function app:GetWindow(suffix, settings)
 		window.ApplyUpdate = OnUpdate;	-- You can force an update with this.
 		if settings.Silent then
 			if app.Debugging then
+				window.ForceUpdate = function(self, force, fromTrigger)
+					print("ForceUpdate: " .. suffix, force, fromTrigger);
+					local lastUpdate = GetTimePreciseSec();
+					local result = OnUpdate(self, force, fromTrigger);
+					print("ForceUpdate: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+					self:Refresh();
+					return result;
+				end
 				window.Update = function(self, force, fromTrigger)
 					if self:IsVisible() then
 						print("UpdateWindow: " .. suffix, force, fromTrigger);
@@ -12671,6 +12699,11 @@ function app:GetWindow(suffix, settings)
 					end
 				end
 			else
+				window.ForceUpdate = function(self, force, fromTrigger)
+					local result = OnUpdate(self, force, fromTrigger);
+					self:Refresh();
+					return result;
+				end
 				window.Update = function(self, force, fromTrigger)
 					if self:IsVisible() then
 						local result = OnUpdate(self, force, fromTrigger);
@@ -12682,6 +12715,14 @@ function app:GetWindow(suffix, settings)
 				end
 			end
 		elseif app.Debugging then
+			window.ForceUpdate = function(self, ...)
+				print("ForceUpdate: " .. suffix, ...);
+				local lastUpdate = GetTimePreciseSec();
+				local result = OnUpdate(self, ...);
+				print("ForceUpdate: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+				self:Refresh();
+				return result;
+			end
 			window.Update = function(self, ...)
 				print("UpdateWindow: " .. suffix, ...);
 				local lastUpdate = GetTimePreciseSec();
@@ -12691,6 +12732,11 @@ function app:GetWindow(suffix, settings)
 				return result;
 			end
 		else
+			window.ForceUpdate = function(self, force, fromTrigger)
+				local result = OnUpdate(self, force, fromTrigger);
+				self:Refresh();
+				return result;
+			end
 			window.Update = function(self, force, fromTrigger)
 				local result = OnUpdate(self, force, fromTrigger);
 				self:Refresh();
@@ -12839,6 +12885,10 @@ function app:GetWindow(suffix, settings)
 					scrollbar:Update();
 				end
 			end
+			
+			window.UpdateScrollBar = function()
+				scrollbar:Update();
+			end
 		
 			-- The Corner Grip. (this isn't actually used, but it helps indicate to players that they can do something)
 			local grip = scrollbar:CreateTexture(nil, "ARTWORK");
@@ -12865,10 +12915,14 @@ function app:GetWindow(suffix, settings)
 			scrollbar:SetWidth(16);
 			scrollbar:EnableMouseWheel(true);
 			window:SetScript("OnMouseWheel", function(self, delta)
-				scrollbar:SetValue(scrollbar.CurrentIndex - delta);
+				scrollbar:SetValue(window.CurrentIndex - delta);
 			end);
 			window.SetMinMaxValues = function(self, displayedValue, totalValue)
 				scrollbar:SetMinMaxValues(1, math.max(1, totalValue - displayedValue));
+			end
+			
+			window.UpdateScrollBar = function()
+				-- Do nothing
 			end
 		
 			-- The Corner Grip. (this isn't actually used, but it helps indicate to players that they can do something)
@@ -12923,7 +12977,7 @@ function app:BuildFlatSearchResponseForField(groups, field, t)
 	if groups then
 		for i,group in ipairs(groups) do
 			if group[field] then
-				tinsert(t, CloneReference(group));
+				tinsert(t, CloneData(group));
 			elseif group.g then
 				app:BuildFlatSearchResponseForField(group.g, field, t);
 			end
@@ -16940,6 +16994,14 @@ app.events.VARIABLES_LOADED = function()
 	app:RegisterEvent("CRITERIA_UPDATE");
 	StartCoroutine("RefreshSaves", RefreshSaves);
 	app:RefreshLocation();
+	StartCoroutine("Initial Prime Lookup", function()
+		local countdown = 5;
+		while countdown > 0 do
+			coroutine.yield();
+			countdown = countdown - 1;
+		end
+		app:GetWindow("Prime"):ForceUpdate(true);
+	end);
 	
 	if GroupBulletinBoard_Addon then
 		local oldGroupBulletinBoard_Addon_ClickDungeon = GroupBulletinBoard_Addon.ClickDungeon;
