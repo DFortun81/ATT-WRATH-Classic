@@ -247,11 +247,6 @@ settings.Initialize = function(self)
 	
 	-- Account Synchronization
 	self.TabsByName["Features"]:InitializeSyncWindow();
-	if self:GetTooltipSetting("Auto:Sync") then
-		C_Timer.After(1, function()
-			app:Synchronize(true);
-		end);
-	end
 end
 settings.CheckSeasonalDate = function(self, eventID, startMonth, startDay, endMonth, endDay)
 	local today = date("*t");
@@ -2730,12 +2725,13 @@ function tab:InitializeSyncWindow()
 	syncWindow:SetPoint("RIGHT", SyncLabel, "LEFT", 300, 0);
 	syncWindow:SetPoint("TOP", AutomaticallySyncAccountDataCheckBox, "BOTTOM", 0, 4);
 	syncWindow:SetPoint("BOTTOM", settings, "BOTTOM", 0, 4);
-	local ogMethod = syncWindow.Show;
-	syncWindow.Show = function(self)
-		ogMethod(self);
-		self:Update();
-	end
 	tinsert(tab.objects, syncWindow);
+	
+	if settings:GetTooltipSetting("Auto:Sync") then
+		C_Timer.After(1, function()
+			app:Synchronize(true);
+		end);
+	end
 end
 end)();
 

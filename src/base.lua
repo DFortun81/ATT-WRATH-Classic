@@ -22,7 +22,7 @@ end
 -- Create an Event Processor.
 local events = {};
 local _ = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
-if app.Debugging then
+if app.Debugging and false then
 _:SetScript("OnEvent", function(self, e, ...) print(e, ...); (events[e] or print)(...); end);
 else
 _:SetScript("OnEvent", function(self, e, ...) (events[e] or print)(...); end);
@@ -191,7 +191,11 @@ function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
 		
 		-- Resizable
 		f:SetResizable(true)
-		f:SetMinResize(150, 100)
+		if f.SetResizeBounds then
+			f:SetResizeBounds(150, 100);
+		else
+			f:SetMinResize(150, 100);
+		end
 		
 		local rb = CreateFrame("Button", "ATTEditBoxResizeButton", ATTEditBox)
 		rb:SetPoint("BOTTOMRIGHT", -6, 7)

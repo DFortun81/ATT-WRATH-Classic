@@ -730,9 +730,9 @@ local achievementTooltipText = {
 	[18678] = "DPB",	-- Defense Protocol Beta: Trial of the Champion (H)
 };
 local function BuildGroups(parent)
-	if parent.g then
+	local g = parent.g;
+	if g then
 		-- Iterate through the groups
-		local g = parent.g;
 		for i=1,#g,1 do
 			-- Set the group's parent
 			local group = g[i];
@@ -2593,10 +2593,6 @@ local function SendResponseMessage(msg, player)
 		C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", player);
 	end
 end
-local function SendGUIDWhisper(msg, guid)
-	local name = select(6, GetPlayerInfoByGUID(guid));
-	if name then SendChatMessage(msg, "WHISPER", nil, name); end
-end
 
 -- Synchronization Functions
 (function()
@@ -3937,9 +3933,7 @@ AddTomTomWaypoint = function(group)
 	end
 end
 end)();
-local function OpenMainList()
-	app:OpenWindow("Prime");
-end
+
 local function RefreshSaves()
 	local waitTimer = 30;
 	while waitTimer > 0 do
@@ -4147,11 +4141,8 @@ local function RefreshCollections()
 		app.print("Done refreshing collection.");
 	end);
 end
-app.ToggleMainList = function()
-	app:ToggleWindow("Prime");
-end
+
 app.RefreshCollections = RefreshCollections;
-app.OpenMainList = OpenMainList;
 
 -- Achievement Lib
 (function()
@@ -5115,6 +5106,62 @@ app.ClassDB = setmetatable({}, { __index = function(t, className)
 		end
 	end
 end });
+
+app.GetGroupType = function()
+	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then
+		return "INSTANCE_CHAT";
+	elseif IsInRaid() then
+		return "RAID";
+	elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+		return "PARTY";
+	end
+	return "RAID";
+end
+app.IsMasterLooter = function()
+	return app.IsUnitMasterLooter(UnitName("player"));
+end
+app.IsUnitMasterLooter = function(name)
+	if IsInGroup() then
+		-- Ensure that the player is the master looter.
+		local lootMethod, partyIndex, raidIndex = GetLootMethod();
+		if lootMethod == "master" then
+			if raidIndex then
+				return name == GetRaidRosterInfo(raidIndex);
+			elseif partyIndex == 0 then
+				-- Player is the Master Looter
+				return name == UnitName("player");
+			else
+				return name == UnitName("party" .. partyIndex);
+			end
+		end
+	end
+end
+
+app.CreateCharacterClass, app.BaseCharacterClass = app.CreateClass("CharacterClass", "classID", {
+	["text"] = function(t)
+		local text = "|c" .. t.classColors.colorStr .. t.name .. "|r";
+		rawset(t, "text", text);
+		return text;
+	end,
+	["icon"] = function(t)
+		return classIcons[t.classID];
+	end,
+	["name"] = function(t)
+		return C_CreatureInfo.GetClassInfo(t.classID).className;
+	end,
+	["c"] = function(t)
+		local c = { t.classID };
+		rawset(t, "c", c);
+		return c;
+	end,
+	["nmc"] = function(t)
+		return t.classID ~= app.ClassIndex;
+	end,
+	["classColors"] = function(t)
+		return RAID_CLASS_COLORS[C_CreatureInfo.GetClassInfo(t.classID).classFile];
+	end,
+});
+
 local SoftReserveUnitOnClick = function(self, button)
 	local guid = self.ref.guid or self.ref.unit;
 	if guid then
@@ -5204,334 +5251,6 @@ local SoftReserveUnitOnClick = function(self, button)
 	end
 	return true;
 end
-app.GetGroupType = function()
-	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then
-		return "INSTANCE_CHAT";
-	elseif IsInRaid() then
-		return "RAID";
-	elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
-		return "PARTY";
-	end
-	return "RAID";
-end
-app.IsMasterLooter = function()
-	return app.IsUnitMasterLooter(UnitName("player"));
-end
-app.IsUnitMasterLooter = function(name)
-	if IsInGroup() then
-		-- Ensure that the player is the master looter.
-		local lootMethod, partyIndex, raidIndex = GetLootMethod();
-		if lootMethod == "master" then
-			if raidIndex then
-				return name == GetRaidRosterInfo(raidIndex);
-			elseif partyIndex == 0 then
-				-- Player is the Master Looter
-				return name == UnitName("player");
-			else
-				return name == UnitName("party" .. partyIndex);
-			end
-		end
-	end
-end
-app.ParseSoftReserve = function(app, guid, cmd, isSilentMode, isCurrentPlayer)
-	-- Attempt to parse the command.
-	if cmd and cmd ~= "" then
-		cmd = cmd:match("^%s*(.+)$");
-		if cmd == "clear" or cmd == '0' then
-			app:UpdateSoftReserve(guid, nil, time(), isSilentMode, isCurrentPlayer);
-			return;
-		end
-		
-		-- Parse out the itemID if possible.
-		local itemID = tonumber(cmd) or _GetItemInfoInstant(cmd);
-		if itemID then cmd = "itemid:" .. itemID; end
-		
-		-- Search for the Link in the database
-		local group = SearchForLink(cmd);
-		if group and #group > 0 then
-			for i,g in ipairs(group) do
-				if g.itemID then
-					app:UpdateSoftReserve(guid, g.itemID, time(), isSilentMode, isCurrentPlayer);
-					return true;
-				end
-			end
-		end
-	end
-	
-	-- Send back an error message.
-	SendGUIDWhisper("Unrecognized Command. Please use '!sr [itemLink/itemID]'. You can send an item link or an itemID from WoWHead. EX: '!sr 12345' or '!sr [Azuresong Mageblade]'", guid);
-end
-app.PlayerGUIDFromInfo = setmetatable({}, { __index = function(t, info)
-	-- Let WoW parse it.
-	local guid = UnitGUID(info);
-	if guid then
-		rawset(t, info, guid);
-		return guid;
-	end
-	if string.match(info, "Player-") then
-		-- Already a GUID!
-		rawset(t, info, info);
-		return info;
-	end
-	
-	-- Only check the guild once every 10 seconds.
-	if (rawget(t, "cooldown") or 0) <= time() then
-		local count = GetNumGuildMembers();
-		if count > 0 then
-			for guildIndex = 1, count, 1 do
-				local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(guildIndex);
-				if name and guid then
-					rawset(t, strsplit('-', name), guid);
-				end
-			end
-		end
-		rawset(t, "cooldown", time() + 10);
-		return rawget(t, info);
-	end
-end });
-app.PushSoftReserve = function(ignoreZero)
-	local guid, itemID, timeStamp = UnitGUID("player");
-	local reserves = GetDataMember("SoftReserves");
-	if reserves then
-		local oldreserve = reserves[guid];
-		if oldreserve then
-			itemID = oldreserve[1];
-			timeStamp = oldreserve[2];
-		end
-	end
-	if itemID or not ignoreZero then
-		itemID = "!\tsr\t" .. guid .. "\t" .. (itemID or 0);
-		if timeStamp then itemID = itemID .. "\t" .. timeStamp; end
-		SendGuildMessage(itemID);
-		if IsInGroup() then SendGroupMessage(itemID); end
-	end
-end
-app.PushSoftReserves = function(method, target)
-	local reserves = GetDataMember("SoftReserves");
-	if reserves then
-		local count, length, msg, s = 7, 0, "!\tsrml";
-		if not method then method = app.GetGroupType(); end
-		for gu,reserve in pairs(reserves) do
-			if gu and IsGUIDInGroup(gu) then
-				s = "\t" .. gu .. "\t" .. reserve[1];
-				length = string.len(s);
-				if count + length >= 255 then
-					C_ChatInfo.SendAddonMessage("ATTC", msg, method, target);
-					count = 7;
-					msg = "!\tsrml";
-				else
-					count = count + length;
-					msg = msg .. s;
-				end
-			end
-		end
-		if count > 5 then
-			C_ChatInfo.SendAddonMessage("ATTC", msg, method, target);
-		end
-	end
-end
-app.QuerySoftReserve = function(app, guid, cmd, target)
-	-- Attempt to parse the command.
-	if cmd and cmd ~= "" then
-		local all = not IsInGroup() or not IsGUIDInGroup(guid);
-		cmd = cmd:match("^%s*(.+)$");
-		if strsub(cmd, 1, 3) == "all" then
-			cmd = strsub(cmd, 4):match("^%s*(.+)$");
-			all = true;
-		elseif cmd == "srml" then
-			if app.IsMasterLooter() then
-				-- Push the Soft Reserve List to the target.
-				app.PushSoftReserves("WHISPER", target);
-			end
-			return true;
-		end
-		
-		-- Parse out the itemID if possible.
-		local itemID = tonumber(cmd) or _GetItemInfoInstant(cmd);
-		if itemID then cmd = "itemid:" .. itemID; end
-		
-		-- Search for the Link in the database
-		local group = SearchForLink(cmd);
-		if group and #group > 0 then
-			for i,g in ipairs(group) do
-				if g.itemID then
-					local link = g.link;
-					if not link or link == RETRIEVING_DATA or strsub(link, 1, 4) == "item" then
-						link = "item:" .. g.itemID;
-					end
-					local sr = {};
-					local message = link .. " ";
-					local reservesForItem = GetTempDataMember("SoftReservesByItemID")[g.itemID];
-					if reservesForItem then
-						for i,guid in ipairs(reservesForItem) do
-							if guid and (all or IsGUIDInGroup(guid)) then
-								local unit = app.CreateSoftReserveUnit(guid);
-								table.insert(sr, unit.unitText and unit.name or guid);
-							end
-						end
-					end
-					if #sr == 0 then
-						if all then
-							message = message .. "Not Soft Reserved by anyone.";
-						else
-							message = message .. "Not Soft Reserved by anyone in our group.";
-						end
-					else
-						for i,name in ipairs(sr) do
-							if i > 1 then message = message .. ", "; end
-							message = message .. name;
-						end
-					end
-					SendGUIDWhisper(message, guid);
-					return true;
-				end
-			end
-		end
-	else
-		local reserve = rawget(GetDataMember("SoftReserves"), guid);
-		if reserve then
-			-- Parse out the itemID if possible.
-			local itemID = type(reserve) == 'number' and reserve or reserve[1];
-			if itemID then itemID = "itemid:" .. itemID; end
-			
-			-- Search for the Link in the database
-			local group = SearchForLink(itemID);
-			if group and #group > 0 then
-				for i,g in ipairs(group) do
-					if g.itemID then
-						local link = g.link;
-						if not link or link == RETRIEVING_DATA or strsub(link, 1, 4) == "item" then
-							link = "item:" .. g.itemID;
-						end
-						SendGUIDWhisper("You have " .. link .. " Soft Reserved.", guid);
-						return true;
-					end
-				end
-			end
-		else
-			SendGUIDWhisper("You have nothing Soft Reserved.", guid);
-			return true;
-		end
-	end
-	
-	-- Send back an error message.
-	SendGUIDWhisper("Unrecognized Command. Please use '!sr [itemLink/itemID]'. You can send an item link or an itemID from WoWHead. EX: '!sr 12345' or '!sr [Azuresong Mageblade]'", guid);
-end
-app.RefreshSoftReserveWindow = function(app, force)
-	if app.SoftReservesDirty or force then
-		app.SoftReservesDirty = nil;
-		app:GetWindow("SoftReserves"):Update(true);
-	end
-end
-app.UpdateSoftReserveInternal = function(app, guid, itemID, timeStamp, isCurrentPlayer)
-	local reserves = GetDataMember("SoftReserves");
-	local reservesByItemID = GetTempDataMember("SoftReservesByItemID");
-	
-	-- Check the Old Reserve against the new one.
-	local oldreserve = reserves[guid];
-	if oldreserve then
-		-- If there was an old reservation...
-		local oldItemID = oldreserve[1];
-		if oldItemID then
-			if oldItemID == itemID then
-				return true;
-			end
-			
-			-- Uncache the reserve
-			local reservesForItem = reservesByItemID[oldItemID];
-			if reservesForItem then
-				for i,value in ipairs(reservesForItem) do
-					if value == guid then
-						table.remove(reservesForItem, i);
-						break;
-					end
-				end
-			end
-		end
-	end
-	
-	-- Update the Reservation
-	wipe(searchCache);
-	app.SoftReservesDirty = true;
-	if itemID and itemID > 0 then
-		if not timeStamp then timeStamp = time(); end
-		reserves[guid] = { itemID, timeStamp };
-		local reservesForItem = reservesByItemID[itemID];
-		if not reservesForItem then
-			reservesForItem = {};
-			reservesByItemID[itemID] = reservesForItem;
-		end
-		table.insert(reservesForItem, guid);
-	else
-		itemID = 0;
-		reserves[guid] = nil;
-	end
-	if isCurrentPlayer then
-		itemID = "!\tsr\t" .. guid .. "\t" .. itemID;
-		if timeStamp then itemID = itemID .. "\t" .. timeStamp; end
-		SendGuildMessage(itemID);
-		if IsInGroup() then SendGroupMessage(itemID); end
-	end
-end
-app.UpdateSoftReserve = function(app, guid, itemID, timeStamp, silentMode, isCurrentPlayer)
-	if IsInGroup() and GetDataMember("SoftReserves")[guid] and not app.IsMasterLooter() and app.Settings:GetTooltipSetting("SoftReservesLocked") then
-		if not silentMode then
-			SendGUIDWhisper("The Soft Reserve is currently locked by your Master Looter. Please make sure to update your Soft Reserve before raid next time!", guid);
-		end
-	else
-		-- If they didn't previously have a reserve, then allow it. If so, then reject it.
-		app:UpdateSoftReserveInternal(guid, itemID, timeStamp, isCurrentPlayer);
-		app:RefreshSoftReserveWindow();
-		if not silentMode then
-			if itemID then
-				local searchResults = SearchForLink("itemid:" .. itemID);
-				if searchResults and #searchResults > 0 then
-					if guid ~= UnitGUID("player") then
-						SendGUIDWhisper("SR: Updated to " .. (searchResults[1].link or _GetItemInfo(itemID) or ("itemid:" .. itemID)), guid);
-					end
-					if app.IsMasterLooter() then
-						C_ChatInfo.SendAddonMessage("ATTC", "!\tsrml\t" .. guid .. "\t" .. itemID, app.GetGroupType());
-						if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-							SendGroupChatMessage("Updated " .. (app:GetWindow("SoftReserves").GUIDToName(guid) or UnitName(guid) or guid) .. " to " .. (searchResults[1].link or _GetItemInfo(itemID) or ("itemid:" .. itemID)));
-						end
-					end
-				end
-			else
-				if guid ~= UnitGUID("player") then
-					SendGUIDWhisper("SR: Cleared.", guid);
-				end
-				if app.IsMasterLooter() then
-					C_ChatInfo.SendAddonMessage("ATTC", "!\tsrml\t" .. guid .. "\t0", app.GetGroupType());
-				end
-			end
-		end
-	end
-end
-
-app.CreateCharacterClass, app.BaseCharacterClass = app.CreateClass("CharacterClass", "classID", {
-	["text"] = function(t)
-		local text = "|c" .. t.classColors.colorStr .. t.name .. "|r";
-		rawset(t, "text", text);
-		return text;
-	end,
-	["icon"] = function(t)
-		return classIcons[t.classID];
-	end,
-	["name"] = function(t)
-		return C_CreatureInfo.GetClassInfo(t.classID).className;
-	end,
-	["c"] = function(t)
-		local c = { t.classID };
-		rawset(t, "c", c);
-		return c;
-	end,
-	["nmc"] = function(t)
-		return t.classID ~= app.ClassIndex;
-	end,
-	["classColors"] = function(t)
-		return RAID_CLASS_COLORS[C_CreatureInfo.GetClassInfo(t.classID).classFile];
-	end,
-});
 app.CreateSoftReserveUnit = app.CreateClass("SoftReserveUnit", "unit", {
 	["text"] = function(t)
 		local name = t.unitText;
@@ -5710,7 +5429,8 @@ app.CreateSoftReserveUnit = app.CreateClass("SoftReserveUnit", "unit", {
 		end
 	end,
 });
-app.CreateQuestUnit = app.CreateClass("SoftReserveUnit", "unit", {
+
+app.CreateQuestUnit = app.CreateClass("QuestUnit", "unit", {
 	["unitText"] = function(t)
 		local name, className, classFile, classID = UnitName(t.unit);
 		if name then
@@ -5835,7 +5555,7 @@ app.CreateUnit = app.CreateClass("Unit", "unit", {
 	["title"] = function(t)
 		if IsInGroup() then
 			if rawget(t, "isML") then return MASTER_LOOTER; end
-			if UnitIsGroupLeader(t.name) then return RAID_LEADER; end
+			if UnitIsGroupLeader(t.unit, "raid") then return RAID_LEADER; end
 		end
 	end,
 	["description"] = function(t)
@@ -10463,7 +10183,6 @@ end
 local _SetPortraitTexture = _G["SetPortraitTexture"];
 local _SetPortraitTextureFromDisplayID = _G["SetPortraitTextureFromCreatureDisplayID"];
 local function SetPortraitIcon(self, data, x)
-	self.lastData = data;
 	local displayID = GetDisplayID(data);
 	if displayID then
 		_SetPortraitTextureFromDisplayID(self, displayID);
@@ -11598,32 +11317,11 @@ end
 
 -- Collection Window Creation
 app.Windows = {};
-local function SetWindowVisibility(self, show)
-	if show then
-		self:Show();
-		self:Update();
-	else
-		self:Hide();
-		for i, self in pairs(app.Windows) do
-			if self:IsVisible() then
-				return;
-			end
-		end
+local function SetWindowData(self, data)
+	if self.data ~= data then
+		self.data = data;
+		self:DelayedRebuild();
 	end
-	
-	-- Return that at least one window is visible...
-	return true;
-end
-local function ToggleWindow(self)
-	return SetWindowVisibility(self, not self:IsVisible());
-end
-function app:OpenWindow(suffix)
-	local window = app.Windows[suffix];
-	if window then SetWindowVisibility(window, true); end
-end
-function app:ToggleWindow(suffix)
-	local window = app.Windows[suffix];
-	if window then ToggleWindow(window); end
 end
 local function ProcessGroup(data, object)
 	if app.VisibilityFilter(object) then
@@ -11637,37 +11335,54 @@ local function ProcessGroup(data, object)
 end
 local function UpdateWindow(self, force, fromTrigger)
 	-- If this window doesn't have data, do nothing.
-	if not self.data then return; end
+	local data = self.data;
+	if not data then
+		self:DelayedRebuild();
+		return;
+	end
 	if not self.rowData then
 		self.rowData = {};
 	else
 		wipe(self.rowData);
 	end
 	self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
-	if self.data and (force or self:IsVisible()) then
-		self.data.expanded = true;
+	if force or self:IsVisible() then
+		data.expanded = true;
 		if self.forceFullDataRefresh then
 			local rows = self.Container.rows;
 			for i=1,#rows,1 do
 				SetRowData(self, rows[i], nil); 
 			end
-			self.data.progress = 0;
-			self.data.total = 0;
-			UpdateGroups(self.data, self.data.g);
+			data.progress = 0;
+			data.total = 0;
+			if not (data.OnUpdate and data:OnUpdate()) then
+				UpdateGroups(data, data.g);
+				
+				-- Check to see if the data changed.
+				if self.data ~= data then
+					print(self.Suffix, app.Colorize("DATA CHANGED!", RGBToHex(255, 120, 120)));
+					return;
+				end
+			else
+				print(self.Suffix, "Returned true!!! Skipping the rest of this UpdateWindows call");
+				return;
+			end
 			self.forceFullDataRefresh = nil;
 		end
-		ProcessGroup(self.rowData, self.data);
+		ProcessGroup(self.rowData, data);
 		
 		-- Does this user have everything?
-		if self.data.total then
-			if self.data.total <= self.data.progress then
+		if data.total then
+			if data.total <= data.progress then
 				if #self.rowData < 1 then
-					self.data.back = 1;
-					tinsert(self.rowData, self.data);
+					data.back = 1;
+					tinsert(self.rowData, data);
 				end
 				if self.missingData then
-					if fromTrigger then app:PlayCompleteSound(); end
 					self.missingData = nil;
+					if fromTrigger and not t.ignoreCompleteSound then
+						app:PlayCompleteSound();
+					end
 				end
 				if not self.ignoreNoEntries then
 					tinsert(self.rowData, {
@@ -12697,6 +12412,16 @@ end
 function app:RefreshDataQuietly(fromTrigger)
 	RefreshData(fromTrigger);
 end
+local function SetWindowVisible(self, show)
+	if show then
+		self:Show();
+	else
+		self:Hide();
+	end
+end
+local function ToggleWindow(self)
+	self:SetVisible(not self:IsVisible());
+end
 function app:GetWindow(suffix, settings)
 	local window = app.Windows[suffix];
 	if not window and settings then
@@ -12704,9 +12429,114 @@ function app:GetWindow(suffix, settings)
 		window = CreateFrame("FRAME", app:GetName() .. "-Window-" .. suffix, settings.parent or UIParent, BackdropTemplateMixin and "BackdropTemplate");
 		app.Windows[suffix] = window;
 		window.Suffix = suffix;
+		window:SetScript("OnMouseDown", StartMovingOrSizing);
+		window:SetScript("OnMouseUp", StopMovingOrSizing);
+		window:SetScript("OnHide", StopMovingOrSizing);
+		window:SetBackdrop(backdrop);
+		window:SetClampedToScreen(true);
+		window:SetToplevel(true);
+		window:EnableMouse(true);
+		window:SetMovable(true);
+		window:SetResizable(true);
+		window:SetPoint("CENTER");
+		if window.SetResizeBounds then
+			window:SetResizeBounds(96, 32);
+		else
+			window:SetMinResize(96, 32);
+		end
+		window:SetSize(300, 300);
+		window:SetUserPlaced(true);
+		window:Hide();
+		
+		-- Visible, which overrides the default functions and gives the addon the ability to recieve information about it.
+		local visible, oldShow, oldHide = false, window.Show, window.Hide;
+		window.Show = function(self)
+			oldShow(self);
+			if not visible then
+				visible = true;
+				if not self.data then
+					self:Rebuild();
+				else
+					self:Update();
+				end
+				if settings.OnShow then
+					settings.OnShow(self);
+				end
+			end
+		end
+		window.Hide = function(self)
+			oldHide(self);
+			if visible then
+				visible = false;
+				if settings.OnHide then
+					settings.OnHide(self);
+				end
+			end
+		end
+		window.SetVisible = SetWindowVisible;
 		window.Toggle = ToggleWindow;
+		
+		-- Phase 1: Rebuild, which prepares the data for row data generation (first pass filters checking)
+		-- NOTE: You can return true from the rebuild function to call the default on your new group data.
+		local defaultOnRebuild = BuildGroups;
+		window.DefaultRebuild = function(self)
+			defaultOnRebuild(self.data);
+		end
+		local onRebuild = settings.OnRebuild;
+		if onRebuild then
+			if app.Debugging then
+				window.Rebuild = function(self)
+					print("Rebuild: " .. suffix);
+					local lastUpdate = GetTimePreciseSec();
+					local response = onRebuild(self);
+					local data = self.data;
+					if data then
+						if response then
+							print(suffix, "ON REBUILD DEFAULT");
+							defaultOnRebuild(data);
+						end
+						print("Rebuild (DATA): " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+						self:Update(true);
+					else
+						print("Rebuild (NO DATA): " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+					end
+				end
+			else
+				window.Rebuild = function(self)
+					local response = onRebuild(self);
+					local data = self.data;
+					if data then
+						if response then defaultOnRebuild(data); end
+						self:Update(true);
+					end
+				end
+			end
+		else
+			if app.Debugging then
+				window.Rebuild = function(self)
+					local data = self.data;
+					if data then
+						print("Rebuild: " .. suffix);
+						local lastUpdate = GetTimePreciseSec();
+						defaultOnRebuild(data);
+						print("Rebuild: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+						self:Update(true);
+					end
+				end
+			else
+				window.Rebuild = function(self)
+					local data = self.data;
+					if data then
+						defaultOnRebuild(data);
+						self:Update(true);
+					end
+				end
+			end
+		end
+		
+		-- Phase 2: Update, which takes the prepared data and revalidates it.
 		local OnUpdate = settings.OnUpdate or UpdateWindow;
-		window.ApplyUpdate = OnUpdate;	-- You can force an update with this.
+		window.DefaultUpdate = UpdateWindow;
 		if settings.Silent then
 			if app.Debugging then
 				window.ForceUpdate = function(self, force, fromTrigger)
@@ -12774,6 +12604,8 @@ function app:GetWindow(suffix, settings)
 				return result;
 			end
 		end
+		
+		-- Phase 3: Refresh, which simply refreshes the rows as they are with the row data.
 		local defaultOnRefresh = UpdateVisibleRowData;
 		local onRefresh = settings.OnRefresh;
 		if onRefresh then
@@ -12801,7 +12633,9 @@ function app:GetWindow(suffix, settings)
 				window.Refresh = defaultOnRefresh;
 			end
 		end
-		window.SetVisible = SetWindowVisibility;
+		
+		-- Functions
+		window.SetData = SetWindowData;
 		
 		if ATTClassicSettings then
 			if suffix == "Prime" then
@@ -12811,37 +12645,7 @@ function app:GetWindow(suffix, settings)
 			end
 		end
 		
-		window:SetScript("OnMouseDown", StartMovingOrSizing);
-		window:SetScript("OnMouseUp", StopMovingOrSizing);
-		window:SetScript("OnHide", StopMovingOrSizing);
-		window:SetBackdrop(backdrop);
-		UpdateWindowColor(window, suffix);
-		window:SetClampedToScreen(true);
-		window:SetToplevel(true);
-		window:EnableMouse(true);
-		window:SetMovable(true);
-		window:SetResizable(true);
-		window:SetPoint("CENTER");
-		if window.SetResizeBounds then
-			window:SetResizeBounds(96, 32);
-		else
-			window:SetMinResize(96, 32);
-		end
-		window:SetSize(300, 300);
-		window:SetUserPlaced(true);
-		window.data = {
-			text = suffix,
-			icon = "Interface\\Icons\\Ability_Spy.blp", 
-			visible = true, 
-			expanded = true,
-			g = {
-				{
-					text = "No data linked to listing.", 
-					visible = true
-				}
-			}
-		};
-		window:Hide();
+		
 		local delays = {};
 		window.DelayedCall = function(self, method, delay, force)
 			delays[method] = delay or 60;
@@ -12855,6 +12659,9 @@ function app:GetWindow(suffix, settings)
 				end
 				window[method](window, force);
 			end);
+		end
+		window.DelayedRebuild = function(self)
+			self:DelayedCall("Rebuild", 1);
 		end
 		window.DelayedRefresh = function(self)
 			self:DelayedCall("Refresh", 5);
@@ -12972,12 +12779,12 @@ function app:GetWindow(suffix, settings)
 		container:SetPoint("RIGHT", scrollbar, "LEFT", 0, 0);
 		container:SetPoint("BOTTOM", window, "BOTTOM", 0, 6);
 		window.Container = container;
+		UpdateWindowColor(window, suffix);
 		container.rows = {};
 		container:Show();
 		if settings.OnInit then
 			settings.OnInit(window);
 		end
-		window:Update();
 	end
 	return window;
 end
@@ -13075,6 +12882,14 @@ end
 app:GetWindow("Prime", {
 	parent = UIParent,
 	Silent = true,
+	OnInit = function(self)
+		app.OpenMainList = function()
+			self:Show();
+		end
+		app.ToggleMainList = function()
+			self:Toggle();
+		end
+	end,
 	OnUpdate = function(self, ...)
 		UpdateWindow(self, ...);
 		
@@ -14757,7 +14572,7 @@ app:GetWindow("RaidAssistant", {
 						['title'] = LOOT_METHOD,
 						['visible'] = true,
 						['OnClick'] = function(row, button)
-							if UnitIsGroupLeader("player") then
+							if UnitIsGroupLeader("player", "raid") then
 								self.data = lootmethod;
 								self:Update(true);
 							end
@@ -14777,7 +14592,7 @@ app:GetWindow("RaidAssistant", {
 						['visible'] = true,
 						['isML'] = true,
 						['OnClick'] = function(row, button)
-							if UnitIsGroupLeader("player") then
+							if UnitIsGroupLeader("player", "raid") then
 								self.data = lootmasters;
 								self:Update(true);
 							end
@@ -14809,7 +14624,7 @@ app:GetWindow("RaidAssistant", {
 						['title'] = LOOT_TRESHOLD,
 						['visible'] = true,
 						['OnClick'] = function(row, button)
-							if UnitIsGroupLeader("player") then
+							if UnitIsGroupLeader("player", "raid") then
 								self.data = lootthreshold;
 								self:Update(true);
 							end
@@ -14838,7 +14653,7 @@ app:GetWindow("RaidAssistant", {
 							return true;
 						end,
 						['OnUpdate'] = function(data)
-							data.visible = not IsInGroup() or UnitIsGroupLeader("player");
+							data.visible = not IsInGroup() or UnitIsGroupLeader("player", "raid");
 							if data.visible and data.saved then
 								if IsInInstance() then
 									data.shouldReset = true;
@@ -15249,856 +15064,6 @@ app:GetWindow("Random", {
 		app.VisibilityFilter = visibilityFilter;
 	end
 });
-app:GetWindow("RWP", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTRWP1 = "/attrwp";
-		SlashCmdList["ATTRWP"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			self.dirty = true;
-			local actions = {
-				['text'] = "Removed With Patch - Get 'Em Now!",
-				['icon'] = app.asset("Ability_Rogue_RolltheBones.blp"), 
-				["description"] = "This window shows you all of the stuff that gets removed from the game soonish. Go get 'em!",
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				["indent"] = 0,
-				['OnUpdate'] = function(data)
-					if not self.dirty then return nil; end
-					self.dirty = nil;
-					
-					local g = {};
-					if not data.results then
-						data.results = app:BuildSearchResponseForField(app:GetDataCache().g, "rwp");
-					end
-					if #data.results > 0 then
-						for i,result in ipairs(data.results) do
-							table.insert(g, result);
-						end
-					end
-					data.g = g;
-					if #g > 0 then
-						for i,entry in ipairs(g) do
-							entry.indent = nil;
-						end
-						data.progress = 0;
-						data.total = 0;
-						data.indent = 0;
-						data.visible = true;
-						BuildGroups(data);
-						app.UpdateGroups(data, data.g);
-						if not data.expanded then
-							data.expanded = true;
-							ExpandGroupsRecursively(data, true);
-						end
-					end
-					BuildGroups(self.data);
-					UpdateWindow(self, true);
-				end,
-				['options'] = { },
-				['g'] = { },
-			};
-			self.data = actions;
-		end
-		
-		-- Update the window and all of its row data
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		UpdateWindow(self);
-	end
-});
-app:GetWindow("SoftReserves", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTCSR1 = "/attsr";
-		SLASH_ATTCSR2 = "/attsoft";
-		SLASH_ATTCSR3 = "/attsoftreserve";
-		SLASH_ATTCSR4 = "/attsoftreserves";
-		SlashCmdList["ATTCSR"] = function(cmd)
-			if cmd and cmd ~= "" then
-				app:ParseSoftReserve(UnitGUID("player"), cmd, true, true);
-			else
-				-- Default command
-				self:Toggle();
-			end
-		end
-	end,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			self.dirty = true;
-			
-			-- Soft Reserves
-			local softReserves = {
-				['text'] = "Soft Reserves",
-				['icon'] = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
-				["description"] = "The soft reservation list submitted by your raid group. This is managed through the Master Looter, should they have " .. appName .. " installed. If not, this feature will not function.\n\nML: Members of your raid without " .. appName .. " installed can whisper you '!sr <itemlink>' or '!sr <itemID>' to Soft Reserve an item.",
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['OnUpdate'] = function(data)
-					if not self.dirty then return nil; end
-					self.dirty = nil;
-					
-					local g = {};
-					local groupMembers = {};
-					groupMembers[app.GUID] = true;
-					local count = GetNumGroupMembers();
-					if count > 0 then
-						for raidIndex = 1, 40, 1 do
-							local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(raidIndex);
-							if name then
-								local unit = app.CreateSoftReserveUnit(name);
-								local guid = unit.guid;
-								if guid and not groupMembers[guid]then
-									groupMembers[guid] = true;
-									table.insert(g, unit);
-								end
-							end
-						end
-					end
-					
-					-- Sort Member List
-					insertionSort(g, data.Sort);
-					
-					-- Insert Control Methods
-					table.insert(g, 1, app.CreateSoftReserveUnit(app.GUID));
-					table.insert(g, 1, data.exportSoftReserves);
-					table.insert(g, 1, data.queryMasterLooter);
-					table.insert(g, 1, data.queryGuildMembers);
-					table.insert(g, 1, data.queryGroupMembers);
-					table.insert(g, 1, data.pushSoftReserve);
-					table.insert(g, 1, data.pushGroupMembers);
-					table.insert(g, 1, data.importPersistence);
-					table.insert(g, 1, data.usePersistence);
-					table.insert(g, 1, data.lockSoftReserves);
-					table.insert(g, 1, data.lootMethodReminder);
-					data.g = g;
-					
-					-- Insert Guild Members
-					local guildRanks = data.guildMembersHeader.g;
-					if #guildRanks < 1 then
-						local numRanks = GuildControlGetNumRanks();
-						if numRanks > 0 then
-							local tempRanks = {};
-							for rankIndex = 1, numRanks, 1 do
-								table.insert(tempRanks, {
-									["text"] = GuildControlGetRankName(rankIndex),
-									["icon"] = format("%s%02d","Interface\\PvPRankBadges\\PvPRank", (15 - rankIndex)),
-									["OnUpdate"] = app.AlwaysShowUpdate,
-									["visible"] = true,
-									["g"] = {}
-								});
-							end
-							for rankIndex = 1, min(#tempRanks, #guildRanks), 1 do
-								if guildRanks[rankIndex].expanded then
-									tempRanks[rankIndex].expanded = true;
-								end
-							end
-							data.guildMembersHeader.g = tempRanks;
-							guildRanks = tempRanks;
-							
-							local debugMode = app.Settings:Get("DebugMode");
-							local count = GetNumGuildMembers();
-							if count > 0 then
-								for guildIndex = 1, count, 1 do
-									local _, _, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(guildIndex);
-									if guid then
-										if not groupMembers[guid] then
-											groupMembers[guid] = true;
-											local yearsOffline, monthsOffline, daysOffline, hoursOffline = GetGuildRosterLastOnline(guildIndex);
-											if (((yearsOffline or 0) * 12) + (monthsOffline or 0)) < 3 or debugMode then
-												local a = guildRanks[rankIndex + 1];
-												if a then table.insert(a.g, app.CreateSoftReserveUnit(guid)); end
-											end
-										end
-									end
-								end
-								
-								local any = false;
-								for rankIndex = 1, numRanks, 1 do
-									if #guildRanks[rankIndex].g > 0 then
-										insertionSort(guildRanks[rankIndex].g, data.Sort);
-										any = true;
-									end
-								end
-								if any then
-									table.insert(data.g, data.guildMembersHeader);
-								end
-							end
-						end
-					else
-						table.insert(data.g, data.guildMembersHeader);
-					end
-				end,
-				['g'] = {},
-				['guildMembersHeader'] = {
-					['text'] = "Guild Members",
-					['icon'] = "Interface\\Icons\\Ability_Warrior_BattleShout",
-					['description'] = "These active characters are in your guild.\n\nOnly showing characters logged in the last 2 months.",
-					['visible'] = true,
-					['g'] = {},
-				},
-				['exportSoftReserves'] = {
-					['text'] = "Export Soft Reserves",
-					['icon'] = "Interface\\Icons\\Spell_Shadow_LifeDrain02",
-					['description'] = "Press this button to open an edit box containing the full content of your raid's Soft Reserve list in the format expected by the Persistence importer.\n\nYou can give this string to your raid members for them to import the full persistence list for the session.",
-					['visible'] = true,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						local s, count = "", 0;
-						for i,o in ipairs(self.data.g) do
-							if o.guid then
-								if count > 0 then
-									s = s .. "\n";
-								end
-								s = s .. o.guid .. "\\t" .. (o.itemID or 0) .. "\\t" .. (o.persistence or 0) .. "\\t" .. o.name .. "\\t" .. o.itemName;
-								count = count + 1;
-							end
-						end
-						
-						app:ShowPopupDialogWithMultiLineEditBox(s);
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-							data.visible = true;
-						else
-							data.visible = false;
-						end
-					end,
-					['back'] = 0.5,
-				},
-				['lockSoftReserves'] = setmetatable({
-					['text'] = "Lock All Soft Reserves",
-					['icon'] = "Interface\\Icons\\INV_MISC_KEY_13",
-					['description_ML'] = "Click to toggle locking the Soft Reserves. You must click this again to turn it back off.",
-					['description_PLEB'] = "Your Master Looter controls whether the Soft Reserve list is locked or not.",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						if app.IsMasterLooter() then
-							local locked = not app.Settings:GetTooltipSetting("SoftReservesLocked");
-							if locked then app.PushSoftReserves(); end
-							SendGroupMessage("!\tsrlock\t" .. (locked and 1 or 0));
-							app.Settings:SetTooltipSetting("SoftReservesLocked", locked);
-							SendGroupChatMessage(locked and "Soft Reserves locked." or "Soft Reserves unlocked.");
-							wipe(searchCache);
-							self:Update();
-							return true;
-						else
-							app.print("You must be the Master Looter to lock the soft reserves.");
-						end
-					end,
-					['OnUpdate'] = function(data)
-						if IsInGroup() then
-							if GetLootMethod() == "master" then
-								data.visible = true;
-								if app.IsMasterLooter() then
-									data.description = data.description_ML;
-								else
-									data.description = data.description_PLEB;
-								end
-							else
-								data.visible = app.Settings:GetTooltipSetting("SoftReservesLocked");
-								data.description = data.description_PLEB;
-							end
-						else
-							data.visible = false;
-							
-							-- Automatically unlock when not in a group.
-							local locked = app.Settings:GetTooltipSetting("SoftReservesLocked");
-							if locked then
-								app.Settings:SetTooltipSetting("SoftReservesLocked", false);
-								wipe(searchCache);
-								self:Update();
-								return true;
-							end
-						end
-					end,
-				}, {
-					__index = function(t, key)
-						if key == "title" then
-							if t.saved then return "Locked"; end
-						elseif key == "saved" then
-							if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-								return 1;
-							end
-						elseif key == "trackable" then
-							return true;
-						else
-							return table[key];
-						end
-					end
-				}),
-				['lootMethodReminder'] = app.CreateLootMethod("group", {
-					['title'] = LOOT_METHOD,
-					['description'] = "If you are seeing this option, you are the group leader and have not setup Master Looter yet.",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						SetLootMethod("master", UnitName("player"));
-						self:Reset();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						data.visible = IsInGroup() and UnitIsGroupLeader("player");
-						if data.visible then
-							data.id = GetLootMethod();
-							data.visible = data.id ~= "master";
-						end
-					end,
-					['back'] = 0.5,
-				}),
-				['nonGroupMembersHeader'] = {
-					['text'] = "Non-Group Members",
-					['icon'] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
-					['description'] = "These are players that have Soft Reserved something in your raid, but are not currently in your group.",
-					['visible'] = true,
-					['g'] = {},
-					['OnUpdate'] = function(data)
-						data.visible = #data.g > 0 and not app.Settings:GetTooltipSetting("SoftReservesLocked");
-					end,
-					['back'] = 0.5,
-				},
-				['pushGroupMembers'] = {
-					['text'] = "Push List to Group Members",
-					['icon'] = "Interface\\Icons\\INV_Wand_06",
-					['description'] = "Press this button to send an addon message to your group containing all of the Soft Reserves in this session.",
-					['visible'] = true,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						app.PushSoftReserves();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						if app.IsMasterLooter() then
-							data.visible = true;
-						else
-							data.visible = false;
-						end
-					end,
-					['back'] = 0.5,
-				},
-				['pushSoftReserve'] = {
-					['text'] = "Push Soft Reserve",
-					['icon'] = "Interface\\Icons\\INV_Wand_06",
-					['description'] = "Press this button to send an addon message containing your Soft Reserve to your group or guild.",
-					['visible'] = true,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						app.PushSoftReserve();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						if app.Settings:GetTooltipSetting("SoftReservesLocked") or app.IsMasterLooter() then
-							data.visible = false;
-						else
-							data.visible = true;
-						end
-					end,
-					['back'] = 0.5,
-				},
-				['queryGroupMembers'] = {
-					['text'] = "Query Group Members",
-					['icon'] = "Interface\\Icons\\INV_Wand_05",
-					['description'] = "Press this button to send an addon message to your Group Members to update their Soft Reserves.",
-					['visible'] = true,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						SendGroupMessage("?\tsr");
-						self:Reset();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-							data.visible = false;
-						elseif app.IsMasterLooter() then
-							data.visible = true;
-						else
-							data.visible = false;
-						end
-					end,
-					['back'] = 0.5,
-				},
-				['queryGuildMembers'] = {
-					['text'] = "Query Guild Members",
-					['icon'] = "Interface\\Icons\\INV_Wand_04",
-					['description'] = "Press this button to send an addon message to your Guild Members to update their Soft Reserves.",
-					['visible'] = true,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						SendGuildMessage("?\tsr");
-						self:Reset();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-							data.visible = false;
-						elseif not IsInGroup() or app.IsMasterLooter() then
-							data.visible = true;
-						else
-							data.visible = false;
-						end
-					end,
-					['back'] = 0.5,
-				},
-				['queryMasterLooter'] = {
-					['text'] = "Query Master Looter",
-					['icon'] = "Interface\\Icons\\INV_Wand_06",
-					['description'] = "Press this button to send an addon message to the Master Looter for a list of all the Soft Reserves in the raid.",
-					['visible'] = true,
-					['cooldown'] = 0,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						SendGroupMessage("?\tsrml");
-						self:Reset();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						if not IsInGroup() or GetLootMethod() ~= "master" or app.IsMasterLooter() then
-							data.visible = false;
-						else
-							data.visible = true;
-						end
-					end,
-					['back'] = 0.5,
-				},
-				['importPersistence'] = {
-					['text'] = "Import Persistence",
-					['icon'] = "Interface\\Icons\\INV_MISC_KEY_12",
-					['description'] = "Click this to import Persistence from a CSV document.\n\nFORMAT:\nPLAYER NAME/GUID \\t ITEM NAME/ID \\t PERSISTENCE\n\nNOTE: There's an issue with Blizzard not finding player GUIDs that aren't in your raid and items that you personally have never encountered. For best performance, import Player GUIDs, Item IDs, and Persistence values.\n\nPersistence is stored locally and not sent to your group.",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						app:ShowPopupDialogWithMultiLineEditBox("FORMAT: PLAYER NAME\\tITEM NAME/ID\\tPERSISTENCE\n\n", function(text)
-							text = string.gsub(text, "    ", "\t");	-- The WoW UI converts tab characters into 4 spaces in the English Client.
-							local u, pers, g, word, l, esc, c = "", {}, {}, "", string.len(text), false;
-							for i=1,l,1 do
-								c = string.sub(text, i, i);
-								if c == "\\" then
-									esc = true;
-								elseif esc then
-									esc = false;
-									if c == "t" then
-										c = "\t";
-									elseif c == "n" or c == "r" then
-										c = "\n";
-									else
-										-- Add back the backslash.
-										word = word .. "\\";
-									end
-								end
-								
-								if c == "\t" then
-									if string.len(word) > 0 then
-										if #g < 1 then
-											u = word;
-										end
-										tinsert(g, word);
-										word = "";
-									else
-										if #g < 1 and string.len(u) > 0 then
-											tinsert(g, u);
-										end
-									end
-								elseif c == "\n" or c == "\r" then
-									if string.len(word) > 0 then
-										tinsert(g, word);
-										word = "";
-									end
-									if #g > 2 then
-										if not string.match(g[1], "FORMAT: ") then
-											tinsert(pers, g);
-										end
-										g = {};
-									end
-								else
-									word = word .. c;
-								end
-							end
-							if string.len(word) > 0 then
-								tinsert(g, word);
-							end
-							if #g > 2 and not string.match(g[1], "FORMAT: ") then tinsert(pers, g); end
-							if #pers > 0 then
-								local success = 0;
-								local allpersistence, allsrs = GetDataMember("SoftReservePersistence"), GetDataMember("SoftReserves");
-								for i,g in ipairs(pers) do
-									local guid, itemID = app.PlayerGUIDFromInfo[g[1]], app.ParseItemID(g[2]);
-									if guid and itemID then
-										local persistence = rawget(allpersistence, guid);
-										if not persistence then
-											persistence = {};
-											allpersistence[guid] = persistence;
-										end
-										persistence[itemID] = tonumber(g[3]);
-										success = success + 1;
-										-- app.print(g[1] .. ": " .. (select(2, _GetItemInfo(itemID)) or g[2]) .. " [+" .. g[3] .. "]");
-									else
-										app.print("FAILED TO IMPORT: ", g[1], g[2], guid, itemID);
-									end
-								end
-								if success > 0 then
-									app.print("Successfully imported " .. success .. " Persistence entries.");
-								end
-							end
-						end);
-						wipe(searchCache);
-						self:Update();
-						return true;
-					end,
-					['OnUpdate'] = app.AlwaysShowUpdate,
-				},
-				['usePersistence'] = setmetatable({
-					['text'] = "Use Persistence",
-					['icon'] = "Interface\\Icons\\INV_MISC_KEY_13",
-					['description_ML'] = "Click to toggle Persistence for this raid.\n\nIf Persistence is active, each member of the raid with a persistence value on their Soft Reserved item gets a +10 to the top end of their roll for each Persistence they have on the item.\n\nYou may import Persistence from a CSV document.\n\nPersistence is stored locally and not sent to your group.",
-					['description_PLEB'] = "Your Master Looter controls whether Persistence is active or not.",
-					['description_SOLO'] = "Click to toggle Persistence for viewing the list outside of raid.\n\nThis state will change when you join a group whose Persistence is inactive.",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						if app.IsMasterLooter() or not IsInGroup() then
-							local persistence = not app.Settings:GetTooltipSetting("SoftReservePersistence");
-							app.Settings:SetTooltipSetting("SoftReservePersistence", persistence);
-							SendGroupMessage("!\tsrpersistence\t" .. (persistence and 1 or 0));
-							wipe(searchCache);
-							self:Update();
-							return true;
-						else
-							app.print("You must be the Master Looter to modify Persistence.");
-						end
-					end,
-					['OnUpdate'] = function(data)
-						if IsInGroup() then
-							if GetLootMethod() == "master" then
-								data.visible = true;
-								if app.IsMasterLooter() then
-									data.description = data.description_ML;
-								else
-									data.description = data.description_PLEB;
-								end
-							else
-								data.visible = app.Settings:GetTooltipSetting("SoftReservePersistence");
-								data.description = data.description_PLEB;
-							end
-						else
-							data.visible = true;
-							data.description = data.description_SOLO;
-						end
-					end,
-				}, {
-					__index = function(t, key)
-						if key == "title" then
-							if t.saved then return "Persistence Active"; end
-						elseif key == "saved" then
-							if app.Settings:GetTooltipSetting("SoftReservePersistence") then
-								return 1;
-							end
-						elseif key == "trackable" then
-							return true;
-						else
-							return table[key];
-						end
-					end
-				}),
-				['Sort'] = function(a, b)
-					return b.text > a.text;
-				end,
-			};
-			
-			self.Reset = function()
-				self.data = softReserves;
-			end
-			self.GUIDToName = function(guid)
-				local count = GetNumGroupMembers();
-				if count > 0 then
-					for raidIndex = 1, 40, 1 do
-						local name = GetRaidRosterInfo(raidIndex);
-						if name and UnitGUID(name) == guid then
-							return name;
-						end
-					end
-				end
-			end
-			
-			-- Setup Event Handlers and register for events
-			self:SetScript("OnEvent", function(self, e, ...)
-				self.dirty = true;
-				self:Update();
-			end);
-			self:RegisterEvent("CHAT_MSG_SYSTEM");
-			self:RegisterEvent("GROUP_ROSTER_UPDATE");
-			self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
-			self:Reset();
-		end
-		
-		-- Update the window and all of its row data
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		for i,g in ipairs(self.data.g) do
-			if g.OnUpdate then g.OnUpdate(g, self); end
-		end
-		
-		-- Update the groups without forcing Debug Mode.
-		local visibilityFilter = app.VisibilityFilter;
-		app.VisibilityFilter = app.ObjectVisibilityFilter;
-		BuildGroups(self.data);
-		UpdateWindow(self, true);
-		app.VisibilityFilter = visibilityFilter;
-	end
-});
-app:GetWindow("Sync", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		local function OnClickForCharacter(row, button)
-			if button == "RightButton" then
-				if IsAltKeyDown() then
-					local character = ATTCharacterData[row.ref.datalink];
-					if character then character.ignored = not character.ignored; end
-					self:Reset();
-				else
-					app:ShowPopupDialog("CHARACTER DATA: " .. (row.ref.text or RETRIEVING_DATA) .. "\n \nAre you sure you want to delete this?",
-					function()
-						ATTCharacterData[row.ref.datalink] = nil;
-						app:RecalculateAccountWideData();
-						self:Reset();
-					end);
-				end
-			elseif button == "LeftButton" then
-				local character = ATTCharacterData[row.ref.datalink];
-				if character then 
-					local msg = "?\tsyncsumchar\t" .. row.ref.datalink .. ":" .. character.lastPlayed;
-					for playerName,allowed in pairs(ATTClassicAD.LinkedAccounts) do
-						if allowed and not string.find(playerName, "#") then
-							C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", playerName);
-						end
-					end
-				end
-			end
-			return true;
-		end
-		local function OnClickForLinkedAccount(row, button)
-			if button == "RightButton" then
-				app:ShowPopupDialog("LINKED ACCOUNT: " .. (row.ref.text or RETRIEVING_DATA) .. "\n \nAre you sure you want to delete this?",
-				function()
-					ATTClassicAD.LinkedAccounts[row.ref.datalink] = nil;
-					app:SynchronizeWithPlayer(row.ref.datalink);
-					self:Reset();
-				end);
-			end
-			return true;
-		end
-		local function OnTooltipForCharacter(t)
-			local character = ATTCharacterData[t.unit];
-			if character then
-				local primeData = character.PrimeData;
-				if primeData then
-					GameTooltipTextRight1:SetText(GetProgressColorText(primeData.progress, primeData.total));
-					GameTooltip:AddLine(primeData.modeString, 1, 1, 1);
-				end
-				
-				local total = 0;
-				for i,field in ipairs({ "Achievements", "BattlePets", "Exploration", "Factions", "FlightPaths", "RWP", "Spells", "Titles", "Toys", "Quests" }) do
-					local values = character[field];
-					if values then
-						local subtotal = 0;
-						for key,value in pairs(values) do
-							if value then
-								subtotal = subtotal + 1;
-							end
-						end
-						total = total + subtotal;
-						GameTooltip:AddDoubleLine(field, tostring(subtotal), 1, 1, 1);
-					end
-				end
-				GameTooltip:AddLine(" ", 1, 1, 1);
-				GameTooltip:AddDoubleLine("Total", tostring(total), 0.8, 0.8, 1);
-				GameTooltip:AddLine("Left Click to Sync this Character", 0.8, 1, 0.8);
-				GameTooltip:AddLine("Right Click to Delete this Character", 1, 0.8, 0.8);
-				if character.ignored then
-					GameTooltip:AddLine("Alt-Right Click to Unignore this Character", 1, 0.8, 0.8);
-					GameTooltip:AddLine(" ");
-					GameTooltip:AddLine("Ignored Characters will not appear in the tooltip when using 'Show Other Characters' nor will they be sync'd with your other accounts. Characters from other accounts that are ignored on your current account will still receive updates from your other accounts.", 1, 1, 1, true);
-				else
-					GameTooltip:AddLine("Alt-Right Click to Ignore this Character", 1, 0.8, 0.8);
-				end
-			end
-		end
-		local function OnTooltipForLinkedAccount(t)
-			if t.unit then
-				GameTooltip:AddLine("This character's account will be synchronized with automatically when they log in. For optimal play, you should whitelist a bank character and probably not your main as to not affect your ability to play your character when syncing account data.", 0.8, 0.8, 1, true);
-				GameTooltip:AddLine("Right Click to Delete this Linked Character", 1, 0.8, 0.8);
-			else
-				GameTooltip:AddLine("Right Click to Delete this Linked Account", 1, 0.8, 0.8);
-			end
-		end
-		
-		self.data = {
-			['text'] = "Account Management",
-			['icon'] = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
-			["description"] = "This list shows you all of the functionality related to syncing account data.",
-			['visible'] = true,
-			['expanded'] = true,
-			['back'] = 1,
-			['OnUpdate'] = app.AlwaysShowUpdate,
-			['g'] = {
-				{
-					['text'] = "Add Linked Character / Account",
-					['icon'] = app.asset("Ability_Priest_VoidShift"),
-					['description'] = "Click here to link a character or account to your account.",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						app:ShowPopupDialogWithEditBox("Please type the name of the character or BNET account to link to.", "", function(cmd)
-							if cmd and cmd ~= "" then
-								ATTClassicAD.LinkedAccounts[cmd] = true;
-								
-								self:Reset();
-							end
-						end);
-						return true;
-					end,
-					['OnUpdate'] = app.AlwaysShowUpdate,
-				},
-				{
-					['text'] = "Sync All Characters",
-					['icon'] = app.asset("Ability_Priest_VoidShift"),
-					['description'] = "Click here to sync all of your characters.",
-					['visible'] = true,
-					['OnClick'] = function(row, button)
-						app:Synchronize();
-						return true;
-					end,
-					['OnUpdate'] = app.AlwaysShowUpdate,
-				},
-				-- Characters Section
-				{
-					['text'] = "Characters",
-					['icon'] = "Interface\\FriendsFrame\\Battlenet-Portrait",
-					["description"] = "This shows all of the characters on your account.",
-					['OnUpdate'] = function(data)
-						data.g = {};
-						for guid,character in pairs(ATTCharacterData) do
-							if character then
-								table.insert(data.g, app.CreateUnit(guid, {
-									['datalink'] = guid,
-									['OnClick'] = OnClickForCharacter,
-									['OnTooltip'] = OnTooltipForCharacter,
-									['OnUpdate'] = app.AlwaysShowUpdate,
-									["saved"] = not character.ignored and 1,
-									["trackable"] = true,
-									['visible'] = true,
-								}));
-							end
-						end
-						
-						if #data.g < 1 then
-							table.insert(data.g, {
-								['text'] = "No characters found.",
-								['icon'] = "Interface\\FriendsFrame\\Battlenet-Portrait",
-								['visible'] = true,
-							});
-						end
-						insertionSort(data.g, self.data.Sort);
-						BuildGroups(data);
-						return app.AlwaysShowUpdate(data);
-					end,
-					['visible'] = true, 
-					['expanded'] = true,
-					['g'] = {},
-				},
-				
-				-- Linked Accounts Section
-				{
-					['text'] = "Linked Accounts",
-					['icon'] = "Interface\\FriendsFrame\\Battlenet-Portrait",
-					["description"] = "This shows all of the linked accounts you have defined so far.",
-					['OnUpdate'] = function(data)
-						data.g = {};
-						local charactersByName = {};
-						for guid,character in pairs(ATTCharacterData) do
-							if character.name then
-								charactersByName[character.name] = character;
-							end
-						end
-						
-						for playerName,allowed in pairs(ATTClassicAD.LinkedAccounts) do
-							local character = charactersByName[playerName];
-							if character then
-								table.insert(data.g, app.CreateUnit(playerName, {
-									['datalink'] = playerName,
-									['OnClick'] = OnClickForLinkedAccount,
-									['OnTooltip'] = OnTooltipForLinkedAccount,
-									['OnUpdate'] = app.AlwaysShowUpdate,
-									['visible'] = true,
-								}));
-							elseif string.find("#", playerName) then
-								-- Garbage click handler for unsync'd account data.
-								table.insert(data.g, {
-									['text'] = playerName,
-									['datalink'] = playerName,
-									['icon'] = "Interface\\FriendsFrame\\Battlenet-Portrait",
-									['OnClick'] = OnClickForLinkedAccount,
-									['OnTooltip'] = OnTooltipForLinkedAccount,
-									['OnUpdate'] = app.AlwaysShowUpdate,
-									['visible'] = true,
-								});
-							else
-								-- Garbage click handler for unsync'd character data.
-								table.insert(data.g, {
-									['text'] = playerName,
-									['datalink'] = playerName,
-									['icon'] = "Interface\\FriendsFrame\\Battlenet-WoWicon",
-									['OnClick'] = OnClickForLinkedAccount,
-									['OnTooltip'] = OnTooltipForLinkedAccount,
-									['OnUpdate'] = app.AlwaysShowUpdate,
-									['visible'] = true,
-								});
-							end
-						end
-						
-						if #data.g < 1 then
-							table.insert(data.g, {
-								['text'] = "No linked accounts found.",
-								['icon'] = "Interface\\FriendsFrame\\Battlenet-Portrait",
-								['visible'] = true,
-							});
-						end
-						BuildGroups(data);
-						return app.AlwaysShowUpdate(data);
-					end,
-					['visible'] = true, 
-					['expanded'] = true,
-					['g'] = {},
-				},
-			},
-			['Sort'] = function(a, b)
-				return b.text > a.text;
-			end,
-		};
-	end,
-	OnUpdate = function(self, ...)
-		
-		
-		-- Update the groups without forcing Debug Mode.
-		local visibilityFilter, groupFilter = app.VisibilityFilter, app.GroupFilter;
-		app.GroupFilter = app.ObjectVisibilityFilter;
-		app.VisibilityFilter = app.ObjectVisibilityFilter;
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		BuildGroups(self.data);
-		for i,g in ipairs(self.data.g) do
-			if g.OnUpdate then g.OnUpdate(g, self); end
-		end
-		UpdateGroups(self.data, self.data.g);
-		UpdateWindow(self, true);
-		app.GroupFilter = groupFilter;
-		app.VisibilityFilter = visibilityFilter;
-	end
-});
 app:GetWindow("Tradeskills", {
 	parent = UIParent,
 	Silent = true,
@@ -16155,7 +15120,6 @@ app:GetWindow("Tradeskills", {
 				local reagentCache = app.GetDataMember("Reagents", {});
 				local learned, craftSkillID, tradeSkillID = 0, 0, 0;
 				rawset(app.SpellNameToSpellID, 0, nil);
-				local shouldUpdate = false;
 				app.GetSpellName(0);
 				
 				if CraftFrame and CraftFrame:IsVisible() then
@@ -16349,13 +15313,11 @@ app:GetWindow("Tradeskills", {
 						end
 						self.data.indent = 0;
 						self.data.visible = true;
-						BuildGroups(self.data);
-						app.UpdateGroups(self.data, self.data.g);
 						if not self.data.expanded then
 							self.data.expanded = true;
 							ExpandGroupsRecursively(self.data, true);
 						end
-						shouldUpdate = true;
+						self:Rebuild();
 					end
 				end
 			
@@ -16364,8 +15326,6 @@ app:GetWindow("Tradeskills", {
 					app.print("Cached " .. learned .. " known recipes!");
 					wipe(searchCache);
 					app:RefreshDataQuietly(true);
-				elseif shouldUpdate then
-					self:Update();
 				end
 			end
 		end
@@ -17032,7 +15992,7 @@ app.events.VARIABLES_LOADED = function()
 			coroutine.yield();
 			countdown = countdown - 1;
 		end
-		app:GetWindow("Prime"):ForceUpdate(true);
+		app:GetWindow("Prime"):Rebuild();
 	end);
 	
 	if GroupBulletinBoard_Addon then
@@ -17426,7 +16386,7 @@ app.events.ADDON_LOADED = function(addonName)
 			insertionSort(window.data.g, function(a, b)
 				return (b.priority or 0) > (a.priority or 0);
 			end);
-			BuildGroups(window.data);
+			window:Rebuild();
 			UpdateGroups(window.data, window.data.g);
 			window:Show();
 			window:Update();

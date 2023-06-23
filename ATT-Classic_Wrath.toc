@@ -35,3 +35,6 @@ db\RaceDB.lua
 Settings.lua
 ATT-Classic.lua
 db\Wrath\Categories.lua
+src\UI\Removed With Patch Loot.lua
+src\UI\Soft Reserves.lua
+src\UI\Sync.lua
