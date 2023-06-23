@@ -6,6 +6,8 @@
 -- This is a hidden frame that intercepts all of the event notifications that we have registered for.
 local name, app = ...;
 function app:GetName() return name; end
+app.Version = GetAddOnMetadata(name, "Version");
+
 local assetRootPath = "Interface\\Addons\\" .. name .. "\\assets\\";
 app.asset = function(path)
 	return assetRootPath .. path;
@@ -17,6 +19,29 @@ app.EmptyTable = {};
 _G["ATTC"] = app;
 if not _G["AllTheThings"] then
 	_G["AllTheThings"] = app;
+end
+
+-- Cache information about the player.
+local _, class, classIndex = UnitClass("player");
+app.Class = class;
+app.ClassIndex = classIndex;
+local name, realm = UnitName("player");
+if not realm then realm = GetRealmName(); end
+app.GUID = UnitGUID("player");
+local classInfo = C_CreatureInfo.GetClassInfo(app.ClassIndex);
+app.Me = "|c" .. (RAID_CLASS_COLORS[classInfo.classFile].colorStr or "ff1eff00") .. name .. "-" .. realm .. "|r";
+app.Level = UnitLevel("player");
+app.Race = select(2, UnitRace("player"));
+local raceIndex = app.RaceDB[app.Race];
+app.RaceIndex = type(raceIndex) == "table" and raceIndex[app.Faction] or raceIndex;
+app.Faction = UnitFactionGroup("player");
+if app.Faction == "Horde" then
+	app.FactionID = Enum.FlightPathFaction.Horde;
+elseif app.Faction == "Alliance" then
+	app.FactionID = Enum.FlightPathFaction.Alliance;
+else
+	-- Neutral Pandaren or... something else. Scourge? Neat.
+	app.FactionID = 0;
 end
 
 -- Create an Event Processor.

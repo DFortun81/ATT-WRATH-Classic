@@ -12,7 +12,9 @@
 lib\LibStub\LibStub.lua
 lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
+db\RaceDB.lua
 src\base.lua
+src\Cache.lua
 locales\en.lua
 src\Modules\Events.lua
 src\Modules\PVP Ranks.lua
@@ -31,10 +33,10 @@ locales\cn.lua
 db\TBC\Custom Headers.lua
 db\TBC\ExplorationDB.lua
 db\FlightPathDB.lua
-db\RaceDB.lua
 Settings.lua
 ATT-Classic.lua
 db\TBC\Categories.lua
+src\Root.lua
 src\UI\Removed With Patch Loot.lua
 src\UI\Soft Reserves.lua
 src\UI\Sync.lua
