@@ -293,8 +293,7 @@ local function CacheFields(group)
 	wipe(currentMaps);
 	return group;
 end
-app.CacheField = CacheField;
-app.CacheFields = CacheFields;
+
 
 -- This data type requires additional processing.
 fieldConverters.otherQuestData = function(group, value)
@@ -343,6 +342,8 @@ local function SearchForField(field, id)
 end
 
 -- External API Functions
+app.CacheField = CacheField;
+app.CacheFields = CacheFields;
 app.SearchForFieldRecursively = SearchForFieldRecursively;
 app.SearchForFieldContainer = SearchForFieldContainer;
 app.SearchForField = SearchForField;

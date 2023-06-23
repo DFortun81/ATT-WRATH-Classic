@@ -12,15 +12,17 @@
 lib\LibStub\LibStub.lua
 lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibDataBroker-1.1\LibDataBroker-1.1.lua
+db\Presets.lua
 db\RaceDB.lua
+db\FlightPathDB.lua
+db\Wrath\ExplorationDB.lua
 src\base.lua
+db\Wrath\CategoryDB.lua
+db\Wrath\ObjectDB.lua
 src\Cache.lua
 locales\en.lua
 src\Modules\Events.lua
 src\Modules\PVP Ranks.lua
-db\Presets.lua
-db\Wrath\CategoryDB.lua
-db\Wrath\ObjectDB.lua
 locales\en_auto.lua
 locales\es.lua
 locales\de.lua
@@ -31,8 +33,6 @@ locales\pt.lua
 locales\ru.lua
 locales\cn.lua
 db\Wrath\Custom Headers.lua
-db\Wrath\ExplorationDB.lua
-db\FlightPathDB.lua
 Settings.lua
 ATT-Classic.lua
 db\Wrath\Categories.lua
