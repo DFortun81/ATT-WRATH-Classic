@@ -4,8 +4,7 @@ local app = select(2, ...);
 local L = app.L;
 
 -- General Text
-L["TITLE"] = "|cffb4b4ffALL THE THINGS|r"
-L["AUCTION_TAB"] = "|cffb4b4ffATT|r"
+L["TITLE"] = "|c" .. app.Colors.ATT .. "ALL THE THINGS|r"
 L["DESCRIPTION"] = '"你愚蠢地寻求自己的终结，厚颜无耻地无视了你无法理解的力量。你入侵了收集者的领域并为此努力。现在只有一条路可走了——这条孤独的路……该死的路。"'
 
 -- Instructional Text 指引
@@ -62,12 +61,12 @@ L["SPELL_ID"] = "法术ID"
 L["iLvl"] = "物品等级"
 
 -- Icons and Collection Text
-L["COLLECTED"] = "|T" .. app.asset("known") .. ":0|t |cff15abff已收集|r" -- Acquired the colors and icon from CanIMogIt.
-L["COLLECTED_APPEARANCE"] = "|T" .. app.asset("known_circle") .. ":0|t |cff15abff已收集*|r" -- Acquired the colors and icon from CanIMogIt.
+L["COLLECTED"] = "|T" .. app.asset("known") .. ":0|t |c" .. app.Colors.Completed .. "已收集|r" -- Acquired the colors and icon from CanIMogIt.
+L["COLLECTED_APPEARANCE"] = "|T" .. app.asset("known_circle") .. ":0|t |c" .. app.Colors.Completed .. "已收集*|r" -- Acquired the colors and icon from CanIMogIt.
 L["NOT_COLLECTED"] = "|T" .. app.asset("unknown") .. ":0|t |cffff9333未收集|r" -- Acquired the colors and icon from CanIMogIt.
 L["COMPLETE"] = "|T" .. app.asset("known_green") .. ":0|t |cff6dce47已完成|r" -- Acquired the colors and icon from CanIMogIt.
 L["INCOMPLETE"] = "|T" .. app.asset("unknown") .. ":0|t |cffff9333未完成|r" -- Acquired the colors and icon from CanIMogIt.
-L["KNOWN_ON_CHARACTER"] = "|T" .. app.asset("known") .. ":0|t |cff15abff当前角色已知|r"
+L["KNOWN_ON_CHARACTER"] = "|T" .. app.asset("known") .. ":0|t |c" .. app.Colors.Completed .. "当前角色已知|r"
 L["UNKNOWN_ON_CHARACTER"] = "|T" .. app.asset("unknown") .. ":0|t |cffff9333当前角色未知|r"
 
 local a = L.ZONE_TEXT_TO_MAP_ID;

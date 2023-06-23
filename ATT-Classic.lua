@@ -526,10 +526,10 @@ local function Colorize(str, color)
 	return "|c" .. color .. str .. "|r";
 end
 local function HexToARGB(hex)
-	return tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6)), tonumber("0x"..hex:sub(7,8));
+	return tonumber("0x"..hex:sub(1,2)) / 255, tonumber("0x"..hex:sub(3,4)) / 255, tonumber("0x"..hex:sub(5,6)) / 255, tonumber("0x"..hex:sub(7,8)) / 255;
 end
 local function HexToRGB(hex)
-	return tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6));
+	return tonumber("0x"..hex:sub(3,4)) / 255, tonumber("0x"..hex:sub(5,6)) / 255, tonumber("0x"..hex:sub(7,8)) / 255;
 end
 local function RGBToHex(r, g, b)
 	return string.format("ff%02x%02x%02x",
@@ -543,7 +543,7 @@ local function ConvertColorRgbToHsv(r, g, b)
   return {h=h,s=s,v=v}
 end
 local red, green = ConvertColorRgbToHsv(1,0,0), ConvertColorRgbToHsv(0,1,0);
-local progress_colors = setmetatable({[1] = "ff15abff"}, {
+local progress_colors = setmetatable({ [1] = app.Colors.Completed }, {
 	__index = function(t, p)
 		local h;
 		p = tonumber(p);
@@ -1874,14 +1874,14 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 					if app.Settings:GetTooltipSetting("Lore") then
 						for i,j in ipairs(regroup) do
 							if j.lore and j[paramA] and j[paramA] == paramB then
-								tinsert(info, 1, { left = j.lore, wrap = true, color = "ff66ccff" });
+								tinsert(info, 1, { left = j.lore, wrap = true, color = app.Colors.TooltipLore });
 							end
 						end
 					end
 					if app.Settings:GetTooltipSetting("Descriptions") then
 						for i,j in ipairs(regroup) do
 							if j.description and j[paramA] and j[paramA] == paramB then
-								tinsert(info, 1, { left = j.description, wrap = true, color = "ff66ccff" });
+								tinsert(info, 1, { left = j.description, wrap = true, color = app.Colors.TooltipDescription });
 							end
 						end
 					end
@@ -1965,9 +1965,9 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 					if reason then
 						local left, right = strsplit(DESCRIPTION_SEPARATOR, reason);
 						if right then
-							tinsert(info, { left = left, right = right, color = "ff66ccff" });
+							tinsert(info, { left = left, right = right, color = app.Colors.TooltipDescription });
 						else
-							tinsert(info, { left = left, color = "ff66ccff" });
+							tinsert(info, { left = left, color = app.Colors.TooltipDescription });
 						end
 					end
 				end
@@ -2219,32 +2219,32 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 		end
 		
 		if group.lore and app.Settings:GetTooltipSetting("Lore") and not (paramA == "titleID") then
-			tinsert(info, 1, { left = group.lore, wrap = true, color = "ff66ccff" });
+			tinsert(info, 1, { left = group.lore, wrap = true, color = app.Colors.TooltipLore });
 		end
 		
 		if group.description and app.Settings:GetTooltipSetting("Descriptions") and not (paramA == "titleID") then
-			tinsert(info, 1, { left = group.description, wrap = true, color = "ff66ccff" });
+			tinsert(info, 1, { left = group.description, wrap = true, color = app.Colors.TooltipDescription });
 		end
 		
 		if group.nextEvent then
 			local timeStrings = app.Modules.Events.GetEventTimeStrings(group.nextEvent);
 			if timeStrings then
 				for i,timeString in ipairs(timeStrings) do
-					tinsert(info, 1, { left = timeString, wrap = true, color = "ff66ccff" });
+					tinsert(info, 1, { left = timeString, wrap = true, color = app.Colors.TooltipDescription });
 				end
 			end
 		end
 		
 		if group.rwp then
-			tinsert(info, 1, { left = GetRemovedWithPatchString(group.rwp), wrap = true, color = "FFFFAAAA" });
+			tinsert(info, 1, { left = GetRemovedWithPatchString(group.rwp), wrap = true, color = app.Colors.RemovedWithPatch });
 		end
 		
 		if group.awp then
-			tinsert(info, 1, { left = GetAddedWithPatchString(group.awp), wrap = true, color = "FFAAFFAA" });
+			tinsert(info, 1, { left = GetAddedWithPatchString(group.awp), wrap = true, color = app.Colors.AddedWithPatch });
 		end
 		
 		if group.isLimited then
-			tinsert(info, 1, { left = L.LIMITED_QUANTITY, wrap = true, color = "ff66ccff" });
+			tinsert(info, 1, { left = L.LIMITED_QUANTITY, wrap = true, color = app.Colors.TooltipDescription });
 		end
 		
 		if group.pvp then
@@ -2504,7 +2504,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						end
 					end
 				end
-				tinsert(info, { left = string.gsub(desc, "-" .. GetRealmName(), ""), wrap = true, color = "ff66ccff" });
+				tinsert(info, { left = string.gsub(desc, "-" .. GetRealmName(), ""), wrap = true, color = app.Colors.TooltipDescription });
 			end
 		end
 		
@@ -2534,7 +2534,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			
 			group.tooltipInfo = uniques;
 			for i,item in ipairs(uniques) do
-				if item.color then item.a, item.r, item.g, item.b = HexToARGB(item.color); end
+				if item.color then item.r, item.g, item.b = HexToRGB(item.color); end
 			end
 		end
 		
@@ -4017,9 +4017,9 @@ local function AttachTooltipRawSearchResults(self, lineNumber, group)
 						self:AddDoubleLine(left or " ", right);
 					elseif entry.r then
 						if entry.wrap then
-							self:AddLine(left, entry.r / 255, entry.g / 255, entry.b / 255, 1);
+							self:AddLine(left, entry.r, entry.g, entry.b, 1);
 						else
-							self:AddLine(left, entry.r / 255, entry.g / 255, entry.b / 255);
+							self:AddLine(left, entry.r, entry.g, entry.b);
 						end
 					else
 						if entry.wrap then
@@ -4095,7 +4095,7 @@ local function AttachTooltip(self)
 							if guid == "Player-4372-0000390A" then
 								local leftSide = _G[self:GetName() .. "TextLeft1"];
 								if leftSide then
-									leftSide:SetText("|cffff8000" .. UnitName(target) .. " the Completionist|r");
+									leftSide:SetText("|c" .. app.Colors.Raid .. UnitName(target) .. " the Completionist|r");
 								end
 								local rightSide = _G[self:GetName() .. "TextRight2"];
 								leftSide = _G[self:GetName() .. "TextLeft2"];
@@ -4109,10 +4109,10 @@ local function AttachTooltip(self)
 								end
 							elseif SCARAB_LORD[guid] then
 								local leftSide = _G[self:GetName() .. "TextLeft1"];
-								if leftSide then leftSide:SetText("|cffff8000Scarab Lord " .. UnitName(target) .. "|r"); end
+								if leftSide then leftSide:SetText("|c" .. app.Colors.Raid .. "Scarab Lord " .. UnitName(target) .. "|r"); end
 							elseif GOLD_TYCOON[guid] then
 								local leftSide = _G[self:GetName() .. "TextLeft1"];
-								if leftSide then leftSide:SetText("|cffff8000Gold Tycoon " .. UnitName(target) .. "|r"); end
+								if leftSide then leftSide:SetText("|c" .. app.Colors.Raid .. "Gold Tycoon " .. UnitName(target) .. "|r"); end
 							elseif EXTERMINATOR[guid] then
 								local leftSide = _G[self:GetName() .. "TextLeft1"];
 								if leftSide then leftSide:SetText("|cffa335ee" .. UnitName(target) .. " the Exterminator|r"); end
@@ -8211,7 +8211,7 @@ app.SortExplorationDB = function()
 end
 local createMap, mapClass = app.CreateClass("Map", "mapID", {
 	["text"] = function(t)
-		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|c" .. app.Colors.Raid .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return t.headerID and app.NPCNameFromID[t.headerID] or app.GetMapName(t.mapID);
@@ -8310,7 +8310,7 @@ app.CreateMap = function(id, t)
 end
 app.CreateInstance = app.CreateClass("Instance", "instanceID", {
 	["text"] = function(t)
-		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|c" .. app.Colors.Raid .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return t.headerID and app.NPCNameFromID[t.headerID] or app.GetMapName(t.mapID);
@@ -8458,7 +8458,7 @@ local createNPC = app.CreateClass("NPC", "npcID", {
 		return "npcID";
 	end,
 	["text"] = function(t)
-		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|c" .. app.Colors.Raid .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return NPCNameFromID[t.npcID] or RETRIEVING_DATA;
@@ -8493,7 +8493,7 @@ local createNPC = app.CreateClass("NPC", "npcID", {
 }, (function(t) return t.questID; end));
 local createCustomHeader = app.CreateClass("Header", "headerID", {
 	["text"] = function(t)
-		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|c" .. app.Colors.Raid .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		return L["HEADER_NAMES"][t.headerID];
@@ -8578,7 +8578,7 @@ end)();
 (function()
 app.CreateObject = app.CreateClass("Object", "objectID", {
 	["text"] = function(t)
-		return t.isRaid and ("|cffff8000" .. t.name .. "|r") or t.name;
+		return t.isRaid and ("|c" .. app.Colors.Raid .. t.name .. "|r") or t.name;
 	end,
 	["name"] = function(t)
 		if t.providers then
@@ -9180,7 +9180,9 @@ app.AddQuestObjectivesToTooltip = function(tooltip, reference)
 	local questLogIndex = GetQuestLogIndexByID(reference.questID);
 	if questLogIndex then
 		local lore, objective = GetQuestLogQuestText(questLogIndex);
-		if lore and app.Settings:GetTooltipSetting("Lore") then tooltip:AddLine(lore, 0.4, 0.8, 1, 1); end
+		if lore and app.Settings:GetTooltipSetting("Lore") then
+			tooltip:AddLine(Colorize(lore, app.Colors.TooltipLore), 1, 1, 1, 1);
+		end
 		if objective and app.Settings:GetTooltipSetting("Objectives") then
 			tooltip:AddLine(QUEST_OBJECTIVES, 1, 1, 1, 1);
 			tooltip:AddLine(objective, 0.4, 0.8, 1, 1);
@@ -11336,7 +11338,7 @@ local function RowOnEnter(self)
 					insertionSort(knownBy, function(a, b)
 						return a[2] > b[2];
 					end);
-					GameTooltip:AddLine("|cff66ccffKnown by:|r");
+					GameTooltip:AddLine("|c" .. app.Colors.TooltipDescription .. "Known by:|r");
 					for i,data in ipairs(knownBy) do
 						local character = data[1];
 						GameTooltip:AddDoubleLine("  " .. string.gsub(character and character.text or "???", "-" .. GetRealmName(), ""), data[2] .. " / " .. data[3]);
@@ -11407,24 +11409,32 @@ local function RowOnEnter(self)
 		
 		if not reference.itemID then
 			if reference.lore and app.Settings:GetTooltipSetting("Lore") then
+				local lore = reference.lore;
 				local found = false;
 				for i=1,GameTooltip:NumLines() do
-					if _G["GameTooltipTextLeft"..i]:GetText() == reference.lore then
+					if _G["GameTooltipTextLeft"..i]:GetText() == lore then
 						found = true;
 						break;
 					end
 				end
-				if not found then GameTooltip:AddLine(reference.lore, 0.4, 0.8, 1, 1); end
+				if not found then
+					local r,g,b = HexToRGB(app.Colors.TooltipLore);
+					GameTooltip:AddLine(lore, r, g, b, 1);
+				end
 			end
 			if reference.description and app.Settings:GetTooltipSetting("Descriptions") then
+				local description = reference.description;
 				local found = false;
 				for i=1,GameTooltip:NumLines() do
-					if _G["GameTooltipTextLeft"..i]:GetText() == reference.description then
+					if _G["GameTooltipTextLeft"..i]:GetText() == description then
 						found = true;
 						break;
 					end
 				end
-				if not found then GameTooltip:AddLine(reference.description, 0.4, 0.8, 1, 1); end
+				if not found then
+					local r,g,b = HexToRGB(app.Colors.TooltipDescription);
+					GameTooltip:AddLine(description, r, g, b, 1);
+				end
 				if reference.maps then
 					local description,maps,umaps,name = "Maps: ",{},{};
 					for i=1,#reference.maps,1 do
@@ -11439,7 +11449,8 @@ local function RowOnEnter(self)
 						description = description .. name;
 					end
 					GameTooltip:AddLine(" ", 1, 1, 1, 1);
-					GameTooltip:AddLine(description, 0.4, 0.8, 1, 1);
+					local r,g,b = HexToRGB(app.Colors.TooltipDescription);
+					GameTooltip:AddLine(description, r, g, b, 1);
 				end
 			elseif reference.maps then
 				local description,maps,umaps,name = "Maps: ",{},{};
@@ -11454,17 +11465,19 @@ local function RowOnEnter(self)
 					if i > 1 then description = description .. ", "; end
 					description = description .. name;
 				end
-				GameTooltip:AddLine(description, 0.4, 0.8, 1, 1);
+				local r,g,b = HexToRGB(app.Colors.TooltipDescription);
+				GameTooltip:AddLine(description, r, g, b, 1);
 			end
 			if reference.nextEvent then
 				local timeStrings = app.Modules.Events.GetEventTimeStrings(reference.nextEvent);
 				if timeStrings then
+					local r,g,b = HexToRGB(app.Colors.TooltipDescription);
 					for i,timeString in ipairs(timeStrings) do
 						local left, right = strsplit(DESCRIPTION_SEPARATOR, timeString);
 						if right then
-							GameTooltip:AddDoubleLine(left, right, 0.4, 0.8, 1, 0.4, 0.8, 1, 1);
+							GameTooltip:AddDoubleLine(left, right, r, g, b, r, g, b, 1);
 						else
-							GameTooltip:AddLine(left, 0.4, 0.8, 1, 1);
+							GameTooltip:AddLine(left, r, g, b, 1);
 						end
 					end
 				end
@@ -11479,8 +11492,8 @@ local function RowOnEnter(self)
 					end
 				end
 				if not found then
-					local a,r,g,b = HexToARGB("FFAAFFAA");
-					GameTooltip:AddLine(awp, r / 255, g / 255, b / 255, 1);
+					local r,g,b = HexToRGB(app.Colors.AddedWithPatch);
+					GameTooltip:AddLine(awp, r, g, b, 1);
 				end
 			end
 			if reference.rwp then
@@ -11493,8 +11506,8 @@ local function RowOnEnter(self)
 					end
 				end
 				if not found then
-					local a,r,g,b = HexToARGB("FFFFAAAA");
-					GameTooltip:AddLine(rwp, r / 255, g / 255, b / 255, 1);
+					local r,g,b = HexToRGB(app.Colors.RemovedWithPatch);
+					GameTooltip:AddLine(rwp, r, g, b, 1);
 				end
 			end
 			if reference.questID and not reference.objectiveID then
@@ -11660,7 +11673,7 @@ local function RowOnEnter(self)
 						if key == "shared" then
 							-- Skip
 						else
-							GameTooltip:AddDoubleLine(Colorize(GetDifficultyInfo(key), app.DifficultyColors[key] or "ff1eff00"), date("%c", value.reset));
+							GameTooltip:AddDoubleLine(Colorize(GetDifficultyInfo(key), app.DifficultyColors[key] or app.Colors.DefaultDifficulty), date("%c", value.reset));
 							for encounterIter,encounter in pairs(value.encounters) do
 								GameTooltip:AddDoubleLine(" " .. encounter.name, GetCompletionIcon(encounter.isKilled));
 							end
