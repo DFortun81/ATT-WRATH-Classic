@@ -5,6 +5,7 @@ local DESCRIPTION_SEPARATOR = "`";
 -- Performance Cache
 local ipairs, tinsert, pairs, rawset, rawget
 	= ipairs, tinsert, pairs, rawset, rawget;
+local classIndex, raceIndex, factionID = app.ClassIndex, app.RaceIndex, app.FactionID;
 
 -- Helper Functions (TODO: Define these somewhere and cache locally)
 local contains = function(arr, value)
@@ -235,20 +236,17 @@ local fieldConverters = {
 		end
 	end,
 	["c"] = function(group, value)
-		if not contains(value, app.ClassIndex) then
+		if not contains(value, classIndex) then
 			group.nmc = true; -- "Not My Class"
 		end
 	end,
 	["r"] = function(group, value)
-		if value ~= app.FactionID then
+		if value ~= factionID then
 			group.nmr = true;	-- "Not My Race"
 		end
 	end,
 	["races"] = function(group, value)
-		if not contains(value, app.RaceIndex) then
-			if group.itemID == 46815 then
-				
-			end
+		if not contains(value, raceIndex) then
 			group.nmr = true;	-- "Not My Race"
 		end
 	end,
