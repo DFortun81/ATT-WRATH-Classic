@@ -38,6 +38,7 @@ Settings.lua
 ATT-Classic.lua
 db\TBC\Categories.lua
 src\Root.lua
+src\UI\Breadcrumbs.lua
 src\UI\Removed With Patch Loot.lua
 src\UI\Soft Reserves.lua
 src\UI\Sync.lua

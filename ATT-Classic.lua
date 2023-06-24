@@ -10775,6 +10775,7 @@ local function SetRowData(self, row, data)
 		row.ref = data;
 		row.summaryText = nil;
 		if not data then
+			row.Background:SetAlpha(0);
 			row.Background:Hide();
 			row.Texture:Hide();
 			row.Texture.Background:Hide();
@@ -11936,9 +11937,9 @@ local function UpdateWindow(self, force, fromTrigger)
 				end
 				if not self.ignoreNoEntries then
 					tinsert(self.rowData, {
-						["text"] = "No entries matching your filters were found.",
-						["description"] = "If you believe this was in error, try activating 'Debug Mode'. One of your filters may be restricting the visibility of the group.",
-						["back"] = 0.7
+						text = "No entries matching your filters were found.",
+						description = "If you believe this was in error, try activating 'Debug Mode'. One of your filters may be restricting the visibility of the group.",
+						back = 0.7
 					});
 				end
 			else
@@ -12979,59 +12980,30 @@ app:GetWindow("Breadcrumbs", {
 			self:Toggle();
 		end
 	end,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			self.dirty = true;
-			local actions = {
-				['text'] = "Follow the Breadcrumbs",
-				['icon'] = "Interface\\Icons\\INV_Misc_Food_12", 
-				["description"] = "This window shows you all of the breadcrumbs tracked by ATT. Go get 'em!",
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				["indent"] = 0,
-				['OnUpdate'] = function(data)
-					--if not self.dirty then return nil; end
-					--self.dirty = nil;
-					
-					local g = {};
-					if not data.results then
-						data.results = app:BuildSearchResponseForField(app:GetDataCache().g, "isBreadcrumb");
-					end
-					if #data.results > 0 then
-						for i,result in ipairs(data.results) do
-							table.insert(g, result);
+	OnRebuild = function(self, ...)
+		if not self.data then
+			self.data = {
+				text = "Follow the Breadcrumbs",
+				icon = "Interface\\Icons\\INV_Misc_Food_12", 
+				description = "This window shows you all of the breadcrumbs tracked by ATT. Go get 'em!",
+				visible = true, 
+				expanded = true,
+				back = 1,
+				indent = 0,
+				g = { },
+				OnUpdate = function(data)
+					local g = data.g;
+					if #g < 1 then
+						local results = app:BuildSearchResponseForField(app:GetDataCache().g, "isBreadcrumb");
+						if #results > 0 then
+							for i,result in ipairs(results) do
+								table.insert(g, result);
+							end
 						end
 					end
-					data.g = g;
-					if #g > 0 then
-						for i,entry in ipairs(g) do
-							entry.indent = nil;
-						end
-						data.progress = 0;
-						data.total = 0;
-						data.indent = 0;
-						data.visible = true;
-						BuildGroups(data);
-						app.UpdateGroups(data, data.g);
-						if not data.expanded then
-							data.expanded = true;
-							ExpandGroupsRecursively(data, true);
-						end
-					end
-					BuildGroups(self.data);
-					UpdateWindow(self, true);
 				end,
-				['options'] = { },
-				['g'] = { },
-			};
-			self.data = actions;
+			}
 		end
-		
-		-- Update the window and all of its row data
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		UpdateWindow(self, true);
 	end
 });
 app:GetWindow("CosmicInfuser", {
