@@ -18,6 +18,7 @@ db\RaceDB.lua
 db\FlightPathDB.lua
 db\TBC\ExplorationDB.lua
 src\base.lua
+lib\Audio.lua
 db\TBC\CategoryDB.lua
 db\TBC\ObjectDB.lua
 src\Cache.lua

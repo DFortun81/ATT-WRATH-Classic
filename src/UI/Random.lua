@@ -228,7 +228,15 @@ app:GetWindow("Random", {
 		SlashCmdList["ATTCRAN"] = function(cmd)
 			self:Toggle();
 		end
+	end,
+	OnRebuild = function(self, ...)
+		if self.data then return; end
 		
+		-- For this window's options to work, Prime needs to be fully initialized.
+		local prime = app:GetWindow("Prime");
+		prime:DefaultRebuild();
+		prime:DefaultUpdate(true);
+	
 		self.defaultHeader = {
 			text = "Random - Go Get 'Em!",
 			icon = app.asset("Ability_Rogue_RolltheBones.blp"), 
@@ -342,17 +350,10 @@ app:GetWindow("Random", {
 				},
 			},
 		};
-	end,
-	OnRebuild = function(self, ...)
-		if not self.data then
-			local prime = app:GetWindow("Prime");
-			prime:DefaultRebuild();
-			prime:DefaultUpdate(true);
-			
-			RandomSearchFilter = app.GetDataMember("RandomSearchFilter", "Quest")
-			self.data = self.defaultHeader;
-			Reroll(self);
-		end
+		
+		RandomSearchFilter = app.GetDataMember("RandomSearchFilter", "Quest")
+		self.data = self.defaultHeader;
+		Reroll(self);
 	end,
 	OnUpdate = function(self, ...)
 		-- Update the groups without forcing Debug Mode.

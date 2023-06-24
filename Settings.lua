@@ -57,28 +57,6 @@ settings:SetScript("OnShow", function(self)
 	self:Refresh();
 end);
 
--- Music / Sound Management (You can add your own sounds for this if you want.)
-settings.AUDIO_COMPLETE_TABLE = {
-	app.asset("complete1.ogg"),
-};
-settings.AUDIO_DEATH_TABLE = {
-	app.asset("death.ogg"),
-};
-settings.AUDIO_FANFARE_TABLE = {
-	app.asset("fanfare1.ogg"),
-	app.asset("fanfare2.ogg"),
-	app.asset("fanfare3.ogg"),
-	app.asset("fanfare4.ogg"),
-	app.asset("fanfare5.ogg"),
-	app.asset("fanfare6.ogg"),
-};
-settings.AUDIO_RAREFIND_TABLE = {
-	app.asset("rarefind1.ogg"),
-};
-settings.AUDIO_REMOVE_TABLE = {
-	app.asset("remove1.ogg"),
-};
-
 -- Settings Class
 local GeneralSettingsBase = {
 	__index = {

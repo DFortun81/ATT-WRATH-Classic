@@ -482,44 +482,6 @@ app.print = function(...)
 	print(L["TITLE"], ...);
 end
 
--- audio lib
-local lastPlayedFanfare;
-function app:PlayCompleteSound()
-	if app.Settings:GetTooltipSetting("Celebrate") then
-		app:PlayAudio(app.Settings.AUDIO_COMPLETE_TABLE);
-	end
-end
-function app:PlayDeathSound()
-	if app.Settings:GetTooltipSetting("PlayDeathSound") then
-		app:PlayAudio(app.Settings.AUDIO_DEATH_TABLE);
-	end
-end
-function app:PlayFanfare()
-	if app.Settings:GetTooltipSetting("Celebrate") then
-		-- Don't spam the users. It's nice sometimes, but let's put a delay of at least 1 second on there.
-		local now = time();
-		if lastPlayedFanfare and (now - lastPlayedFanfare) < 1 then return nil; end
-		lastPlayedFanfare = now;
-		app:PlayAudio(app.Settings.AUDIO_FANFARE_TABLE);
-	end
-end
-function app:PlayRareFindSound()
-	if app.Settings:GetTooltipSetting("Celebrate") then
-		app:PlayAudio(app.Settings.AUDIO_RAREFIND_TABLE);
-	end
-end
-function app:PlayRemoveSound()
-	if app.Settings:GetTooltipSetting("Warn:Removed") then
-		app:PlayAudio(app.Settings.AUDIO_REMOVE_TABLE);
-	end
-end
-function app:PlayAudio(targetAudio)
-	if targetAudio and type(targetAudio) == "table" then
-		local id = math.random(1, #targetAudio);
-		if targetAudio[id] then PlaySoundFile(targetAudio[id], app.Settings:GetTooltipSetting("Channel")); end
-	end
-end
-
 -- Color Lib
 local CS = CreateFrame("ColorSelect", nil, app._);
 local function Colorize(str, color)
@@ -6618,6 +6580,14 @@ app.CreateDeathClass = app.CreateClass("DeathsTracker", "deaths", {
 		return OnUpdateForDeathTrackerLib;
 	end,
 });
+
+app:RegisterEvent("PLAYER_DEAD");
+app.events.PLAYER_DEAD = function()
+	ATTAccountWideData.Deaths = ATTAccountWideData.Deaths + 1;
+	app.CurrentCharacter.Deaths = app.CurrentCharacter.Deaths + 1;
+	app:PlayDeathSound();
+	app:RefreshDataQuietly();
+end
 end)();
 
 -- Difficulty Lib
@@ -14183,7 +14153,6 @@ app:GetWindow("RaidAssistant", {
 		app.VisibilityFilter = visibilityFilter;
 	end
 });
-
 app:GetWindow("Tradeskills", {
 	parent = UIParent,
 	Silent = true,
@@ -14800,7 +14769,7 @@ app:RegisterEvent("CHAT_MSG_WHISPER");
 if select(4, GetBuildInfo()) > 11403 then
 	app:RegisterEvent("CURSOR_CHANGED");
 end
-app:RegisterEvent("PLAYER_DEAD");
+
 app:RegisterEvent("VARIABLES_LOADED");
 app:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
 
@@ -15156,13 +15125,6 @@ app.events.VARIABLES_LOADED = function()
 		end
 	end
 end
-app.events.PLAYER_DEAD = function()
-	ATTAccountWideData.Deaths = ATTAccountWideData.Deaths + 1;
-	app.CurrentCharacter.Deaths = app.CurrentCharacter.Deaths + 1;
-	app:PlayDeathSound();
-	app:RefreshDataQuietly();
-end
-
 app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
 	if prefix == "ATTC" then
 		--print(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
