@@ -26,6 +26,9 @@ local _GetItemInfoInstant = _G["GetItemInfoInstant"];
 local _GetItemCount = _G["GetItemCount"];
 local _InCombatLockdown = _G["InCombatLockdown"];
 
+-- Helper Functions
+local contains, containsAny, containsValue = app.contains, app.containsAny, app.containsValue;
+
 -- Local Variables
 local DESCRIPTION_SEPARATOR = "`";
 local ALLIANCE_ONLY = {
@@ -108,23 +111,6 @@ local constructor = function(id, t, typeID)
 		end
 	else
 		return {[typeID] = id};
-	end
-end
-local contains = function(arr, value)
-	for i=1,#arr,1 do
-		if arr[i] == value then return true; end
-	end
-end
-local containsAny = function(arr, otherArr)
-	for i=1,#arr,1 do
-		for j=1,#otherArr,1 do
-			if arr[i] == otherArr[j] then return true; end
-		end
-	end
-end
-local containsValue = function(dict, value)
-	for key,value2 in pairs(dict) do
-		if value2 == value then return true; end
 	end
 end
 local defaultComparison = function(a,b)

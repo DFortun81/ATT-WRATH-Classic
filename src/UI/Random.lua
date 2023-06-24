@@ -7,11 +7,7 @@ local searchCache = app.searchCache;
 local C_Map_GetMapInfo = C_Map.GetMapInfo;
 
 -- Helper Functions
-local contains = function(arr, value)
-	for i=1,#arr,1 do
-		if arr[i] == value then return true; end
-	end
-end
+local contains = app.contains;
 local function CloneReference(group)
 	local clone = {};
 	if group.g then

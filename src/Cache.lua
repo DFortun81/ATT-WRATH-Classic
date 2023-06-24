@@ -7,13 +7,8 @@ local ipairs, tinsert, pairs, rawset, rawget
 	= ipairs, tinsert, pairs, rawset, rawget;
 local classIndex, raceIndex, factionID = app.ClassIndex, app.RaceIndex, app.FactionID;
 
--- Helper Functions (TODO: Define these somewhere and cache locally)
-local contains = function(arr, value)
-	for i=1,#arr,1 do
-		if arr[i] == value then return true; end
-	end
-end
-
+-- Helper Functions
+local contains = app.contains;
 
 -- Local Variables
 local fieldCache, _cache = {};
