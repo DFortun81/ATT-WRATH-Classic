@@ -10981,6 +10981,17 @@ local function RowOnClick(self, button)
 		end
 		
 		if IsShiftKeyDown() then
+			if button == "RightButton" then
+				if app.Settings:GetTooltipSetting("Sort:Progress") then
+					app.print("Sorting selection by total progress...");
+					StartCoroutine("Sorting", function() app.SortGroup(reference, "progress", self, false) end);
+				else
+					app.print("Sorting selection alphabetically...");
+					StartCoroutine("Sorting", function() app.SortGroup(reference, "name", self, false) end);
+				end
+				return true;
+			end
+			
 			-- If we're at the Auction House
 			if AuctionFrame and AuctionFrame:IsShown() then
 				local search = SearchForMissingItemNames(reference);
@@ -11067,11 +11078,13 @@ local function RowOnClick(self, button)
 		else
 			-- Allow the First Frame to move the parent.
 			local owner = self:GetParent():GetParent();
-			self:SetScript("OnMouseUp", function(self)
-				self:SetScript("OnMouseUp", nil);
-				StopMovingOrSizing(owner);
-			end);
-			StartMovingOrSizing(owner, true);
+			if owner:IsMovable() then
+				self:SetScript("OnMouseUp", function(self)
+					self:SetScript("OnMouseUp", nil);
+					StopMovingOrSizing(owner);
+				end);
+				StartMovingOrSizing(owner, true);
+			end
 		end
 	end
 end
