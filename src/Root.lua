@@ -2,6 +2,7 @@ do
 local appName, app = ...;
 
 -- Performance Cache
+local C_Map_GetPlayerMapPosition = C_Map.GetPlayerMapPosition;
 local ipairs, tinsert, pairs
 	= ipairs, tinsert, pairs;
 

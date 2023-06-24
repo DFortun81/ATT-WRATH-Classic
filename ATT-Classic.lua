@@ -11931,7 +11931,7 @@ local function UpdateWindow(self, force, fromTrigger)
 				end
 				if self.missingData then
 					self.missingData = nil;
-					if fromTrigger and not t.ignoreCompleteSound then
+					if fromTrigger and not self.ignoreCompleteSound then
 						app:PlayCompleteSound();
 					end
 				end
@@ -13406,83 +13406,7 @@ app:GetWindow("CurrentInstance", {
 		end
 	end
 });
-app:GetWindow("Dailies", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTDAILIES1 = "/attdailies";
-		SlashCmdList["ATTDAILIES"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			self.dirty = true;
-			
-			-- Item Filter
-			local actions = {
-				['text'] = "Dailies",
-				['icon'] = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
-				["description"] = "You can search the ATT Database for all Dailies.",
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['OnUpdate'] = function(data)
-					if not self.dirty then return nil; end
-					self.dirty = nil;
-					
-					local g = {};
-					if not data.results then
-						data.results = app:BuildSearchResponse(app:GetDataCache().g, "isDaily", 1);
-					end
-					if #data.results > 0 then
-						for i,result in ipairs(data.results) do
-							table.insert(g, result);
-						end
-					end
-					data.g = g;
-					if #g > 0 then
-						for i,entry in ipairs(g) do
-							entry.indent = nil;
-						end
-						data.indent = 0;
-						data.visible = true;
-						BuildGroups(data);
-						app.UpdateGroups(data, data.g);
-						if not data.expanded then
-							data.expanded = true;
-							ExpandGroupsRecursively(data, true);
-						end
-					end
-					
-					-- Update the groups without forcing Debug Mode.
-					local incompleteFilter = app.ShowIncompleteThings;
-					app.ShowIncompleteThings = app.Filter;
-					BuildGroups(self.data);
-					UpdateWindow(self, true);
-					app.ShowIncompleteThings = incompleteFilter;
-				end,
-				['g'] = {},
-			};
-			
-			self.Reset = function()
-				self.data = actions;
-			end
-			
-			-- Setup Event Handlers and register for events
-			self:SetScript("OnEvent", function(self, e, ...)
-				self.dirty = true;
-				self:Update();
-			end);
-			self:Reset();
-		end
-		
-		-- Update the window and all of its row data
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		UpdateWindow(self, true);
-	end
-});
+
 
 -- Uncomment this section if you need to enable Debugger:
 --[[

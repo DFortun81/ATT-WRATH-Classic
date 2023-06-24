@@ -39,6 +39,7 @@ ATT-Classic.lua
 db\Classic\Categories.lua
 src\Root.lua
 src\UI\Breadcrumbs.lua
+src\UI\Dailies.lua
 src\UI\Removed With Patch Loot.lua
 src\UI\Soft Reserves.lua
 src\UI\Sync.lua
