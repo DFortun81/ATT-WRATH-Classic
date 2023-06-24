@@ -7304,7 +7304,7 @@ local collectibleAsCostForItem = function(t)
 end;
 local collectedAsCostForItem = function(t)
 	if t.costTotal and t.costTotal > 0 then
-		return t._GetItemCount(t) >= t.costTotal;
+		return t.GetItemCount(t) >= t.costTotal;
 	end
 end;
 local collectibleAsQuest = function(t)
@@ -7407,7 +7407,7 @@ local itemFields = {
 	["tsm"] = function(t)
 		return string.format("i:%d", t.itemID);
 	end,
-	["_GetItemCount"] = function(t)
+	["GetItemCount"] = function(t)
 		return base_GetItemCount;
 	end,
 	["collectible"] = function(t)
