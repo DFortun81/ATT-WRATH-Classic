@@ -1015,7 +1015,7 @@ local CompletedQuests = setmetatable({}, {__newindex = function (t, key, value)
 			if searchResults and #searchResults > 0 then
 				local questID, nmr, nmc, text = key, false, false, "";
 				for i,searchResult in ipairs(searchResults) do
-					if searchResult.questID == questID and not IgnoreErrorQuests[questID] and not GetRelativeField(searchResult, "headerID", app.HeaderConstants.TIER_ZERO_POINT_FIVE_SETS) then
+					if searchResult.key == "questID" and not IgnoreErrorQuests[questID] and not GetRelativeField(searchResult, "headerID", app.HeaderConstants.TIER_ZERO_POINT_FIVE_SETS) then
 						if searchResult.nmr and not nmr then
 							nmr = true;
 							text = searchResult.text;
@@ -1026,12 +1026,12 @@ local CompletedQuests = setmetatable({}, {__newindex = function (t, key, value)
 						end
 					end
 				end
-				if not (nmr or nmc) and app.Settings:GetTooltipSetting("Report:UnsortedQuests") then
+				if app.Settings:GetTooltipSetting("Report:UnsortedQuests") then
 					return true;
 				end
 				if nmc then key = key .. " [C]"; end
 				if nmr then key = key .. " [R]"; end
-				key = key .. " (" .. text .. ")";
+				key = key .. " (" .. (text or RETRIEVING_DATA) .. ")";
 			else
 				local text = C_QuestLog.GetQuestInfo(key) or RETRIEVING_DATA;
 				key = key .. " [M] (" .. text .. ")";

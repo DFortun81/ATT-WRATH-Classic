@@ -162,6 +162,11 @@ local fieldConverters = {
 	end,
 	
 	-- Complex Converters
+	["altQuests"] = function(group, value)
+		for i=1,#value,1 do
+			CacheField(group, "questID", value[i]);
+		end
+	end,
 	["crs"] = function(group, value)
 		for i=1,#value,1 do
 			cacheCreatureID(group, value[i]);
