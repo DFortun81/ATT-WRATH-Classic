@@ -3,7 +3,7 @@ local appName, app = ...;
 local L = app.L;
 local searchCache = app.searchCache;
 
--- Performance cache
+-- Global locals
 local _GetRaidRosterInfo, _GuildControlGetNumRanks, _GetGuildRosterInfo, _GetGuildRosterLastOnline =
 	   GetRaidRosterInfo,  GuildControlGetNumRanks,  GetGuildRosterInfo,  GetGuildRosterLastOnline;
 local _GetItemInfo = _G["GetItemInfo"];
@@ -11,27 +11,6 @@ local _GetItemInfoInstant = _G["GetItemInfoInstant"];
 
 -- Helper Functions
 -- TODO: Make these functions in an internal ATT helper class or something
-local defaultComparison = function(a,b)
-	return a > b;
-end
-local function insertionSort(t, compare, nested)
-	if t then
-		if not compare then compare = defaultComparison; end
-		local j;
-		for i=2,#t,1 do
-			j = i;
-			while j > 1 and compare(t[j], t[j - 1]) do
-				t[j],t[j - 1] = t[j - 1],t[j];
-				j = j - 1;
-			end
-		end
-		if nested then
-			for i=#t,1,-1 do
-				insertionSort(t[i].g, compare, nested);
-			end
-		end
-	end
-end
 local function SendGroupChatMessage(msg)
 	if IsInRaid() then
 		SendChatMessage(msg, "RAID", nil, nil);
@@ -60,7 +39,7 @@ local function SendGuildMessage(msg)
 	end
 end
 
--- Local Functions
+-- Module locals
 local SoftReservesDirty = nil;
 local function SortByText(a, b)
 	return b.text > a.text;
@@ -798,7 +777,7 @@ app:GetWindow("SoftReserves", {
 									local any = false;
 									for rankIndex = 1, numRanks, 1 do
 										if #g[rankIndex].g > 0 then
-											insertionSort(g[rankIndex].g, SortByText);
+											app.Sort(g[rankIndex].g, SortByText);
 											any = true;
 										end
 									end
@@ -861,7 +840,7 @@ app:GetWindow("SoftReserves", {
 					option.parent = data;
 					table.insert(g, option);
 				end
-				insertionSort(g, SortByTextAndPriority);
+				app.Sort(g, SortByTextAndPriority);
 			end,
 		};
 		return true;

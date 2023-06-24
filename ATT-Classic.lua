@@ -113,45 +113,6 @@ local constructor = function(id, t, typeID)
 		return {[typeID] = id};
 	end
 end
-local defaultComparison = function(a,b)
-	return a > b;
-end
-local function insertionSort(t, compare, nested)
-	if t then
-		if not compare then compare = defaultComparison; end
-		local j;
-		for i=2,#t,1 do
-			j = i;
-			while j > 1 and compare(t[j], t[j - 1]) do
-				t[j],t[j - 1] = t[j - 1],t[j];
-				j = j - 1;
-			end
-		end
-		if nested then
-			for i=#t,1,-1 do
-				insertionSort(t[i].g, compare, nested);
-			end
-		end
-	end
-end
-local sortByNameSafely = function(a, b)
-	if a and a.name then
-		if b and b.name then
-			return a.name <= b.name;
-		end
-		return true;
-	end
-	return false;
-end;
-local sortByTextSafely = function(a, b)
-	if a and a.text then
-		if b and b.text then
-			return a.text <= b.text;
-		end
-		return true;
-	end
-	return false;
-end;
 function distance( x1, y1, x2, y2 )
 	return math.sqrt( (x2-x1)^2 + (y2-y1)^2 )
 end
@@ -1833,7 +1794,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 							end
 						end
 					end
-					insertionSort(regroup, function(a, b)
+					app.Sort(regroup, function(a, b)
 						return not (a.headerID and a.headerID == app.HeaderConstants.COMMON_BOSS_DROPS) and b.headerID and b.headerID == app.HeaderConstants.COMMON_BOSS_DROPS;
 					end);
 				end
@@ -2010,7 +1971,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 			if #temp > 0 then
 				local listing = {};
 				local maximum = app.Settings:GetTooltipSetting("Locations");
-				insertionSort(temp);
+				app.Sort(temp, app.SortDefaults.Number);
 				for i,j in ipairs(temp) do
 					if not contains(listing, j) then
 						tinsert(listing, 1, j);
@@ -2280,7 +2241,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						local left, right;
 						tinsert(info, { left = "Used to Craft:" });
 						if #entries < 25 then
-							insertionSort(entries, function(a, b)
+							app.Sort(entries, function(a, b)
 								if a.group.name then
 									if b.group.name then
 										return a.group.name <= b.group.name;
@@ -2318,7 +2279,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 					if #entries > 0 then
 						tinsert(info, { left = "Used in Recipes:" });
 						if #entries < 25 then
-							insertionSort(entries, function(a, b)
+							app.Sort(entries, function(a, b)
 								if a and a.group.name then
 									if b and b.group.name then
 										return a.group.name <= b.group.name;
@@ -2364,7 +2325,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 						if #entries > 0 then
 							tinsert(info, { left = "Available Skill Ups:" });
 							if #entries < 25 then
-								insertionSort(entries, function(a, b)
+								app.Sort(entries, function(a, b)
 									if a.group.craftTypeID == b.group.craftTypeID then
 										if a.group.name then
 											if b.group.name then
@@ -2440,7 +2401,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				end
 			end
 			if #knownBy > 0 and kind then
-				insertionSort(knownBy, sortByNameSafely);
+				app.Sort(knownBy, app.SortDefaults.Name);
 				local desc = kind;
 				for i,character in ipairs(knownBy) do
 					if i > 1 then desc = desc .. ", "; end
@@ -3039,7 +3000,7 @@ local buildCategoryEntry = function(self, headers, searchResults, inst)
 		end
 	elseif count > 1 then
 		-- Find the most accessible version of the thing.
-		insertionSort(sources, sortByAccessibility);
+		app.Sort(sources, sortByAccessibility);
 		for key,value in pairs(sources[1]) do
 			inst[key] = value;
 		end
@@ -3149,7 +3110,7 @@ local function achievementSort(a, b)
 	elseif b.rank then
 		return false;
 	end
-	return sortByNameSafely(a, b);
+	return app.SortDefaults.Name(a, b);
 end;
 
 function app:GetDataCache()
@@ -3293,7 +3254,7 @@ function app:GetDataCache()
 						end
 					end
 				end
-				insertionSort(self.g, sortByTextSafely);
+				app.Sort(self.g, app.SortDefaults.Text);
 				self.OnUpdate = nil;
 			end
 		}));
@@ -3332,7 +3293,7 @@ function app:GetDataCache()
 						end
 					end
 				end
-				insertionSort(self.g, sortByTextSafely);
+				app.Sort(self.g, app.SortDefaults.Text);
 				self.OnUpdate = nil;
 			end
 		});
@@ -3353,7 +3314,7 @@ function app:GetDataCache()
 				g = app.Categories.Holidays,
 				OnUpdate = function(t)
 					local now = C_DateAndTime_GetServerTimeLocal();
-					table.sort(t.g, function(a, b)
+					app.Sort(t.g, function(a, b)
 						return (a.nextEvent and a.nextEvent.start or 0) < (b.nextEvent and b.nextEvent.start or 0);
 					end);
 					local temp = {};
@@ -3447,7 +3408,7 @@ function app:GetDataCache()
 							end
 						elseif count > 1 then
 							-- Find the most accessible version of the thing.
-							insertionSort(sources, sortByAccessibility);
+							app.Sort(sources, sortByAccessibility);
 							for key,value in pairs(sources[1]) do
 								achievement[key] = value;
 							end
@@ -3500,7 +3461,7 @@ function app:GetDataCache()
 						end
 					end
 				end
-				insertionSort(self.g, achievementSort, true);
+				app.Sort(self.g, achievementSort, true);
 				self.OnUpdate = nil;
 			end
 		});
@@ -3576,7 +3537,7 @@ function app:GetDataCache()
 							end
 						elseif count > 1 then
 							-- Find the most accessible version of the thing.
-							insertionSort(sources, sortByAccessibility);
+							app.Sort(sources, sortByAccessibility);
 							for key,value in pairs(sources[1]) do
 								battlepet[key] = value;
 							end
@@ -3591,9 +3552,9 @@ function app:GetDataCache()
 						end
 					end
 				end
-				insertionSort(self.g, sortByTextSafely);
+				app.Sort(self.g, app.SortDefaults.Text);
 				for i,petType in pairs(petTypes) do
-					insertionSort(petType.g, sortByTextSafely);
+					app.Sort(petType.g, app.SortDefaults.Text);
 				end
 				self.OnUpdate = nil;
 			end
@@ -3632,9 +3593,9 @@ function app:GetDataCache()
 						end
 					end
 				end
-				insertionSort(self.g, sortByTextSafely);
+				app.Sort(self.g, app.SortDefaults.Text);
 				for i,header in pairs(headers) do
-					insertionSort(header.g, sortByTextSafely);
+					app.Sort(header.g, app.SortDefaults.Text);
 				end
 				for i=#self.g,1,-1 do
 					header = self.g[i];
@@ -3692,10 +3653,10 @@ function app:GetDataCache()
 						header.ignoreSort = true;
 					end
 				end
-				insertionSort(self.g, sortByTextSafely);
+				app.Sort(self.g, app.SortDefaults.Text);
 				for i,header in pairs(headers) do
 					if not header.ignoreSort then
-						insertionSort(header.g, sortByTextSafely);
+						app.Sort(header.g, app.SortDefaults.Text);
 					end
 				end
 				for i=#self.g,1,-1 do
@@ -3730,9 +3691,9 @@ function app:GetDataCache()
 						self.toys[i] = buildCategoryEntry(self, headers, _, app.CreateToy(tonumber(i)));
 					end
 				end
-				insertionSort(self.g, sortByTextSafely);
+				app.Sort(self.g, app.SortDefaults.Text);
 				for i,header in pairs(headers) do
-					insertionSort(header.g, sortByTextSafely);
+					app.Sort(header.g, app.SortDefaults.Text);
 				end
 				for i=#self.g,1,-1 do
 					header = self.g[i];
@@ -6554,7 +6515,7 @@ app.CreateDeathClass = app.CreateClass("DeathsTracker", "deaths", {
 		if #c > 0 then
 			GameTooltip:AddLine(" ");
 			GameTooltip:AddLine("Deaths Per Character:");
-			insertionSort(c, function(a, b)
+			app.Sort(c, function(a, b)
 				return a.Deaths > b.Deaths;
 			end);
 			for i,character in ipairs(c) do
@@ -8018,7 +7979,7 @@ local simplifyExplorationData = function()
 		for hash,hits in pairs(mapData.hits) do
 			tinsert(hitsByCount, { #hits, hash, hits});
 		end
-		insertionSort(hitsByCount, sortMethod);
+		app.Sort(hitsByCount, sortMethod);
 		coroutine.yield();
 		
 		-- Now randomly grab hashes until every area has a few hashes
@@ -8146,7 +8107,7 @@ local onMapUpdate = function(t)
 		end
 	end
 	if explorationHeader and explorationHeader.g then
-		insertionSort(explorationHeader.g, sortByTextSafely);
+		app.Sort(explorationHeader.g, app.SortDefaults.Text);
 	end
 	rawset(t, "OnUpdate", nil);
 	--StartCoroutine("Simplifying Exploration Data", simplifyExplorationData);
@@ -8159,7 +8120,7 @@ app.SortExplorationDB = function()
 		for i,areaID in ipairs(areas) do
 			tinsert(s, { areaID, C_Map.GetAreaInfo(areaID) });
 		end
-		insertionSort(s, function(a, b)
+		app.Sort(s, function(a, b)
 			return a[2] < b[2];
 		end);
 	end
@@ -8252,7 +8213,7 @@ app.CreateMap = function(id, t)
 			end
 		end
 		if explorationHeader and explorationHeader.g then
-			insertionSort(explorationHeader.g, sortByTextSafely);
+			app.Sort(explorationHeader.g, app.SortDefaults.Text);
 		end
 		if not rawget(t, "OnUpdate") then
 			map.OnUpdate = onMapUpdate;
@@ -9123,7 +9084,7 @@ app.CompareQuestieDB = function()
 				table.insert(missingQuestIDs, id);
 			end
 		end
-		insertionSort(missingQuestIDs);
+		app.Sort(missingQuestIDs, app.SortDefaults.Number);
 		for _,id in ipairs(missingQuestIDs) do
 			print("Missing Quest ", id);
 		end
@@ -11292,7 +11253,7 @@ local function RowOnEnter(self)
 					end
 				end
 				if #knownBy > 0 then
-					insertionSort(knownBy, function(a, b)
+					app.Sort(knownBy, function(a, b)
 						return a[2] > b[2];
 					end);
 					GameTooltip:AddLine("|c" .. app.Colors.TooltipDescription .. "Known by:|r");
@@ -12495,6 +12456,9 @@ app:GetWindow("Attuned", {
 		if not self.initialized then
 			self.initialized = true;
 			
+			local sortByName = function(a, b)
+				return b.text > a.text;
+			end;
 			-- Attunements
 			local instances, instanceSelector, selectedInstance, attunements;
 			instances = {
@@ -12745,7 +12709,7 @@ app:GetWindow("Attuned", {
 					end
 					
 					-- Sort Member List
-					insertionSort(groupMembers, data.Sort);
+					app.Sort(groupMembers, sortByName);
 					for i,unit in ipairs(groupMembers) do
 						table.insert(data.g, unit);
 					end
@@ -12792,7 +12756,7 @@ app:GetWindow("Attuned", {
 								local any = false;
 								for rankIndex = 1, numRanks, 1 do
 									if #guildRanks[rankIndex].g > 0 then
-										insertionSort(guildRanks[rankIndex].g, data.Sort);
+										app.Sort(guildRanks[rankIndex].g, sortByName);
 										any = true;
 									end
 								end
@@ -12891,9 +12855,6 @@ app:GetWindow("Attuned", {
 					end,
 					['OnUpdate'] = app.AlwaysShowUpdate,
 				},
-				['Sort'] = function(a, b)
-					return b.text > a.text;
-				end,
 			};
 			
 			self.Reset = function()
@@ -13811,7 +13772,7 @@ app:GetWindow("Objects", {
 			for objectID,o in pairs(app.SearchForFieldContainer("objectID")) do
 				tinsert(objectIDs, tonumber(objectID));
 			end
-			insertionSort(objectIDs);
+			app.Sort(objectIDs, app.SortDefaults.Number);
 			for _,objectID in ipairs(objectIDs) do
 				tinsert(db.g, app.CreateObject(objectID));
 			end

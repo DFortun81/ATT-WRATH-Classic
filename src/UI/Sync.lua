@@ -1,28 +1,9 @@
-do
+-- Sync Module
 local appName, app = ...;
 
--- Common Helper Functions
--- TODO: Move to shared library
-local defaultComparison = function(a,b)
-	return a > b;
-end
-local function insertionSort(t, compare, nested)
-	if t then
-		if not compare then compare = defaultComparison; end
-		local j;
-		for i=2,#t,1 do
-			j = i;
-			while j > 1 and compare(t[j], t[j - 1]) do
-				t[j],t[j - 1] = t[j - 1],t[j];
-				j = j - 1;
-			end
-		end
-		if nested then
-			for i=#t,1,-1 do
-				insertionSort(t[i].g, compare, nested);
-			end
-		end
-	end
+-- App locals
+local function SortByText(a, b)
+	return b.text > a.text;
 end
 
 -- Helper Functions
@@ -108,9 +89,6 @@ local function OnTooltipForLinkedAccount(t)
 		GameTooltip:AddLine("Right Click to Delete this Linked Account", 1, 0.8, 0.8);
 	end
 end
-local function SortByText(a, b)
-	return b.text > a.text;
-end
 
 app:GetWindow("Sync", {
 	parent = UIParent,
@@ -193,7 +171,7 @@ app:GetWindow("Sync", {
 								parent = data,
 							});
 						else
-							insertionSort(g, SortByText);
+							app.Sort(g, SortByText);
 						end
 						return app.AlwaysShowUpdate(data);
 					end,
@@ -270,4 +248,3 @@ app:GetWindow("Sync", {
 		return true;
 	end,
 });
-end

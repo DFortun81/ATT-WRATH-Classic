@@ -2,15 +2,15 @@ do
 local appName, app = ...;
 local DESCRIPTION_SEPARATOR = "`";
 
--- Performance Cache
+-- Global locals
 local ipairs, tinsert, pairs, rawset, rawget
 	= ipairs, tinsert, pairs, rawset, rawget;
-local classIndex, raceIndex, factionID = app.ClassIndex, app.RaceIndex, app.FactionID;
 
--- Helper Functions
-local contains = app.contains;
+-- App locals
+local contains, classIndex, raceIndex, factionID =
+	app.contains, app.ClassIndex, app.RaceIndex, app.FactionID;
 
--- Local Variables
+-- Module locals
 local fieldCache, _cache = {};
 local currentMaps = {};
 local fieldCache_g,fieldCache_f;
