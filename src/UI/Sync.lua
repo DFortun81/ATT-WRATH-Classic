@@ -12,13 +12,13 @@ local function OnClickForCharacter(row, button)
 		if IsAltKeyDown() then
 			local character = ATTCharacterData[row.ref.datalink];
 			if character then character.ignored = not character.ignored; end
-			self:Rebuild();
+			row:GetParent():GetParent():Rebuild();
 		else
 			app:ShowPopupDialog("CHARACTER DATA: " .. (row.ref.text or RETRIEVING_DATA) .. "\n \nAre you sure you want to delete this?",
 			function()
 				ATTCharacterData[row.ref.datalink] = nil;
 				app:RecalculateAccountWideData();
-				self:Rebuild();
+				row:GetParent():GetParent():Rebuild();
 			end);
 		end
 	elseif button == "LeftButton" then
@@ -40,7 +40,7 @@ local function OnClickForLinkedAccount(row, button)
 		function()
 			ATTClassicAD.LinkedAccounts[row.ref.datalink] = nil;
 			app:SynchronizeWithPlayer(row.ref.datalink);
-			self:Rebuild();
+			row:GetParent():GetParent():Rebuild();
 		end);
 	end
 	return true;
