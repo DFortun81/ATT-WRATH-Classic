@@ -140,9 +140,6 @@ app:GetWindow("Sync", {
 					OnUpdate = function(data)
 						local g, characters = data.g, data.characters;
 						wipe(g);
-						for guid,character in pairs(characters) do
-							table.insert(g, character);
-						end
 						for guid,characterData in pairs(ATTCharacterData) do
 							if characterData then
 								local character = characters[guid];
@@ -157,8 +154,8 @@ app:GetWindow("Sync", {
 										parent = data,
 									});
 									characters[guid] = character;
-									table.insert(g, character);
 								end
+								table.insert(g, character);
 								character.saved = not characterData.ignored and 1;
 							end
 						end
