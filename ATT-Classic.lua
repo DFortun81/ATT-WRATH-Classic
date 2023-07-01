@@ -6395,7 +6395,7 @@ app.CreateCurrencyClass = app.CreateClass("Currency", "currencyID", {
 		return {};
 	end,
 	["link"] = function(t)
-		return _GetCurrencyLink(t.currencyID);
+		return _GetCurrencyLink(t.currencyID, 1);
 	end,
 	["collectible"] = function(t)
 		return t.collectibleAsCost;
