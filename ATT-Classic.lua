@@ -2680,7 +2680,7 @@ function app:ReceiveSyncSummaryResponse(sender, summary)
 		local rawMsg;
 		for i,guid in ipairs(summary) do
 			local character = ATTCharacterData[guid];
-			if character then
+			if character and character.realm then
 				-- Put easy character data into a raw data string
 				local rawData = character.guid .. ":" .. character.name .. ":" .. character.lvl .. ":" .. character.text .. ":" .. character.realm .. ":" .. character.factionID .. ":" .. character.classID .. ":" .. character.raceID .. ":" .. character.lastPlayed .. ":" .. character.Deaths;
 				
@@ -2706,6 +2706,9 @@ function app:ReceiveSyncSummaryResponse(sender, summary)
 				else
 					rawMsg = rawMsg .. "\t" .. rawData;
 				end
+			else
+				app.print("There was an issue accessing the character with GUID " .. guid);
+				print("Please login to " .. (character and character.text or "this character") .. " to correct the problem.");
 			end
 		end
 		
@@ -14768,6 +14771,8 @@ app.events.VARIABLES_LOADED = function()
 		currentCharacter = {};
 		characterData[app.GUID] = currentCharacter;
 	end
+	local name, realm = UnitName("player");
+	if not realm then realm = GetRealmName(); end
 	if name then currentCharacter.name = name; end
 	if realm then currentCharacter.realm = realm; end
 	if app.Me then currentCharacter.text = app.Me; end
