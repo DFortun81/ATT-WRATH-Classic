@@ -391,7 +391,7 @@ app.print = function(...)
 end
 
 -- Color Lib
-local CS = CreateFrame("ColorSelect", nil, app._);
+local CS = CreateFrame("ColorSelect", nil, app.frame);
 local function Colorize(str, color)
 	return "|c" .. color .. str .. "|r";
 end
