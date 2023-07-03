@@ -61,46 +61,7 @@ local HORDE_ONLY = {
 };
 
 -- Helper Functions
-app.refreshing = {};
 local UpdateGroup, UpdateGroups;
-local function OnUpdate(self)
-	for i=#self.__stack,1,-1 do
-		if not self.__stack[i][1](self) then
-			table.remove(self.__stack, i);
-			if #self.__stack < 1 then
-				self:SetScript("OnUpdate", nil);
-			end
-		end
-	end
-end
-local function Push(self, name, method)
-	if not self.__stack then
-		self.__stack = {};
-		self:SetScript("OnUpdate", OnUpdate);
-	elseif #self.__stack < 1 then
-		self:SetScript("OnUpdate", OnUpdate);
-	end
-	--print("Push->" .. name);
-	table.insert(self.__stack, { method, name });
-end
-local function StartCoroutine(name, method)
-	if method and not app.refreshing[name] then
-		local instance = coroutine.create(method);
-		app.refreshing[name] = true;
-		Push(app, name, function()
-			-- Check the status of the coroutine
-			if instance and coroutine.status(instance) ~= "dead" then
-				local ok, err = coroutine.resume(instance);
-				if ok then return true;	-- This means more work is required.
-				else
-					-- Show the error. Returning nothing is the same as canceling the work.
-					error(err,2);
-				end
-			end
-			app.refreshing[name] = nil;
-		end);
-	end
-end
 local constructor = function(id, t, typeID)
 	if t then
 		if not t.g and t[1] then
@@ -267,7 +228,7 @@ GameTooltipModel.SetCreatureID = function(self, creatureID)
 		self.Model:SetCreature(creatureID);
 		local displayID = self.Model:GetDisplayInfo();
 		if not displayID then
-			Push(app, "SetCreatureID", function()
+			app:StartATTCoroutine("SetCreatureID", function()
 				if self.lastModel == creatureID then
 					self:SetCreatureID(creatureID);
 				end
@@ -4419,9 +4380,9 @@ local function RefreshSaves()
 	while GetNumSavedInstances() < 1 do
 		coroutine.yield();
 		counter = counter + 1;
-		if counter > 600 then
+		if counter > 10 then
 			app.refreshingSaves = false;
-			coroutine.yield(false);
+			return false;
 		end
 	end
 	
@@ -4562,7 +4523,7 @@ local function RefreshSkills()
 	end
 end
 local function RefreshCollections()
-	StartCoroutine("RefreshingCollections", function()
+	app:StartATTCoroutine("RefreshingCollections", function()
 		while _InCombatLockdown() do coroutine.yield(); end
 		app.print("Refreshing collection...");
 		app.events.QUEST_LOG_UPDATE();
@@ -8113,7 +8074,7 @@ local onMapUpdate = function(t)
 		app.Sort(explorationHeader.g, app.SortDefaults.Text);
 	end
 	rawset(t, "OnUpdate", nil);
-	--StartCoroutine("Simplifying Exploration Data", simplifyExplorationData);
+	--app:StartATTCoroutine("Simplifying Exploration Data", simplifyExplorationData);
 end;
 app.SortExplorationDB = function()
 	local e,t=ATTC.ExplorationDB,{};
@@ -8270,7 +8231,7 @@ end));
 
 app.events.MAP_EXPLORATION_UPDATED = function(...)
 	app.CurrentMapID = app.GetCurrentMapID();
-	StartCoroutine("RefreshExploration", function()
+	app:StartATTCoroutine("RefreshExploration", function()
 		coroutine.yield();
 		local mapID = app.CurrentMapID;
 		while not mapID do
@@ -8344,6 +8305,7 @@ local NPCDisplayIDFromID = setmetatable({}, { __index = function(t, id)
 		local displayID = npcModelHarvester:GetDisplayInfo();
 		if displayID and displayID ~= 0 then
 			rawset(t, id, displayID);
+			app:RefreshDataQuietly();
 			return displayID;
 		end
 	end
@@ -10792,7 +10754,7 @@ local function SetRowData(self, row, data)
 		if not text then
 			text = RETRIEVING_DATA;
 			self.processingLinks = true;
-		elseif string.match(text, RETRIEVING_DATA) then
+		elseif string.match(text, RETRIEVING_DATA) or text:find("^%[%]") then
 			-- This means the link is still rendering
 			self.processingLinks = true;
 		else
@@ -10904,16 +10866,16 @@ local function UpdateVisibleRowData(self)
 		
 		-- If the rows need to be processed again, do so next update.
 		if self.processingLinks then
-			StartCoroutine(self.Suffix, function()
+			self:StartATTCoroutine("Process Links", function()
 				while self.processingLinks do
 					self.processingLinks = nil;
 					coroutine.yield();
 					self:Refresh();
 				end
 				if self.UpdateDone then
-					StartCoroutine(self.Suffix..":UpdateDone", function()
+					self:StartATTCoroutine("UpdateDone", function()
 						coroutine.yield();
-						StartCoroutine(self.Suffix..":UpdateDoneP2", function()
+						self:StartATTCoroutine("UpdateDoneP2", function()
 							coroutine.yield();
 							self:UpdateDone();
 						end);
@@ -10921,9 +10883,9 @@ local function UpdateVisibleRowData(self)
 				end
 			end);
 		elseif self.UpdateDone and rowCount > 5 then
-			StartCoroutine(self.Suffix..":UpdateDone", function()
+			self:StartATTCoroutine("UpdateDone", function()
 				coroutine.yield();
-				StartCoroutine(self.Suffix..":UpdateDoneP2", function()
+				self:StartATTCoroutine("UpdateDoneP2", function()
 					coroutine.yield();
 					self:UpdateDone();
 				end);
@@ -10956,7 +10918,7 @@ local function StartMovingOrSizing(self, fromChild)
 		self.isMoving = true;
 		if not self:IsMovable() or ((select(2, GetCursorPosition()) / self:GetEffectiveScale()) < math.max(self:GetTop() - 40, self:GetBottom() + 10)) then
 			self:StartSizing();
-			Push(self, "StartMovingOrSizing (Sizing)", function()
+			self:StartATTCoroutine("StartMovingOrSizing (Sizing)", function()
 				if self.isMoving then
 					self:Refresh();
 					return true;
@@ -10964,7 +10926,7 @@ local function StartMovingOrSizing(self, fromChild)
 			end);
 		else
 			self:StartMoving();
-			Push(app, "StartMovingOrSizing (Moving)", function()
+			self:StartATTCoroutine("StartMovingOrSizing (Moving)", function()
 				-- This fixes a bug where the window will get stuck on the mouse until you reload.
 				if IsSelfOrChild(self, GetMouseFocus()) then
 					return true;
@@ -10987,10 +10949,10 @@ local function RowOnClick(self, button)
 			if button == "RightButton" then
 				if app.Settings:GetTooltipSetting("Sort:Progress") then
 					app.print("Sorting selection by total progress...");
-					StartCoroutine("Sorting", function() app.SortGroup(reference, "progress", self, false) end);
+					app:StartATTCoroutine("Sorting", function() app.SortGroup(reference, "progress", self, false) end);
 				else
 					app.print("Sorting selection alphabetically...");
-					StartCoroutine("Sorting", function() app.SortGroup(reference, "name", self, false) end);
+					app:StartATTCoroutine("Sorting", function() app.SortGroup(reference, "name", self, false) end);
 				end
 				return true;
 			end
@@ -11915,7 +11877,7 @@ local function RefreshData(fromTrigger)
 	app.refreshFromTrigger = app.refreshFromTrigger or fromTrigger;
 	if app.currentlyRefreshingData then return; end
 	--print("RefreshData(" .. tostring(fromTrigger or false) .. ")");
-	StartCoroutine("RefreshData", function()
+	app:StartATTCoroutine("RefreshData", function()
 		app.currentlyRefreshingData = true;
 		
 		-- While the player is in combat, wait for combat to end.
@@ -12197,7 +12159,7 @@ function app:GetWindow(suffix, settings)
 		local delays = {};
 		window.DelayedCall = function(self, method, delay, force)
 			delays[method] = delay or 60;
-			StartCoroutine(window.Suffix .. ":DelayedCall::" .. method, function()
+			window:StartATTCoroutine("DelayedCall::" .. method, function()
 				while delays[method] > 0 do
 					coroutine.yield();
 					delays[method] = delays[method] - 1;
@@ -12928,7 +12890,7 @@ app:GetWindow("CosmicInfuser", {
 						['icon'] = "Interface\\Icons\\INV_Misc_Map_01",
 						['description'] = "This function will check for missing mapIDs in ATT.",
 						['OnClick'] = function(data, button)
-							Push(self, "Rebuild", self.Rebuild);
+							self:StartATTCoroutine("Rebuild", self.Rebuild);
 							return true;
 						end,
 						['OnUpdate'] = app.AlwaysShowUpdate,
@@ -12995,6 +12957,7 @@ app:GetWindow("CurrentInstance", {
 			["description"] = "This list contains the relevant information for your current zone.",
 			['visible'] = true, 
 			['expanded'] = true,
+			['back'] = 1,
 			['g'] = {
 				{
 					['text'] = "Update Location Now",
@@ -13002,7 +12965,7 @@ app:GetWindow("CurrentInstance", {
 					['description'] = "If you wish to forcibly refresh the data without changing zones, click this button now!",
 					['visible'] = true,
 					['OnClick'] = function(row, button)
-						Push(self, "Rebuild", self.Rebuild);
+						self:StartATTCoroutine("Rebuild", self.Rebuild);
 						return true;
 					end,
 				},
@@ -13048,7 +13011,7 @@ app:GetWindow("CurrentInstance", {
 			if results then
 				-- Simplify the returned groups
 				local groups = {};
-				local header = { mapID = self.mapID, g = groups };
+				local header = { mapID = self.mapID, back = 1, g = groups };
 				local achievementsHeader = app.CreateNPC(app.HeaderConstants.ACHIEVEMENTS, { ["g"] = {} });
 				table.insert(groups, achievementsHeader);
 				local explorationHeader = app.CreateNPC(app.HeaderConstants.EXPLORATION, { ["g"] = {} });
@@ -13291,7 +13254,7 @@ app:GetWindow("CurrentInstance", {
 		end
 		local function RefreshLocation()
 			if app.Settings:GetTooltipSetting("Auto:MiniList") or self:IsVisible() then
-				StartCoroutine("RefreshLocation", RefreshLocationCoroutine);
+				self:StartATTCoroutine("RefreshLocation", RefreshLocationCoroutine);
 			end
 		end
 		local function ToggleMiniListForCurrentZone()
@@ -14384,7 +14347,7 @@ app:GetWindow("Tradeskills", {
 		self.RefreshRecipes = function(self)
 			if app.CollectibleRecipes then
 				self.wait = 5;
-				StartCoroutine("RefreshingRecipes", function()
+				app:StartATTCoroutine("RefreshingRecipes", function()
 					while self.wait > 0 do
 						self.wait = self.wait - 1;
 						coroutine.yield();
@@ -14411,7 +14374,7 @@ app:GetWindow("Tradeskills", {
 			end
 			self.TSMCraftingVisible = visible;
 			self:UpdateFrameVisibility();
-			StartCoroutine("UpdateTradeSkills", function()
+			app:StartATTCoroutine("UpdateTradeSkills", function()
 				while _InCombatLockdown() do coroutine.yield(); end
 				coroutine.yield();
 				self:Update();
@@ -14463,9 +14426,9 @@ app:GetWindow("Tradeskills", {
 				return true;
 			else
 				self:SetMovable(false);
-				StartCoroutine("TSMWHY", function()
+				app:StartATTCoroutine("TSMWHY", function()
 					while _InCombatLockdown() or not TradeSkillFrame do coroutine.yield(); end
-					StartCoroutine("TSMWHYPT2", function()
+					app:StartATTCoroutine("TSMWHYPT2", function()
 						local thing = self.TSMCraftingVisible;
 						self.TSMCraftingVisible = nil;
 						self:SetTSMCraftingVisible(thing);
@@ -14513,7 +14476,7 @@ app:GetWindow("Tradeskills", {
 					end
 				end
 			elseif e == "TRADE_SKILL_CLOSE" or e == "CRAFT_CLOSE" then
-				StartCoroutine("TSMWHY3", function()
+				app:StartATTCoroutine("TSMWHY3", function()
 					self:RefreshRecipes();
 					if not self:UpdateFrameVisibility() then
 						self:SetVisible(false);
@@ -14556,7 +14519,7 @@ app:GetWindow("Tradeskills", {
 					self.gettinMadAtDumbNamingConventions = true;
 					self.OldNewElement = TSMAPI_FOUR.UI.NewElement;
 					TSMAPI_FOUR.UI.NewElement = function(...)
-						StartCoroutine("UpdateTradeSkills", function()
+						app:StartATTCoroutine("UpdateTradeSkills", function()
 							while _InCombatLockdown() do coroutine.yield(); end
 							coroutine.yield();
 							self:Update();
@@ -15029,9 +14992,9 @@ app.events.VARIABLES_LOADED = function()
 	app:RegisterEvent("QUEST_TURNED_IN");
 	app:RegisterEvent("QUEST_WATCH_UPDATE");
 	app:RegisterEvent("CRITERIA_UPDATE");
-	StartCoroutine("RefreshSaves", RefreshSaves);
+	app:StartATTCoroutine("RefreshSaves", RefreshSaves);
 	app:RefreshLocation();
-	StartCoroutine("Initial Prime Lookup", function()
+	app:StartATTCoroutine("Initial Prime Lookup", function()
 		local countdown = 5;
 		while countdown > 0 do
 			coroutine.yield();
@@ -15305,7 +15268,7 @@ app.events.CHAT_MSG_WHISPER = function(text, playerName, _, _, _, _, _, _, _, _,
 	end
 end
 app.events.CURSOR_CHANGED = function()
-	StartCoroutine("UpdateTooltip", function()
+	app:StartATTCoroutine("UpdateTooltip", function()
 		while not GameTooltip:IsShown() do
 			coroutine.yield();
 		end
@@ -15340,7 +15303,7 @@ app.events.LOOT_CLOSED = function()
 end
 app.events.UPDATE_INSTANCE_INFO = function()
 	app:UnregisterEvent("UPDATE_INSTANCE_INFO");
-	StartCoroutine("RefreshSaves", RefreshSaves);
+	app:StartATTCoroutine("RefreshSaves", RefreshSaves);
 end
 app.events.QUEST_ACCEPTED = function(questID)
 	wipe(searchCache);

@@ -46,31 +46,32 @@ end
 
 -- Create an Event Processor.
 local events = {};
-local _ = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
+local frame = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
+frame.Suffix = "ATTFRAME";
 if app.Debugging and false then
-_:SetScript("OnEvent", function(self, e, ...) print(e, ...); (events[e] or print)(...); end);
+frame:SetScript("OnEvent", function(self, e, ...) print(e, ...); (events[e] or print)(...); end);
 else
-_:SetScript("OnEvent", function(self, e, ...) (events[e] or print)(...); end);
+frame:SetScript("OnEvent", function(self, e, ...) (events[e] or print)(...); end);
 end
-_:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 0);
-_:SetSize(1, 1);
-_:Show();
-app._ = _;
+frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 0);
+frame:SetSize(1, 1);
+frame:Show();
+app.frame = frame;
 app.events = events;
 app.RegisterEvent = function(self, ...)
-	_:RegisterEvent(...);
+	frame:RegisterEvent(...);
 end
 app.UnregisterEvent = function(self, ...)
-	_:UnregisterEvent(...);
+	frame:UnregisterEvent(...);
 end
 app.SetScript = function(self, ...)
 	local scriptName, method = ...;
 	if method then
-		_:SetScript(scriptName, function(...)
+		frame:SetScript(scriptName, function(...)
 			method(app, ...);
 		end);
 	else
-		_:SetScript(scriptName, nil);
+		frame:SetScript(scriptName, nil);
 	end
 end
 
@@ -79,11 +80,10 @@ app.EventHandlers = {
 	OnRecalculate = {}
 };
 
-(function()
-local button = CreateFrame("BUTTON", nil, _);
-local checkbutton = CreateFrame("CHECKBUTTON", nil, _);
-local texture = _:CreateTexture(nil, "ARTWORK");
-local frameClass = getmetatable(_).__index;
+local button = CreateFrame("BUTTON", nil, frame);
+local checkbutton = CreateFrame("CHECKBUTTON", nil, frame);
+local texture = frame:CreateTexture(nil, "ARTWORK");
+local frameClass = getmetatable(frame).__index;
 local buttonClass = getmetatable(button).__index;
 local checkbuttonClass = getmetatable(checkbutton).__index;
 local textureClass = getmetatable(texture).__index;
@@ -114,7 +114,60 @@ buttonClass.SetATTHighlightSprite = function(self, name, x, y, w, h, sourceW, so
 end
 texture:Hide();
 button:Hide();
-end)();
+
+-- Extend the Frame Class and give them Coroutines!
+local coroutineStack = {};
+local function OnCoroutineUpdate()
+	for i=#coroutineStack,1,-1 do
+		if not coroutineStack[i][3]() then
+			table.remove(coroutineStack, i);
+			if #coroutineStack < 1 then
+				frame:SetScript("OnUpdate", nil);
+				--print("Coroutines Finished.");
+			end
+		--else
+			--print(coroutineStack[i][1], coroutineStack[i][2]);
+		end
+	end
+end
+local function Push(self, name, method)
+	if #coroutineStack < 1 then
+		frame:SetScript("OnUpdate", OnCoroutineUpdate);
+	end
+	local owner = self.Suffix or (self.GetName and self:GetName()) or self.text;
+	--print(owner, "Push ->", name);
+	table.insert(coroutineStack, { owner, name, method });
+end
+local function StartATTCoroutine(self, name, method)
+	if method then
+		local refreshing = self.__attActiveCoroutines;
+		if not refreshing then
+			refreshing = {};
+			self.__attActiveCoroutines = refreshing;
+		end
+		if not refreshing[name] then
+			refreshing[name] = true;
+			local instance = coroutine.create(method);
+			Push(self, name, function()
+				-- Check the status of the coroutine
+				if instance and coroutine.status(instance) ~= "dead" then
+					local ok, err = coroutine.resume(instance);
+					if ok then return true;	-- This means more work is required.
+					else
+						-- Show the error. Returning nothing is the same as canceling the work.
+						error(err,2);
+					end
+				end
+				refreshing[name] = nil;
+			end);
+		end
+	end
+end
+frameClass.StartATTCoroutine = StartATTCoroutine;
+buttonClass.StartATTCoroutine = StartATTCoroutine;
+app.StartATTCoroutine = function(self, ...)
+	StartATTCoroutine(frame, ...);
+end
 
 -- ReloadUI slash command (for ease of use)
 SLASH_RELOADUI1 = "/reloadui";
