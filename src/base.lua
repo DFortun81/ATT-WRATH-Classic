@@ -151,7 +151,7 @@ local function StartATTCoroutine(self, name, method)
 			Push(self, name, function()
 				-- Check the status of the coroutine
 				if instance and coroutine.status(instance) ~= "dead" then
-					local ok, err = coroutine.resume(instance);
+					local ok, err = coroutine.resume(instance, self);
 					if ok then return true;	-- This means more work is required.
 					else
 						-- Show the error. Returning nothing is the same as canceling the work.

@@ -110,6 +110,7 @@ local RWPFilterSettingsBase = {
 };
 local TooltipSettingsBase = {
 	__index = {
+		["Auto:AuctionList"] = true,
 		["Auto:MiniList"] = true,
 		["Auto:ProfessionList"] = true,
 		["Auto:Sync"] = true,
@@ -2542,6 +2543,93 @@ ModulesLabel:SetText("Modules & Mini Lists");
 ModulesLabel:Show();
 tinsert(settings.MostRecentTab.objects, ModulesLabel);
 
+local OpenAuctionListAutomatically = settings:CreateCheckBox("Automatically Open the Auction Module",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Auto:AuctionList"));
+end,
+function(self)
+	local checked = self:GetChecked();
+	settings:SetTooltipSetting("Auto:AuctionList", checked);
+	if checked then
+		local window = app:GetWindow("Auctions");
+		if window then window:Show(); end
+	end
+end);
+OpenAuctionListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Auction List when you open the auction house.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Auction List\n\nShortcut Command: /attauctions");
+OpenAuctionListAutomatically:SetPoint("TOPLEFT", ModulesLabel, "BOTTOMLEFT", 4, 0);
+
+local OpenMainListAutomatically = settings:CreateCheckBox("Automatically Open the Main List",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Auto:MainList"));
+end,
+function(self)
+	local checked = self:GetChecked();
+	settings:SetTooltipSetting("Auto:MainList", checked);
+	if checked then
+		local window = app:GetWindow("Prime");
+		if window then window:Show(); end
+	end
+end);
+OpenMainListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Main List when you login.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Main List\n\nShortcut Command: /att");
+OpenMainListAutomatically:SetPoint("TOPLEFT", OpenAuctionListAutomatically, "BOTTOMLEFT", 0, 4);
+
+local OpenMiniListAutomatically = settings:CreateCheckBox("Automatically Open the Mini List",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Auto:MiniList"));
+end,
+function(self)
+	local checked = self:GetChecked();
+	settings:SetTooltipSetting("Auto:MiniList", checked);
+	if checked then
+		local window = app:GetWindow("CurrentInstance");
+		if window then window:Show(); end
+	end
+end);
+OpenMiniListAutomatically:SetATTTooltip("Enable this option if you want to see everything you can collect in your current zone. The list will automatically switch when you change zones. Some people don't like this feature, but when you are solo farming, this feature is extremely useful.\n\nYou can also bind this setting to a Key.\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Mini List\n\nShortcut Command: /att mini");
+OpenMiniListAutomatically:SetPoint("TOPLEFT", OpenMainListAutomatically, "BOTTOMLEFT", 0, 4);
+
+local OpenProfessionListAutomatically = settings:CreateCheckBox("Automatically Open the Profession List",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Auto:ProfessionList"));
+end,
+function(self)
+	settings:SetTooltipSetting("Auto:ProfessionList", self:GetChecked());
+end);
+OpenProfessionListAutomatically:SetATTTooltip("Enable this option if you want ATT to open and refresh the profession list when you open your professions. Due to an API limitation imposed by Blizzard, the only time an addon can interact with your profession data is when it is open. The list will automatically switch when you change to a different profession.\n\nWe don't recommend disabling this option as it may prevent recipes from tracking correctly.\n\nYou can also bind this setting to a Key. (only works when a profession is open)\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Profession Mini List\n\nShortcut Command: /att prof");
+OpenProfessionListAutomatically:SetPoint("TOPLEFT", OpenMiniListAutomatically, "BOTTOMLEFT", 0, 4);
+
+local OpenRaidAssistantAutomatically = settings:CreateCheckBox("Automatically Open the Raid Assistant",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Auto:RaidAssistant"));
+end,
+function(self)
+	local checked = self:GetChecked();
+	settings:SetTooltipSetting("Auto:RaidAssistant", checked);
+	if checked then
+		local window = app:GetWindow("RaidAssistant");
+		if window then window:Show(); end
+	end
+end);
+OpenRaidAssistantAutomatically:SetATTTooltip("Enable this option if you want to see an alternative group/party/raid settings manager called the 'Raid Assistant'. The list will automatically update whenever group settings change.\n\nYou can also bind this setting to a Key.\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Raid Assistant\n\nShortcut Command: /attra");
+OpenRaidAssistantAutomatically:SetPoint("TOPLEFT", OpenProfessionListAutomatically, "BOTTOMLEFT", 0, 4);
+
+local IntegrateWithLFGBulletinBoard = settings:CreateCheckBox("Integrate With LFG Bulletin Board",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Integrate:LFGBulletinBoard"));
+end,
+function(self)
+	settings:SetTooltipSetting("Integrate:LFGBulletinBoard", self:GetChecked());
+end);
+IntegrateWithLFGBulletinBoard:SetATTTooltip("Enable this option if you want ATT to inject completion data on to the headers of LFG Bulletin Board if it is installed. In addition, holding Shift while Right Clicking the instance header will open the instance in an ATT mini list.\n\nDefault: On");
+IntegrateWithLFGBulletinBoard:SetPoint("TOPLEFT", OpenRaidAssistantAutomatically, "BOTTOMLEFT", 0, -4);
+
+local CelebrationsLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+CelebrationsLabel:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", -50, -8);
+CelebrationsLabel:SetJustifyH("LEFT");
+CelebrationsLabel:SetText("Celebrations & Sound Effects");
+CelebrationsLabel:Show();
+tinsert(settings.MostRecentTab.objects, CelebrationsLabel);
+
 local ChangeSkipCutsceneState = function(self, checked)
 	if checked then
 		self:RegisterEvent("PLAY_MOVIE");
@@ -2566,64 +2654,7 @@ function(self)
 	settings:SetTooltipSetting("Skip:Cutscenes", self:GetChecked());
 end);
 AutomaticallySkipCutscenesCheckBox:SetATTTooltip("Enable this option if you want ATT to automatically skip all cutscenes on your behalf.");
-AutomaticallySkipCutscenesCheckBox:SetPoint("TOPLEFT", ModulesLabel, "BOTTOMLEFT", 4, 0);
-
-local OpenMainListAutomatically = settings:CreateCheckBox("Automatically Open the Main List",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:MainList"));
-end,
-function(self)
-	settings:SetTooltipSetting("Auto:MainList", self:GetChecked());
-end);
-OpenMainListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Main List when you login.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Main List\n\nShortcut Command: /att");
-OpenMainListAutomatically:SetPoint("TOPLEFT", AutomaticallySkipCutscenesCheckBox, "BOTTOMLEFT", 0, 4);
-
-local OpenMiniListAutomatically = settings:CreateCheckBox("Automatically Open the Mini List",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:MiniList"));
-end,
-function(self)
-	settings:SetTooltipSetting("Auto:MiniList", self:GetChecked());
-end);
-OpenMiniListAutomatically:SetATTTooltip("Enable this option if you want to see everything you can collect in your current zone. The list will automatically switch when you change zones. Some people don't like this feature, but when you are solo farming, this feature is extremely useful.\n\nYou can also bind this setting to a Key.\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Mini List\n\nShortcut Command: /att mini");
-OpenMiniListAutomatically:SetPoint("TOPLEFT", OpenMainListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local OpenProfessionListAutomatically = settings:CreateCheckBox("Automatically Open the Profession List",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:ProfessionList"));
-end,
-function(self)
-	settings:SetTooltipSetting("Auto:ProfessionList", self:GetChecked());
-end);
-OpenProfessionListAutomatically:SetATTTooltip("Enable this option if you want ATT to open and refresh the profession list when you open your professions. Due to an API limitation imposed by Blizzard, the only time an addon can interact with your profession data is when it is open. The list will automatically switch when you change to a different profession.\n\nWe don't recommend disabling this option as it may prevent recipes from tracking correctly.\n\nYou can also bind this setting to a Key. (only works when a profession is open)\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Profession Mini List\n\nShortcut Command: /att prof");
-OpenProfessionListAutomatically:SetPoint("TOPLEFT", OpenMiniListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local OpenRaidAssistantAutomatically = settings:CreateCheckBox("Automatically Open the Raid Assistant",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:RaidAssistant"));
-end,
-function(self)
-	settings:SetTooltipSetting("Auto:RaidAssistant", self:GetChecked());
-end);
-OpenRaidAssistantAutomatically:SetATTTooltip("Enable this option if you want to see an alternative group/party/raid settings manager called the 'Raid Assistant'. The list will automatically update whenever group settings change.\n\nYou can also bind this setting to a Key.\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Raid Assistant\n\nShortcut Command: /attra");
-OpenRaidAssistantAutomatically:SetPoint("TOPLEFT", OpenProfessionListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local IntegrateWithLFGBulletinBoard = settings:CreateCheckBox("Integrate With LFG Bulletin Board",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Integrate:LFGBulletinBoard"));
-end,
-function(self)
-	settings:SetTooltipSetting("Integrate:LFGBulletinBoard", self:GetChecked());
-end);
-IntegrateWithLFGBulletinBoard:SetATTTooltip("Enable this option if you want ATT to inject completion data on to the headers of LFG Bulletin Board if it is installed. In addition, holding Shift while Right Clicking the instance header will open the instance in an ATT mini list.\n\nDefault: On");
-IntegrateWithLFGBulletinBoard:SetPoint("TOPLEFT", OpenRaidAssistantAutomatically, "BOTTOMLEFT", 0, -4);
-
-local CelebrationsLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-CelebrationsLabel:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", -50, -8);
-CelebrationsLabel:SetJustifyH("LEFT");
-CelebrationsLabel:SetText("Celebrations & Sound Effects");
-CelebrationsLabel:Show();
-tinsert(settings.MostRecentTab.objects, CelebrationsLabel);
+AutomaticallySkipCutscenesCheckBox:SetPoint("TOPLEFT", CelebrationsLabel, "BOTTOMLEFT", 4, 0);
 
 local UseMasterAudioChannel = settings:CreateCheckBox("Use the Master Audio Channel",
 function(self)
@@ -2636,7 +2667,7 @@ function(self)
 	end
 end);
 UseMasterAudioChannel:SetATTTooltip("Enable this option if you want the celebrations and other ATT sound effects to play on the 'MASTER' audio channel.\n\nDefault: Yes\n\nA lot of people play with sound effects off, so this option allows the ATT sounds to bypass that should it be desired.");
-UseMasterAudioChannel:SetPoint("TOPLEFT", CelebrationsLabel, "BOTTOMLEFT", 4, 0);
+UseMasterAudioChannel:SetPoint("TOPLEFT", AutomaticallySkipCutscenesCheckBox, "BOTTOMLEFT", 0, 4);
 
 local CelebrateCollectedThingsCheckBox = settings:CreateCheckBox("Collected Things Trigger a Celebration",
 function(self)

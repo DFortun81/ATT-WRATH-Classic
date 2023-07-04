@@ -41,6 +41,7 @@ Settings.lua
 ATT-Classic.lua
 db\Wrath\Categories.lua
 src\Root.lua
+src\UI\Auctions.lua
 src\UI\Breadcrumbs.lua
 src\UI\Dailies.lua
 src\UI\Random.lua
