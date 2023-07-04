@@ -10665,6 +10665,7 @@ local function SetRowData(self, row, data)
 			row.Indicator:Hide();
 			row.Summary:Hide();
 			row.Label:Hide();
+			row:Hide();
 			return;
 		end
 		
@@ -10817,16 +10818,13 @@ local function UpdateVisibleRowData(self)
 	-- Make it so that if you scroll all the way down, you have the ability to see all of the text every time.
 	local totalRowCount = #self.rowData;
 	if totalRowCount > 0 then
-		-- Fill the remaining rows up to the (visible) row count.
-		local container, rowCount, totalHeight = self.Container, 0, 0;
-		local current = math.max(1, math.min(self.CurrentIndex, totalRowCount));
-		
 		-- Ensure that the first row doesn't move out of position.
+		local container = self.Container;
 		local row = container.rows[1] or CreateRow(container);
 		SetRowData(self, row, self.rowData[1]);
-		totalHeight = totalHeight + row:GetHeight();
-		current = current + 1;
-		rowCount = rowCount + 1;
+		
+		-- Fill the remaining rows up to the (visible) row count.
+		local current, rowCount, totalHeight = math.max(1, math.min(self.CurrentIndex, totalRowCount)) + 1, 1, row:GetHeight();
 		
 		for i=2,totalRowCount do
 			row = container.rows[i] or CreateRow(container);
@@ -10841,22 +10839,15 @@ local function UpdateVisibleRowData(self)
 		end
 		
 		-- Hide the extra rows if any exist
-		local anyHidden = false;
 		for i=math.max(2, rowCount + 1),#container.rows do
 			local row = container.rows[i];
 			if row.ref then
 				SetRowData(self, row, nil);
-				anyHidden = true;
 			else
 				break;
 			end
 		end
-		if anyHidden then
-			self:UpdateScrollBar();
-		end
-		
-		totalRowCount = totalRowCount + 1;
-		self:SetMinMaxValues(rowCount, totalRowCount);
+		self:SetMinMaxValues(rowCount, totalRowCount + 1);
 		
 		-- The data is smudged, meaning it needs to be Updated.
 		if self.smudged then
@@ -12210,11 +12201,12 @@ function app:GetWindow(suffix, settings)
 				StopMovingOrSizing(window);
 			end);
 			
-			local MaxDisplayedValue, TotalValue, Difference = 0, 0, 0;
+			local MaxDisplayedValue, TotalValue, Difference, ScrollPercentage = 0, 0, 0, 0;
 			scrollbar:RegisterCallback(BaseScrollBoxEvents.OnScroll, function(o, scrollPercentage)
+				ScrollPercentage = scrollPercentage;
 				local currentIndex = math.ceil(scrollPercentage * Difference);
 				if currentIndex ~= window.CurrentIndex then
-					window.CurrentIndex = math.ceil(scrollPercentage * Difference);
+					window.CurrentIndex = currentIndex;
 					window:Refresh();
 				end
 			end, window);
@@ -12229,8 +12221,12 @@ function app:GetWindow(suffix, settings)
 					Difference = math.max(1, TotalValue - MaxDisplayedValue);
 					scrollbar:SetVisibleExtentPercentage(1 / Difference);
 					scrollbar:SetPanExtentPercentage(1 / (Difference + 1));
-					--scrollbar:GetForwardStepper():Enable(false);
 					scrollbar:Update();
+					local currentIndex = math.ceil(ScrollPercentage * Difference);
+					if currentIndex ~= window.CurrentIndex then
+						window.CurrentIndex = currentIndex;
+						window:Refresh();
+					end
 				end
 			end
 			
