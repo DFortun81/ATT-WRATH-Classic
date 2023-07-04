@@ -12224,10 +12224,10 @@ function app:GetWindow(suffix, settings)
 					scrollbar:SetVisibleExtentPercentage(1 / Difference);
 					scrollbar:SetPanExtentPercentage(1 / (Difference + 1));
 					scrollbar:Update();
-					if window.CurrentIndex >= (TotalValue - Difference) then
+					if window.CurrentIndex >= Difference then
 						window.CurrentIndex = math.ceil(ScrollPercentage * Difference);
+						window:Refresh();
 					end
-					window:Refresh();
 				end
 			end
 			
