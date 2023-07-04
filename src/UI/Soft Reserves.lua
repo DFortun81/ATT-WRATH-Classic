@@ -8,8 +8,8 @@ local _GetRaidRosterInfo, _GuildControlGetNumRanks, _GetGuildRosterInfo, _GetGui
 	   GetRaidRosterInfo,  GuildControlGetNumRanks,  GetGuildRosterInfo,  GetGuildRosterLastOnline;
 local _GetItemInfo = _G["GetItemInfo"];
 local _GetItemInfoInstant = _G["GetItemInfoInstant"];
-local GetRealmName, UnitName, UnitGUID =
-	  GetRealmName, UnitName, UnitGUID;
+local GetRealmName, UnitName, UnitGUID, UnitInRaid, UnitInParty =
+	  GetRealmName, UnitName, UnitGUID, UnitInRaid, UnitInParty;
 local strsplit, strsub = strsplit, strsub;
 
 -- Helper Functions
@@ -41,6 +41,14 @@ local function SendGuildMessage(msg)
 		app.events.CHAT_MSG_ADDON("ATTC", msg, "WHISPER", "player");
 	end
 end
+local function SendResponseMessage(msg, player)
+	if UnitInRaid(player) or UnitInParty(player) then
+		SendGroupMessage("to\t" .. player .. "\t" .. msg);
+	else
+		C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", player);
+	end
+end
+
 
 -- Module locals
 local SoftReservesDirty = nil;
@@ -404,9 +412,10 @@ local function CHAT_MSG_WHISPER_HANDLER(text, playerName, _, _, _, _, _, _, _, _
 	local action = strsub(text, 1, 1);
 	if action == '!' then	-- Send
 		local lowercased = string.lower(text);
-		local cmd = strsub(lowercased, 2, 3);
-		if cmd == "sr" and not Gargul then
+		if not Gargul and strsub(lowercased, 2, 3) == "sr" then
 			app:ParseSoftReserve(guid, strsub(text, 4));
+		elseif strsub(lowercased, 2, 6) == "attsr" then
+			app:ParseSoftReserve(guid, strsub(text, 7));
 		end
 	elseif action == '?' then	-- Request
 		local lowercased = string.lower(text);
@@ -422,6 +431,18 @@ local function CHAT_MSG_WHISPER_HANDLER(text, playerName, _, _, _, _, _, _, _, _
 				end
 			end
 			app:QuerySoftReserve(guid, strsub(text, 4));
+		elseif strsub(lowercased, 2, 6) == "attsr" then
+			-- Turn off the AskPrice addon message if it's a Soft Reserve.
+			if AucAdvanced and AucAdvanced.Settings then
+				local oldSetting = AucAdvanced.Settings.GetSetting('util.askprice.activated');
+				if oldSetting then
+					AucAdvanced.Settings.SetSetting("util.askprice.activated", false);
+					C_Timer.After(0.01, function()
+						AucAdvanced.Settings.SetSetting("util.askprice.activated", true);
+					end);
+				end
+			end
+			app:QuerySoftReserve(guid, strsub(text, 7));
 		end
 	end
 end
@@ -773,14 +794,12 @@ app:GetWindow("SoftReserves", {
 					OnUpdate = function(data)
 						if IsInGroup() then
 							data.visible = false;
+						elseif app.Settings:GetTooltipSetting("SoftReservesLocked") then
+							data.visible = false;
+						elseif not IsInGroup() or app.IsMasterLooter() then
+							data.visible = true;
 						else
-							if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-								data.visible = false;
-							elseif not IsInGroup() or app.IsMasterLooter() then
-								data.visible = true;
-							else
-								data.visible = false;
-							end
+							data.visible = false;
 						end
 						return true;
 					end,
@@ -843,50 +862,51 @@ app:GetWindow("SoftReserves", {
 					ranks = {},
 					g = {},
 					OnUpdate = function(data)
-						if IsInGroup() then return false; end
+						if IsInGroup() then
+							data.visible = false;
+							return true;
+						end
 						-- Insert Guild Members
 						local g, groupMembers = data.g, self.groupMembers;
-						if #g < 1 then
-							local numRanks = _GuildControlGetNumRanks();
-							if numRanks > 0 then
-								for rankIndex = #g + 1, numRanks, 1 do
-									table.insert(g, {
-										text = GuildControlGetRankName(rankIndex),
-										icon = format("Interface\\PvPRankBadges\\PvPRank%02d",  (15 - rankIndex)),
-										--OnUpdate = app.AlwaysShowUpdate,
-										parent = data,
-										visible = true,
-										g = {},
-									});
-								end
-								
-								local debugMode = app.Settings:Get("DebugMode");
-								local count = GetNumGuildMembers();
-								if count > 0 then
-									for guildIndex = 1, count, 1 do
-										local _, _, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = _GetGuildRosterInfo(guildIndex);
-										if guid then
-											if not groupMembers[guid] then
-												groupMembers[guid] = true;
-												local yearsOffline, monthsOffline, daysOffline, hoursOffline = _GetGuildRosterLastOnline(guildIndex);
-												if (((yearsOffline or 0) * 12) + (monthsOffline or 0)) < 3 or debugMode then
-													local a = g[rankIndex + 1];
-													if a then table.insert(a.g, app.CreateSoftReserveUnit(guid, { parent = a, visible = true })); end
-												end
+						local numRanks = _GuildControlGetNumRanks();
+						if numRanks > 0 then
+							for rankIndex = #g + 1, numRanks, 1 do
+								table.insert(g, {
+									text = GuildControlGetRankName(rankIndex),
+									icon = format("Interface\\PvPRankBadges\\PvPRank%02d",  (15 - rankIndex)),
+									--OnUpdate = app.AlwaysShowUpdate,
+									parent = data,
+									visible = true,
+									g = {},
+								});
+							end
+							
+							local debugMode = app.Settings:Get("DebugMode");
+							local count = GetNumGuildMembers();
+							if count > 0 then
+								for guildIndex = 1, count, 1 do
+									local _, _, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = _GetGuildRosterInfo(guildIndex);
+									if guid then
+										if not groupMembers[guid] then
+											groupMembers[guid] = true;
+											local yearsOffline, monthsOffline, daysOffline, hoursOffline = _GetGuildRosterLastOnline(guildIndex);
+											if (((yearsOffline or 0) * 12) + (monthsOffline or 0)) < 3 or debugMode then
+												local a = g[rankIndex + 1];
+												if a then table.insert(a.g, app.CreateSoftReserveUnit(guid, { parent = a, visible = true })); end
 											end
 										end
 									end
-									
-									local any = false;
-									for rankIndex = 1, numRanks, 1 do
-										if #g[rankIndex].g > 0 then
-											app.Sort(g[rankIndex].g, app.SortDefaults.Text);
-											any = true;
-										end
-									end
-									data.visible = any;
-									return true;
 								end
+								
+								local any = false;
+								for rankIndex = 1, numRanks, 1 do
+									if #g[rankIndex].g > 0 then
+										app.Sort(g[rankIndex].g, app.SortDefaults.Text);
+										any = true;
+									end
+								end
+								data.visible = any;
+								return true;
 							end
 						end
 					end,
