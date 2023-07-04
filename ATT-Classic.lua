@@ -1835,18 +1835,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				if app.Settings:GetTooltipSetting("itemID") then tinsert(info, { left = L["ITEM_ID"], right = tostring(itemID) }); end
 				if app.Settings:GetTooltipSetting("itemLevel") then tinsert(info, { left = "Item Level", right = select(4, _GetItemInfo(itemLink or itemID)) }); end
 				if app.Settings:GetTooltipSetting("itemString") and itemLink then tinsert(info, { left = "Item String", right = string.match(itemLink, "item[%-?%d:]+") }); end
-				
-				-- Show Reservations
-				local reservesForItem = GetTempDataMember("SoftReservesByItemID")[itemID];
-				if reservesForItem and app.Settings:GetTooltipSetting("SoftReserves") then
-					local left = "Soft Reserves";
-					for i,guid in ipairs(reservesForItem) do
-						if guid and IsGUIDInGroup(guid) then
-							tinsert(info, { left = left, right = app.CreateSoftReserveUnit(guid).tooltipText });
-							left = nil;
-						end
-					end
-				end
+				app.ShowSoftReservesForItem(itemID, info);
 				
 				local reagentCache = app.GetDataSubMember("Reagents", itemID);
 				if reagentCache then
@@ -5507,36 +5496,6 @@ app.ClassDB = setmetatable({}, { __index = function(t, className)
 	end
 end });
 
-app.GetGroupType = function()
-	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then
-		return "INSTANCE_CHAT";
-	elseif IsInRaid() then
-		return "RAID";
-	elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
-		return "PARTY";
-	end
-	return "RAID";
-end
-app.IsMasterLooter = function()
-	return app.IsUnitMasterLooter(UnitName("player"));
-end
-app.IsUnitMasterLooter = function(name)
-	if IsInGroup() then
-		-- Ensure that the player is the master looter.
-		local lootMethod, partyIndex, raidIndex = GetLootMethod();
-		if lootMethod == "master" then
-			if raidIndex then
-				return name == GetRaidRosterInfo(raidIndex);
-			elseif partyIndex == 0 then
-				-- Player is the Master Looter
-				return name == UnitName("player");
-			else
-				return name == UnitName("party" .. partyIndex);
-			end
-		end
-	end
-end
-
 app.CreateCharacterClass, app.BaseCharacterClass = app.CreateClass("CharacterClass", "classID", {
 	["text"] = function(t)
 		local text = "|c" .. t.classColors.colorStr .. t.name .. "|r";
@@ -5561,7 +5520,6 @@ app.CreateCharacterClass, app.BaseCharacterClass = app.CreateClass("CharacterCla
 		return RAID_CLASS_COLORS[C_CreatureInfo.GetClassInfo(t.classID).classFile];
 	end,
 });
-
 app.CreateUnit = app.CreateClass("Unit", "unit", {
 	["text"] = function(t)
 		return t.name;
@@ -5614,7 +5572,6 @@ app.CreateUnit = app.CreateClass("Unit", "unit", {
 		return text;
 	end,
 });
-
 app.CreateQuestUnit = app.ExtendClass("Unit", "QuestUnit", "unit", {
 	["visible"] = function(t)
 		return true;
@@ -5644,241 +5601,6 @@ app.CreateQuestUnit = app.ExtendClass("Unit", "QuestUnit", "unit", {
 				else
 					local questsForGUID = GetDataMember("GroupQuestsByGUID")[guid] or (ATTCharacterData[guid] and ATTCharacterData[guid].Quests);
 					return questsForGUID and questsForGUID[questID];
-				end
-			end
-		end
-	end,
-});
-
-local SoftReserveUnitOnClick = function(self, button)
-	local guid = self.ref.guid or self.ref.unit;
-	if guid then
-		if button == "RightButton" then
-			if self.ref.itemID then
-				if app.IsMasterLooter() then
-					-- Master Looters can do whatever they want.
-					app:ShowPopupDialog((self.ref.text or RETRIEVING_DATA) .. "\n \nAre you sure you want to delete this?",
-					function()
-						if IsGUIDInGroup(guid) then
-							app:UpdateSoftReserve(guid, nil, time(), false, true);
-						else
-							app:UpdateSoftReserveInternal(guid, nil);
-						end
-						app:RefreshSoftReserveWindow();
-					end);
-				elseif UnitGUID("player") == guid then
-					if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-						app.print("You can't do that while the session is locked.");
-						return true;
-					end
-					-- A player can change their own, so long as it isn't locked.
-					app:ShowPopupDialog("Your Soft Reserve is currently set to:\n \n" .. (self.ref.itemText or RETRIEVING_DATA) .. "\n \nDo you want to delete it?",
-					function()
-						app:UpdateSoftReserve(guid, nil, time(), false, true);
-						app:RefreshSoftReserveWindow();
-					end);
-				elseif IsGUIDInGroup(guid) then
-					app.print("You must be the Master Looter to do that.");
-					return true;
-				else
-					-- You can do whatever you want to non-group members.
-					app:ShowPopupDialog((self.ref.text or RETRIEVING_DATA) .. "\n \nAre you sure you want to delete this?",
-					function()
-						app:UpdateSoftReserveInternal(guid, nil);
-						app:RefreshSoftReserveWindow();
-					end);
-				end
-			end
-		elseif button == "LeftButton" then
-			if IsShiftKeyDown() or IsControlKeyDown() then
-				return false;
-			end
-			if app.IsMasterLooter() then
-				-- Master Looters can do whatever they want.
-				if self.ref.itemID then
-					app:ShowPopupDialogWithEditBox((self.ref.name or RETRIEVING_DATA) .. " has their Soft Reserve set to:\n \n" .. (self.ref.itemText or RETRIEVING_DATA) .. "\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
-						if cmd and cmd ~= "" then
-							app:ParseSoftReserve(guid, cmd);
-							app:RefreshSoftReserveWindow();
-						end
-					end);
-				else
-					app:ShowPopupDialogWithEditBox((self.ref.name or RETRIEVING_DATA) .. " does not have a Soft Reserve.\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
-						if cmd and cmd ~= "" then
-							app:ParseSoftReserve(guid, cmd);
-							app:RefreshSoftReserveWindow();
-						end
-					end);
-				end
-			elseif UnitGUID("player") == guid then
-				if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-					app.print("You can't do that while the session is locked.");
-					return true;
-				end
-				-- A player can change their own, so long as it isn't locked.
-				if self.ref.itemID then
-					app:ShowPopupDialogWithEditBox("Your Soft Reserve is set to:\n \n" .. (self.ref.itemText or RETRIEVING_DATA) .. "\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
-						if cmd and cmd ~= "" then
-							app:ParseSoftReserve(UnitGUID("player"), cmd, true, true);
-							app:RefreshSoftReserveWindow();
-						end
-					end);
-				else
-					app:ShowPopupDialogWithEditBox("You do not have a Soft Reserve yet.\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
-						if cmd and cmd ~= "" then
-							app:ParseSoftReserve(UnitGUID("player"), cmd, true, true);
-							app:RefreshSoftReserveWindow();
-						end
-					end);
-				end
-			elseif IsGUIDInGroup(guid) then
-				app.print("You must be the Master Looter to do that.");
-				return true;
-			end
-		end
-	end
-	return true;
-end
-app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
-	["text"] = function(t)
-		return t.name .. " - " .. t.itemText;
-	end,
-	["itemText"] = function(t)
-		local itemID = t.itemID;
-		if itemID then
-			local itemName, itemLink,_,_,_,_,_,_,_,icon = _GetItemInfo(itemID);
-			if itemLink then
-				return (icon and ("|T" .. icon .. ":0|t") or "") .. itemLink .. (t.mapText or "");
-			else
-				return RETRIEVING_DATA;
-			end
-		else
-			return "No Soft Reserve Selected";
-		end
-	end,
-	["mapText"] = function(t)
-		local mapID = t.internalMapID;
-		if mapID and mapID ~= app.CurrentMapID then
-			return " (" .. app.GetMapName(mapID) .. ")";
-		end
-	end,
-	["visible"] = function(t)
-		return true;
-	end,
-	["itemID"] = function(t)
-		local guid = t.guid;
-		if guid then
-			local reserve = rawget(GetDataMember("SoftReserves"), guid);
-			if reserve then
-				return type(reserve) == 'number' and reserve or reserve[1];
-			end
-		end
-	end,
-	["persistence"] = function(t)
-		local guid = t.guid;
-		if guid then
-			local reserve = rawget(GetDataMember("SoftReserves"), guid);
-			if reserve then
-				local itemID = type(reserve) == 'number' and reserve or reserve[1];
-				if itemID then
-					local persistence = rawget(GetDataMember("SoftReservePersistence"), guid);
-					if persistence then return persistence[itemID]; end
-					return 0;
-				end
-			end
-		end
-	end,
-	["roll"] = function(t)
-		if app.Settings:GetTooltipSetting("SoftReservePersistence") then
-			local persistence = t.persistence;
-			if persistence and persistence > 0 then
-				return 100 + (persistence * 10);
-			else
-				return 100;
-			end
-		end
-	end,
-	["preview"] = function(t)
-		return t.itemID and select(5, _GetItemInfoInstant(t.itemID));
-	end,
-	["link"] = function(t)
-		return t.itemID and select(2, _GetItemInfo(t.itemID));
-	end,
-	["tooltipText"] = function(t)
-		local text = t.name;
-		local guid = t.guid;
-		local roll = t.roll;
-		local icon = t.icon;
-		if icon then text = "|T" .. icon .. ":0|t " .. text; end
-		if roll and app.Settings:GetTooltipSetting("SoftReservePersistence") then text = text .. " (" .. roll .. ")"; end
-		if guid and not IsGUIDInGroup(guid) then
-			text = text .. " |CFFFFFFFF(Not in Group)|r";
-		end
-		return text;
-	end,
-	["summary"] = function(t)
-		return t.roll;
-	end,
-	["OnClick"] = function(t)
-		return SoftReserveUnitOnClick;
-	end,
-	["itemName"] = function(t)
-		local itemID = t.itemID;
-		if itemID then
-			local itemName = _GetItemInfo(itemID);
-			if itemName then
-				return itemName;
-			else
-				return RETRIEVING_DATA;
-			end
-		else
-			return "No Soft Reserve Selected";
-		end
-	end,
-	["crs"] = function(t)
-		local itemID = t.itemID;
-		if itemID then
-			local searchResults = app.SearchForField("itemID", itemID);
-			if searchResults and #searchResults > 0 then
-				for i,o in ipairs(searchResults) do
-					if o.itemID then
-						if o.crs then
-							return o.crs;
-						end
-						if o.qgs then
-							return o.qgs;
-						end
-						if o.parent then
-							if o.parent.npcID and o.parent.npcID > 0 then
-								return { o.parent.npcID };
-							end
-							if o.parent.cr then
-								return { o.parent.cr };
-							end
-							if o.parent.crs then
-								return o.parent.crs;
-							end
-							if o.parent.qgs then
-								return o.parent.qgs;
-							end
-						end
-					end
-				end
-			end
-		end
-	end,
-	["internalMapID"] = function(t)
-		local itemID = t.itemID;
-		if itemID then
-			local searchResults = app.SearchForField("itemID", itemID);
-			if searchResults and #searchResults > 0 then
-				for i,o in ipairs(searchResults) do
-					if o.itemID then
-						local mapID = GetRelativeValue(o, "mapID");
-						if mapID then
-							return mapID;
-						end
-					end
 				end
 			end
 		end
@@ -14585,14 +14307,12 @@ function ItemRefTooltip:SetHyperlink(link, a, b, c, d, e, f)
 end
 
 -- Register Events required at the start
+app:RegisterEvent("VARIABLES_LOADED");
 app:RegisterEvent("BOSS_KILL");
 app:RegisterEvent("CHAT_MSG_ADDON");
 if select(4, GetBuildInfo()) > 11403 then
 	app:RegisterEvent("CURSOR_CHANGED");
 end
-
-app:RegisterEvent("VARIABLES_LOADED");
-app:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
 
 -- Define Event Behaviours
 app.events.VARIABLES_LOADED = function()
@@ -14810,24 +14530,6 @@ app.events.VARIABLES_LOADED = function()
 	GetDataMember("AddonMessageProcessor", {});
 	GetDataMember("ValidSuffixesPerItemID", {});
 	
-	-- Check the format of the Soft Reserve Cache
-	local reserves = GetDataMember("SoftReserves", {});
-	local persistence = GetDataMember("SoftReservePersistence", {});
-	local reservesByItemID = GetTempDataMember("SoftReservesByItemID", {});
-	for guid,reserve in pairs(reserves) do
-		if type(reserve) == 'number' then
-			reserve = { reserve, time() };
-			reserves[guid] = reserve;
-		end
-		local itemID = reserve[1];
-		local reservesForItem = reservesByItemID[itemID];
-		if not reservesForItem then
-			reservesForItem = {};
-			reservesByItemID[itemID] = reservesForItem;
-		end
-		table.insert(reservesForItem, guid);
-	end
-	
 	-- Clean up settings
 	local oldsettings = {};
 	for i,key in ipairs({
@@ -14855,25 +14557,8 @@ app.events.VARIABLES_LOADED = function()
 	
 	-- Tooltip Settings
 	app.Settings:Initialize();
-	app.PushSoftReserve(true);
-	C_ChatInfo.RegisterAddonMessagePrefix("ATTC");
-	
-	-- Check if the SRs are locked
-	if IsInGroup() then
-		if not app.IsMasterLooter() then
-			SendGroupMessage("?\tsrlock");
-			SendGroupMessage("?\tsrpersistence");
-		end
-	else
-		-- Unlock the Soft Reserves when not in a group
-		local locked = app.Settings:GetTooltipSetting("SoftReservesLocked");
-		if locked then
-			app.Settings:SetTooltipSetting("SoftReservesLocked", false);
-			wipe(searchCache);
-		end
-	end
-	
 	app.CurrentMapID = app.GetCurrentMapID();
+	C_ChatInfo.RegisterAddonMessagePrefix("ATTC");
 	
 	-- TODO: Move this to a startup runner
 	app.CacheFlightPathData();
@@ -15093,11 +14778,6 @@ app.events.CURSOR_CHANGED = function()
 		end
 		AttachTooltip(GameTooltip);
 	end);
-end
-app.events.PARTY_LOOT_METHOD_CHANGED = function()
-	if GetLootMethod() == "master" then
-		app.PushSoftReserve();
-	end
 end
 app.events.PLAYER_LEVEL_UP = function(newLevel)
 	app.Level = newLevel;
