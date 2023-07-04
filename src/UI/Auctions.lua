@@ -75,7 +75,6 @@ app:GetWindow("Auctions", {
 			end
 		end
 		self:SetScript("OnEvent", function(self, e, a, b, c)
-			print(e);
 			if e == "AUCTION_ITEM_LIST_UPDATE" then
 				self:StartATTCoroutine("ProcessAuctions", ProcessAuctions);
 			elseif e == "ADDON_LOADED" then
