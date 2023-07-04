@@ -10914,20 +10914,18 @@ local function StartMovingOrSizing(self, fromChild)
 		if not self:IsMovable() or ((select(2, GetCursorPosition()) / self:GetEffectiveScale()) < math.max(self:GetTop() - 40, self:GetBottom() + 10)) then
 			self:StartSizing();
 			self:StartATTCoroutine("StartMovingOrSizing (Sizing)", function()
-				if self.isMoving then
+				while self.isMoving do
 					self:Refresh();
-					return true;
+					coroutine.yield();
 				end
 			end);
 		else
 			self:StartMoving();
 			self:StartATTCoroutine("StartMovingOrSizing (Moving)", function()
-				-- This fixes a bug where the window will get stuck on the mouse until you reload.
-				if IsSelfOrChild(self, GetMouseFocus()) then
-					return true;
-				else
-					StopMovingOrSizing(self);
+				while IsSelfOrChild(self, GetMouseFocus()) do
+					coroutine.yield();
 				end
+				StopMovingOrSizing(self);
 			end);
 		end
 	end
