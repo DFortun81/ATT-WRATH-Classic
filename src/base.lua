@@ -8,6 +8,11 @@ local name, app = ...;
 function app:GetName() return name; end
 app.Version = GetAddOnMetadata(name, "Version");
 
+-- ReloadUI slash command (for ease of use)
+SLASH_RELOADUI1 = "/reloadui";
+SLASH_RELOADUI2 = "/rl";
+SlashCmdList["RELOADUI"] = ReloadUI;
+
 local assetRootPath = "Interface\\Addons\\" .. name .. "\\assets\\";
 app.asset = function(path)
 	return assetRootPath .. path;
@@ -169,10 +174,21 @@ app.StartATTCoroutine = function(self, ...)
 	StartATTCoroutine(frame, ...);
 end
 
--- ReloadUI slash command (for ease of use)
-SLASH_RELOADUI1 = "/reloadui";
-SLASH_RELOADUI2 = "/rl";
-SlashCmdList["RELOADUI"] = ReloadUI;
+-- API Functions
+local function CloneReference(group)
+	local clone = {};
+	if group.g then
+		local g = {};
+		for i,group in ipairs(group.g) do
+			local child = CloneReference(group);
+			child.parent = clone;
+			tinsert(g, child);
+		end
+		clone.g = g;
+	end
+	return setmetatable(clone, { __index = group });
+end
+app.CloneReference = CloneReference;
 
 function app:ShowPopupDialog(msg, callback)
 	local popup = StaticPopupDialogs["ALL_THE_THINGS"];
@@ -372,11 +388,17 @@ local constructor = function(id, t, typeID)
 end
 
 -- Creates a Base Object Table which will evaluate the provided set of 'fields' (each field value being a keyed function)
+local classDefinitions = {};
 app.BaseObjectFields = function(fields, className)
 	if not className then
 		print("A Class Name must be declared when using BaseObjectFields");
 	end
 	local class = { __type = function() return className; end };
+	if not classDefinitions[className] then
+		classDefinitions[className] = class;
+	else
+		print("A Class has already been defined with that name!", className);
+	end
 	if fields then
 		for key,method in pairs(fields) do
 			class[key] = method;
@@ -485,6 +507,22 @@ app.CreateClass = function(className, classKey, fields, ...)
 			return setmetatable(constructor(id, t, classKey), Class);
 		end, Class;
 	end
+end
+app.ExtendClass = function(baseClassName, className, classKey, fields, ...)
+	local baseClass = classDefinitions[baseClassName];
+	if baseClass then
+		if not fields then fields = {}; end
+		for key,method in pairs(baseClass) do
+			if not fields[key] then
+				fields[key] = method;
+			end
+		end
+		fields.__type = nil;
+		fields.key = nil;
+	else
+		print("Could not find specified base class:", baseClassName);
+	end
+	return app.CreateClass(className, classKey, fields, ...);
 end
 
 --[[

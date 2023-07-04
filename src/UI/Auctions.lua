@@ -1,24 +1,9 @@
--- Auctions Module
+-- App locals
 local appName, app = ...;
+local CloneReference = app.CloneReference;
 
 -- Global locals
 local _GetAuctionItemInfo, _GetAuctionItemLink = GetAuctionItemInfo, GetAuctionItemLink;
-
--- App locals
--- TODO: Declare this somewhere else.
-local function CloneReference(group)
-	local clone = {};
-	if group.g then
-		local g = {};
-		for i,group in ipairs(group.g) do
-			local child = CloneReference(group);
-			child.parent = clone;
-			tinsert(g, child);
-		end
-		clone.g = g;
-	end
-	return setmetatable(clone, { __index = group });
-end
 
 -- Module locals
 local auctionData = {};

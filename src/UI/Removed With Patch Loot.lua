@@ -1,5 +1,7 @@
-do
+-- App locals
 local appName, app = ...;
+
+-- Implementation
 app:GetWindow("RWP", {
 	parent = UIParent,
 	Silent = true,
@@ -35,4 +37,3 @@ app:GetWindow("RWP", {
 		return true;
 	end,
 });
-end

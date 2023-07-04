@@ -1,10 +1,5 @@
--- Sync Module
-local appName, app = ...;
-
 -- App locals
-local function SortByText(a, b)
-	return b.text > a.text;
-end
+local appName, app = ...;
 
 -- Helper Functions
 local function OnClickForCharacter(row, button)
@@ -90,6 +85,7 @@ local function OnTooltipForLinkedAccount(t)
 	end
 end
 
+-- Implementation
 app:GetWindow("Sync", {
 	parent = UIParent,
 	Silent = true,
@@ -168,7 +164,7 @@ app:GetWindow("Sync", {
 								parent = data,
 							});
 						else
-							app.Sort(g, SortByText);
+							app.Sort(g, app.SortDefaults.Text);
 						end
 						return app.AlwaysShowUpdate(data);
 					end,

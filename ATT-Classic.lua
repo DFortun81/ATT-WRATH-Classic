@@ -3,7 +3,10 @@
 --------------------------------------------------------------------------------
 --				Copyright 2017-2023 Dylan Fortune (Crieve-Sargeras)           --
 --------------------------------------------------------------------------------
+-- App locals
 local appName, app = ...;
+local contains, containsAny, containsValue = app.contains, app.containsAny, app.containsValue;
+local CloneReference = app.CloneReference;
 local L = app.L;
 
 -- Global API cache
@@ -12,7 +15,6 @@ local C_DateAndTime_GetServerTimeLocal
 	= C_DateAndTime.GetServerTimeLocal;
 local ipairs, tinsert, pairs, rawset, rawget
 	= ipairs, tinsert, pairs, rawset, rawget;
-
 local C_Map_GetMapInfo = C_Map.GetMapInfo;
 local C_Map_GetPlayerMapPosition = C_Map.GetPlayerMapPosition;
 local _GetAchievementInfo = _G["GetAchievementInfo"];
@@ -25,9 +27,6 @@ local _GetItemInfo = _G["GetItemInfo"];
 local _GetItemInfoInstant = _G["GetItemInfoInstant"];
 local _GetItemCount = _G["GetItemCount"];
 local _InCombatLockdown = _G["InCombatLockdown"];
-
--- Helper Functions
-local contains, containsAny, containsValue = app.contains, app.containsAny, app.containsValue;
 
 -- Local Variables
 local DESCRIPTION_SEPARATOR = "`";
@@ -671,19 +670,6 @@ local function CloneData(group)
 		clone.g = g;
 	end
 	return clone;
-end
-local function CloneReference(group)
-	local clone = {};
-	if group.g then
-		local g = {};
-		for i,group in ipairs(group.g) do
-			local child = CloneReference(group);
-			child.parent = clone;
-			tinsert(g, child);
-		end
-		clone.g = g;
-	end
-	return setmetatable(clone, { __index = group });
 end
 local function RawCloneData(data)
 	local clone = {};
@@ -5576,6 +5562,94 @@ app.CreateCharacterClass, app.BaseCharacterClass = app.CreateClass("CharacterCla
 	end,
 });
 
+app.CreateUnit = app.CreateClass("Unit", "unit", {
+	["text"] = function(t)
+		return t.name;
+	end,
+	["name"] = function(t)
+		local name, className, classFile, classID = UnitName(t.unit);
+		if name then
+			className, classFile, classID = UnitClass(t.unit);
+		elseif #{strsplit("-", t.unit)} > 1 then
+			-- It's a GUID.
+			rawset(t, "guid", t.unit);
+			className, classFile, _, _, _, name = GetPlayerInfoByGUID(t.unit);
+			classID = GetClassIDFromClassFile(classFile);
+		end
+		if name then
+			if classFile then name = "|c" .. RAID_CLASS_COLORS[classFile].colorStr .. name .. "|r"; end
+			rawset(t, "name", name);
+			rawset(t, "className", className);
+			rawset(t, "classFile", classFile);
+			rawset(t, "classID", classID);
+			return name;
+		end
+		return RETRIEVING_DATA;
+	end,
+	["icon"] = function(t)
+		if t.classID then return classIcons[t.classID]; end
+	end,
+	["guid"] = function(t)
+		return UnitGUID(t.unit);
+	end,
+	["title"] = function(t)
+		if IsInGroup() then
+			if rawget(t, "isML") then return MASTER_LOOTER; end
+			if UnitIsGroupLeader(t.unit, "raid") then return RAID_LEADER; end
+		end
+	end,
+	["level"] = function(t)
+		return UnitLevel(t.unit);
+	end,
+	["race"] = function(t)
+		return UnitRace(t.unit);
+	end,
+	["class"] = function(t)
+		return UnitClass(t.unit);
+	end,
+	["tooltipText"] = function(t)
+		local text = t.name;
+		local icon = t.icon;
+		if icon then text = "|T" .. icon .. ":0|t " .. text; end
+		return text;
+	end,
+});
+
+app.CreateQuestUnit = app.ExtendClass("Unit", "QuestUnit", "unit", {
+	["visible"] = function(t)
+		return true;
+	end,
+	["collectible"] = function(t)
+		return true;
+	end,
+	["trackable"] = function(t)
+		return true;
+	end,
+	["collected"] = function(t)
+		return t.saved;
+	end,
+	["OnClick"] = function(t)
+		return app.NoFilter;
+	end,
+	["OnUpdate"] = function(t)
+		return app.AlwaysShowUpdateWithoutReturn;
+	end,
+	["saved"] = function(t)
+		local questID = GetRelativeValue(t, "questID");
+		if questID then
+			local guid = t.guid;
+			if guid and questID then
+				if guid == app.GUID then
+					return IsQuestFlaggedCompleted(questID);
+				else
+					local questsForGUID = GetDataMember("GroupQuestsByGUID")[guid] or (ATTCharacterData[guid] and ATTCharacterData[guid].Quests);
+					return questsForGUID and questsForGUID[questID];
+				end
+			end
+		end
+	end,
+});
+
 local SoftReserveUnitOnClick = function(self, button)
 	local guid = self.ref.guid or self.ref.unit;
 	if guid then
@@ -5622,14 +5696,14 @@ local SoftReserveUnitOnClick = function(self, button)
 			if app.IsMasterLooter() then
 				-- Master Looters can do whatever they want.
 				if self.ref.itemID then
-					app:ShowPopupDialogWithEditBox((self.ref.unitText or RETRIEVING_DATA) .. " has their Soft Reserve set to:\n \n" .. (self.ref.itemText or RETRIEVING_DATA) .. "\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
+					app:ShowPopupDialogWithEditBox((self.ref.name or RETRIEVING_DATA) .. " has their Soft Reserve set to:\n \n" .. (self.ref.itemText or RETRIEVING_DATA) .. "\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
 						if cmd and cmd ~= "" then
 							app:ParseSoftReserve(guid, cmd);
 							app:RefreshSoftReserveWindow();
 						end
 					end);
 				else
-					app:ShowPopupDialogWithEditBox((self.ref.unitText or RETRIEVING_DATA) .. " does not have a Soft Reserve.\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
+					app:ShowPopupDialogWithEditBox((self.ref.name or RETRIEVING_DATA) .. " does not have a Soft Reserve.\n \nEnter a new Item ID or an Item Link.", "", function(cmd)
 						if cmd and cmd ~= "" then
 							app:ParseSoftReserve(guid, cmd);
 							app:RefreshSoftReserveWindow();
@@ -5665,33 +5739,9 @@ local SoftReserveUnitOnClick = function(self, button)
 	end
 	return true;
 end
-app.CreateSoftReserveUnit = app.CreateClass("SoftReserveUnit", "unit", {
+app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
 	["text"] = function(t)
-		local name = t.unitText;
-		if name then
-			return name .. " - " .. t.itemText;
-		end
-		return t.unit;
-	end,
-	["unitText"] = function(t)
-		local name, className, classFile, classID = UnitName(t.unit);
-		if name then
-			className, classFile, classID = UnitClass(t.unit);
-		elseif #{strsplit("-", t.unit)} > 1 then
-			-- It's a GUID.
-			rawset(t, "guid", t.unit);
-			className, classFile, _, _, _, name = GetPlayerInfoByGUID(t.unit);
-			classID = GetClassIDFromClassFile(classFile);
-		end
-		if name then
-			rawset(t, "name", name);
-			if classFile then name = "|c" .. RAID_CLASS_COLORS[classFile].colorStr .. name .. "|r"; end
-			rawset(t, "className", className);
-			rawset(t, "classFile", classFile);
-			rawset(t, "classID", classID);
-			return name;
-		end
-		return t.unit;
+		return t.name .. " - " .. t.itemText;
 	end,
 	["itemText"] = function(t)
 		local itemID = t.itemID;
@@ -5711,15 +5761,6 @@ app.CreateSoftReserveUnit = app.CreateClass("SoftReserveUnit", "unit", {
 		if mapID and mapID ~= app.CurrentMapID then
 			return " (" .. app.GetMapName(mapID) .. ")";
 		end
-	end,
-	["name"] = function(t)
-		return UnitName(t.unit);
-	end,
-	["guid"] = function(t)
-		return UnitGUID(t.unit);
-	end,
-	["icon"] = function(t)
-		return t.classID and classIcons[t.classID];
 	end,
 	["visible"] = function(t)
 		return true;
@@ -5758,13 +5799,13 @@ app.CreateSoftReserveUnit = app.CreateClass("SoftReserveUnit", "unit", {
 		end
 	end,
 	["preview"] = function(t)
-		return t.itemID and select(5, _GetItemInfoInstant(t.itemID)) or "Interface\\Icons\\INV_Misc_QuestionMark";
+		return t.itemID and select(5, _GetItemInfoInstant(t.itemID));
 	end,
 	["link"] = function(t)
 		return t.itemID and select(2, _GetItemInfo(t.itemID));
 	end,
 	["tooltipText"] = function(t)
-		local text = t.unitText;
+		local text = t.name;
 		local guid = t.guid;
 		local roll = t.roll;
 		local icon = t.icon;
@@ -5841,148 +5882,6 @@ app.CreateSoftReserveUnit = app.CreateClass("SoftReserveUnit", "unit", {
 				end
 			end
 		end
-	end,
-});
-
-app.CreateQuestUnit = app.CreateClass("QuestUnit", "unit", {
-	["unitText"] = function(t)
-		local name, className, classFile, classID = UnitName(t.unit);
-		if name then
-			className, classFile, classID = UnitClass(t.unit);
-		elseif #{strsplit("-", t.unit)} > 1 then
-			-- It's a GUID.
-			rawset(t, "guid", t.unit);
-			className, classFile, _, _, _, name = GetPlayerInfoByGUID(t.unit);
-			classID = GetClassIDFromClassFile(classFile);
-		end
-		if name then
-			rawset(t, "name", name);
-			if classFile then name = "|c" .. RAID_CLASS_COLORS[classFile].colorStr .. name .. "|r"; end
-			rawset(t, "className", className);
-			rawset(t, "classFile", classFile);
-			rawset(t, "classID", classID);
-			return name;
-		end
-		return t.unit;
-	end,
-	["text"] = function(t)
-		return t.unitText;
-	end,
-	["icon"] = function(t)
-		return t.classID and classIcons[t.classID];
-	end,
-	["name"] = function(t)
-		local name = UnitName(t.unit);
-		if name then
-			rawset(t, "name", name);
-			return name;
-		elseif #{strsplit("-", t.unit)} > 1 then
-			-- It's a GUID.
-			rawset(t, "guid", t.unit);
-			local className, classFile, _, _, _, name = GetPlayerInfoByGUID(t.unit);
-			if name then
-				rawset(t, "name", name);
-				return name;
-			end
-		end
-	end,
-	["guid"] = function(t)
-		return UnitGUID(t.unit);
-	end,
-	["visible"] = function(t)
-		return true;
-	end,
-	["collectible"] = function(t)
-		return true;
-	end,
-	["trackable"] = function(t)
-		return true;
-	end,
-	["collected"] = function(t)
-		return t.saved;
-	end,
-	["OnClick"] = function(t)
-		return app.NoFilter;
-	end,
-	["OnUpdate"] = function(t)
-		return app.AlwaysShowUpdateWithoutReturn;
-	end,
-	["saved"] = function(t)
-		local questID = GetRelativeValue(t, "questID");
-		if questID then
-			local guid = t.guid;
-			if guid and questID then
-				if guid == app.GUID then
-					return IsQuestFlaggedCompleted(questID);
-				else
-					local questsForGUID = GetDataMember("GroupQuestsByGUID")[guid] or (ATTCharacterData[guid] and ATTCharacterData[guid].Quests);
-					return questsForGUID and questsForGUID[questID];
-				end
-			end
-		end
-	end,
-	["tooltipText"] = function(t)
-		local text = t.unitText;
-		local icon = t.icon;
-		if icon then text = "|T" .. icon .. ":0|t " .. text; end
-		return text;
-	end,
-});
-app.CreateUnit = app.CreateClass("Unit", "unit", {
-	["text"] = function(t)
-		local name = UnitName(t.unit);
-		if name then
-			local classFile = select(2, UnitClass(t.unit));
-			if classFile then
-				name = "|c" .. RAID_CLASS_COLORS[classFile].colorStr .. name .. "|r";
-				rawset(t, "classID", GetClassIDFromClassFile(classFile));
-			end
-			return name;
-		else
-			for guid,character in pairs(ATTCharacterData) do
-				if guid == t.unit or character.name == t.unit then
-					rawset(t, "text", character.text);
-					rawset(t, "level", character.lvl);
-					if character.classID then
-						rawset(t, "classID", character.classID);
-						rawset(t, "class", C_CreatureInfo.GetClassInfo(character.classID).className);
-					end
-					if character.raceID then
-						rawset(t, "raceID", character.raceID);
-						rawset(t, "race", C_CreatureInfo.GetRaceInfo(character.raceID).raceName);
-					end
-					return character.text;
-				end
-			end
-		end
-		return t.unit;
-	end,
-	["icon"] = function(t)
-		if t.classID then return classIcons[t.classID]; end
-	end,
-	["name"] = function(t)
-		return UnitName(t.unit);
-	end,
-	["guid"] = function(t)
-		return UnitGUID(t.unit);
-	end,
-	["title"] = function(t)
-		if IsInGroup() then
-			if rawget(t, "isML") then return MASTER_LOOTER; end
-			if UnitIsGroupLeader(t.unit, "raid") then return RAID_LEADER; end
-		end
-	end,
-	["description"] = function(t)
-		return LEVEL .. " " .. (t.level or RETRIEVING_DATA) .. " " .. (t.race or RETRIEVING_DATA) .. " " .. (t.class or RETRIEVING_DATA);
-	end,
-	["level"] = function(t)
-		return UnitLevel(t.unit);
-	end,
-	["race"] = function(t)
-		return UnitRace(t.unit);
-	end,
-	["class"] = function(t)
-		return UnitClass(t.unit);
 	end,
 });
 end)();
@@ -9268,7 +9167,7 @@ local spellFields = {
 	["name"] = nameFromSpellID,
 	["link"] = linkFromSpellID,
 };
-local createSpell = app.CreateClass("Recipe", "spellID", spellFields);
+local createSpell = app.CreateClass("Spell", "spellID", spellFields);
 
 local recipeFields = RawCloneData(spellFields);
 recipeFields.collectible = function(t)
@@ -14688,7 +14587,6 @@ end
 -- Register Events required at the start
 app:RegisterEvent("BOSS_KILL");
 app:RegisterEvent("CHAT_MSG_ADDON");
-app:RegisterEvent("CHAT_MSG_WHISPER");
 if select(4, GetBuildInfo()) > 11403 then
 	app:RegisterEvent("CURSOR_CHANGED");
 end
@@ -15122,27 +15020,6 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 							local b = tonumber(args[i]);
 							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Toys[b] and 1 or 0);
 						end
-					elseif a == "sr" then
-						if target == UnitName("player") then
-							return false;
-						else
-							local softReserve = GetDataMember("SoftReserves")[app.GUID];
-							response = "sr" .. "\t" .. app.GUID .. "\t" .. (softReserve and ((softReserve[1] or 0) .. "\t" .. (softReserve[2] or 0)) or "0\t0");
-						end
-					elseif a == "srml" then -- Soft Reserve (Master Looter) Command
-						app:QuerySoftReserve(UnitGUID(target), a, target);
-					elseif a == "srlock" then
-						if target == UnitName("player") then
-							return false;
-						else
-							response = "srlock\t" .. (app.Settings:GetTooltipSetting("SoftReservesLocked") and 1 or 0);
-						end
-					elseif a == "srpersistence" then
-						if target == UnitName("player") then
-							return false;
-						else
-							response = "srpersistence\t" .. (app.Settings:GetTooltipSetting("SoftReservePersistence") and 1 or 0);
-						end
 					elseif a == "sync" then
 						app:ReceiveSyncRequest(target, a);
 					elseif a == "syncsum" then
@@ -15176,33 +15053,6 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 							if c == 1 then table.insert(processor, { target, "q", b }); end
 						end
 						app:GetWindow("Attuned"):DelayedUpdate(true);
-					elseif a == "sr" then
-						app:UpdateSoftReserve(args[3], tonumber(args[4]), tonumber(args[5]), true);
-					elseif a == "srml" then
-						if target == UnitName("player") then
-							return false;
-						else
-							for i=3,#args,2 do
-								app:UpdateSoftReserveInternal(args[i], tonumber(args[i + 1]));
-							end
-							app:RefreshSoftReserveWindow();
-						end
-					elseif a == "srlock" then
-						if target == UnitName("player") then
-							return false;
-						else
-							app.Settings:SetTooltipSetting("SoftReservesLocked", tonumber(args[3]) == 1);
-							wipe(searchCache);
-							app:RefreshSoftReserveWindow(true);
-						end
-					elseif a == "srpersistence" then
-						if target == UnitName("player") then
-							return false;
-						else
-							app.Settings:SetTooltipSetting("SoftReservePersistence", tonumber(args[3]) == 1);
-							wipe(searchCache);
-							app:RefreshSoftReserveWindow(true);
-						end
 					elseif a == "syncsum" then
 						table.remove(args, 1);
 						table.remove(args, 1);
@@ -15224,8 +15074,6 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 				if myName == name and (not server or GetRealmName() == server) then
 					app.events.CHAT_MSG_ADDON(prefix, strsub(text, 5 + strlen(a)), "WHISPER", sender);
 				end
-			elseif cmd == "sr" then -- Soft Reserve Command
-				app:ParseSoftReserve(UnitGUID(target), a, true);
 			elseif cmd == "chks" then	-- Total Chunks Command [sender, uid, total]
 				app:AcknowledgeIncomingChunks(target, tonumber(a), tonumber(args[3]));
 			elseif cmd == "chk" then	-- Incoming Chunk Command [sender, uid, index, chunk]
@@ -15235,32 +15083,6 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 			elseif cmd == "chkack" then	-- Chunk Acknowledge Command [sender, uid, index, success]
 				app:SendChunk(target, tonumber(a), tonumber(args[3]) + 1, tonumber(args[4]));
 			end
-		end
-	end
-end
-app.events.CHAT_MSG_WHISPER = function(text, playerName, _, _, _, _, _, _, _, _, _, guid)
-	text = text:match("^%s*(.+)$") or "";
-	local action = strsub(text, 1, 1);
-	if action == '!' then	-- Send
-		local lowercased = string.lower(text);
-		local cmd = strsub(lowercased, 2, 3);
-		if cmd == "sr" and not Gargul then
-			app:ParseSoftReserve(guid, strsub(text, 4));
-		end
-	elseif action == '?' then	-- Request
-		local lowercased = string.lower(text);
-		if strsub(lowercased, 2, 3) == "sr" then
-			-- Turn off the AskPrice addon message if it's a Soft Reserve.
-			if AucAdvanced and AucAdvanced.Settings then
-				local oldSetting = AucAdvanced.Settings.GetSetting('util.askprice.activated');
-				if oldSetting then
-					AucAdvanced.Settings.SetSetting("util.askprice.activated", false);
-					C_Timer.After(0.01, function()
-						AucAdvanced.Settings.SetSetting("util.askprice.activated", true);
-					end);
-				end
-			end
-			app:QuerySoftReserve(guid, strsub(text, 4));
 		end
 	end
 end

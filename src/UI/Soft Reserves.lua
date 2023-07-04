@@ -1,4 +1,4 @@
-do
+-- App locals
 local appName, app = ...;
 local L = app.L;
 local searchCache = app.searchCache;
@@ -8,6 +8,9 @@ local _GetRaidRosterInfo, _GuildControlGetNumRanks, _GetGuildRosterInfo, _GetGui
 	   GetRaidRosterInfo,  GuildControlGetNumRanks,  GetGuildRosterInfo,  GetGuildRosterLastOnline;
 local _GetItemInfo = _G["GetItemInfo"];
 local _GetItemInfoInstant = _G["GetItemInfoInstant"];
+local GetRealmName, UnitName, UnitGUID =
+	  GetRealmName, UnitName, UnitGUID;
+local strsplit, strsub = strsplit, strsub;
 
 -- Helper Functions
 -- TODO: Make these functions in an internal ATT helper class or something
@@ -41,9 +44,6 @@ end
 
 -- Module locals
 local SoftReservesDirty = nil;
-local function SortByText(a, b)
-	return b.text > a.text;
-end
 local function SortByTextAndPriority(a, b)
 	if b.priority >= a.priority then
 		return b.text > a.text;
@@ -186,7 +186,7 @@ app.QuerySoftReserve = function(app, guid, cmd, target)
 						for i,guid in ipairs(reservesForItem) do
 							if guid and (all or IsGUIDInGroup(guid)) then
 								local unit = app.CreateSoftReserveUnit(guid);
-								table.insert(sr, unit.unitText and unit.name or guid);
+								table.insert(sr, unit.name or guid);
 							end
 						end
 					end
@@ -328,6 +328,103 @@ app.UpdateSoftReserve = function(app, guid, itemID, timeStamp, silentMode, isCur
 	end
 end
 
+local function CHAT_MSG_ADDON_HANDLER(prefix, text, channel, sender, target)
+	if prefix == "ATTC" then
+		--print(prefix, text, channel, sender, target)
+		local args = { strsplit("\t", text) };
+		local cmd, a = args[1], args[2];
+		if cmd and a then
+			if cmd == "?" then		-- Query Request
+				local response;
+				if a == "sr" then
+					if target == UnitName("player") then
+						return false;
+					else
+						local softReserve = app.GetDataMember("SoftReserves")[app.GUID];
+						response = "sr" .. "\t" .. app.GUID .. "\t" .. (softReserve and ((softReserve[1] or 0) .. "\t" .. (softReserve[2] or 0)) or "0\t0");
+					end
+				elseif a == "srml" then -- Soft Reserve (Master Looter) Command
+					app:QuerySoftReserve(UnitGUID(target), a, target);
+				elseif a == "srlock" then
+					if target == UnitName("player") then
+						return false;
+					else
+						response = "srlock\t" .. (app.Settings:GetTooltipSetting("SoftReservesLocked") and 1 or 0);
+					end
+				elseif a == "srpersistence" then
+					if target == UnitName("player") then
+						return false;
+					else
+						response = "srpersistence\t" .. (app.Settings:GetTooltipSetting("SoftReservePersistence") and 1 or 0);
+					end
+				end
+				if response then SendResponseMessage("!\t" .. response, sender); end
+			elseif cmd == "!" then	-- Query Response
+				if a == "sr" then
+					app:UpdateSoftReserve(args[3], tonumber(args[4]), tonumber(args[5]), true);
+				elseif a == "srml" then
+					if target == UnitName("player") then
+						return false;
+					else
+						for i=3,#args,2 do
+							app:UpdateSoftReserveInternal(args[i], tonumber(args[i + 1]));
+						end
+						app:RefreshSoftReserveWindow();
+					end
+				elseif a == "srlock" then
+					if target == UnitName("player") then
+						return false;
+					else
+						app.Settings:SetTooltipSetting("SoftReservesLocked", tonumber(args[3]) == 1);
+						wipe(searchCache);
+						app:RefreshSoftReserveWindow(true);
+					end
+				elseif a == "srpersistence" then
+					if target == UnitName("player") then
+						return false;
+					else
+						app.Settings:SetTooltipSetting("SoftReservePersistence", tonumber(args[3]) == 1);
+						wipe(searchCache);
+						app:RefreshSoftReserveWindow(true);
+					end
+				end
+			elseif cmd == "to" then	-- To Command
+				local myName = UnitName("player");
+				local name,server = strsplit("-", a);
+				if myName == name and (not server or GetRealmName() == server) then
+					CHAT_MSG_ADDON_HANDLER(prefix, strsub(text, 5 + strlen(a)), "WHISPER", sender);
+				end
+			elseif cmd == "sr" then -- Soft Reserve Command
+				app:ParseSoftReserve(UnitGUID(target), a, true);
+			end
+		end
+	end
+end
+local function CHAT_MSG_WHISPER_HANDLER(text, playerName, _, _, _, _, _, _, _, _, _, guid)
+	local action = strsub(text, 1, 1);
+	if action == '!' then	-- Send
+		local lowercased = string.lower(text);
+		local cmd = strsub(lowercased, 2, 3);
+		if cmd == "sr" and not Gargul then
+			app:ParseSoftReserve(guid, strsub(text, 4));
+		end
+	elseif action == '?' then	-- Request
+		local lowercased = string.lower(text);
+		if strsub(lowercased, 2, 3) == "sr" then
+			-- Turn off the AskPrice addon message if it's a Soft Reserve.
+			if AucAdvanced and AucAdvanced.Settings then
+				local oldSetting = AucAdvanced.Settings.GetSetting('util.askprice.activated');
+				if oldSetting then
+					AucAdvanced.Settings.SetSetting("util.askprice.activated", false);
+					C_Timer.After(0.01, function()
+						AucAdvanced.Settings.SetSetting("util.askprice.activated", true);
+					end);
+				end
+			end
+			app:QuerySoftReserve(guid, strsub(text, 4));
+		end
+	end
+end
 
 -- Implementation
 app:GetWindow("SoftReserves", {
@@ -352,13 +449,19 @@ app:GetWindow("SoftReserves", {
 		self:SetScript("OnEvent", function(self, e, ...)
 			if e == "GROUP_ROSTER_UPDATE" or e == "PARTY_LOOT_METHOD_CHANGED" then
 				self:Update(true);
+			elseif e == "CHAT_MSG_ADDON" then
+				CHAT_MSG_ADDON_HANDLER(...);
+			elseif e == "CHAT_MSG_WHISPER" then
+				CHAT_MSG_WHISPER_HANDLER(...);
 			else
 				self:Refresh();
-			end
+			end			
 		end);
 		self:RegisterEvent("GROUP_ROSTER_UPDATE");
 		self:RegisterEvent("CHAT_MSG_SYSTEM");
 		self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
+		self:RegisterEvent("CHAT_MSG_WHISPER");
+		self:RegisterEvent("CHAT_MSG_ADDON");
 	end,
 	OnRebuild = function(self)
 		if self.data then return true; end
@@ -777,7 +880,7 @@ app:GetWindow("SoftReserves", {
 									local any = false;
 									for rankIndex = 1, numRanks, 1 do
 										if #g[rankIndex].g > 0 then
-											app.Sort(g[rankIndex].g, SortByText);
+											app.Sort(g[rankIndex].g, app.SortDefaults.Text);
 											any = true;
 										end
 									end
@@ -858,4 +961,3 @@ app:GetWindow("SoftReserves", {
 		return false;
 	end
 });
-end
