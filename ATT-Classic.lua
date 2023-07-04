@@ -1248,6 +1248,10 @@ ResolveSymbolicLink = function(o)
 								table.insert(searchResults, s);
 							end
 						end
+					elseif field == "itemID" then
+						table.insert(searchResults, app.CreateItem(sym[i], {
+							description = "This was dynamically filled using a symlink, but the information wasn't found in the addon.",
+						}));
 					else
 						print(BuildSourceTextForChat(o, 0));
 						print("Failed to select ", field, sym[i]);
