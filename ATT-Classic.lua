@@ -4123,428 +4123,62 @@ local function ShowItemCompareTooltips(...)
 	end
 end
 app.ShowItemCompareTooltips = ShowItemCompareTooltips;
-
--- Map Information Lib
-(function()
-local __TomTomWaypointCacheIndexY = { __index = function(t, y)
-	local o = {};
-	rawset(t, y, o);
-	return o;
-end };
-local __TomTomWaypointCacheIndexX = { __index = function(t, x)
-	local o = setmetatable({}, __TomTomWaypointCacheIndexY);
-	rawset(t, x, o);
-	return o;
-end };
-local __TomTomWaypointCache, __TomTomWaypointFirst = setmetatable({}, { __index = function(t, mapID)
-	local o = setmetatable({}, __TomTomWaypointCacheIndexX);
-	rawset(t, mapID, o);
-	return o;
-end });
-local function AddTomTomWaypointCache(coord, group)
-	local mapID = coord[3];
-	if mapID then
-		__TomTomWaypointCache[mapID][math.floor(coord[1] * 10)][math.floor(coord[2] * 10)][group.key .. ":" .. group[group.key]] = group;
-	else
-		print("Missing mapID for", group.text, coord[1], coord[2], mapID);
+GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+GameTooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
+GameTooltip:HookScript("OnTooltipCleared", ClearTooltip);
+GameTooltip:HookScript("OnShow", AttachTooltip);
+GameTooltip:HookScript("OnUpdate", AttachTooltip);
+GameTooltip:HookScript("OnHide", ClearTooltip);
+ItemRefTooltip:HookScript("OnShow", AttachTooltip);
+ItemRefTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+ItemRefTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+ItemRefTooltip:HookScript("OnTooltipCleared", ClearTooltip);
+ItemRefShoppingTooltip1:HookScript("OnShow", AttachTooltip);
+ItemRefShoppingTooltip1:HookScript("OnTooltipSetQuest", AttachTooltip);
+ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", AttachTooltip);
+ItemRefShoppingTooltip1:HookScript("OnTooltipCleared", ClearTooltip);
+ItemRefShoppingTooltip2:HookScript("OnShow", AttachTooltip);
+ItemRefShoppingTooltip2:HookScript("OnTooltipSetQuest", AttachTooltip);
+ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", AttachTooltip);
+ItemRefShoppingTooltip2:HookScript("OnTooltipCleared", ClearTooltip);
+WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
+WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", ClearTooltip);
+WorldMapTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+WorldMapTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+WorldMapTooltip:HookScript("OnTooltipCleared", ClearTooltip);
+WorldMapTooltip:HookScript("OnShow", AttachTooltip);
+if select(4, GetBuildInfo()) > 11403 then
+	app:RegisterEvent("CURSOR_CHANGED");
+	app.events.CURSOR_CHANGED = function()
+		app:StartATTCoroutine("UpdateTooltip", function()
+			while not GameTooltip:IsShown() do
+				coroutine.yield();
+			end
+			AttachTooltip(GameTooltip);
+		end);
 	end
 end
-local function AddTomTomWaypointInternal(group, depth)
-	if group.visible then
-		if group.plotting then return false; end
-		group.plotting = true;
-		if group.g then
-			depth = depth + 1;
-			for _,o in ipairs(group.g) do
-				AddTomTomWaypointInternal(o, depth);
-			end
-			depth = depth - 1;
-		end
+
+local oldItemSetHyperlink = ItemRefTooltip.SetHyperlink;
+function ItemRefTooltip:SetHyperlink(link, a, b, c, d, e, f)
+	-- Make sure to call the default function, but with a try-catch.
+	local status, err = pcall(function () oldItemSetHyperlink(self, link, a, b, c, d, e, f) end)
+	if not status then	
+		local linkType, id, params = strsplit(':', link)
+		linkType = linkType .. "ID";
+		print(linkType, id, params);
+		if not app.SearchForFieldContainer(linkType) then return end
 		
-		local searchResults = ResolveSymbolicLink(group);
-		if searchResults then
-			depth = depth + 1;
-			for _,o in ipairs(searchResults) do
-				AddTomTomWaypointInternal(o, depth);
-			end
-			depth = depth - 1;
-		end
-		group.plotting = nil;
-		
-		if TomTom then
-			if (depth == 0 and not __TomTomWaypointFirst) or not group.saved then
-				if group.coords or group.coord then
-					__TomTomWaypointFirst = false;
-					if group.coords then
-						for _,coord in ipairs(group.coords) do
-							AddTomTomWaypointCache(coord, group);
-						end
-					end
-					if group.coord then AddTomTomWaypointCache(group.coord, group); end
-				end
-			end
-		elseif C_SuperTrack then
-			if depth == 0 or __TomTomWaypointFirst then
-				local coord = group.coords and group.coords[1] or group.coord;
-				if coord then
-					__TomTomWaypointFirst = false;
-					C_SuperTrack.SetSuperTrackedUserWaypoint(false);
-					C_Map.ClearUserWaypoint();
-					C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(coord[3] or defaultMapID,coord[1]/100,coord[2]/100));
-					C_SuperTrack.SetSuperTrackedUserWaypoint(true);
-				end
-			end
-		end
+		-- Search for the Link in the database
+		local cmd = linkType .. ":" .. id;
+		local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
+		if group then app:CreateMiniListForGroup(group); end
 	end
 end
-AddTomTomWaypoint = function(group)
-	if TomTom or C_SuperTrack then
-		__TomTomWaypointFirst = true;
-		wipe(__TomTomWaypointCache);
-		AddTomTomWaypointInternal(group, 0);
-		if TomTom then
-			local xnormal;
-			for mapID,c in pairs(__TomTomWaypointCache) do
-				for x,d in pairs(c) do
-					xnormal = x / 1000;
-					for y,datas in pairs(d) do
-						-- Determine the Root and simplify NPC/Object data.
-						-- An NPC/Object can contain all of the other types by reference and don't need individual entries.
-						local root,rootByCreatureID,rootByObjectID = {},{},{};
-						for key,group in pairs(datas) do
-							local creatureID, objectID;
-							if group.npcID or group.creatureID then
-								creatureID = group.npcID or group.creatureID;
-							elseif group.objectID then
-								objectID = group.objectID;
-							else
-								if group.providers then
-									for i,provider in ipairs(group.providers) do
-										if provider[1] == "n" then
-											if provider[2] > 0 then
-												creatureID = provider[2];
-											end
-										elseif provider[1] == "o" then
-											if provider[2] > 0 then
-												objectID = provider[2];
-											end
-										end
-									end
-								end
-								if group.qgs then
-									local count = #group.qgs;
-									if count > 1 and group.coords and #group.coords == count then
-										for i=count,1,-1 do
-											local coord = group.coords[i];
-											if coord[3] == mapID and math.floor(coord[1] * 10) == x and math.floor(coord[2] * 10) == y then
-												creatureID = group.qgs[i];
-												break;
-											end
-										end
-										if not creatureID then
-											creatureID = group.qgs[1];
-										end
-									else
-										creatureID = group.qgs[1];
-									end
-								end
-								if group.crs then
-									local count = #group.crs;
-									if count > 1 and group.coords and #group.coords == count then
-										for i=count,1,-1 do
-											local coord = group.coords[i];
-											if coord[3] == mapID and math.floor(coord[1] * 10) == x and math.floor(coord[2] * 10) == y then
-												creatureID = group.crs[i];
-												break;
-											end
-										end
-										if not creatureID then
-											creatureID = group.crs[1];
-										end
-									else
-										creatureID = group.crs[1];
-									end
-								end
-							end
-							if creatureID then
-								if not rootByCreatureID[creatureID] then
-									rootByCreatureID[creatureID] = group;
-									tinsert(root, app.CreateNPC(creatureID));
-								end
-							elseif objectID then
-								if not rootByObjectID[objectID] then
-									rootByObjectID[objectID] = group;
-									tinsert(root, app.CreateObject(objectID));
-								end
-							else
-								tinsert(root, group);
-							end
-						end
-						
-						local first = root[1];
-						if first then
-							local opt = { from = "ATT", persistent = false };
-							opt.title = first.text or RETRIEVING_DATA;
-							local displayID = GetDisplayID(first);
-							if displayID then
-								opt.minimap_displayID = displayID;
-								opt.worldmap_displayID = displayID;
-							end
-							if first.icon then
-								opt.minimap_icon = first.icon;
-								opt.worldmap_icon = first.icon;
-							end
-							
-							if TomTom.DefaultCallbacks then
-								local callbacks = TomTom:DefaultCallbacks();
-								callbacks.minimap.tooltip_update = nil;
-								callbacks.minimap.tooltip_show = function(event, tooltip, uid, dist)
-									tooltip:ClearLines();
-									for i,o in ipairs(root) do
-										local line = tooltip:NumLines() + 1;
-										tooltip:AddLine(o.text);
-										if o.title and not o.explorationID then tooltip:AddLine(o.title); end
-										local key = o.key;
-										if key == "objectiveID" then
-											if o.parent and o.parent.questID then tooltip:AddLine("Objective for " .. o.parent.text); end
-										elseif key == "criteriaID" then
-											tooltip:AddLine("Criteria for " .. GetAchievementLink(group.achievementID));
-										else
-											if key == "npcID" then key = "creatureID"; end
-											AttachTooltipSearchResults(tooltip, 1, key .. ":" .. o[o.key], app.SearchForField, key, o[o.key], line);
-										end
-									end
-									tooltip:Show();
-								end
-								callbacks.world.tooltip_update = nil;
-								callbacks.world.tooltip_show = callbacks.minimap.tooltip_show;
-								opt.callbacks = callbacks;
-							end
-							TomTom:AddWaypoint(mapID, xnormal, y / 1000, opt);
-						end
-					end
-				end
-			end
-			TomTom:SetClosestWaypoint();
-		end
-		if C_SuperTrack and group.questID and C_QuestLog.IsOnQuest(group.questID) then
-			C_SuperTrack.SetSuperTrackedQuestID(group.questID);
-		end
-	else
-		app.print("You must have TomTom installed to plot coordinates.");
-	end
-end
-end)();
 
-local function RefreshSaves()
-	local waitTimer = 30;
-	while waitTimer > 0 do
-		coroutine.yield();
-		waitTimer = waitTimer - 1;
-	end
-	
-	-- While the player is in combat, wait for combat to end.
-	while _InCombatLockdown() do coroutine.yield(); end
-	
-	-- While the player is still logging in, wait.
-	while not app.GUID do coroutine.yield(); end
-	
-	-- Cache the lockouts across your account.
-	local serverTime = GetServerTime();
-	
-	-- Check to make sure that the old instance data has expired
-	for guid,character in pairs(ATTCharacterData) do
-		local locks = character.Lockouts;
-		if locks then
-			for name,instance in pairs(locks) do
-				local count = 0;
-				for difficulty,lock in pairs(instance) do
-					if type(lock) ~= "table" or type(lock.reset) ~= "number" or serverTime >= lock.reset then
-						-- Clean this up.
-						instance[difficulty] = nil;
-					else
-						count = count + 1;
-					end
-				end
-				if count == 0 then
-					-- Clean this up.
-					locks[name] = nil;
-				end
-			end
-		end
-	end
-	
-	-- While the player is still waiting for information, wait.
-	-- NOTE: Usually, this is only 1 wait.
-	local counter = 0;
-	while GetNumSavedInstances() < 1 do
-		coroutine.yield();
-		counter = counter + 1;
-		if counter > 10 then
-			app.refreshingSaves = false;
-			return false;
-		end
-	end
-	
-	-- Update Saved Instances
-	local converter = L["SAVED_TO_DJ_INSTANCES"];
-	local myLockouts = app.CurrentCharacter.Lockouts;
-	for instanceIter=1,GetNumSavedInstances() do
-		local name, id, reset, difficulty, locked, _, _, isRaid, _, _, numEncounters = GetSavedInstanceInfo(instanceIter);
-		if locked then
-			-- Update the name of the instance and cache the lock for this instance
-			difficulty = difficulty or 7;
-			name = converter[name] or name;
-			reset = serverTime + reset;
-			local locks = myLockouts[name];
-			if not locks then
-				locks = {};
-				myLockouts[name] = locks;
-			end
-
-			-- Create the lock for this difficulty
-			local lock = locks[difficulty];
-			if not lock then
-				lock = { ["id"] = id, ["reset"] = reset, ["encounters"] = {}};
-				locks[difficulty] = lock;
-			else
-				lock.id = id;
-				lock.reset = reset;
-			end
-			
-			-- If this is LFR, then don't share.
-			if difficulty == 7 or difficulty == 17 then
-				if #lock.encounters == 0 then
-					-- Check Encounter locks
-					for encounterIter=1,numEncounters do
-						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
-						tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-					end
-				else
-					-- Check Encounter locks
-					for encounterIter=1,numEncounters do
-						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
-						if not lock.encounters[encounterIter] then
-							tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-						elseif isKilled then
-							lock.encounters[encounterIter].isKilled = true;
-						end
-					end
-				end
-			else
-				-- Create the pseudo "shared" lock
-				local shared = locks["shared"];
-				if not shared then
-					shared = {};
-					shared.id = id;
-					shared.reset = reset;
-					shared.encounters = {};
-					locks["shared"] = shared;
-
-					-- Check Encounter locks
-					for encounterIter=1,numEncounters do
-						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
-						tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-
-						-- Shared Encounter is always assigned if this is the first lock seen for this instance
-						tinsert(shared.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-					end
-				else
-					-- Check Encounter locks
-					for encounterIter=1,numEncounters do
-						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
-						if not lock.encounters[encounterIter] then
-							tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-						elseif isKilled then
-							lock.encounters[encounterIter].isKilled = true;
-						end
-						if not shared.encounters[encounterIter] then
-							tinsert(shared.encounters, { ["name"] = name, ["isKilled"] = isKilled });
-						elseif isKilled then
-							shared.encounters[encounterIter].isKilled = true;
-						end
-					end
-				end
-			end
-		end
-	end
-	
-	-- Mark that we're done now.
-	app:RefreshDataQuietly();
-end
-local function RefreshSkills()
-	-- Store Skill Data
-	local activeSkills = app.CurrentCharacter.ActiveSkills;
-	wipe(activeSkills);
-	rawset(app.SpellNameToSpellID, 0, nil);
-	app.GetSpellName(0);
-	for index=GetNumSkillLines(),2,-1 do
-		local skillName, header, isExpanded, skillRank, numTempPoints, skillModifier,
-			skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
-			skillDescription = GetSkillLineInfo(index);
-		if not header then
-			local spellID = app.SpellNameToSpellID[skillName];
-			if spellID then
-				local spellName = GetSpellInfo(spellID);
-				for _,s in pairs(app.SkillIDToSpellID) do
-					if GetSpellInfo(s) == spellName then
-						spellID = s;
-						break;
-					end
-				end
-				activeSkills[spellID] = { skillRank, skillMaxRank };
-			else
-				for _,s in pairs(app.SkillIDToSpellID) do
-					if GetSpellInfo(s) == skillName then
-						spellID = s;
-						break;
-					end
-				end
-				if spellID then
-					activeSkills[spellID] = { skillRank, skillMaxRank };
-				else
-					--print(skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription);
-				end
-			end
-		end
-	end
-	
-	-- Hunter Only
-	if app.ClassIndex == 3 then
-		activeSkills[5149] = { 1, 1 };
-	end
-	
-	-- Clone the data for the specializations.
-	for specID,spellID in pairs(app.SpecializationSpellIDs) do
-		local baseSpell = activeSkills[spellID];
-		if baseSpell and (app.CurrentCharacter.Spells[specID] or IsSpellKnown(specID)) then
-			activeSkills[specID] = baseSpell;
-		end
-	end
-end
-local function RefreshCollections()
-	app:StartATTCoroutine("RefreshingCollections", function()
-		while _InCombatLockdown() do coroutine.yield(); end
-		app.print("Refreshing collection...");
-		app.events.QUEST_LOG_UPDATE();
-		coroutine.yield();
-		
-		-- Harvest Illusion Collections
-		if C_TransmogCollection and C_TransmogCollection.GetIllusions then
-			local collectedIllusions = ATTAccountWideData.Illusions;
-			for _,illusion in ipairs(C_TransmogCollection.GetIllusions()) do
-				if rawget(illusion, "isCollected") then rawset(collectedIllusions, illusion.sourceID, 1); end
-			end
-			coroutine.yield();
-		end
-		
-		RefreshSkills();
-		app:RefreshDataCompletely();
-		app.print("Done refreshing collection.");
-	end);
-end
-
-app.RefreshCollections = RefreshCollections;
 
 -- Achievement Lib
 (function()
@@ -8751,15 +8385,6 @@ app.AddQuestObjectivesToTooltip = function(tooltip, reference)
 		end
 	end
 end
-
-app:RegisterEvent("QUEST_WATCH_UPDATE");
-app:RegisterEvent("BAG_NEW_ITEMS_UPDATED");
-app.events.QUEST_WATCH_UPDATE = function(questID)
-	wipe(searchCache);
-end
-app.events.BAG_NEW_ITEMS_UPDATED = function(questID)
-	wipe(searchCache);
-end
 end)();
 
 -- Recipe & Spell Lib
@@ -9615,6 +9240,450 @@ function app.QuestCompletionHelper(questID)
 	end
 end
 
+-- Refresh certain kinds of data.
+local function RefreshSkills()
+	-- Store Skill Data
+	local activeSkills = app.CurrentCharacter.ActiveSkills;
+	wipe(activeSkills);
+	rawset(app.SpellNameToSpellID, 0, nil);
+	app.GetSpellName(0);
+	for index=GetNumSkillLines(),2,-1 do
+		local skillName, header, isExpanded, skillRank, numTempPoints, skillModifier,
+			skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
+			skillDescription = GetSkillLineInfo(index);
+		if not header then
+			local spellID = app.SpellNameToSpellID[skillName];
+			if spellID then
+				local spellName = GetSpellInfo(spellID);
+				for _,s in pairs(app.SkillIDToSpellID) do
+					if GetSpellInfo(s) == spellName then
+						spellID = s;
+						break;
+					end
+				end
+				activeSkills[spellID] = { skillRank, skillMaxRank };
+			else
+				for _,s in pairs(app.SkillIDToSpellID) do
+					if GetSpellInfo(s) == skillName then
+						spellID = s;
+						break;
+					end
+				end
+				if spellID then
+					activeSkills[spellID] = { skillRank, skillMaxRank };
+				else
+					--print(skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription);
+				end
+			end
+		end
+	end
+	
+	-- Hunter Only
+	if app.ClassIndex == 3 then
+		activeSkills[5149] = { 1, 1 };
+	end
+	
+	-- Clone the data for the specializations.
+	for specID,spellID in pairs(app.SpecializationSpellIDs) do
+		local baseSpell = activeSkills[spellID];
+		if baseSpell and (app.CurrentCharacter.Spells[specID] or IsSpellKnown(specID)) then
+			activeSkills[specID] = baseSpell;
+		end
+	end
+end
+local function RefreshCollections()
+	app:StartATTCoroutine("RefreshingCollections", function()
+		while _InCombatLockdown() do coroutine.yield(); end
+		app.print("Refreshing collection...");
+		app.events.QUEST_LOG_UPDATE();
+		coroutine.yield();
+		
+		-- Harvest Illusion Collections
+		if C_TransmogCollection and C_TransmogCollection.GetIllusions then
+			local collectedIllusions = ATTAccountWideData.Illusions;
+			for _,illusion in ipairs(C_TransmogCollection.GetIllusions()) do
+				if rawget(illusion, "isCollected") then rawset(collectedIllusions, illusion.sourceID, 1); end
+			end
+			coroutine.yield();
+		end
+		
+		RefreshSkills();
+		app:RefreshDataCompletely();
+		app.print("Done refreshing collection.");
+	end);
+end
+app.RefreshCollections = RefreshCollections;
+
+-- Automatically Refresh Saved Instances
+local function RefreshSaves()
+	local waitTimer = 30;
+	while waitTimer > 0 do
+		coroutine.yield();
+		waitTimer = waitTimer - 1;
+	end
+	
+	-- While the player is in combat, wait for combat to end.
+	while _InCombatLockdown() do coroutine.yield(); end
+	
+	-- While the player is still logging in, wait.
+	while not app.GUID do coroutine.yield(); end
+	
+	-- Cache the lockouts across your account.
+	local serverTime = GetServerTime();
+	
+	-- Check to make sure that the old instance data has expired
+	for guid,character in pairs(ATTCharacterData) do
+		local locks = character.Lockouts;
+		if locks then
+			for name,instance in pairs(locks) do
+				local count = 0;
+				for difficulty,lock in pairs(instance) do
+					if type(lock) ~= "table" or type(lock.reset) ~= "number" or serverTime >= lock.reset then
+						-- Clean this up.
+						instance[difficulty] = nil;
+					else
+						count = count + 1;
+					end
+				end
+				if count == 0 then
+					-- Clean this up.
+					locks[name] = nil;
+				end
+			end
+		end
+	end
+	
+	-- While the player is still waiting for information, wait.
+	-- NOTE: Usually, this is only 1 wait.
+	local counter = 0;
+	while GetNumSavedInstances() < 1 do
+		coroutine.yield();
+		counter = counter + 1;
+		if counter > 10 then
+			app.refreshingSaves = false;
+			return false;
+		end
+	end
+	
+	-- Update Saved Instances
+	local converter = L["SAVED_TO_DJ_INSTANCES"];
+	local myLockouts = app.CurrentCharacter.Lockouts;
+	for instanceIter=1,GetNumSavedInstances() do
+		local name, id, reset, difficulty, locked, _, _, isRaid, _, _, numEncounters = GetSavedInstanceInfo(instanceIter);
+		if locked then
+			-- Update the name of the instance and cache the lock for this instance
+			difficulty = difficulty or 7;
+			name = converter[name] or name;
+			reset = serverTime + reset;
+			local locks = myLockouts[name];
+			if not locks then
+				locks = {};
+				myLockouts[name] = locks;
+			end
+
+			-- Create the lock for this difficulty
+			local lock = locks[difficulty];
+			if not lock then
+				lock = { ["id"] = id, ["reset"] = reset, ["encounters"] = {}};
+				locks[difficulty] = lock;
+			else
+				lock.id = id;
+				lock.reset = reset;
+			end
+			
+			-- If this is LFR, then don't share.
+			if difficulty == 7 or difficulty == 17 then
+				if #lock.encounters == 0 then
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+					end
+				else
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						if not lock.encounters[encounterIter] then
+							tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+						elseif isKilled then
+							lock.encounters[encounterIter].isKilled = true;
+						end
+					end
+				end
+			else
+				-- Create the pseudo "shared" lock
+				local shared = locks["shared"];
+				if not shared then
+					shared = {};
+					shared.id = id;
+					shared.reset = reset;
+					shared.encounters = {};
+					locks["shared"] = shared;
+
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+
+						-- Shared Encounter is always assigned if this is the first lock seen for this instance
+						tinsert(shared.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+					end
+				else
+					-- Check Encounter locks
+					for encounterIter=1,numEncounters do
+						local name, _, isKilled = GetSavedInstanceEncounterInfo(instanceIter, encounterIter);
+						if not lock.encounters[encounterIter] then
+							tinsert(lock.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+						elseif isKilled then
+							lock.encounters[encounterIter].isKilled = true;
+						end
+						if not shared.encounters[encounterIter] then
+							tinsert(shared.encounters, { ["name"] = name, ["isKilled"] = isKilled });
+						elseif isKilled then
+							shared.encounters[encounterIter].isKilled = true;
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	-- Mark that we're done now.
+	app:RefreshDataQuietly();
+end
+app:RegisterEvent("BOSS_KILL");
+app.events.BOSS_KILL = function(id, name, ...)
+	-- This is so that when you kill a boss, you can trigger 
+	-- an automatic update of your saved instance cache. 
+	-- (It does lag a little, but you can disable this if you want.)
+	-- Waiting until the LOOT_CLOSED occurs will prevent the failed Auto Loot bug.
+	-- print("BOSS_KILL", id, name, ...);
+	app:UnregisterEvent("LOOT_CLOSED");
+	app:RegisterEvent("LOOT_CLOSED");
+end
+app.events.LOOT_CLOSED = function()
+	-- Once the loot window closes after killing a boss, THEN trigger the update.
+	app:UnregisterEvent("LOOT_CLOSED");
+	app:UnregisterEvent("UPDATE_INSTANCE_INFO");
+	app:RegisterEvent("UPDATE_INSTANCE_INFO");
+	RequestRaidInfo();
+end
+app.events.UPDATE_INSTANCE_INFO = function()
+	app:UnregisterEvent("UPDATE_INSTANCE_INFO");
+	app:StartATTCoroutine("RefreshSaves", RefreshSaves);
+end
+
+-- TomTom Support
+local __TomTomWaypointCacheIndexY = { __index = function(t, y)
+	local o = {};
+	rawset(t, y, o);
+	return o;
+end };
+local __TomTomWaypointCacheIndexX = { __index = function(t, x)
+	local o = setmetatable({}, __TomTomWaypointCacheIndexY);
+	rawset(t, x, o);
+	return o;
+end };
+local __TomTomWaypointCache, __TomTomWaypointFirst = setmetatable({}, { __index = function(t, mapID)
+	local o = setmetatable({}, __TomTomWaypointCacheIndexX);
+	rawset(t, mapID, o);
+	return o;
+end });
+local function AddTomTomWaypointCache(coord, group)
+	local mapID = coord[3];
+	if mapID then
+		__TomTomWaypointCache[mapID][math.floor(coord[1] * 10)][math.floor(coord[2] * 10)][group.key .. ":" .. group[group.key]] = group;
+	else
+		print("Missing mapID for", group.text, coord[1], coord[2], mapID);
+	end
+end
+local function AddTomTomWaypointInternal(group, depth)
+	if group.visible then
+		if group.plotting then return false; end
+		group.plotting = true;
+		if group.g then
+			depth = depth + 1;
+			for _,o in ipairs(group.g) do
+				AddTomTomWaypointInternal(o, depth);
+			end
+			depth = depth - 1;
+		end
+		
+		local searchResults = ResolveSymbolicLink(group);
+		if searchResults then
+			depth = depth + 1;
+			for _,o in ipairs(searchResults) do
+				AddTomTomWaypointInternal(o, depth);
+			end
+			depth = depth - 1;
+		end
+		group.plotting = nil;
+		
+		if TomTom then
+			if (depth == 0 and not __TomTomWaypointFirst) or not group.saved then
+				if group.coords or group.coord then
+					__TomTomWaypointFirst = false;
+					if group.coords then
+						for _,coord in ipairs(group.coords) do
+							AddTomTomWaypointCache(coord, group);
+						end
+					end
+					if group.coord then AddTomTomWaypointCache(group.coord, group); end
+				end
+			end
+		elseif C_SuperTrack then
+			if depth == 0 or __TomTomWaypointFirst then
+				local coord = group.coords and group.coords[1] or group.coord;
+				if coord then
+					__TomTomWaypointFirst = false;
+					C_SuperTrack.SetSuperTrackedUserWaypoint(false);
+					C_Map.ClearUserWaypoint();
+					C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(coord[3] or defaultMapID,coord[1]/100,coord[2]/100));
+					C_SuperTrack.SetSuperTrackedUserWaypoint(true);
+				end
+			end
+		end
+	end
+end
+local function AddTomTomWaypoint(group)
+	if TomTom or C_SuperTrack then
+		__TomTomWaypointFirst = true;
+		wipe(__TomTomWaypointCache);
+		AddTomTomWaypointInternal(group, 0);
+		if TomTom then
+			local xnormal;
+			for mapID,c in pairs(__TomTomWaypointCache) do
+				for x,d in pairs(c) do
+					xnormal = x / 1000;
+					for y,datas in pairs(d) do
+						-- Determine the Root and simplify NPC/Object data.
+						-- An NPC/Object can contain all of the other types by reference and don't need individual entries.
+						local root,rootByCreatureID,rootByObjectID = {},{},{};
+						for key,group in pairs(datas) do
+							local creatureID, objectID;
+							if group.npcID or group.creatureID then
+								creatureID = group.npcID or group.creatureID;
+							elseif group.objectID then
+								objectID = group.objectID;
+							else
+								if group.providers then
+									for i,provider in ipairs(group.providers) do
+										if provider[1] == "n" then
+											if provider[2] > 0 then
+												creatureID = provider[2];
+											end
+										elseif provider[1] == "o" then
+											if provider[2] > 0 then
+												objectID = provider[2];
+											end
+										end
+									end
+								end
+								if group.qgs then
+									local count = #group.qgs;
+									if count > 1 and group.coords and #group.coords == count then
+										for i=count,1,-1 do
+											local coord = group.coords[i];
+											if coord[3] == mapID and math.floor(coord[1] * 10) == x and math.floor(coord[2] * 10) == y then
+												creatureID = group.qgs[i];
+												break;
+											end
+										end
+										if not creatureID then
+											creatureID = group.qgs[1];
+										end
+									else
+										creatureID = group.qgs[1];
+									end
+								end
+								if group.crs then
+									local count = #group.crs;
+									if count > 1 and group.coords and #group.coords == count then
+										for i=count,1,-1 do
+											local coord = group.coords[i];
+											if coord[3] == mapID and math.floor(coord[1] * 10) == x and math.floor(coord[2] * 10) == y then
+												creatureID = group.crs[i];
+												break;
+											end
+										end
+										if not creatureID then
+											creatureID = group.crs[1];
+										end
+									else
+										creatureID = group.crs[1];
+									end
+								end
+							end
+							if creatureID then
+								if not rootByCreatureID[creatureID] then
+									rootByCreatureID[creatureID] = group;
+									tinsert(root, app.CreateNPC(creatureID));
+								end
+							elseif objectID then
+								if not rootByObjectID[objectID] then
+									rootByObjectID[objectID] = group;
+									tinsert(root, app.CreateObject(objectID));
+								end
+							else
+								tinsert(root, group);
+							end
+						end
+						
+						local first = root[1];
+						if first then
+							local opt = { from = "ATT", persistent = false };
+							opt.title = first.text or RETRIEVING_DATA;
+							local displayID = GetDisplayID(first);
+							if displayID then
+								opt.minimap_displayID = displayID;
+								opt.worldmap_displayID = displayID;
+							end
+							if first.icon then
+								opt.minimap_icon = first.icon;
+								opt.worldmap_icon = first.icon;
+							end
+							
+							if TomTom.DefaultCallbacks then
+								local callbacks = TomTom:DefaultCallbacks();
+								callbacks.minimap.tooltip_update = nil;
+								callbacks.minimap.tooltip_show = function(event, tooltip, uid, dist)
+									tooltip:ClearLines();
+									for i,o in ipairs(root) do
+										local line = tooltip:NumLines() + 1;
+										tooltip:AddLine(o.text);
+										if o.title and not o.explorationID then tooltip:AddLine(o.title); end
+										local key = o.key;
+										if key == "objectiveID" then
+											if o.parent and o.parent.questID then tooltip:AddLine("Objective for " .. o.parent.text); end
+										elseif key == "criteriaID" then
+											tooltip:AddLine("Criteria for " .. GetAchievementLink(group.achievementID));
+										else
+											if key == "npcID" then key = "creatureID"; end
+											AttachTooltipSearchResults(tooltip, 1, key .. ":" .. o[o.key], app.SearchForField, key, o[o.key], line);
+										end
+									end
+									tooltip:Show();
+								end
+								callbacks.world.tooltip_update = nil;
+								callbacks.world.tooltip_show = callbacks.minimap.tooltip_show;
+								opt.callbacks = callbacks;
+							end
+							TomTom:AddWaypoint(mapID, xnormal, y / 1000, opt);
+						end
+					end
+				end
+			end
+			TomTom:SetClosestWaypoint();
+		end
+		if C_SuperTrack and group.questID and C_QuestLog.IsOnQuest(group.questID) then
+			C_SuperTrack.SetSuperTrackedQuestID(group.questID);
+		end
+	else
+		app.print("You must have TomTom installed to plot coordinates.");
+	end
+end
+
+-- Minimap Button
 local function MinimapButtonOnClick(self, button)
 	if button == "RightButton" then
 		-- Right Button opens the Options menu.
@@ -9796,475 +9865,6 @@ end
 app.CreateMinimapButton = CreateMinimapButton;
 
 -- Row Helper Functions
-local CreateRow;
-local function CreateSuffixForPopout(group)
-	return BuildSourceTextForChat(group, 0) .. " > " .. (group.text or "") .. (group.key and group[group.key] or "");
-end
-local function OnInitForPopout(self)
-	local group = self.reference;
-	if group.questID or group.sourceQuests then
-		-- This is a quest object. Let's show prereqs and breadcrumbs.
-		local questID = group.questID;
-		if questID and group.parent and group.parent.parent then
-			if group.parent.questID == questID then
-				group = group.parent;
-			end
-		end
-		
-		local mainQuest = CloneReference(group);
-		if group.parent then mainQuest.sourceParent = group.parent; end
-		if mainQuest.sym then
-			mainQuest.collectible = true;
-			mainQuest.visible = true;
-			mainQuest.progress = 0;
-			mainQuest.total = 0;
-			if not mainQuest.g then
-				local resolved = ResolveSymbolicLink(group);
-				if resolved then
-					for i=#resolved,1,-1 do
-						resolved[i] = CreateObject(resolved[i]);
-					end
-					mainQuest.g = resolved;
-				end
-			else
-				local resolved = ResolveSymbolicLink(group);
-				if resolved then
-					MergeObjects(mainQuest.g, resolved);
-				end
-			end
-		end
-		
-		if questID then mainQuest.collectible = true; end
-		local g = { mainQuest };
-		
-		-- Check to see if Source Quests are listed elsewhere.
-		if questID and not group.sourceQuests then
-			local searchResults = app.SearchForField("questID", questID);
-			if searchResults and #searchResults > 1 then
-				for i=1,#searchResults,1 do
-					local searchResult = searchResults[i];
-					if searchResult.questID == questID and searchResult.sourceQuests then
-						searchResult = CloneReference(searchResult);
-						searchResult.collectible = true;
-						searchResult.g = g;
-						mainQuest = searchResult;
-						g = { mainQuest };
-						break;
-					end
-				end
-			end
-		end
-		
-		-- Show Quest Prereqs
-		if mainQuest.sourceQuests then
-			local breakafter = 0;
-			local sourceQuests, sourceQuest, subSourceQuests, prereqs = mainQuest.sourceQuests;
-			while sourceQuests and #sourceQuests > 0 do
-				subSourceQuests = {}; prereqs = {};
-				for i,sourceQuestID in ipairs(sourceQuests) do
-					sourceQuest = sourceQuestID < 1 and app.SearchForField("creatureID", math.abs(sourceQuestID)) or app.SearchForField("questID", sourceQuestID);
-					if sourceQuest and #sourceQuest > 0 then
-						local found = nil;
-						for i=1,#sourceQuest,1 do
-							-- Only care about the first search result.
-							local sq = sourceQuest[i];
-							if sq and sq.questID and not sq.objectiveID then
-								questID = sq.questID;
-								if sq.parent and sq.parent.questID == questID then
-									sq = sq.parent;
-								end
-								if app.GroupFilter(sq) then
-									if app.RecursiveClassAndRaceFilter(sq) and questID == sourceQuestID then
-										if not found or (not found.sourceQuests and sq.sourceQuests) then
-											found = sq;
-										end
-									end
-								end
-							end
-						end
-						if found then
-							sourceQuest = CloneReference(found);
-							sourceQuest.collectible = true;
-							sourceQuest.visible = true;
-							sourceQuest.hideText = true;
-							if found.sourceQuests and #found.sourceQuests > 0 and (not found.saved or app.CollectedItemVisibilityFilter(sourceQuest)) then
-								-- Mark the sub source quest IDs as marked (as the same sub quest might point to 1 source quest ID)
-								for j, subsourceQuests in ipairs(found.sourceQuests) do
-									subSourceQuests[subsourceQuests] = true;
-								end
-							end
-						else
-							sourceQuest = nil;
-						end
-					elseif sourceQuestID > 0 then
-						-- Create a Quest Object.
-						sourceQuest = app.CreateQuest(sourceQuestID, { ['visible'] = true, ['collectible'] = true, ['hideText'] = true });
-					else
-						-- Create a NPC Object.
-						sourceQuest = app.CreateNPC(math.abs(sourceQuestID), { ['visible'] = true, ['hideText'] = true });
-					end
-					
-					-- If the quest was valid, attach it.
-					if sourceQuest then tinsert(prereqs, sourceQuest); end
-				end
-				
-				-- Convert the subSourceQuests table into an array
-				sourceQuests = {};
-				if #prereqs > 0 then
-					for sourceQuestID,i in pairs(subSourceQuests) do
-						tinsert(sourceQuests, tonumber(sourceQuestID));
-					end
-					tinsert(prereqs, {
-						["text"] = "Upon Completion",
-						["description"] = "The above quests need to be completed before being able to complete the quest(s) listed below.",
-						["icon"] = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
-						["visible"] = true,
-						["expanded"] = true,
-						["hideText"] = true,
-						["g"] = g,
-					});
-					g = prereqs;
-					breakafter = breakafter + 1;
-					if breakafter >= 100 then
-						app.print("Likely just broke out of an infinite source quest loop. Please report this to the ATT Discord!");
-						break;
-					end
-				end
-			end
-			
-			-- Clean up the recursive hierarchy. (this removed duplicates)
-			sourceQuests = {};
-			prereqs = g;
-			local orig = g;
-			while prereqs and #prereqs > 0 do
-				for i=#prereqs,1,-1 do
-					local o = prereqs[i];
-					if o.key then
-						sourceQuest = o.key .. o[o.key];
-						if sourceQuests[sourceQuest] then
-							-- Already exists in the hierarchy. Uh oh.
-							table.remove(prereqs, i);
-						else
-							sourceQuests[sourceQuest] = true;
-						end
-					end
-				end
-				
-				if #prereqs > 1 then
-					prereqs = prereqs[#prereqs];
-					if prereqs then prereqs = prereqs.g; end
-					orig = prereqs;
-				else
-					prereqs = prereqs[#prereqs];
-					if prereqs then prereqs = prereqs.g; end
-					orig[#orig].g = prereqs;
-				end
-			end
-			
-			-- Clean up standalone "Upon Completion" headers.
-			prereqs = g;
-			repeat
-				local n = #prereqs;
-				local lastprereq = prereqs[n];
-				if lastprereq.text == "Upon Completion" and n > 1 then
-					table.remove(prereqs, n);
-					local g = prereqs[n-1].g;
-					if not g then
-						g = {};
-						prereqs[n-1].g = g;
-					end
-					if lastprereq.g then
-						for i,data in ipairs(lastprereq.g) do
-							table.insert(g, data);
-						end
-					end
-					prereqs = g;
-				else
-					prereqs = lastprereq.g;
-				end
-			until not prereqs or #prereqs < 1;
-		end
-		self.data = {
-			text = "Quest Chain Requirements",
-			icon = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
-			description = "The following quests need to be completed before being able to complete the final quest.",
-			hideText = true,
-			g = g,
-		};
-	elseif group.sym then
-		self.data = CloneReference(group);
-		self.data.collectible = true;
-		self.data.visible = true;
-		self.data.progress = 0;
-		self.data.total = 0;
-		if not self.data.g then
-			local resolved = ResolveSymbolicLink(group);
-			if resolved then
-				for i=#resolved,1,-1 do
-					resolved[i] = CreateObject(resolved[i]);
-				end
-				self.data.g = resolved;
-			end
-		else
-			local resolved = ResolveSymbolicLink(group);
-			if resolved then
-				MergeObjects(self.data.g, resolved);
-			end
-		end
-	elseif group.g then
-		-- This is already a container with accurate numbers.
-		self.data = group;
-	else
-		-- This is a standalone item
-		group.visible = true;
-		if not group.g and (group.itemID or group.currencyID) then
-			local cmd = group.link or group.key .. ":" .. group[group.key];
-			group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		end
-		self.data = group;
-	end
-	
-	-- Clone the data and then insert it into the Raw Data table.
-	self.data = CloneReference(self.data);
-	self.data.hideText = true;
-	self.data.visible = true;
-	self.data.indent = 0;
-	self.data.total = 0;
-	self.data.progress = 0;
-	
-	-- If this is an achievement, build the criteria within it if possible.
-	local achievementID = group.achievementID;
-	if achievementID then
-		local searchResults = app.SearchForField("achievementID", achievementID);
-		if searchResults and #searchResults > 0 then
-			for i=1,#searchResults,1 do
-				local searchResult = searchResults[i];
-				if searchResult.achievementID == achievementID and searchResult.criteriaID then
-					if not self.data.g then self.data.g = {}; end
-					MergeObject(self.data.g, CloneReference(searchResult));
-				end
-			end
-		end
-	end
-	
-	--[[
-	local currencyID = group.currencyID;
-	if currencyID and not self.data.usedtobuy then
-		local searchResults = app.SearchForField("currencyIDAsCost", currencyID);
-		if searchResults and #searchResults > 0 then
-			local usedtobuy = {};
-			usedtobuy.g = {};
-			usedtobuy.text = "Used to Buy";
-			usedtobuy.icon = "Interface\\Icons\\INV_Misc_Coin_01";
-			usedtobuy.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
-			usedtobuy.OnTooltip = function(t)
-				local total = 0;
-				for _,o in ipairs(t.g) do
-					if o.visible then
-						if o.cost then
-							for k,v in ipairs(o.cost) do
-								if v[1] == "c" and v[2] == currencyID then
-									total = total + (v[3] or 1);
-								end
-							end
-						end
-						if o.providers then
-							for k,v in ipairs(o.providers) do
-								if v[1] == "c" and v[2] == currencyID then
-									total = total + (v[3] or 1);
-								end
-							end
-						end
-					end
-				end
-				GameTooltip:AddDoubleLine("Total Needed", total);
-			end
-			MergeObjects(usedtobuy.g, searchResults);
-			if not self.data.g then self.data.g = {}; end
-			tinsert(self.data.g, usedtobuy);
-			self.data.usedtobuy = usedtobuy;
-		end
-	end
-	
-	local itemID = group.itemID;
-	if itemID and not self.data.tradedin then
-		local searchResults = app.SearchForField("itemIDAsCost", itemID);
-		if searchResults and #searchResults > 0 then
-			local tradedin = {};
-			tradedin.g = {};
-			tradedin.text = "Used For";
-			tradedin.icon = "Interface\\Icons\\INV_Misc_Coin_01";
-			tradedin.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
-			tradedin.OnTooltip = function(t)
-				local total = 0;
-				for _,o in ipairs(t.g) do
-					if o.visible then
-						if o.cost then
-							for k,v in ipairs(o.cost) do
-								if v[1] == "i" and v[2] == itemID then
-									total = total + (v[3] or 1);
-								end
-							end
-						end
-						if o.providers then
-							for k,v in ipairs(o.providers) do
-								if v[1] == "i" and v[2] == itemID then
-									total = total + (v[3] or 1);
-								end
-							end
-						end
-					end
-				end
-				GameTooltip:AddDoubleLine("Total Needed", total);
-			end
-			MergeObjects(tradedin.g, searchResults);
-			if not self.data.g then self.data.g = {}; end
-			tinsert(self.data.g, tradedin);
-			self.data.tradedin = tradedin;
-		end
-	end
-	]]--
-	
-	if self.data.key then
-		if group.cost and type(group.cost) == "table" then
-			local costGroup = {
-				["text"] = "Cost",
-				["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
-				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
-				["OnUpdate"] = app.AlwaysShowUpdate,
-				["g"] = {},
-			};
-			local costItem;
-			for i,c in ipairs(group.cost) do
-				costItem = nil;
-				if c[1] == "c" then
-					costItem = app.CreateCurrencyClass(c[2]);
-				elseif c[1] == "i" then
-					costItem = app.CreateItem(c[2]);
-				end
-				if costItem then
-					costItem = CloneReference(costItem);
-					costItem.visible = true;
-					costItem.OnUpdate = app.AlwaysShowUpdate;
-					MergeObject(costGroup.g, costItem);
-				end
-			end
-			if #costGroup.g > 0 then
-				if not self.data.g then self.data.g = {}; end
-				MergeObject(self.data.g, costGroup, 1);
-			end
-		end
-		
-		if group.providers or group.qgs or group.crs then
-			local sourceGroup = {
-				["text"] = "Sources",
-				["description"] = "The following contains all of the relevant sources.",
-				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
-				["OnUpdate"] = app.AlwaysShowUpdate,
-				["g"] = {},
-			};
-			local sourceItem;
-			if group.providers then
-				for _,p in ipairs(group.providers) do
-					sourceItem = nil;
-					if p[1] == "n" then
-						sourceItem = app.CreateNPC(p[2]);
-					elseif p[1] == "o" then
-						sourceItem = app.CreateObject(p[2]);
-					elseif p[1] == "i" then
-						sourceItem = app.CreateItem(p[2]);
-					end
-					if sourceItem then
-						sourceItem.visible = true;
-						sourceItem.OnUpdate = app.AlwaysShowUpdate;
-						MergeObject(sourceGroup.g, sourceItem);
-					end
-				end
-			end
-			if group.crs then
-				for _,cr in ipairs(group.crs) do
-					sourceItem = app.CreateNPC(cr);
-					sourceItem.visible = true;
-					sourceItem.OnUpdate = app.AlwaysShowUpdate;
-					MergeObject(sourceGroup.g, sourceItem);
-				end
-			end
-			if group.qgs then
-				for _,qg in ipairs(group.qgs) do
-					sourceItem = app.CreateNPC(qg);
-					sourceItem.visible = true;
-					sourceItem.OnUpdate = app.AlwaysShowUpdate;
-					MergeObject(sourceGroup.g, sourceItem);
-				end
-			end
-			if #sourceGroup.g > 0 then
-				if not self.data.g then self.data.g = {}; end
-				MergeObject(self.data.g, sourceGroup, 1);
-			end
-		end
-	end
-	
-	BuildGroups(self.data);
-	UpdateGroups(self.data, self.data.g);
-	if group.parent then self.data.sourceParent = group.parent; end
-end
-function app:CreateMiniListForGroup(group, retried)
-	local achievementID = group.achievementID;
-	if achievementID and not retried then
-		if group.criteriaID or not group.g then
-			local searchResults = app.SearchForField("achievementID", achievementID);
-			if searchResults and #searchResults > 0 then
-				local bestResult;
-				for i=1,#searchResults,1 do
-					local searchResult = searchResults[i];
-					if searchResult.achievementID == achievementID and not searchResult.criteriaID then
-						if not bestResult or searchResult.g then
-							bestResult = searchResult;
-						end
-					end
-				end
-				if bestResult then
-					return app:CreateMiniListForGroup(bestResult, true);
-				end
-			end
-		end
-	end
-	
-	-- Pop Out Functionality! :O
-	local popout = app:GetWindow(CreateSuffixForPopout(group), {
-		Silent = true,
-		OnInit = function(self)
-			self.reference = group;
-			OnInitForPopout(self);
-		end,
-	});
-	if IsAltKeyDown() then
-		AddTomTomWaypoint(popout.data, false);
-	else
-		if not popout.data.expanded then
-			ExpandGroupsRecursively(popout.data, true, true);
-		end
-		popout:Toggle(true);
-	end
-	return popout;
-end
-local function CalculateRowBack(data)
-	if data.back then return data.back; end
-	if data.parent then
-		return CalculateRowBack(data.parent) * 0.5;
-	else
-		return 0;
-	end
-end
-local function CalculateRowIndent(data)
-	if data.indent then return data.indent; end
-	if data.parent then
-		return CalculateRowIndent(data.parent) + 1;
-	else
-		return 0;
-	end
-end
-
 local _SetPortraitTexture = _G["SetPortraitTexture"];
 local _SetPortraitTextureFromDisplayID = _G["SetPortraitTextureFromCreatureDisplayID"];
 local function SetPortraitIcon(self, data, x)
@@ -10315,6 +9915,24 @@ local function SetPortraitIcon(self, data, x)
 		return true;
 	end
 end
+local function CalculateRowBack(data)
+	if data.back then return data.back; end
+	if data.parent then
+		return CalculateRowBack(data.parent) * 0.5;
+	else
+		return 0;
+	end
+end
+local function CalculateRowIndent(data)
+	if data.indent then return data.indent; end
+	if data.parent then
+		return CalculateRowIndent(data.parent) + 1;
+	else
+		return 0;
+	end
+end
+
+local CreateRow;
 local function SetRowData(self, row, data)
 	if row.ref ~= data then
 		-- New data, update everything
@@ -11526,6 +11144,7 @@ function app:UpdateWindowColors()
 end
 
 local function RefreshData(fromTrigger)
+	wipe(searchCache);
 	app.countdown = 30;
 	app.refreshFromTrigger = app.refreshFromTrigger or fromTrigger;
 	if app.currentlyRefreshingData then return; end
@@ -12043,6 +11662,459 @@ function app:BuildSearchResponseForField(groups, field)
 		end
 		return t;
 	end
+end
+
+-- Dynamic Popouts for Quest Chains and other Groups
+local function CreateSuffixForPopout(group)
+	return BuildSourceTextForChat(group, 0) .. " > " .. (group.text or "") .. (group.key and group[group.key] or "");
+end
+local function OnInitForPopout(self)
+	local group = self.reference;
+	if group.questID or group.sourceQuests then
+		-- This is a quest object. Let's show prereqs and breadcrumbs.
+		local questID = group.questID;
+		if questID and group.parent and group.parent.parent then
+			if group.parent.questID == questID then
+				group = group.parent;
+			end
+		end
+		
+		local mainQuest = CloneReference(group);
+		if group.parent then mainQuest.sourceParent = group.parent; end
+		if mainQuest.sym then
+			mainQuest.collectible = true;
+			mainQuest.visible = true;
+			mainQuest.progress = 0;
+			mainQuest.total = 0;
+			if not mainQuest.g then
+				local resolved = ResolveSymbolicLink(group);
+				if resolved then
+					for i=#resolved,1,-1 do
+						resolved[i] = CreateObject(resolved[i]);
+					end
+					mainQuest.g = resolved;
+				end
+			else
+				local resolved = ResolveSymbolicLink(group);
+				if resolved then
+					MergeObjects(mainQuest.g, resolved);
+				end
+			end
+		end
+		
+		if questID then mainQuest.collectible = true; end
+		local g = { mainQuest };
+		
+		-- Check to see if Source Quests are listed elsewhere.
+		if questID and not group.sourceQuests then
+			local searchResults = app.SearchForField("questID", questID);
+			if searchResults and #searchResults > 1 then
+				for i=1,#searchResults,1 do
+					local searchResult = searchResults[i];
+					if searchResult.questID == questID and searchResult.sourceQuests then
+						searchResult = CloneReference(searchResult);
+						searchResult.collectible = true;
+						searchResult.g = g;
+						mainQuest = searchResult;
+						g = { mainQuest };
+						break;
+					end
+				end
+			end
+		end
+		
+		-- Show Quest Prereqs
+		if mainQuest.sourceQuests then
+			local breakafter = 0;
+			local sourceQuests, sourceQuest, subSourceQuests, prereqs = mainQuest.sourceQuests;
+			while sourceQuests and #sourceQuests > 0 do
+				subSourceQuests = {}; prereqs = {};
+				for i,sourceQuestID in ipairs(sourceQuests) do
+					sourceQuest = sourceQuestID < 1 and app.SearchForField("creatureID", math.abs(sourceQuestID)) or app.SearchForField("questID", sourceQuestID);
+					if sourceQuest and #sourceQuest > 0 then
+						local found = nil;
+						for i=1,#sourceQuest,1 do
+							-- Only care about the first search result.
+							local sq = sourceQuest[i];
+							if sq and sq.questID and not sq.objectiveID then
+								questID = sq.questID;
+								if sq.parent and sq.parent.questID == questID then
+									sq = sq.parent;
+								end
+								if app.GroupFilter(sq) then
+									if app.RecursiveClassAndRaceFilter(sq) and questID == sourceQuestID then
+										if not found or (not found.sourceQuests and sq.sourceQuests) then
+											found = sq;
+										end
+									end
+								end
+							end
+						end
+						if found then
+							sourceQuest = CloneReference(found);
+							sourceQuest.collectible = true;
+							sourceQuest.visible = true;
+							sourceQuest.hideText = true;
+							if found.sourceQuests and #found.sourceQuests > 0 and (not found.saved or app.CollectedItemVisibilityFilter(sourceQuest)) then
+								-- Mark the sub source quest IDs as marked (as the same sub quest might point to 1 source quest ID)
+								for j, subsourceQuests in ipairs(found.sourceQuests) do
+									subSourceQuests[subsourceQuests] = true;
+								end
+							end
+						else
+							sourceQuest = nil;
+						end
+					elseif sourceQuestID > 0 then
+						-- Create a Quest Object.
+						sourceQuest = app.CreateQuest(sourceQuestID, { ['visible'] = true, ['collectible'] = true, ['hideText'] = true });
+					else
+						-- Create a NPC Object.
+						sourceQuest = app.CreateNPC(math.abs(sourceQuestID), { ['visible'] = true, ['hideText'] = true });
+					end
+					
+					-- If the quest was valid, attach it.
+					if sourceQuest then tinsert(prereqs, sourceQuest); end
+				end
+				
+				-- Convert the subSourceQuests table into an array
+				sourceQuests = {};
+				if #prereqs > 0 then
+					for sourceQuestID,i in pairs(subSourceQuests) do
+						tinsert(sourceQuests, tonumber(sourceQuestID));
+					end
+					tinsert(prereqs, {
+						["text"] = "Upon Completion",
+						["description"] = "The above quests need to be completed before being able to complete the quest(s) listed below.",
+						["icon"] = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
+						["visible"] = true,
+						["expanded"] = true,
+						["hideText"] = true,
+						["g"] = g,
+					});
+					g = prereqs;
+					breakafter = breakafter + 1;
+					if breakafter >= 100 then
+						app.print("Likely just broke out of an infinite source quest loop. Please report this to the ATT Discord!");
+						break;
+					end
+				end
+			end
+			
+			-- Clean up the recursive hierarchy. (this removed duplicates)
+			sourceQuests = {};
+			prereqs = g;
+			local orig = g;
+			while prereqs and #prereqs > 0 do
+				for i=#prereqs,1,-1 do
+					local o = prereqs[i];
+					if o.key then
+						sourceQuest = o.key .. o[o.key];
+						if sourceQuests[sourceQuest] then
+							-- Already exists in the hierarchy. Uh oh.
+							table.remove(prereqs, i);
+						else
+							sourceQuests[sourceQuest] = true;
+						end
+					end
+				end
+				
+				if #prereqs > 1 then
+					prereqs = prereqs[#prereqs];
+					if prereqs then prereqs = prereqs.g; end
+					orig = prereqs;
+				else
+					prereqs = prereqs[#prereqs];
+					if prereqs then prereqs = prereqs.g; end
+					orig[#orig].g = prereqs;
+				end
+			end
+			
+			-- Clean up standalone "Upon Completion" headers.
+			prereqs = g;
+			repeat
+				local n = #prereqs;
+				local lastprereq = prereqs[n];
+				if lastprereq.text == "Upon Completion" and n > 1 then
+					table.remove(prereqs, n);
+					local g = prereqs[n-1].g;
+					if not g then
+						g = {};
+						prereqs[n-1].g = g;
+					end
+					if lastprereq.g then
+						for i,data in ipairs(lastprereq.g) do
+							table.insert(g, data);
+						end
+					end
+					prereqs = g;
+				else
+					prereqs = lastprereq.g;
+				end
+			until not prereqs or #prereqs < 1;
+		end
+		self.data = {
+			text = "Quest Chain Requirements",
+			icon = "Interface\\Icons\\Spell_Holy_MagicalSentry.blp",
+			description = "The following quests need to be completed before being able to complete the final quest.",
+			hideText = true,
+			g = g,
+		};
+	elseif group.sym then
+		self.data = CloneReference(group);
+		self.data.collectible = true;
+		self.data.visible = true;
+		self.data.progress = 0;
+		self.data.total = 0;
+		if not self.data.g then
+			local resolved = ResolveSymbolicLink(group);
+			if resolved then
+				for i=#resolved,1,-1 do
+					resolved[i] = CreateObject(resolved[i]);
+				end
+				self.data.g = resolved;
+			end
+		else
+			local resolved = ResolveSymbolicLink(group);
+			if resolved then
+				MergeObjects(self.data.g, resolved);
+			end
+		end
+	elseif group.g then
+		-- This is already a container with accurate numbers.
+		self.data = group;
+	else
+		-- This is a standalone item
+		group.visible = true;
+		if not group.g and (group.itemID or group.currencyID) then
+			local cmd = group.link or group.key .. ":" .. group[group.key];
+			group = GetCachedSearchResults(cmd, SearchForLink, cmd);
+		end
+		self.data = group;
+	end
+	
+	-- Clone the data and then insert it into the Raw Data table.
+	self.data = CloneReference(self.data);
+	self.data.hideText = true;
+	self.data.visible = true;
+	self.data.indent = 0;
+	self.data.total = 0;
+	self.data.progress = 0;
+	
+	-- If this is an achievement, build the criteria within it if possible.
+	local achievementID = group.achievementID;
+	if achievementID then
+		local searchResults = app.SearchForField("achievementID", achievementID);
+		if searchResults and #searchResults > 0 then
+			for i=1,#searchResults,1 do
+				local searchResult = searchResults[i];
+				if searchResult.achievementID == achievementID and searchResult.criteriaID then
+					if not self.data.g then self.data.g = {}; end
+					MergeObject(self.data.g, CloneReference(searchResult));
+				end
+			end
+		end
+	end
+	
+	--[[
+	local currencyID = group.currencyID;
+	if currencyID and not self.data.usedtobuy then
+		local searchResults = app.SearchForField("currencyIDAsCost", currencyID);
+		if searchResults and #searchResults > 0 then
+			local usedtobuy = {};
+			usedtobuy.g = {};
+			usedtobuy.text = "Used to Buy";
+			usedtobuy.icon = "Interface\\Icons\\INV_Misc_Coin_01";
+			usedtobuy.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
+			usedtobuy.OnTooltip = function(t)
+				local total = 0;
+				for _,o in ipairs(t.g) do
+					if o.visible then
+						if o.cost then
+							for k,v in ipairs(o.cost) do
+								if v[1] == "c" and v[2] == currencyID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+						if o.providers then
+							for k,v in ipairs(o.providers) do
+								if v[1] == "c" and v[2] == currencyID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+					end
+				end
+				GameTooltip:AddDoubleLine("Total Needed", total);
+			end
+			MergeObjects(usedtobuy.g, searchResults);
+			if not self.data.g then self.data.g = {}; end
+			tinsert(self.data.g, usedtobuy);
+			self.data.usedtobuy = usedtobuy;
+		end
+	end
+	
+	local itemID = group.itemID;
+	if itemID and not self.data.tradedin then
+		local searchResults = app.SearchForField("itemIDAsCost", itemID);
+		if searchResults and #searchResults > 0 then
+			local tradedin = {};
+			tradedin.g = {};
+			tradedin.text = "Used For";
+			tradedin.icon = "Interface\\Icons\\INV_Misc_Coin_01";
+			tradedin.description = "This tooltip dynamically calculates the total number you need based on what is still visible below this header.";
+			tradedin.OnTooltip = function(t)
+				local total = 0;
+				for _,o in ipairs(t.g) do
+					if o.visible then
+						if o.cost then
+							for k,v in ipairs(o.cost) do
+								if v[1] == "i" and v[2] == itemID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+						if o.providers then
+							for k,v in ipairs(o.providers) do
+								if v[1] == "i" and v[2] == itemID then
+									total = total + (v[3] or 1);
+								end
+							end
+						end
+					end
+				end
+				GameTooltip:AddDoubleLine("Total Needed", total);
+			end
+			MergeObjects(tradedin.g, searchResults);
+			if not self.data.g then self.data.g = {}; end
+			tinsert(self.data.g, tradedin);
+			self.data.tradedin = tradedin;
+		end
+	end
+	]]--
+	
+	if self.data.key then
+		if group.cost and type(group.cost) == "table" then
+			local costGroup = {
+				["text"] = "Cost",
+				["description"] = "The following contains all of the relevant items or currencies needed to acquire this.",
+				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+				["OnUpdate"] = app.AlwaysShowUpdate,
+				["g"] = {},
+			};
+			local costItem;
+			for i,c in ipairs(group.cost) do
+				costItem = nil;
+				if c[1] == "c" then
+					costItem = app.CreateCurrencyClass(c[2]);
+				elseif c[1] == "i" then
+					costItem = app.CreateItem(c[2]);
+				end
+				if costItem then
+					costItem = CloneReference(costItem);
+					costItem.visible = true;
+					costItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(costGroup.g, costItem);
+				end
+			end
+			if #costGroup.g > 0 then
+				if not self.data.g then self.data.g = {}; end
+				MergeObject(self.data.g, costGroup, 1);
+			end
+		end
+		
+		if group.providers or group.qgs or group.crs then
+			local sourceGroup = {
+				["text"] = "Sources",
+				["description"] = "The following contains all of the relevant sources.",
+				["icon"] = "Interface\\Icons\\INV_Misc_Coin_02",
+				["OnUpdate"] = app.AlwaysShowUpdate,
+				["g"] = {},
+			};
+			local sourceItem;
+			if group.providers then
+				for _,p in ipairs(group.providers) do
+					sourceItem = nil;
+					if p[1] == "n" then
+						sourceItem = app.CreateNPC(p[2]);
+					elseif p[1] == "o" then
+						sourceItem = app.CreateObject(p[2]);
+					elseif p[1] == "i" then
+						sourceItem = app.CreateItem(p[2]);
+					end
+					if sourceItem then
+						sourceItem.visible = true;
+						sourceItem.OnUpdate = app.AlwaysShowUpdate;
+						MergeObject(sourceGroup.g, sourceItem);
+					end
+				end
+			end
+			if group.crs then
+				for _,cr in ipairs(group.crs) do
+					sourceItem = app.CreateNPC(cr);
+					sourceItem.visible = true;
+					sourceItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(sourceGroup.g, sourceItem);
+				end
+			end
+			if group.qgs then
+				for _,qg in ipairs(group.qgs) do
+					sourceItem = app.CreateNPC(qg);
+					sourceItem.visible = true;
+					sourceItem.OnUpdate = app.AlwaysShowUpdate;
+					MergeObject(sourceGroup.g, sourceItem);
+				end
+			end
+			if #sourceGroup.g > 0 then
+				if not self.data.g then self.data.g = {}; end
+				MergeObject(self.data.g, sourceGroup, 1);
+			end
+		end
+	end
+	
+	BuildGroups(self.data);
+	UpdateGroups(self.data, self.data.g);
+	if group.parent then self.data.sourceParent = group.parent; end
+end
+function app:CreateMiniListForGroup(group, retried)
+	local achievementID = group.achievementID;
+	if achievementID and not retried then
+		if group.criteriaID or not group.g then
+			local searchResults = app.SearchForField("achievementID", achievementID);
+			if searchResults and #searchResults > 0 then
+				local bestResult;
+				for i=1,#searchResults,1 do
+					local searchResult = searchResults[i];
+					if searchResult.achievementID == achievementID and not searchResult.criteriaID then
+						if not bestResult or searchResult.g then
+							bestResult = searchResult;
+						end
+					end
+				end
+				if bestResult then
+					return app:CreateMiniListForGroup(bestResult, true);
+				end
+			end
+		end
+	end
+	
+	-- Pop Out Functionality! :O
+	local popout = app:GetWindow(CreateSuffixForPopout(group), {
+		Silent = true,
+		OnInit = function(self)
+			self.reference = group;
+			OnInitForPopout(self);
+		end,
+	});
+	if IsAltKeyDown() then
+		AddTomTomWaypoint(popout.data, false);
+	else
+		if not popout.data.expanded then
+			ExpandGroupsRecursively(popout.data, true, true);
+		end
+		popout:Toggle(true);
+	end
+	return popout;
 end
 
 -- Create the Primary Collection Window (this allows you to save the size and location)
@@ -14000,7 +14072,6 @@ app:GetWindow("Tradeskills", {
 				-- If something new was "learned", then refresh the data.
 				if learned > 0 then
 					app.print("Cached " .. learned .. " known recipes!");
-					wipe(searchCache);
 					app:RefreshDataQuietly(true);
 				end
 			end
@@ -14232,39 +14303,13 @@ app:GetWindow("Tradeskills", {
 		UpdateWindow(self, ...);
 	end,
 });
-GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-GameTooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
-GameTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-GameTooltip:HookScript("OnShow", AttachTooltip);
-GameTooltip:HookScript("OnUpdate", AttachTooltip);
-GameTooltip:HookScript("OnHide", ClearTooltip);
-ItemRefTooltip:HookScript("OnShow", AttachTooltip);
-ItemRefTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-ItemRefTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-ItemRefTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-ItemRefShoppingTooltip1:HookScript("OnShow", AttachTooltip);
-ItemRefShoppingTooltip1:HookScript("OnTooltipSetQuest", AttachTooltip);
-ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", AttachTooltip);
-ItemRefShoppingTooltip1:HookScript("OnTooltipCleared", ClearTooltip);
-ItemRefShoppingTooltip2:HookScript("OnShow", AttachTooltip);
-ItemRefShoppingTooltip2:HookScript("OnTooltipSetQuest", AttachTooltip);
-ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", AttachTooltip);
-ItemRefShoppingTooltip2:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-WorldMapTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-WorldMapTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip:HookScript("OnShow", AttachTooltip);
+
 
 -- Slash Command List
 SLASH_ATTC1 = "/allthethings";
-SLASH_ATTC2 = "/things";
-SLASH_ATTC3 = "/att";
-SLASH_ATTC4 = "/attc";
+SLASH_ATTC2 = "/att";
+SLASH_ATTC3 = "/attc";
+SLASH_ATTC4 = "/things";
 SlashCmdList["ATTC"] = function(cmd)
 	if cmd and strlen(cmd) > 0 then
 		cmd = string.lower(cmd);
@@ -14304,30 +14349,11 @@ SlashCmdList["ATTCUYELL"] = function(cmd)
 	C_ChatInfo.SendAddonMessage("ATTC", "?", "YELL");
 end
 
-local oldItemSetHyperlink = ItemRefTooltip.SetHyperlink;
-function ItemRefTooltip:SetHyperlink(link, a, b, c, d, e, f)
-	-- Make sure to call the default function, but with a try-catch.
-	local status, err = pcall(function () oldItemSetHyperlink(self, link, a, b, c, d, e, f) end)
-	if not status then	
-		local linkType, id, params = strsplit(':', link)
-		linkType = linkType .. "ID";
-		print(linkType, id, params);
-		if not app.SearchForFieldContainer(linkType) then return end
-		
-		-- Search for the Link in the database
-		local cmd = linkType .. ":" .. id;
-		local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		if group then app:CreateMiniListForGroup(group); end
-	end
-end
+
 
 -- Register Events required at the start
 app:RegisterEvent("ADDON_LOADED");
-app:RegisterEvent("BOSS_KILL");
 app:RegisterEvent("CHAT_MSG_ADDON");
-if select(4, GetBuildInfo()) > 11403 then
-	app:RegisterEvent("CURSOR_CHANGED");
-end
 
 -- Define Event Behaviours
 app.events.ADDON_LOADED = function(addonName)
@@ -14585,13 +14611,14 @@ app.events.ADDON_LOADED = function(addonName)
 	-- Mark all previously completed quests.
 	GetQuestsCompleted(CompletedQuests);
 	wipe(DirtyQuests);
+	app:RegisterEvent("BAG_NEW_ITEMS_UPDATED");
 	app:RegisterEvent("QUEST_LOG_UPDATE");
 	app:RegisterEvent("QUEST_ACCEPTED");
 	app:RegisterEvent("QUEST_REMOVED");
 	app:RegisterEvent("QUEST_TURNED_IN");
 	app:RegisterEvent("QUEST_WATCH_UPDATE");
 	app:RegisterEvent("CRITERIA_UPDATE");
-	app:StartATTCoroutine("RefreshSaves", RefreshSaves);
+	app.events.UPDATE_INSTANCE_INFO();
 	app:RefreshLocation();
 	app:StartATTCoroutine("Initial Prime Lookup", function()
 		local countdown = 5;
@@ -14790,56 +14817,23 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 		end
 	end
 end
-app.events.CURSOR_CHANGED = function()
-	app:StartATTCoroutine("UpdateTooltip", function()
-		while not GameTooltip:IsShown() do
-			coroutine.yield();
-		end
-		AttachTooltip(GameTooltip);
-	end);
-end
-app.events.PLAYER_LEVEL_UP = function(newLevel)
-	app.Level = newLevel;
-	app:RefreshDataQuietly();
-	app.Settings:Refresh();
-end
-app.events.BOSS_KILL = function(id, name, ...)
-	-- This is so that when you kill a boss, you can trigger 
-	-- an automatic update of your saved instance cache. 
-	-- (It does lag a little, but you can disable this if you want.)
-	-- Waiting until the LOOT_CLOSED occurs will prevent the failed Auto Loot bug.
-	-- print("BOSS_KILL", id, name, ...);
-	app:UnregisterEvent("LOOT_CLOSED");
-	app:RegisterEvent("LOOT_CLOSED");
-end
-app.events.LOOT_CLOSED = function()
-	-- Once the loot window closes after killing a boss, THEN trigger the update.
-	app:UnregisterEvent("LOOT_CLOSED");
-	app:UnregisterEvent("UPDATE_INSTANCE_INFO");
-	app:RegisterEvent("UPDATE_INSTANCE_INFO");
-	RequestRaidInfo();
-end
-app.events.UPDATE_INSTANCE_INFO = function()
-	app:UnregisterEvent("UPDATE_INSTANCE_INFO");
-	app:StartATTCoroutine("RefreshSaves", RefreshSaves);
-end
-app.events.QUEST_ACCEPTED = function(questID)
-	wipe(searchCache);
-	app:RefreshDataQuietly();
-end
+
+
+-- Game Events that trigger visual updates, but no computation updates.
+local softRefresh = function() app:RefreshDataQuietly(); end;
+app.events.BAG_NEW_ITEMS_UPDATED = softRefresh;
+app.events.QUEST_ACCEPTED = softRefresh;
+app.events.CRITERIA_UPDATE = softRefresh;
+app.events.QUEST_REMOVED = softRefresh;
+app.events.QUEST_WATCH_UPDATE = softRefresh;
 app.events.QUEST_LOG_UPDATE = function()
+	app:UnregisterEvent("QUEST_LOG_UPDATE");
 	GetQuestsCompleted(CompletedQuests);
 	for questID,completed in pairs(DirtyQuests) do
 		app.QuestCompletionHelper(tonumber(questID));
 	end
 	wipe(DirtyQuests);
-	wipe(searchCache);
-	app:RefreshDataQuietly();
-	app:UnregisterEvent("QUEST_LOG_UPDATE");
-end
-app.events.QUEST_REMOVED = function(questID)
-	wipe(searchCache);
-	app:RefreshDataQuietly();
+	softRefresh();
 end
 app.events.QUEST_TURNED_IN = function(questID)
 	local quest = app.SearchForField("questID", questID);
@@ -14849,15 +14843,12 @@ app.events.QUEST_TURNED_IN = function(questID)
 			app.QuestCompletionHelper(tonumber(questID));
 		end
 		wipe(DirtyQuests);
-		wipe(searchCache);
 	end
 	app:RefreshDataQuietly(true);
 end
-app.events.QUEST_WATCH_UPDATE = function()
-	wipe(searchCache);
-	app:RefreshDataQuietly();
-end
-app.events.CRITERIA_UPDATE = function()
-	wipe(searchCache);
-	app:RefreshDataQuietly();
+
+-- Game Events that trigger computation updates.
+app.events.PLAYER_LEVEL_UP = function(newLevel)
+	app.Level = newLevel;
+	app:RefreshDataCompletely();
 end
