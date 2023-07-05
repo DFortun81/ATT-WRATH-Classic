@@ -153,7 +153,7 @@ app:GetWindow("Auctions", {
 					}),
 				},
 				options = {
-					{
+					setmetatable({
 						clickText = "Click to run a Full Scan",
 						clickDescription = "Click this button to perform a full scan of the auction house. This information will appear within this window and clear out the existing data.",
 						scanningText = "Full Scan on Cooldown";
@@ -184,13 +184,13 @@ app:GetWindow("Auctions", {
 										if select(2, CanSendAuctionQuery()) then
 											if ref.scanning then
 												ref.scanning = nil;
-												self:Update();
+												self:Refresh();
 											end
 											return true;
 										else
 											if not ref.scanning then
 												ref.scanning = true;
-												self:Update();
+												self:Refresh();
 											end
 											for i=0,60,1 do coroutine.yield(); end
 										end
@@ -202,20 +202,28 @@ app:GetWindow("Auctions", {
 						end,
 						OnUpdate = function(data)
 							data.visible = true;
-							if select(2, CanSendAuctionQuery()) then
-								data.text = data.clickText;
-								data.description = data.clickDescription;
-								data.trackable = nil;
-								data.saved = nil;
-							else
-								data.text = data.scanningText;
-								data.description = data.scanningDescription;
-								data.trackable = true;
-								data.saved = false;
-							end
 							return true;
 						end,
-					},
+					}, { __index = function(t, key)
+						if key == "info" then
+							if select(2, CanSendAuctionQuery()) then
+								return {
+									text = t.clickText,
+									description = t.clickDescription,
+									trackable = nil,
+									saved = nil,
+								};
+							else
+								return {
+									text = t.scanningText,
+									description = t.scanningDescription,
+									trackable = true,
+									saved = false,
+								};
+							end
+						end
+						return t.info[key];
+					end}),
 					{
 						text = "Clear Auction Data",
 						description = "Click this button to clear all of the cached auction data.",
