@@ -4454,6 +4454,7 @@ local categoryFields = {
 if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
 	useAchievementAPI = true;
+	local GetAchievementCategory = _G["GetAchievementCategory"];
 	fields.text = function(t)
 		return t.link or "|cffffff00[" .. (t.name or ("@CRIEVE: INVALID ACHIEVEMENT " .. t.achievementID)) .. "]|r";
 	end

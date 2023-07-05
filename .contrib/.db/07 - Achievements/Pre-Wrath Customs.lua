@@ -655,14 +655,12 @@ root("Achievements", {
 		
 		-- #if AFTER 3.0.1
 		applyclassicphase(WRATH_PHASE_ONE, ach(1681, {	-- The Loremaster (A)
-			["sym"] = {
-				{"select","achievementID",
-					1678,	-- Loremaster of Kalimdor
-					1676,	-- Loremaster of Eastern Kingdoms
-					1262,	-- Loremaster of Outland
-					41,	-- Loremaster of Northrend
-				},
-			},
+			["sym"] = {{"meta_achievement",
+				1678,	-- Loremaster of Kalimdor (A)
+				1676,	-- Loremaster of Eastern Kingdoms (A)
+				1262,	-- Loremaster of Outland (A)
+				41,		-- Loremaster of Northrend (A)
+			}},
 			["races"] = ALLIANCE_ONLY,
 			["groups"] = {
 				title(93),	-- Loremaster
@@ -670,14 +668,12 @@ root("Achievements", {
 			},
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(1682, {	-- The Loremaster (H)
-			["sym"] = {
-				{"select","achievementID",
-					1680,	-- Loremaster of Kalimdor
-					1677,	-- Loremaster of Eastern Kingdoms
-					1274,	-- Loremaster of Outland
-					1360,	-- Loremaster of Northrend
-				},
-			},
+			["sym"] = {{"meta_achievement",
+				1680,	-- Loremaster of Kalimdor (H)
+				1677,	-- Loremaster of Eastern Kingdoms (H)
+				1274,	-- Loremaster of Outland (H)
+				1360,	-- Loremaster of Northrend (H)
+			}},
 			["races"] = HORDE_ONLY,
 			["groups"] = {
 				title(93),	-- Loremaster
