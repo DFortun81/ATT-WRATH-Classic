@@ -2747,7 +2747,7 @@ local function SearchForLink(link)
 			kind = "itemID";
 		elseif kind == "quest" or kind == "q" then
 			kind = "questID";
-		elseif kind == "faction" then
+		elseif kind == "faction" or kind == "rep" then
 			kind = "factionID";
 		elseif kind == "ach" or kind == "achievement" then
 			kind = "achievementID";
@@ -2755,11 +2755,32 @@ local function SearchForLink(link)
 			kind = "creatureID";
 		elseif kind == "currency" then
 			kind = "currencyID";
-		elseif kind == "spell" or kind == "enchant" or kind == "talent" or kind == "recipe" then
+		elseif kind == "spell" or kind == "enchant" or kind == "talent" or kind == "recipe" or kind == "mount" then
 			kind = "spellID";
+		elseif kind == "pet" or kind == "battlepet" then
+			kind = "speciesID";
 		end
 		local cache = app.SearchForField(kind, id) or {};
-		if #cache == 0 then tinsert(cache, CreateObject({ ["key"] = kind, [kind] = id, ["description"] = "@Crieve: This has not been sourced in ATT yet!" })); end
+		if #cache == 0 then
+			local obj = CreateObject({
+				key = kind, [kind] = id,
+				hash = kind .. ":" .. id,
+			});
+			if not obj.__type then
+				obj.icon = "Interface\\ICONS\\INV_Misc_EngGizmos_20";
+				obj.text = "Search Results for '" .. obj.hash .. "'";
+				local response = app:BuildSearchResponse(app:GetDataCache().g, kind, id);
+				if response and #response > 0 then
+					obj.g = {};
+					for i,o in ipairs(response) do
+						tinsert(obj.g, o);
+					end
+				end
+			else
+				obj.description = "@Crieve: This has not been sourced in ATT yet!";
+			end
+			tinsert(cache, obj);
+		end
 		return cache, kind, id;
 	end
 end
@@ -14227,47 +14248,11 @@ SLASH_ATTC2 = "/things";
 SLASH_ATTC3 = "/att";
 SLASH_ATTC4 = "/attc";
 SlashCmdList["ATTC"] = function(cmd)
-	if cmd then
+	if cmd and strlen(cmd) > 0 then
 		cmd = string.lower(cmd);
-		if cmd == "" or cmd == "main" or cmd == "mainlist" then
-			app.ToggleMainList();
+		if strsub(cmd, 1, 6) == "mapid:" then
+			app:GetWindow("CurrentInstance"):SetMapID(tonumber(strsub(cmd, 7)));
 			return true;
-		elseif cmd == "debug" or cmd == "debugger" then
-			app:GetWindow("Debugger"):Toggle();
-			return true;
-		elseif cmd == "ra" then
-			app:GetWindow("RaidAssistant"):Toggle();
-			return true;
-		elseif cmd == "ran" or cmd == "rand" or cmd == "random" then
-			app:GetWindow("Random"):Toggle();
-			return true;
-		elseif cmd == "sr" then
-			app:GetWindow("SoftReserves"):Toggle();
-			return true;
-		elseif cmd == "unsorted" then
-			app:GetWindow("Unsorted"):Toggle();
-			return true;
-		elseif strsub(cmd, 1, 4) == "mini" then
-			app:ToggleMiniListForCurrentZone();
-			return true;
-		elseif cmd == "dailies" then
-			app:GetWindow("Dailies"):Toggle();
-			return true;
-		elseif cmd == "rwp" then
-			app:GetWindow("RWP"):Toggle();
-			return true;
-		elseif cmd == "quests" then
-			app:GetWindow("Quests"):Toggle();
-			return true;
-		elseif cmd == "breadcrumbs" then
-			app:GetWindow("Breadcrumbs"):Toggle();
-			return true;
-		else
-			local subcmd = strsub(cmd, 1, 6);
-			if subcmd == "mapid:" then
-				app:GetWindow("CurrentInstance"):SetMapID(tonumber(strsub(cmd, 7)));
-				return true;
-			end
 		end
 		
 		-- Search for the Link in the database
