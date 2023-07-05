@@ -6,6 +6,8 @@ local L = app.L;
 
 -- Protected Variables
 local Collectible = true;
+local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
+local HORDE_FACTION_ID = Enum.FlightPathFaction.Horde;
 
 -- PVP Rank Class
 local Create, Class = app.CreateClass("PVPRank", "pvpRankID", {
@@ -16,7 +18,7 @@ local Create, Class = app.CreateClass("PVPRank", "pvpRankID", {
 		return format("%s%02d","Interface\\PvPRankBadges\\PvPRank", t.pvpRankID);
 	end,
 	["title"] = function(t)
-		return RANK .. " " .. t.pvpRankID .. "`" ..  _G["PVP_RANK_" .. (t.pvpRankID + 4) .. "_" .. ((t.inverseR == 1 and 0 or 1))] .. " (" .. (t.r == Enum.FlightPathFaction.Alliance and FACTION_HORDE or FACTION_ALLIANCE) .. ")";
+		return RANK .. " " .. t.pvpRankID .. "`" ..  _G["PVP_RANK_" .. (t.pvpRankID + 4) .. "_" .. ((t.inverseR == 1 and 0 or 1))] .. " (" .. (t.r == ALLIANCE_FACTION_ID and FACTION_HORDE or FACTION_ALLIANCE) .. ")";
 	end,
 	["description"] = function(t)
 		return L.PVP_RANK_DESCRIPTION;
@@ -25,7 +27,7 @@ local Create, Class = app.CreateClass("PVPRank", "pvpRankID", {
 		return t.parent.r or app.FactionID;
 	end,
 	["inverseR"] = function(t)
-		return t.r == Enum.FlightPathFaction.Alliance and 1 or 0;
+		return t.r == ALLIANCE_FACTION_ID and 1 or 0;
 	end,
 	["lifetimeRank"] = function(t)
 		return select(3, GetPVPLifetimeStats()) or 0;

@@ -49,6 +49,8 @@ local _GetItemInfo = _G["GetItemInfo"];
 local _GetItemInfoInstant = _G["GetItemInfoInstant"];
 local _GetItemCount = _G["GetItemCount"];
 local _InCombatLockdown = _G["InCombatLockdown"];
+local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
+local HORDE_FACTION_ID = Enum.FlightPathFaction.Horde;
 
 -- Local Variables
 local DESCRIPTION_SEPARATOR = "`";
@@ -6213,9 +6215,9 @@ app.CacheFlightPathData = function()
 							node.r = nodeData.faction;
 						elseif nodeData.atlasName then
 							if nodeData.atlasName == "TaxiNode_Alliance" then
-								node.r = Enum.FlightPathFaction.Alliance;
+								node.r = ALLIANCE_FACTION_ID;
 							elseif nodeData.atlasName == "TaxiNode_Horde" then
-								node.r = Enum.FlightPathFaction.Horde;
+								node.r = HORDE_FACTION_ID;
 							end
 						end
 						newNodes[nodeData.nodeID] = node;
@@ -6308,7 +6310,7 @@ app.CreateFlightPath = app.CreateClass("FlightPath", "flightPathID", {
 	["icon"] = function(t)
 		local r = t.r;
 		if r then
-			if r == Enum.FlightPathFaction.Horde then
+			if r == HORDE_FACTION_ID then
 				return app.asset("fp_horde");
 			else
 				return app.asset("fp_alliance");
@@ -8182,7 +8184,7 @@ app.CreateQuest = createQuest;
 app.CreateQuestWithFactionData = function(t)
 	local aqd, hqd = t.aqd, t.hqd;
 	local questData, otherQuestData;
-	if app.FactionID == Enum.FlightPathFaction.Horde then
+	if app.FactionID == HORDE_FACTION_ID then
 		questData = hqd;
 		otherQuestData = aqd;
 	else
@@ -8216,8 +8218,8 @@ app.CreateQuestWithFactionData = function(t)
 	
 	-- Apply the faction specific quest data to this object.
 	for key,value in pairs(questData) do t[key] = value; end
-	aqd.r = Enum.FlightPathFaction.Alliance;
-	hqd.r = Enum.FlightPathFaction.Horde;
+	aqd.r = ALLIANCE_FACTION_ID;
+	hqd.r = HORDE_FACTION_ID;
 	t.otherQuestData = otherQuestData;
 	otherQuestData.nmr = 1;
 	return createQuest(t.questID, t);
@@ -8934,7 +8936,7 @@ if select(4, GetBuildInfo()) > 11403 then
 				end
 			end
 			if item.races then
-				if app.FactionID == Enum.FlightPathFaction.Horde then
+				if app.FactionID == HORDE_FACTION_ID then
 					return containsAny(item.races, HORDE_ONLY);
 				else
 					return containsAny(item.races, ALLIANCE_ONLY);
@@ -8957,7 +8959,7 @@ else
 				end
 			end
 			if item.races then
-				if app.FactionID == Enum.FlightPathFaction.Horde then
+				if app.FactionID == HORDE_FACTION_ID then
 					return containsAny(item.races, HORDE_ONLY);
 				else
 					return containsAny(item.races, ALLIANCE_ONLY);
@@ -8968,7 +8970,7 @@ else
 		else
 			if item.nmc then
 				if item.c and #item.c == 1 then
-					if app.FactionID == Enum.FlightPathFaction.Horde then
+					if app.FactionID == HORDE_FACTION_ID then
 						return item.c[1] ~= 2;	-- Check for Paladin
 					else
 						return item.c[1] ~= 7;	-- Check for Shaman
@@ -11063,7 +11065,7 @@ local function SetWindowData(self, data)
 end
 local function ProcessGroup(data, object)
 	if app.VisibilityFilter(object) then
-		tinsert(data, object);
+		data[#data + 1] = object;
 		if object.g and object.expanded then
 			for i=1,#object.g,1 do
 				ProcessGroup(data, object.g[i]);
@@ -12295,7 +12297,7 @@ app:GetWindow("Attuned", {
 					app.CreateMap(248, {	-- Onyxia's Lair
 						['icon'] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
 						['description'] = "These are players attuned to Onyxia's Lair.",
-						['questID'] = app.FactionID == Enum.FlightPathFaction.Horde and 6602 or 6502,
+						['questID'] = app.FactionID == HORDE_FACTION_ID and 6602 or 6502,
 						['visible'] = true,
 						["isRaid"] = true,
 						['back'] = 0.5,
