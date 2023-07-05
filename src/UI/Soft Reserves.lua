@@ -491,6 +491,46 @@ local function CHAT_MSG_WHISPER_HANDLER(text, playerName, _, _, _, _, _, _, _, _
 		end
 	end
 end
+local function ADDON_LOADED(self, addonName)
+	-- Only execute for this addon.
+	if addonName ~= appName then return; end
+	self:UnregisterEvent("ADDON_LOADED");
+
+	-- Check the format of the Soft Reserve Cache
+	local reserves = app.GetDataMember("SoftReserves", {});
+	local persistence = app.GetDataMember("SoftReservePersistence", {});
+	for guid,reserve in pairs(reserves) do
+		if type(reserve) == 'number' then
+			reserve = { reserve, time() };
+			reserves[guid] = reserve;
+		end
+		local itemID = reserve[1];
+		local reservesForItem = SoftReservesByItemID[itemID];
+		if not reservesForItem then
+			reservesForItem = {};
+			SoftReservesByItemID[itemID] = reservesForItem;
+		end
+		table.insert(reservesForItem, guid);
+	end
+	
+	-- Push the player's SR
+	PushSoftReserve(true);
+	
+	-- Check if the SRs are locked
+	if IsInGroup() then
+		if not IsMasterLooter() then
+			SendGroupMessage("?\tsrlock");
+			SendGroupMessage("?\tsrpersistence");
+		end
+	else
+		-- Unlock the Soft Reserves when not in a group
+		local locked = app.Settings:GetTooltipSetting("SoftReservesLocked");
+		if locked then
+			app.Settings:SetTooltipSetting("SoftReservesLocked", false);
+			wipe(searchCache);
+		end
+	end
+end
 
 -- Implementation
 SoftReserveWindow = app:GetWindow("SoftReserves", {
@@ -524,41 +564,8 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 					PushSoftReserve();
 				end
 				self:Update(true);
-			elseif e == "VARIABLES_LOADED" then
-				-- Check the format of the Soft Reserve Cache
-				local reserves = app.GetDataMember("SoftReserves", {});
-				local persistence = app.GetDataMember("SoftReservePersistence", {});
-				for guid,reserve in pairs(reserves) do
-					if type(reserve) == 'number' then
-						reserve = { reserve, time() };
-						reserves[guid] = reserve;
-					end
-					local itemID = reserve[1];
-					local reservesForItem = SoftReservesByItemID[itemID];
-					if not reservesForItem then
-						reservesForItem = {};
-						SoftReservesByItemID[itemID] = reservesForItem;
-					end
-					table.insert(reservesForItem, guid);
-				end
-				
-				-- Push the player's SR
-				PushSoftReserve(true);
-				
-				-- Check if the SRs are locked
-				if IsInGroup() then
-					if not IsMasterLooter() then
-						SendGroupMessage("?\tsrlock");
-						SendGroupMessage("?\tsrpersistence");
-					end
-				else
-					-- Unlock the Soft Reserves when not in a group
-					local locked = app.Settings:GetTooltipSetting("SoftReservesLocked");
-					if locked then
-						app.Settings:SetTooltipSetting("SoftReservesLocked", false);
-						wipe(searchCache);
-					end
-				end
+			elseif e == "ADDON_LOADED" then
+				ADDON_LOADED(self, ...);
 			else
 				self:Refresh();
 			end			
@@ -568,7 +575,7 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 		self:RegisterEvent("CHAT_MSG_ADDON");
 		self:RegisterEvent("GROUP_ROSTER_UPDATE");
 		self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
-		self:RegisterEvent("VARIABLES_LOADED");
+		self:RegisterEvent("ADDON_LOADED");
 	end,
 	OnRebuild = function(self)
 		if self.data then return true; end
@@ -1229,7 +1236,7 @@ app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
 		local roll = t.roll;
 		local icon = t.icon;
 		if icon then text = "|T" .. icon .. ":0|t " .. text; end
-		if roll and app.Settings:GetTooltipSetting("SoftReservePersistence") then text = text .. " (" .. roll .. ")"; end
+		if roll then text = text .. " (" .. roll .. ")"; end
 		if guid and not IsGUIDInGroup(guid) then
 			text = text .. " |CFFFFFFFF(Not in Group)|r";
 		end

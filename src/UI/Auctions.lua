@@ -64,7 +64,7 @@ app:GetWindow("Auctions", {
 				self:StartATTCoroutine("ProcessAuctions", ProcessAuctions);
 			elseif e == "ADDON_LOADED" then
 				-- If the setting to automatically show it is activated, then do it!
-				if a == "Blizzard_AuctionUI" then
+				if a == "Blizzard_AuctionUI" or a == "Blizzard_AuctionHouseUI" then
 					self:UnregisterEvent("ADDON_LOADED");
 					if app.Settings:GetTooltipSetting("Auto:AuctionList") then
 						self:Show();

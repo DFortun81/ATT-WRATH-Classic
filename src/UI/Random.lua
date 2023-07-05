@@ -1,26 +1,14 @@
 do
 local appName, app = ...;
 local L = app.L;
-local searchCache = app.searchCache;
+local contains, CloneReference, searchCache =
+	app.contains, app.CloneReference, app.searchCache;
 
 -- Performance Cache
 local C_Map_GetMapInfo = C_Map.GetMapInfo;
 
 -- Helper Functions
-local contains = app.contains;
-local function CloneReference(group)
-	local clone = {};
-	if group.g then
-		local g = {};
-		for i,group in ipairs(group.g) do
-			local child = CloneReference(group);
-			child.parent = clone;
-			tinsert(g, child);
-		end
-		clone.g = g;
-	end
-	return setmetatable(clone, { __index = group });
-end
+-- TODO: Move these to the public API.
 local function SearchRecursively(group, field, temp)
 	if group.visible and not group.saved then
 		if group.g then

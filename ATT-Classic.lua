@@ -9338,7 +9338,7 @@ function app.ObjectVisibilityFilter(group)
 	return group.visible;
 end
 
--- Default Filter Settings (changed in VARIABLES_LOADED and in the Options Menu)
+-- Default Filter Settings (changed in ADDON_LOADED and in the Options Menu)
 app.VisibilityFilter = app.ObjectVisibilityFilter;
 app.GroupFilter = app.FilterItemClass;
 app.GroupRequirementsFilter = app.NoFilter;
@@ -13007,7 +13007,11 @@ app:GetWindow("Debugger", {
 		-- Setup Event Handlers and register for events
 		self:SetScript("OnEvent", function(self, e, ...)
 			--print(e, ...);
-			if e == "VARIABLES_LOADED" then
+			if e == "ADDON_LOADED" then
+				-- Only execute for this addon.
+				local addonName = ...;
+				if addonName ~= appName then return; end
+				self:UnregisterEvent("ADDON_LOADED");
 				if not ATTClassicDebugData then
 					ATTClassicDebugData = app.GetDataMember("Debugger", {});
 					app.SetDataMember("Debugger", nil);
@@ -13159,7 +13163,7 @@ app:GetWindow("Debugger", {
 				end
 			end
 		end);
-		self:RegisterEvent("VARIABLES_LOADED");
+		self:RegisterEvent("ADDON_LOADED");
 		self:RegisterEvent("GOSSIP_SHOW");
 		self:RegisterEvent("QUEST_DETAIL");
 		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
@@ -14307,7 +14311,7 @@ function ItemRefTooltip:SetHyperlink(link, a, b, c, d, e, f)
 end
 
 -- Register Events required at the start
-app:RegisterEvent("VARIABLES_LOADED");
+app:RegisterEvent("ADDON_LOADED");
 app:RegisterEvent("BOSS_KILL");
 app:RegisterEvent("CHAT_MSG_ADDON");
 if select(4, GetBuildInfo()) > 11403 then
@@ -14315,7 +14319,11 @@ if select(4, GetBuildInfo()) > 11403 then
 end
 
 -- Define Event Behaviours
-app.events.VARIABLES_LOADED = function()
+app.events.ADDON_LOADED = function(addonName)
+	-- Only execute for this addon.
+	if addonName ~= appName then return; end
+	app:UnregisterEvent("ADDON_LOADED");
+	
 	ATTClassicAD = _G["ATTClassicAD"];	-- For account-wide data.
 	if not ATTClassicAD then
 		ATTClassicAD = { };
