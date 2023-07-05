@@ -5001,7 +5001,9 @@ end,
 	end
 end,
 ["LOREMASTER_EXPLICIT_OnUpdate"] = function(t, quests)
-	if quests or #quests < 1 then
+	if quests and #quests > 0 then
+		t.quests = quests;
+		if useAchievementAPI then return; end
 		local p = 0;
 		if app.FilterItemClass_RequireRaces(t) then
 			for i,o in ipairs(quests) do
@@ -5013,8 +5015,6 @@ end,
 			end
 		end
 		t.p = p;
-		t.quests = quests;
-		if useAchievementAPI then return; end
 		t.SetAchievementCollected(t.achievementID, p >= t.rank);
 	else
 		return true;
