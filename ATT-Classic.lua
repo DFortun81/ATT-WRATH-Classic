@@ -14284,7 +14284,15 @@ SLASH_ATTCU2 = "/attyou";
 SLASH_ATTCU3 = "/attwho";
 SlashCmdList["ATTCU"] = function(cmd)
 	local name,server = UnitName("target");
-	if name then SendResponseMessage("?", server and (name .. "-" .. server) or name); end
+	if name then
+		if UnitIsPlayer("target") then
+			SendResponseMessage("?", server and (name .. "-" .. server) or name);
+		else
+			local cmd = "creatureid:" .. select(6, strsplit("-", UnitGUID("target")));
+			local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
+			if group then app:CreateMiniListForGroup(group); end
+		end
+	end
 end
 
 SLASH_ATTCUYELL1 = "/attyell";
