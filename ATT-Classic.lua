@@ -9001,7 +9001,6 @@ end
 function app.FilterItemClass_RequireFaction(item)
 	if item.minReputation and app.IsFactionExclusive(item.minReputation[1]) then
 		if item.minReputation[2] > (select(6, _GetFactionInfoByID(item.minReputation[1])) or 0) then
-			--print("Filtering Out", item.key, item[item.key], item.text, item.minReputation[1], app.CreateFaction(item.minReputation[1]).text);
 			return false;
 		else
 			return true;
@@ -9011,7 +9010,7 @@ function app.FilterItemClass_RequireFaction(item)
 	end
 end
 function app.FilterItemClass_UnobtainableItem(item)
-	if item.u and not ATTClassicSettings.Unobtainables[item.u] then
+	if item.u and not app.Settings.GetUnobtainableFilter(item.u) then
 		return false;
 	else
 		return true;
