@@ -1309,7 +1309,7 @@ root("Achievements", {
 					-- #if ANYCLASSIC
 					-- They didn't actually remove this with Phase 2... Blizzard?!
 					["OnUpdate"] = [[function(t)
-						if _.Settings.GetUnobtainableFilter(]] .. CATA_PHASE_ONE .. [[) then
+						if _.Settings:GetUnobtainableFilter(]] .. CATA_PHASE_ONE .. [[) then
 							t.u = ]] .. REMOVED_FROM_GAME .. [[;
 							t.rwp = nil;
 						else
@@ -1352,7 +1352,7 @@ root("Achievements", {
 					-- #if ANYCLASSIC
 					-- They didn't actually remove this with Phase 2... Blizzard?!
 					["OnUpdate"] = [[function(t)
-						if _.Settings.GetUnobtainableFilter(]] .. CATA_PHASE_ONE .. [[) then
+						if _.Settings:GetUnobtainableFilter(]] .. CATA_PHASE_ONE .. [[) then
 							t.u = ]] .. REMOVED_FROM_GAME .. [[;
 							t.rwp = nil;
 						else

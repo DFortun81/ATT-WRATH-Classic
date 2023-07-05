@@ -6,6 +6,9 @@
 local appName, app = ...;
 local L = app.L;
 
+-- Local cache
+local ATTClassicSettings, ATTClassicSettingsPerCharacter = {}, {};
+
 -- The Settings Frame
 local settings = CreateFrame("FRAME", app:GetName() .. "-Settings", InterfaceOptionsFramePanelContainer or UIParent, BackdropTemplateMixin and "BackdropTemplate");
 app.Settings = settings;
@@ -159,9 +162,16 @@ local OnClickForTab = function(self)
 end;
 settings.Initialize = function(self)
 	PanelTemplates_SetNumTabs(self, #self.Tabs);
+	
+	local global_ATTClassicSettings = _G["ATTClassicSettings"];
+	if global_ATTClassicSettings then ATTClassicSettings = global_ATTClassicSettings; end
+	_G["ATTClassicSettings"] = ATTClassicSettings;
+	
+	local global_ATTClassicSettingsPerCharacter = _G["ATTClassicSettingsPerCharacter"];
+	if global_ATTClassicSettingsPerCharacter then ATTClassicSettingsPerCharacter = global_ATTClassicSettingsPerCharacter; end
+	_G["ATTClassicSettingsPerCharacter"] = ATTClassicSettingsPerCharacter;
 
 	-- Assign the default settings
-	if not ATTClassicSettings then ATTClassicSettings = {}; end
 	if not ATTClassicSettings.General then ATTClassicSettings.General = {}; end
 	if not ATTClassicSettings.Tooltips then ATTClassicSettings.Tooltips = {}; end
 	if not ATTClassicSettings.Unobtainables then ATTClassicSettings.Unobtainables = {}; end
@@ -170,7 +180,6 @@ settings.Initialize = function(self)
 	setmetatable(ATTClassicSettings.Unobtainables, UnobtainableSettingsBase);
 
 	-- Assign the preset filters for your character class as the default states
-	if not ATTClassicSettingsPerCharacter then ATTClassicSettingsPerCharacter = {}; end
 	if not ATTClassicSettingsPerCharacter.Filters then ATTClassicSettingsPerCharacter.Filters = {}; end
 	if not ATTClassicSettingsPerCharacter.RWPFilters then ATTClassicSettingsPerCharacter.RWPFilters = {}; end
 	setmetatable(ATTClassicSettingsPerCharacter.Filters, FilterSettingsBase);

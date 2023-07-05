@@ -9010,7 +9010,7 @@ function app.FilterItemClass_RequireFaction(item)
 	end
 end
 function app.FilterItemClass_UnobtainableItem(item)
-	if item.u and not app.Settings.GetUnobtainableFilter(item.u) then
+	if item.u and not app.Settings:GetUnobtainableFilter(item.u) then
 		return false;
 	else
 		return true;
