@@ -5546,13 +5546,31 @@ app.CreateUnit = app.CreateClass("Unit", "unit", {
 		return t.name;
 	end,
 	["name"] = function(t)
-		local name, className, classFile, classID = UnitName(t.unit);
+		local unit = t.unit;
+		for guid,character in pairs(ATTCharacterData) do
+			if guid == unit or character.name == unit then
+				rawset(t, "name", character.text);
+				rawset(t, "lvl", character.lvl);
+				if character.classID then
+					rawset(t, "classID", character.classID);
+					rawset(t, "classes", { character.classID });
+					rawset(t, "class", C_CreatureInfo.GetClassInfo(character.classID).className);
+				end
+				if character.raceID then
+					rawset(t, "raceID", character.raceID);
+					rawset(t, "races", { character.raceID });
+					rawset(t, "race", C_CreatureInfo.GetRaceInfo(character.raceID).raceName);
+				end
+				return character.text;
+			end
+		end
+		local name, className, classFile, classID = UnitName(unit);
 		if name then
-			className, classFile, classID = UnitClass(t.unit);
-		elseif #{strsplit("-", t.unit)} > 1 then
+			className, classFile, classID = UnitClass(unit);
+		elseif #{strsplit("-", unit)} > 1 then
 			-- It's a GUID.
-			rawset(t, "guid", t.unit);
-			className, classFile, _, _, _, name = GetPlayerInfoByGUID(t.unit);
+			rawset(t, "guid", unit);
+			className, classFile, _, _, _, name = GetPlayerInfoByGUID(unit);
 			classID = GetClassIDFromClassFile(classFile);
 		end
 		if name then
