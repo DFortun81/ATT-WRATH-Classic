@@ -540,28 +540,24 @@ root("Achievements", {
 		-- #if AFTER 3.0.1
 		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_QUESTS, {
 			applyclassicphase(WRATH_PHASE_ONE, ach(41, {	-- Loremaster of Northrend (A)
-				-- #if BEFORE WRATH
+				-- #if AFTER WRATH
+				["sym"] = { {"select","achievementID", 33, 35, 36, 37, 38, 39, 34, 40 } },
+				-- #else
 				["description"] = "Complete the Northrend quest achievements listed below.",
-				-- #endif
-				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 33, 35, 36, 37, 38, 39, 34, 40); end]],
-				-- #else
-				["sym"] = { {"select","achievementID", 33, 35, 36, 37, 38, 39, 34, 40 } },
 				-- #endif
 				["races"] = ALLIANCE_ONLY,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1360, {	-- Loremaster of Northrend (H)
-				-- #if BEFORE WRATH
+				-- #if AFTER WRATH
+				["sym"] = { {"select","achievementID", 1358, 1356, 38, 1357, 1359, 39, 36, 40 } },
+				-- #else
 				["description"] = "Complete the Northrend quest achievements listed below.",
-				-- #endif
-				-- #if ANYCLASSIC
 				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 1358, 1356, 38, 1357, 1359, 39, 36, 40); end]],
-				-- #else
-				["sym"] = { {"select","achievementID", 1358, 1356, 38, 1357, 1359, 39, 36, 40 } },
 				-- #endif
 				["races"] = HORDE_ONLY,
 			})),
@@ -619,12 +615,18 @@ root("Achievements", {
 		ach(1182),	-- The Bread Winner
 		
 		applyclassicphase(WRATH_PHASE_ONE, ach(941, {	-- Hemet Nesingwary: The Collected Quests
-			-- #if BEFORE WRATH
+			-- #if AFTER WRATH
+			["sym"] = { {"select","achievementID",
+				939,	-- Hills Like White Elekk
+				938,	-- The Snows of Northrend
+				940,	-- The Green Hills of Stranglethorn
+			}},
+			-- #else
 			["description"] = "Complete the Green Hills of Stranglethorn, Hills Like White Elekk and Snows of Northrend achievements.",
 			["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 939, 938, 940); end]],
-			-- #else
+			-- #endif
 			["maps"] = {
 				NAGRAND,
 				-- #if AFTER CATA
@@ -634,12 +636,6 @@ root("Achievements", {
 				-- #endif
 				SHOLAZAR_BASIN,
 			},
-			["sym"] = { {"select","achievementID",
-				939,	-- Hills Like White Elekk
-				938,	-- The Snows of Northrend
-				940,	-- The Green Hills of Stranglethorn
-			}},
-			-- #endif
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(1576, {	-- Of Blood and Anguish
 			["sourceQuests"] = {

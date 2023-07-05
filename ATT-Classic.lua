@@ -4206,6 +4206,7 @@ end
 
 -- Achievement Lib
 (function()
+local useAchievementAPI, commonAchievementHandlers = false;
 local SetAchievementCollected = function(achievementID, collected, refresh)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
@@ -4223,6 +4224,218 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 		if refresh then app:RefreshDataQuietly(true); end
 	end
 end
+
+-- These achievement handlers are good to use at any point.
+local LOREMASTER_CreateQuests = function(t, extraQuestIDs)
+	local parent = t.sourceParent or t.parent;
+	if parent then
+		-- Get the quests list from the zone itself.
+		local g, quests, count = parent.parent and parent.parent.g, {}, 0;
+		if g and #g > 0 then
+			for i,o in ipairs(g) do
+				if o.headerID == app.HeaderConstants.QUESTS then
+					-- Clone the list to prevent dirtying the quest list in the zone.
+					for j,quest in ipairs(o.g) do
+						if quest.key == "questID" and not quest.repeatable then
+							count = count + 1;
+							quests[count] = quest;
+						end
+					end
+					break;
+				end
+			end
+		end
+		
+		-- If additional questIDs were manually included, let's do some extra work.
+		if extraQuestIDs and #extraQuestIDs > 0 then
+			for i,questID in ipairs(extraQuestIDs) do
+				local results = app.SearchForField("questID", questID);
+				if results and #results > 0 then
+					local quest = results[1];
+					if quest.key == "questID" and not quest.repeatable then
+						count = count + 1;
+						quests[count] = quest;
+					end
+				end
+			end
+		end
+		if count > 0 then
+			return quests;
+		end
+	end
+end;
+local LOREMASTER_CreateQuestsAndStructures = function(t, mapID, extraQuestIDs)
+	-- Grab all of the quests on the continent.
+	local response;
+	local results = app.SearchForField("mapID", mapID);
+	if not results then
+		return;
+	else
+		local count = #results;
+		if count < 1 then
+			return;
+		elseif count > 1 then
+			-- Uh wasn't expecting this.
+			local bestResult;
+			for i=1,#results,1 do
+				local g = results[i].g;
+				if g and not bestResult or #g > #bestResult.g then
+					bestResult = results[i];
+				end
+			end
+			response = app:BuildSearchResponseForField(bestResult.g, "questID");
+		else
+			response = app:BuildSearchResponseForField(results[1].g, "questID");
+		end
+	end
+	
+	
+	local quests, structures = {}, {};
+	if response then
+		-- Get the quests list from the zone itself.
+		local zones_header = {text=BUG_CATEGORY2,icon = app.asset("Category_Zones"),description = "These are outdoor quests that involve the associated maps for the continent.",g = response};
+		app:BuildFlatSearchResponseForField(response, "questID", quests);
+		if #zones_header.g > 0 then
+			tinsert(structures, zones_header);
+		end
+		
+		-- Get a list of all of the mapIDs in this structure.
+		response = {};
+		app:BuildFlatSearchResponseForField(zones_header.g, "mapID", response);
+		if #response > 0 then
+			local mapIDs = {};
+			for i,o in ipairs(response) do
+				if o.mapID and not mapIDs[o.mapID] then
+					mapIDs[o.mapID] = true;
+				end
+				if o.maps then
+					for j,id in ipairs(o.maps) do
+						if not mapIDs[id] then
+							mapIDs[id] = true;
+						end
+					end
+				end
+			end
+			response = app:BuildSearchFilteredResponse(app.Categories.Instances, function(group)
+				if group.questID and not group.repeatable then
+					if group.coords then
+						for i,coord in ipairs(group.coords) do
+							if coord[3] and mapIDs[coord[3]] then
+								return true;
+							end
+						end
+					end
+					if group.maps then
+						for i,id in ipairs(group.maps) do
+							if mapIDs[id] then
+								return true;
+							end
+						end
+					end
+					return false;
+				end
+			end);
+			if response then
+				local dungeon_header = {text=GROUP_FINDER,icon = app.asset("Category_D&R"),description = "These are dungeon quests that involve the associated maps for the continent. They may or may not count towards the loremaster achievement. Just get it done and don't be lazy or complain to me.\n\n - Crieve",g = response};
+				app:BuildFlatSearchResponseForField(response, "questID", quests);
+				if #dungeon_header.g > 0 then
+					tinsert(structures, 1, dungeon_header);
+				end
+			end
+		end
+	end
+	
+	-- If additional questIDs were manually included, let's do some extra work.
+	if extraQuestIDs and #extraQuestIDs > 0 then
+		for i,questID in ipairs(extraQuestIDs) do
+			local results = app.SearchForField("questID", questID);
+			if results and #results > 0 then
+				tinsert(quests, 1, results[1]);
+			end
+		end
+	end
+	
+	-- Return the Outdoor Zones and Dungeon structures.
+	return quests, structures;
+end
+commonAchievementHandlers = {
+["DEDICATED_10M_OnUpdate"] = function(t)
+	rawset(t, "collectible", nil);
+	if app.Settings:Get("DebugMode") or app.Settings:Get("AccountMode") then
+		return false;
+	elseif IsInGroup() and GetNumGroupMembers() >= 9 then
+		rawset(t, "collectible", false);
+		return true;
+	end
+end,
+["DEDICATED_25M_OnUpdate"] = function(t)
+	rawset(t, "collectible", nil);
+	if app.Settings:Get("DebugMode") or app.Settings:Get("AccountMode") then
+		return false;
+	elseif IsInGroup() and GetNumGroupMembers() >= 21 then
+		rawset(t, "collectible", false);
+		return true;
+	end
+end,
+["EXALTED_REP_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local r = t.rep or (t.BuildReputation and t:BuildReputation());
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], { r })).data;
+		clone.description = t.description;
+		return true;
+	end
+end,
+["EXALTED_REP_OnTooltip"] = function(t)
+	if t.collectible then
+		local r = t.rep or (t.BuildReputation and t:BuildReputation());
+		if r then
+			GameTooltip:AddLine(" ");
+			GameTooltip:AddDoubleLine(" |T" .. r.icon .. ":0|t " .. r.text, app.L[r.standing == 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+		end
+	end
+end,
+["EXALTED_REPS_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local reps = t.reps or (t.BuildReputations and t:BuildReputations());
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], reps)).data;
+		clone.description = t.description;
+		return true;
+	end
+end,
+["EXALTED_REPS_OnTooltip"] = function(t)
+	if t.collectible then
+		local reps = t.reps or (t.BuildReputations and t:BuildReputations());
+		if reps then
+			GameTooltip:AddLine(" ");
+			for i,faction in ipairs(reps) do
+				GameTooltip:AddDoubleLine(" |T" .. faction.icon .. ":0|t " .. faction.text, app.L[faction.standing == 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+			end
+		end
+	end
+end,
+["LOREMASTER_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local data = t.quests or (t.BuildQuests and t:BuildQuests());
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], data)).data;
+		clone.description = t.description;
+		return true;
+	end
+end,
+["LOREMASTER_CONTINENT_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local data = t.structures or (t.BuildStructures and t:BuildStructures()) or t.quests;
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], data)).data;
+		clone.description = t.description;
+		return true;
+	end
+end,
+};
+app.CommonAchievementHandlers = commonAchievementHandlers;
+
 local fields = {
 	["collectible"] = function(t)
 		return app.CollectibleAchievements;
@@ -4238,7 +4451,6 @@ local categoryFields = {
 		return app.asset("Category_Achievements");
 	end,
 };
-local useAchievementAPI = false;
 if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
 	useAchievementAPI = true;
@@ -4489,6 +4701,132 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 			app:UnregisterEvent("ADDON_LOADED");
 		end
 	end
+	
+	-- Achievements are supported in this version, so we don't need to manually check anything!
+	-- Most calculations that were previously in the OnUpdate can now exist in a build script instead.
+	commonAchievementHandlers.EXALTED_REP_OnUpdate = function(t, factionID)
+		t.OnUpdate = nil;
+		t.BuildReputation = function()
+			local r = t.rep;
+			if not r then
+				local f = app.SearchForField("factionID", factionID);
+				if f and #f > 0 then
+					r = f[1];
+					for i,o in ipairs(f) do
+						if o.key == "factionID" then
+							r = o;
+							break;
+						end
+					end
+					t.rep = r;
+				end
+			end
+			return r;
+		end
+	end
+	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t, ...)
+		t.OnUpdate = nil;
+		local factionIDs = { ... };
+		t.BuildReputations = function()
+			local reps = t.reps;
+			if not reps then
+				reps = {};
+				for i,factionID in ipairs(factionIDs) do
+					local f = app.SearchForField("factionID", factionID);
+					if f and #f > 0 then
+						local best = f[1];
+						for _,o in ipairs(f) do
+							if o.key == "factionID" then
+								best = o;
+								break;
+							end
+						end
+						tinsert(reps, best);
+					end
+				end
+				if #reps > 0 then
+					t.reps = reps;
+				else
+					reps = nil;
+				end
+			end
+			return reps;
+		end
+	end
+	commonAchievementHandlers.EXALTED_REPS_ANY_OnUpdate = function(t, ...)
+		t.OnUpdate = nil;
+		local factionIDs = { ... };
+		t.BuildReputations = function(t)
+			local reps = t.reps;
+			if not reps then
+				reps = {};
+				for i,factionID in ipairs(factionIDs) do
+					local f = app.SearchForField("factionID", factionID);
+					if f and #f > 0 then
+						tinsert(reps, f[1]);
+					end
+				end
+				if #reps > 0 then
+					t.reps = reps;
+				end
+			end
+			return reps;
+		end
+	end
+	commonAchievementHandlers.EXPLORATION_OnClick = function(row, button)
+		if button == "RightButton" then
+			local t = row.ref;
+			local areas = t.areas;
+			if not areas then
+				local g = (t.sourceParent or t.parent).parent.g;
+				if g and #g > 0 then
+					for i,o in ipairs(g) do
+						if o.headerID == app.HeaderConstants.EXPLORATION then
+							areas = o.g;
+							break;
+						end
+					end
+					if not areas then return; end
+				else
+					return;
+				end
+				t.areas = areas;
+			end
+			local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], areas)).data;
+			clone.description = t.description;
+			return true;
+		end
+	end
+	commonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate = function(t, mapID, ...)
+		t.OnUpdate = nil;
+		local extraQuestIDs = { ... };
+		t.BuildStructures = function()
+			if not t.structures then
+				local quests, structures = LOREMASTER_CreateQuestsAndStructures(t, mapID, extraQuestIDs);
+				if quests then
+					t.quests = quests;
+					t.structures = structures;
+					return structures;
+				end
+			else
+				return t.structures;
+			end
+		end
+	end
+	commonAchievementHandlers.LOREMASTER_OnUpdate = function(t, ...)
+		t.OnUpdate = nil;
+		local extraQuestIDs = { ... };
+		t.BuildQuests = function()
+			local quests = t.quests;
+			if not quests then
+				quests = LOREMASTER_CreateQuests(t, extraQuestIDs);
+				if quests then
+					t.quests = quests;
+				end
+			end
+			return quests;
+		end
+	end
 else
 	-- Achievements are NOT in. We can't use the API.
 	fields.text = function(t)
@@ -4565,568 +4903,376 @@ else
 	app.CreateAchievement = app.CreateClass("Achievement", "achievementID", fields,
 		"WithSpell", fieldsWithSpellID, function(t) return t.spellID; end);	-- This is a conditional contructor.
 	app.CreateAchievementCriteria = function(id, t) return nil; end	-- We don't support showing criteria before Wrath
-end
-app.CreateAchievementCategory = app.CreateClass("AchievementCategory", "achievementCategoryID", categoryFields);
-app.CommonAchievementHandlers = {
-["ALL_ITEM_COSTS"] = function(t)
-	if useAchievementAPI then return; end
-	local collected = true;
-	for i,provider in ipairs(t.cost) do
-		if provider[1] == "i" and _GetItemCount(provider[2], true) == 0 then
-			collected = false;
-			break;
-		end
-	end
-	t.SetAchievementCollected(t.achievementID, collected);
-end,
-["ANY_ITEM_COST"] = function(t)
-	if useAchievementAPI then return; end
-	local collected = false;
-	for i,provider in ipairs(t.cost) do
-		if provider[1] == "i" and _GetItemCount(provider[2], true) > 0 then
-			collected = true;
-			break;
-		end
-	end
-	t.SetAchievementCollected(t.achievementID, collected);
-end,
-["ALL_ITEM_PROVIDERS"] = function(t)
-	if useAchievementAPI then return; end
-	local collected = true;
-	for i,provider in ipairs(t.providers) do
-		if provider[1] == "i" and _GetItemCount(provider[2], true) == 0 then
-			collected = false;
-			break;
-		end
-	end
-	t.SetAchievementCollected(t.achievementID, collected);
-end,
-["ANY_ITEM_PROVIDER"] = function(t)
-	if useAchievementAPI then return; end
-	local collected = false;
-	for i,provider in ipairs(t.providers) do
-		if provider[1] == "i" and _GetItemCount(provider[2], true) > 0 then
-			collected = true;
-			break;
-		end
-	end
-	t.SetAchievementCollected(t.achievementID, collected);
-end,
-["ALL_SOURCE_QUESTS"] = function(t)
-	if useAchievementAPI then return; end
-	local collected = true;
-	for i,questID in ipairs(t.sourceQuests) do
-		if not C_QuestLog.IsQuestFlaggedCompleted(questID) then
-			collected = false;
-			break;
-		end
-	end
-	t.SetAchievementCollected(t.achievementID, collected);
-end,
-["ANY_SOURCE_QUEST"] = function(t)
-	if useAchievementAPI then return; end
-	local collected = false;
-	for i,questID in ipairs(t.sourceQuests) do
-		if C_QuestLog.IsQuestFlaggedCompleted(questID) then
-			collected = true;
-			break;
-		end
-	end
-	t.SetAchievementCollected(t.achievementID, collected);
-end,
-["EXPLORATION_OnUpdate"] = function(t)
-	if t.collectible and t.parent then
-		if not t.areas then
-			local g = (t.sourceParent or t.parent).parent.g;
-			if g and #g > 0 then
-				for i,o in ipairs(g) do
-					if o.headerID == app.HeaderConstants.EXPLORATION then
-						t.areas = o.g;
-						break;
+	
+	-- Add in manual achievement handlers
+	-- These are required to manually detect if an "achievement" is collected or not.
+	-- They do not use the WOW Achievement API since it doesn't exist in this version.
+	-- A lot of times these require additional calculations in the OnUpdate, so do not use these outside of the required environment!
+	local LOREMASTER_EXPLICIT_OnUpdate = function(t)
+		-- This is detached because we don't want contribs calling to this directly, it's a helper function.
+		local quests = t.quests;
+		if quests and #quests > 0 then
+			local p = 0;
+			if app.FilterItemClass_RequireRaces(t) then
+				for i,o in ipairs(quests) do
+					if app.FilterItemClass(o) then
+						if o.collected == 1 then
+							p = p + 1;
+						end
 					end
 				end
-				if not t.areas then return; end
-			else
-				return;
 			end
+			t.p = p;
+			t.SetAchievementCollected(t.achievementID, p >= t.rank);
+		else
+			return true;
 		end
-		if useAchievementAPI then return; end
+	end
+	commonAchievementHandlers.ALL_ITEM_COSTS = function(t)
 		local collected = true;
-		for i,o in ipairs(t.areas) do
-			if o.collected ~= 1 and app.FilterItemClass_UnobtainableItem(o) then
+		for i,provider in ipairs(t.cost) do
+			if provider[1] == "i" and _GetItemCount(provider[2], true) == 0 then
 				collected = false;
 				break;
 			end
 		end
 		t.SetAchievementCollected(t.achievementID, collected);
 	end
-end,
-["EXPLORATION_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.areas)).data;
-		clone.description = t.description;
-		return true;
+	commonAchievementHandlers.ANY_ITEM_COST = function(t)
+		local collected = false;
+		for i,provider in ipairs(t.cost) do
+			if provider[1] == "i" and _GetItemCount(provider[2], true) > 0 then
+				collected = true;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
 	end
-end,
-["EXALTED_REP_OnUpdate"] = function(t, factionID, override)
-	if t.collectible then
-		if not t.rep then
-			local f = app.SearchForField("factionID", factionID);
-			if f and #f > 0 then
-				if #f == 1 then
-					t.rep = f[1];
-				else
+	commonAchievementHandlers.ALL_ITEM_PROVIDERS = function(t)
+		local collected = true;
+		for i,provider in ipairs(t.providers) do
+			if provider[1] == "i" and _GetItemCount(provider[2], true) == 0 then
+				collected = false;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+	commonAchievementHandlers.ANY_ITEM_PROVIDER = function(t)
+		local collected = false;
+		for i,provider in ipairs(t.providers) do
+			if provider[1] == "i" and _GetItemCount(provider[2], true) > 0 then
+				collected = true;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+	commonAchievementHandlers.ALL_SOURCE_QUESTS = function(t)
+		local collected = true;
+		for i,questID in ipairs(t.sourceQuests) do
+			if not C_QuestLog.IsQuestFlaggedCompleted(questID) then
+				collected = false;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+	commonAchievementHandlers.ANY_SOURCE_QUEST = function(t)
+		local collected = false;
+		for i,questID in ipairs(t.sourceQuests) do
+			if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+				collected = true;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+	commonAchievementHandlers.EXALTED_REP_OnUpdate = function(t, factionID, override)
+		if t.collectible then
+			local r = t.rep;
+			if not r then
+				local f = app.SearchForField("factionID", factionID);
+				if f and #f > 0 then
+					r = f[1];
 					for i,o in ipairs(f) do
 						if o.key == "factionID" then
-							t.rep = o;
+							r = o;
 							break;
 						end
 					end
-					if not t.rep then
+					if not r then
+						return true;
+					end
+					t.rep = r;
+				else
+					return true;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, r.standing == 8);
+		end
+	end
+	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t, ...)
+		if t.collectible then
+			local reps = t.reps;
+			if not reps then
+				reps = {};
+				for i,factionID in ipairs({ ... }) do
+					local f = app.SearchForField("factionID", factionID);
+					if f and #f > 0 then
+						local best = f[1];
+						for _,o in ipairs(f) do
+							if o.key == "factionID" then
+								best = o;
+								break;
+							end
+						end
+						tinsert(reps, best);
+					else
 						return true;
 					end
 				end
-			else
-				return true;
+				if #reps < 1 then return true; end
+				t.reps = reps;
 			end
-		end
-		if useAchievementAPI and not override then return; end
-		t.SetAchievementCollected(t.achievementID, t.rep.standing == 8);
-	end
-end,
-["EXALTED_REP_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], { t.rep })).data;
-		clone.description = t.description;
-		return true;
-	end
-end,
-["EXALTED_REP_OnTooltip"] = function(t)
-	if t.collectible then
-		GameTooltip:AddLine(" ");
-		GameTooltip:AddDoubleLine(" |T" .. t.rep.icon .. ":0|t " .. t.rep.text, app.L[t.rep.standing == 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-	end
-end,
-["EXALTED_REPS_OnUpdate"] = function(t, ...)
-	if t.collectible then
-		if not t.reps then
-			local reps = {};
-			for i,factionID in ipairs({ ... }) do
-				local f = app.SearchForField("factionID", factionID);
-				if f and #f > 0 then
-					local done = false;
-					for _,o in ipairs(f) do
-						if o.key == "factionID" then
-							tinsert(reps, o);
-							done = true;
-							break;
-						end
-					end
-					if not done then
-						tinsert(reps, f[1]);
-					end
-				else
-					return true;
-				end
-			end
-			if #reps < 1 then return true; end
-			t.reps = reps;
-		end
-		if useAchievementAPI then return; end
-		local collected = true;
-		for i,faction in ipairs(t.reps) do
-			if faction.standing < 8 then
-				collected = false;
-				break;
-			end
-		end
-		t.SetAchievementCollected(t.achievementID, collected);
-	end
-end,
-["EXALTED_REPS_ANY_OnUpdate"] = function(t, ...)
-	if t.collectible then
-		if not t.reps then
-			local reps = {};
-			for i,factionID in ipairs({ ... }) do
-				local f = app.SearchForField("factionID", factionID);
-				if f and #f > 0 then
-					tinsert(reps, f[1]);
-				else
-					return true;
-				end
-			end
-			if #reps < 1 then return true; end
-			t.reps = reps;
-		end
-		if useAchievementAPI then return; end
-		local collected = false;
-		for i,faction in ipairs(t.reps) do
-			if faction.standing < 8 then
-				collected = true;
-				break;
-			end
-		end
-		t.SetAchievementCollected(t.achievementID, collected);
-	end
-end,
-["EXALTED_REPS_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.reps)).data;
-		clone.description = t.description;
-		return true;
-	end
-end,
-["EXALTED_REPS_OnTooltip"] = function(t)
-	if t.collectible and t.reps then
-		GameTooltip:AddLine(" ");
-		for i,faction in ipairs(t.reps) do
-			GameTooltip:AddDoubleLine(" |T" .. faction.icon .. ":0|t " .. faction.text, app.L[faction.standing == 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-		end
-	end
-end,
-["KNOW_SPELLS_OnUpdate"] = function(t, ...)
-	if t.collectible then
-		if not t.spells then
-			local spells = {};
-			for i,spellID in ipairs({ ... }) do
-				local f = app.SearchForField("spellID", spellID);
-				if f and #f > 0 then
-					tinsert(spells, f[1]);
-				else
-					return true;
-				end
-			end
-			if #spells < 1 then return true; end
-			t.spells = spells;
-		end
-		if useAchievementAPI then return; end
-		local collected = true;
-		for i,spell in ipairs(t.spells) do
-			if spell.collected then
-				collected = false;
-				break;
-			end
-		end
-		t.SetAchievementCollected(t.achievementID, collected);
-	end
-end,
-["KNOW_SPELLS_ANY_OnUpdate"] = function(t, ...)
-	if t.collectible then
-		if not t.spells then
-			local spells = {};
-			for i,spellID in ipairs({ ... }) do
-				local f = app.SearchForField("spellID", spellID);
-				if f and #f > 0 then
-					tinsert(spells, f[1]);
-				else
-					return true;
-				end
-			end
-			if #spells < 1 then return true; end
-			t.spells = spells;
-		end
-		if useAchievementAPI then return; end
-		local collected = false;
-		for i,spell in ipairs(t.spells) do
-			if spell.collected then
-				collected = true;
-				break;
-			end
-		end
-		t.SetAchievementCollected(t.achievementID, collected);
-	end
-end,
-["KNOW_SPELLS_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.spells)).data;
-		clone.description = t.description;
-		return true;
-	end
-end,
-["KNOW_SPELLS_OnTooltip"] = function(t)
-	if t.collectible and t.spells then
-		GameTooltip:AddLine(" ");
-		for i,spell in ipairs(t.spells) do
-			GameTooltip:AddDoubleLine(" |T" .. spell.icon .. ":0|t " .. spell.text, app.L[spell.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-		end
-	end
-end,
-["LOREMASTER_KALIMDOR_OnUpdate"] = function(t, ...)
-	return app.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate(t, 1414, ...);
-end,
-["LOREMASTER_EASTERNKINGDOMS_OnUpdate"] = function(t, ...)
-	return app.CommonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate(t, 1415, ...);
-end,
-["LOREMASTER_CONTINENT_OnUpdate"] = function(t, mapID, ...)
-	if t.collectible and t.parent then
-		local quests = t.quests;
-		if not quests then
-			-- Grab the Continent
-			local response;
-			local results = app.SearchForField("mapID", mapID);
-			if not results then
-				return nil;
-			else
-				local count = #results;
-				if count < 1 then
-					return nil;
-				elseif count > 1 then
-					-- Uh wasn't expecting this.
-					local bestResult;
-					for i=1,#results,1 do
-						local g = results[i].g;
-						if g and not bestResult or #g > #bestResult.g then
-							bestResult = results[i];
-						end
-					end
-					response = app:BuildSearchResponseForField(bestResult.g, "questID");
-				else
-					response = app:BuildSearchResponseForField(results[1].g, "questID");
-				end
-			end
-			
-			-- Grab all of the quests on that continent.
-			quests = {};
-			local dungeon_header = {text=GROUP_FINDER,icon = app.asset("Category_D&R"),description = "These are dungeon quests that involve the associated maps for the continent. They may or may not count towards the loremaster achievement. Just get it done and don't be lazy or complain to me.\n\n - Crieve"};
-			local zones_header = {text=BUG_CATEGORY2,icon = app.asset("Category_Zones"),description = "These are outdoor quests that involve the associated maps for the continent."};
-			
-			if response then
-				-- Get the quests list from the zone itself.
-				zones_header.g = response;
-				app:BuildFlatSearchResponseForField(response, "questID", quests);
-				
-				-- Get a list of all of the mapIDs in this structure.
-				response = {};
-				app:BuildFlatSearchResponseForField(zones_header.g, "mapID", response);
-				if #response > 0 then
-					local mapIDs = {};
-					for i,o in ipairs(response) do
-						if o.mapID and not mapIDs[o.mapID] then
-							mapIDs[o.mapID] = true;
-						end
-						if o.maps then
-							for j,id in ipairs(o.maps) do
-								if not mapIDs[id] then
-									mapIDs[id] = true;
-								end
-							end
-						end
-					end
-					response = app:BuildSearchFilteredResponse(app.Categories.Instances, function(group)
-						if group.questID and not group.repeatable then
-							if group.coords then
-								for i,coord in ipairs(group.coords) do
-									if coord[3] and mapIDs[coord[3]] then
-										return true;
-									end
-								end
-							end
-							if group.maps then
-								for i,id in ipairs(group.maps) do
-									if mapIDs[id] then
-										return true;
-									end
-								end
-							end
-							return false;
-						end
-					end);
-					if response then
-						dungeon_header.g = response;
-						app:BuildFlatSearchResponseForField(response, "questID", quests);
-					end
-				end
-			end
-			
-			-- Store the Outdoor Zones and Dungeon structures.
-			t.structures = { dungeon_header, zones_header };
-			
-			-- If additional questIDs were manually included, let's do some extra work.
-			local extraQuestIDs = { ... };
-			if #extraQuestIDs > 0 then
-				-- Clone the list to prevent dirtying the quest list in the zone.
-				quests = RawCloneArray(quests);
-				for i,questID in ipairs(extraQuestIDs) do
-					local results = app.SearchForField("questID", questID);
-					if results and #results > 0 then
-						tinsert(quests, 1, results[1]);
-					end
-				end
-			end
-		end
-		return app.CommonAchievementHandlers.LOREMASTER_EXPLICIT_OnUpdate(t, quests);
-	end
-end,
-["LOREMASTER_OnUpdate"] = function(t, ...)
-	if t.collectible and t.parent then
-		local quests = t.quests;
-		if not quests then
-			-- Get the quests list from the zone itself.
-			local g = (t.sourceParent or t.parent).parent.g;
-			if g and #g > 0 then
-				for i,o in ipairs(g) do
-					if o.headerID == app.HeaderConstants.QUESTS then
-						quests = o.g;
-						break;
-					end
-				end
-			else
-				return true;
-			end
-			
-			-- Clone the list to prevent dirtying the quest list in the zone.
-			quests = RawCloneArray(quests);
-			for i=#quests,1,-1 do
-				if quests[i].repeatable then
-					table.remove(quests, i);
-				end
-			end
-			
-			-- If additional questIDs were manually included, let's do some extra work.
-			local extraQuestIDs = { ... };
-			if #extraQuestIDs > 0 then
-				for i,questID in ipairs(extraQuestIDs) do
-					local results = app.SearchForField("questID", questID);
-					if results and #results > 0 then
-						tinsert(quests, 1, results[1]);
-					end
-				end
-			end
-		end
-		return app.CommonAchievementHandlers.LOREMASTER_EXPLICIT_OnUpdate(t, quests);
-	end
-end,
-["LOREMASTER_EXPLICIT_OnUpdate"] = function(t, quests)
-	if quests and #quests > 0 then
-		t.quests = quests;
-		if useAchievementAPI then return; end
-		local p = 0;
-		if app.FilterItemClass_RequireRaces(t) then
-			for i,o in ipairs(quests) do
-				if app.FilterItemClass(o) then
-					if o.collected == 1 then
-						p = p + 1;
-					end
-				end
-			end
-		end
-		t.p = p;
-		t.SetAchievementCollected(t.achievementID, p >= t.rank);
-	else
-		return true;
-	end
-end,
-["LOREMASTER_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.quests)).data;
-		clone.description = t.description;
-		return true;
-	end
-end,
-["LOREMASTER_CONTINENT_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.structures)).data;
-		clone.description = t.description;
-		return true;
-	end
-end,
-["LOREMASTER_OnTooltip"] = function(t)
-	if t.collectible and t.p and not t.collected then
-		GameTooltip:AddLine(" ");
-		GameTooltip:AddDoubleLine(" ", app.GetProgressText(min(t.rank, t.p),t.rank), 1, 1, 1);
-	end
-end,
-["META_OnUpdate"] = function(t, ...)
-	if t.collectible then
-		if not t.achievements then
-			local achievements = {};
-			for i,achievementID in ipairs({ ... }) do
-				local f = app.SearchForField("achievementID", achievementID);
-				if f and #f > 0 then
-					tinsert(achievements, f[1]);
-				else
-					return true;
-				end
-			end
-			if #achievements < 1 then return true; end
-			t.achievements = achievements;
-		end
-		if useAchievementAPI then return; end
-		local collected = true;
-		for i,faction in ipairs(t.achievements) do
-			if not faction.collected then
-				collected = false;
-				break;
-			end
-		end
-		t.SetAchievementCollected(t.achievementID, collected);
-	end
-end,
-["META_ACHCAT_OnUpdate"] = function(t, achievementCategoryID)
-	if t.collectible then
-		if not t.achievements then
-			local achievements;
-			for i,o in ipairs(t.parent.g) do
-				if o.achievementCategoryID == achievementCategoryID then
-					achievements = o.g;
+			local collected = true;
+			for i,faction in ipairs(reps) do
+				if faction.standing < 8 then
+					collected = false;
 					break;
 				end
 			end
-			if not achievements then return true; end
-			t.achievements = achievements;
+			t.SetAchievementCollected(t.achievementID, collected);
 		end
-		if useAchievementAPI then return; end
-		local collected = true;
-		for i,faction in ipairs(t.achievements) do
-			if not faction.collected and app.FilterItemClass_UnobtainableItem(faction) then
-				collected = false;
-				break;
+	end
+	commonAchievementHandlers.EXALTED_REPS_ANY_OnUpdate = function(t, ...)
+		if t.collectible then
+			local reps = t.reps;
+			if not reps then
+				reps = {};
+				for i,factionID in ipairs({ ... }) do
+					local f = app.SearchForField("factionID", factionID);
+					if f and #f > 0 then
+						tinsert(reps, f[1]);
+					else
+						return true;
+					end
+				end
+				if #reps < 1 then return true; end
+				t.reps = reps;
+			end
+			local collected = false;
+			for i,faction in ipairs(reps) do
+				if faction.standing < 8 then
+					collected = true;
+					break;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.EXPLORATION_OnUpdate = function(t)
+		if t.collectible and t.parent then
+			if not t.areas then
+				local g = (t.sourceParent or t.parent).parent.g;
+				if g and #g > 0 then
+					for i,o in ipairs(g) do
+						if o.headerID == app.HeaderConstants.EXPLORATION then
+							t.areas = o.g;
+							break;
+						end
+					end
+					if not t.areas then return; end
+				else
+					return;
+				end
+			end
+			local collected = true;
+			for i,o in ipairs(t.areas) do
+				if o.collected ~= 1 and app.FilterItemClass_UnobtainableItem(o) then
+					collected = false;
+					break;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.EXPLORATION_OnClick = function(row, button)
+		if button == "RightButton" then
+			local t = row.ref;
+			local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.areas)).data;
+			clone.description = t.description;
+			return true;
+		end
+	end
+	commonAchievementHandlers.KNOW_SPELLS_OnUpdate = function(t, ...)
+		if t.collectible then
+			if not t.spells then
+				local spells = {};
+				for i,spellID in ipairs({ ... }) do
+					local f = app.SearchForField("spellID", spellID);
+					if f and #f > 0 then
+						tinsert(spells, f[1]);
+					else
+						return true;
+					end
+				end
+				if #spells < 1 then return true; end
+				t.spells = spells;
+			end
+			if useAchievementAPI then return; end
+			local collected = true;
+			for i,spell in ipairs(t.spells) do
+				if spell.collected then
+					collected = false;
+					break;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.KNOW_SPELLS_ANY_OnUpdate = function(t, ...)
+		if t.collectible then
+			if not t.spells then
+				local spells = {};
+				for i,spellID in ipairs({ ... }) do
+					local f = app.SearchForField("spellID", spellID);
+					if f and #f > 0 then
+						tinsert(spells, f[1]);
+					else
+						return true;
+					end
+				end
+				if #spells < 1 then return true; end
+				t.spells = spells;
+			end
+			if useAchievementAPI then return; end
+			local collected = false;
+			for i,spell in ipairs(t.spells) do
+				if spell.collected then
+					collected = true;
+					break;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.KNOW_SPELLS_OnClick = function(row, button)
+		if button == "RightButton" then
+			local t = row.ref;
+			local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.spells)).data;
+			clone.description = t.description;
+			return true;
+		end
+	end
+	commonAchievementHandlers.KNOW_SPELLS_OnTooltip = function(t)
+		if t.collectible and t.spells then
+			GameTooltip:AddLine(" ");
+			for i,spell in ipairs(t.spells) do
+				GameTooltip:AddDoubleLine(" |T" .. spell.icon .. ":0|t " .. spell.text, app.L[spell.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
 	end
-end,
-["META_OnClick"] = function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.achievements)).data;
-		clone.description = t.description;
-		return true;
-	end
-end,
-["META_OnTooltip"] = function(t)
-	if t.collectible and t.reps then
-		GameTooltip:AddLine(" ");
-		for i,achievement in ipairs(t.achievements) do
-			GameTooltip:AddDoubleLine(" |T" .. achievement.icon .. ":0|t " .. achievement.text, app.L[achievement.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+	commonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate = function(t, mapID, ...)
+		if t.collectible and t.parent then
+			if not t.quests then
+				local quests, structures = LOREMASTER_CreateQuestsAndStructures(t, mapID, { ... });
+				if quests then
+					t.quests = quests;
+					t.structures = structures;
+				else
+					return;
+				end
+			end
+			return LOREMASTER_EXPLICIT_OnUpdate(t);
 		end
 	end
-end,
-["DEDICATED_10M_OnUpdate"] = function(t)
-	rawset(t, "collectible", nil);
-	if app.Settings:Get("DebugMode") or app.Settings:Get("AccountMode") then
-		return false;
-	elseif IsInGroup() and GetNumGroupMembers() >= 9 then
-		rawset(t, "collectible", false);
-		return true;
+	commonAchievementHandlers.LOREMASTER_OnUpdate = function(t, ...)
+		if t.collectible and t.parent then
+			local quests = t.quests;
+			if not quests then
+				quests = LOREMASTER_CreateQuests(t, { ... });
+				if quests then
+					t.quests = quests;
+				else
+					return;
+				end
+			end
+			return LOREMASTER_EXPLICIT_OnUpdate(t);
+		end
 	end
-end,
-["DEDICATED_25M_OnUpdate"] = function(t)
-	rawset(t, "collectible", nil);
-	if app.Settings:Get("DebugMode") or app.Settings:Get("AccountMode") then
-		return false;
-	elseif IsInGroup() and GetNumGroupMembers() >= 21 then
-		rawset(t, "collectible", false);
-		return true;
+	commonAchievementHandlers.LOREMASTER_OnTooltip = function(t)
+		if t.collectible and t.p and not t.collected then
+			GameTooltip:AddLine(" ");
+			GameTooltip:AddDoubleLine(" ", app.GetProgressText(min(t.rank, t.p),t.rank), 1, 1, 1);
+		end
 	end
-end,
-};
+	commonAchievementHandlers.META_ACHCAT_OnUpdate = function(t, achievementCategoryID)
+		if t.collectible then
+			if not t.achievements then
+				local achievements;
+				for i,o in ipairs(t.parent.g) do
+					if o.achievementCategoryID == achievementCategoryID then
+						achievements = o.g;
+						break;
+					end
+				end
+				if not achievements then return true; end
+				t.achievements = achievements;
+			end
+			local collected = true;
+			for i,faction in ipairs(t.achievements) do
+				if not faction.collected and app.FilterItemClass_UnobtainableItem(faction) then
+					collected = false;
+					break;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.META_OnUpdate = function(t, ...)
+		if t.collectible then
+			if not t.achievements then
+				local achievements = {};
+				for i,achievementID in ipairs({ ... }) do
+					local f = app.SearchForField("achievementID", achievementID);
+					if f and #f > 0 then
+						tinsert(achievements, f[1]);
+					else
+						return true;
+					end
+				end
+				if #achievements < 1 then return true; end
+				t.achievements = achievements;
+			end
+			local collected = true;
+			for i,faction in ipairs(t.achievements) do
+				if not faction.collected then
+					collected = false;
+					break;
+				end
+			end
+			t.SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.META_OnClick = function(row, button)
+		if button == "RightButton" then
+			local t = row.ref;
+			local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], t.achievements)).data;
+			clone.description = t.description;
+			return true;
+		end
+	end
+	commonAchievementHandlers.META_OnTooltip = function(t)
+		if t.collectible and t.achievements then
+			GameTooltip:AddLine(" ");
+			for i,achievement in ipairs(t.achievements) do
+				GameTooltip:AddDoubleLine(" |T" .. achievement.icon .. ":0|t " .. achievement.text, app.L[achievement.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+			end
+		end
+	end
+end
+app.CreateAchievementCategory = app.CreateClass("AchievementCategory", "achievementCategoryID", categoryFields);
 end)();
 
 -- Category Lib
@@ -9168,7 +9314,11 @@ UpdateGroups = function(parent, g)
 		for i=1,#g,1 do
 			local group = g[i];
 			if group.OnUpdate then
-				if not group:OnUpdate(group) then
+				--local lastUpdate = GetTimePreciseSec();
+				local result = group:OnUpdate(group);
+				--local duration = (GetTimePreciseSec() - lastUpdate) * 10000;
+				--if duration > 10 then print(group.text, "OnUpdate: ", duration); end
+				if not result then
 					if UpdateGroup(parent, group) then
 						visible = true;
 					end
@@ -11095,6 +11245,7 @@ local function UpdateWindow(self, force, fromTrigger)
 			end
 			data.progress = 0;
 			data.total = 0;
+			--local lastUpdate = GetTimePreciseSec();
 			if not (data.OnUpdate and data:OnUpdate()) then
 				UpdateGroups(data, data.g);
 				
@@ -11108,6 +11259,7 @@ local function UpdateWindow(self, force, fromTrigger)
 				return;
 			end
 			self.forceFullDataRefresh = nil;
+			--print("UpdateGroups RESULT", (GetTimePreciseSec() - lastUpdate) * 10000);
 		end
 		ProcessGroup(self.rowData, data);
 		
