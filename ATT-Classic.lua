@@ -11289,6 +11289,22 @@ function app:GetWindow(suffix, settings)
 		local onRebuild = settings.OnRebuild;
 		if onRebuild then
 			if app.Debugging then
+				window.ForceRebuild = function(self)
+					print("ForceRebuild: " .. suffix);
+					local lastUpdate = GetTimePreciseSec();
+					local response = onRebuild(self);
+					local data = self.data;
+					if data then
+						if response then
+							print(suffix, "ON REBUILD DEFAULT");
+							defaultOnRebuild(data);
+						end
+						print("ForceRebuild (DATA): " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+						self:ForceUpdate(true);
+					else
+						print("ForceRebuild (NO DATA): " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+					end
+				end
 				window.Rebuild = function(self)
 					print("Rebuild: " .. suffix);
 					local lastUpdate = GetTimePreciseSec();
@@ -11306,6 +11322,14 @@ function app:GetWindow(suffix, settings)
 					end
 				end
 			else
+				window.ForceRebuild = function(self)
+					local response = onRebuild(self);
+					local data = self.data;
+					if data then
+						if response then defaultOnRebuild(data); end
+						self:ForceUpdate(true);
+					end
+				end
 				window.Rebuild = function(self)
 					local response = onRebuild(self);
 					local data = self.data;
@@ -11317,6 +11341,16 @@ function app:GetWindow(suffix, settings)
 			end
 		else
 			if app.Debugging then
+				window.ForceRebuild = function(self)
+					local data = self.data;
+					if data then
+						print("ForceRebuild: " .. suffix);
+						local lastUpdate = GetTimePreciseSec();
+						defaultOnRebuild(data);
+						print("ForceRebuild: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
+						self:ForceUpdate(true);
+					end
+				end
 				window.Rebuild = function(self)
 					local data = self.data;
 					if data then
@@ -11328,6 +11362,13 @@ function app:GetWindow(suffix, settings)
 					end
 				end
 			else
+				window.ForceRebuild = function(self)
+					local data = self.data;
+					if data then
+						defaultOnRebuild(data);
+						self:ForceUpdate(true);
+					end
+				end
 				window.Rebuild = function(self)
 					local data = self.data;
 					if data then
@@ -11634,15 +11675,13 @@ function app:BuildSearchFilteredResponse(groups, filter)
 	if groups then
 		local t;
 		for i,group in ipairs(groups) do
-			if filter(group) then
+			local response = app:BuildSearchFilteredResponse(group.g, filter);
+			if response then
+				if not t then t = {}; end
+				tinsert(t, setmetatable({g=response}, { __index = group }));
+			elseif filter(group) then
 				if not t then t = {}; end
 				tinsert(t, CloneReference(group));
-			elseif group.g then
-				local response = app:BuildSearchFilteredResponse(group.g, filter);
-				if response then
-					if not t then t = {}; end
-					tinsert(t, setmetatable({g=response}, { __index = group }));
-				end
 			end
 		end
 		return t;
@@ -11652,15 +11691,15 @@ function app:BuildSearchResponse(groups, field, value)
 	if groups then
 		local t;
 		for i,group in ipairs(groups) do
-			local v = group[field];
-			if v and (v == value or (field == "requireSkill" and app.SpellIDToSkillID[app.SpecializationSpellIDs[v] or 0] == value)) then
+			local response = app:BuildSearchResponse(group.g, field, value);
+			if response then
 				if not t then t = {}; end
-				tinsert(t, CloneReference(group));
-			elseif group.g then
-				local response = app:BuildSearchResponse(group.g, field, value);
-				if response then
+				tinsert(t, setmetatable({g=response}, { __index = group }));
+			else
+				local v = group[field];
+				if v and (v == value or (field == "requireSkill" and app.SpellIDToSkillID[app.SpecializationSpellIDs[v] or 0] == value)) then
 					if not t then t = {}; end
-					tinsert(t, setmetatable({g=response}, { __index = group }));
+					tinsert(t, CloneReference(group));
 				end
 			end
 		end
@@ -11671,15 +11710,13 @@ function app:BuildSearchResponseForField(groups, field)
 	if groups then
 		local t;
 		for i,group in ipairs(groups) do
-			if group[field] then
+			local response = app:BuildSearchResponseForField(group.g, field);
+			if response then
+				if not t then t = {}; end
+				tinsert(t, setmetatable({g=response}, { __index = group }));
+			elseif group[field] then
 				if not t then t = {}; end
 				tinsert(t, CloneReference(group));
-			elseif group.g then
-				local response = app:BuildSearchResponseForField(group.g, field);
-				if response then
-					if not t then t = {}; end
-					tinsert(t, setmetatable({g=response}, { __index = group }));
-				end
 			end
 		end
 		return t;
@@ -14811,7 +14848,7 @@ app.events.ADDON_LOADED = function(addonName)
 			coroutine.yield();
 			countdown = countdown - 1;
 		end
-		app:GetWindow("Prime"):Rebuild();
+		app:GetWindow("Prime"):ForceRebuild();
 	end);
 	
 	if GroupBulletinBoard_Addon then
