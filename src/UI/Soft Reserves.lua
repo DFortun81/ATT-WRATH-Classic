@@ -538,11 +538,11 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 	Silent = true,
 	OnInit = function(self)
 		self.ignoreNoEntries = true;
-		SLASH_ATTCSR1 = "/attsr";
-		SLASH_ATTCSR2 = "/attsoft";
-		SLASH_ATTCSR3 = "/attsoftreserve";
-		SLASH_ATTCSR4 = "/attsoftreserves";
-		SlashCmdList["ATTCSR"] = function(cmd)
+		SLASH_ATTSOFTRES1 = "/attsr";
+		SLASH_ATTSOFTRES2 = "/attsoft";
+		SLASH_ATTSOFTRES3 = "/attsoftreserve";
+		SLASH_ATTSOFTRES4 = "/attsoftreserves";
+		SlashCmdList["ATTSOFTRES"] = function(cmd)
 			if cmd and cmd ~= "" then
 				ParseSoftReserve(UnitGUID("player"), cmd, true, true);
 			else

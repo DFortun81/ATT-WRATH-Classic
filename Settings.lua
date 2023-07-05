@@ -6,28 +6,6 @@
 local appName, app = ...;
 local L = app.L;
 
--- Binding Localizations
-BINDING_HEADER_ATTC = L["TITLE"];
-BINDING_NAME_ATTC_TOGGLEACCOUNTMODE = L["TOGGLE_ACCOUNT_MODE"];
-BINDING_NAME_ATTC_TOGGLEDEBUGMODE = L["TOGGLE_DEBUG_MODE"];
-BINDING_NAME_ATTC_TOGGLEFACTIONMODE = L["TOGGLE_FACTION_MODE"];
-
-BINDING_HEADER_ATTC_PREFERENCES = L["PREFERENCES"];
-BINDING_NAME_ATTC_TOGGLECOMPLETEDTHINGS = L["TOGGLE_COMPLETEDTHINGS"];
-BINDING_NAME_ATTC_TOGGLECOMPLETEDGROUPS = L["TOGGLE_COMPLETEDGROUPS"];
-BINDING_NAME_ATTC_TOGGLECOLLECTEDTHINGS = L["TOGGLE_COLLECTEDTHINGS"];
-BINDING_NAME_ATTC_TOGGLEBOEITEMS = L["TOGGLE_BOEITEMS"];
-BINDING_NAME_ATTC_TOGGLELOOTDROPS = L["TOGGLE_LOOTDROPS"];
-BINDING_NAME_ATTC_TOGGLESOURCETEXT = L["TOGGLE_SOURCETEXT"];
-
-BINDING_HEADER_ATTC_MODULES = L["MODULES"];
-BINDING_NAME_ATTC_TOGGLEMAINLIST = L["TOGGLE_MAINLIST"];
-BINDING_NAME_ATTC_TOGGLEMINILIST = L["TOGGLE_MINILIST"];
-BINDING_NAME_ATTC_TOGGLE_PROFESSION_LIST = L["TOGGLE_PROFESSION_LIST"];
-BINDING_NAME_ATTC_TOGGLE_RAID_ASSISTANT = L["TOGGLE_RAID_ASSISTANT"];
-BINDING_NAME_ATTC_TOGGLERANDOM = L["TOGGLE_RANDOM"];
-BINDING_NAME_ATTC_REROLL_RANDOM = L["REROLL_RANDOM"];
-
 -- The Settings Frame
 local settings = CreateFrame("FRAME", app:GetName() .. "-Settings", InterfaceOptionsFramePanelContainer or UIParent, BackdropTemplateMixin and "BackdropTemplate");
 app.Settings = settings;
@@ -454,6 +432,20 @@ settings.SetHideBOEItems = function(self, checked)
 end
 settings.ToggleBOEItems = function(self)
 	self:SetHideBOEItems(not self:Get("Hide:BoEs"));
+end
+settings.SetLootMode = function(self, checked)
+	self:Set("Thing:Loot", checked);
+	self:UpdateMode();
+	app:RefreshDataCompletely();
+end
+settings.ToggleLootMode = function(self)
+	self:SetLootMode(not self:Get("Thing:Loot"));
+end
+settings.SetSourceLocations = function(self, checked)
+	self:SetTooltipSetting("SourceLocations", checked);
+end
+settings.ToggleSourceLocations = function(self)
+	self:SetSourceLocations(not self:GetTooltipSetting("SourceLocations"));
 end
 settings.UpdateMode = function(self)
 	if self:Get("DebugMode") then
@@ -1135,9 +1127,7 @@ function(self)
 	end
 end,
 function(self)
-	settings:Set("Thing:Loot", self:GetChecked());
-	settings:UpdateMode();
-	app:RefreshDataCompletely();
+	settings:SetLootMode(self:GetChecked());
 end);
 LootCheckBox:SetATTTooltip("Enable this option to track loot.\n\nLoot being any item you can get from a mob, quest, or container. Loot that qualifies for one of the other filters will still appear in ATT if this filter is turned off.\n\nYou can change which sort of loot displays for you based on the Filters tab.\n\nDefault: Class Defaults, Disabled.");
 LootCheckBox:SetPoint("TOPLEFT", IllusionsCheckBox or FlightPathsCheckBox, "BOTTOMLEFT", 0, 4);

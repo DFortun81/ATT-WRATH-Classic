@@ -207,9 +207,9 @@ app:GetWindow("Random", {
 	parent = UIParent,
 	Silent = true,
 	OnInit = function(self)
-		SLASH_ATTCRAN1 = "/attran";
-		SLASH_ATTCRAN2 = "/attrandom";
-		SlashCmdList["ATTCRAN"] = function(cmd)
+		SLASH_ATTRANDOM1 = "/attran";
+		SLASH_ATTRANDOM2 = "/attrandom";
+		SlashCmdList["ATTRANDOM"] = function(cmd)
 			self:Toggle();
 		end
 	end,

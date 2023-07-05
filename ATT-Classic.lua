@@ -9,6 +9,28 @@ local contains, containsAny, containsValue = app.contains, app.containsAny, app.
 local CloneReference = app.CloneReference;
 local L = app.L;
 
+-- Binding Localizations
+BINDING_HEADER_ALLTHETHINGS = L.TITLE;
+BINDING_NAME_ALLTHETHINGS_TOGGLEACCOUNTMODE = L["TOGGLE_ACCOUNT_MODE"];
+BINDING_NAME_ALLTHETHINGS_TOGGLEDEBUGMODE = L["TOGGLE_DEBUG_MODE"];
+BINDING_NAME_ALLTHETHINGS_TOGGLEFACTIONMODE = L["TOGGLE_FACTION_MODE"];
+
+BINDING_HEADER_ALLTHETHINGS_PREFERENCES = L["PREFERENCES"];
+BINDING_NAME_ALLTHETHINGS_TOGGLECOMPLETEDTHINGS = L["TOGGLE_COMPLETEDTHINGS"];
+BINDING_NAME_ALLTHETHINGS_TOGGLECOMPLETEDGROUPS = L["TOGGLE_COMPLETEDGROUPS"];
+BINDING_NAME_ALLTHETHINGS_TOGGLECOLLECTEDTHINGS = L["TOGGLE_COLLECTEDTHINGS"];
+BINDING_NAME_ALLTHETHINGS_TOGGLEBOEITEMS = L["TOGGLE_BOEITEMS"];
+BINDING_NAME_ALLTHETHINGS_TOGGLELOOTDROPS = L["TOGGLE_LOOTDROPS"];
+BINDING_NAME_ALLTHETHINGS_TOGGLESOURCETEXT = L["TOGGLE_SOURCETEXT"];
+
+BINDING_HEADER_ALLTHETHINGS_MODULES = L["MODULES"];
+BINDING_NAME_ALLTHETHINGS_TOGGLEMAINLIST = L["TOGGLE_MAINLIST"];
+BINDING_NAME_ALLTHETHINGS_TOGGLEMINILIST = L["TOGGLE_MINILIST"];
+BINDING_NAME_ALLTHETHINGS_TOGGLE_PROFESSION_LIST = L["TOGGLE_PROFESSION_LIST"];
+BINDING_NAME_ALLTHETHINGS_TOGGLE_RAID_ASSISTANT = L["TOGGLE_RAID_ASSISTANT"];
+BINDING_NAME_ALLTHETHINGS_TOGGLERANDOM = L["TOGGLE_RANDOM"];
+BINDING_NAME_ALLTHETHINGS_REROLL_RANDOM = L["REROLL_RANDOM"];
+
 -- Global API cache
 -- While this may seem silly, caching references to commonly used APIs is actually a performance gain...
 local C_DateAndTime_GetServerTimeLocal
@@ -12128,6 +12150,23 @@ app:GetWindow("Prime", {
 		app.ToggleMainList = function()
 			self:Toggle();
 		end
+		
+		SLASH_ATTPRIME1 = "/allthethings";
+		SLASH_ATTPRIME2 = "/att";
+		SLASH_ATTPRIME3 = "/attc";
+		SLASH_ATTPRIME4 = "/things";
+		SLASH_ATTPRIME5 = "/attmain";
+		SlashCmdList["ATTPRIME"] = function(cmd)
+			if cmd and strlen(cmd) > 0 then
+				-- Search for the Link in the database
+				cmd = string.lower(cmd);
+				local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
+				if group then app:CreateMiniListForGroup(group); end
+			else
+				-- Default command
+				self:Toggle();
+			end
+		end
 	end,
 	OnUpdate = function(self, ...)
 		UpdateWindow(self, ...);
@@ -12154,8 +12193,8 @@ app:GetWindow("Attuned", {
 	parent = UIParent,
 	Silent = true,
 	OnInit = function(self)
-		SLASH_ATTUNED1 = "/attuned";
-		SlashCmdList["ATTUNED"] = function(cmd)
+		SLASH_ATTATTUNED1 = "/attattuned";
+		SlashCmdList["ATTATTUNED"] = function(cmd)
 			self:Toggle();
 		end
 	end,
@@ -12599,8 +12638,8 @@ app:GetWindow("CosmicInfuser", {
 	parent = UIParent,
 	Silent = true,
 	OnInit = function(self)
-		SLASH_ATTCMAPS1 = "/attmaps";
-		SlashCmdList["ATTCMAPS"] = function(cmd)
+		SLASH_ATTMAPS1 = "/attmaps";
+		SlashCmdList["ATTMAPS"] = function(cmd)
 			self:Toggle();
 		end
 	end,
@@ -13017,9 +13056,9 @@ app:GetWindow("CurrentInstance", {
 		self:RegisterEvent("ZONE_CHANGED");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 		
-		SLASH_ATTCMINI1 = "/attmini";
-		SLASH_ATTCMINI2 = "/attminilist";
-		SlashCmdList["ATTCMINI"] = ToggleMiniListForCurrentZone;
+		SLASH_ATTMINILIST1 = "/attmini";
+		SLASH_ATTMINILIST2 = "/attminilist";
+		SlashCmdList["ATTMINILIST"] = ToggleMiniListForCurrentZone;
 	end,
 	OnUpdate = function(self, force, fromTrigger)
 		-- Update the window and all of its row data
@@ -13570,9 +13609,9 @@ app:GetWindow("RaidAssistant", {
 	parent = UIParent,
 	Silent = true,
 	OnInit = function(self)
-		SLASH_ATTCRA1 = "/attra";
-		SLASH_ATTCRA2 = "/attraid";
-		SlashCmdList["ATTCRA"] = function(cmd)
+		SLASH_ATTRAIDASSIST1 = "/attra";
+		SLASH_ATTRAIDASSIST2 = "/attraid";
+		SlashCmdList["ATTRAIDASSIST"] = function(cmd)
 			self:Toggle();
 		end
 	end,
@@ -14305,32 +14344,155 @@ app:GetWindow("Tradeskills", {
 });
 
 
--- Slash Command List
-SLASH_ATTC1 = "/allthethings";
-SLASH_ATTC2 = "/att";
-SLASH_ATTC3 = "/attc";
-SLASH_ATTC4 = "/things";
-SlashCmdList["ATTC"] = function(cmd)
-	if cmd and strlen(cmd) > 0 then
-		cmd = string.lower(cmd);
-		if strsub(cmd, 1, 6) == "mapid:" then
-			app:GetWindow("CurrentInstance"):SetMapID(tonumber(strsub(cmd, 7)));
-			return true;
+-- Addon Message Handling
+app:RegisterEvent("CHAT_MSG_ADDON");
+app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
+	if prefix == "ATTC" then
+		--print(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
+		local args = { strsplit("\t", text) };
+		local cmd = args[1];
+		if cmd then
+			local a = args[2];
+			if cmd == "?" then		-- Query Request
+				local response;
+				if a then
+					if a == "a" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Achievements[b] and 1 or 0);
+						end
+					elseif a == "e" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Exploration[b] and 1 or 0);
+						end
+					elseif a == "f" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Factions[b] and 1 or 0);
+						end
+					elseif a == "fp" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.FlightPaths[b] and 1 or 0);
+						end
+					elseif a == "p" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.BattlePets[b] and 1 or 0);
+						end
+					elseif a == "q" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (IsQuestFlaggedCompleted(b) and 1 or 0);
+						end
+					--[[
+					elseif a == "s" then
+						response = "s";
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (ATTAccountWideData.Sources[b] or 0);
+						end
+					]]--
+					elseif a == "sp" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Spells[b] and 1 or 0);
+						end
+					elseif a == "t" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Titles[b] and 1 or 0);
+						end
+					elseif a == "toy" then
+						response = a;
+						for i=3,#args,1 do
+							local b = tonumber(args[i]);
+							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Toys[b] and 1 or 0);
+						end
+					elseif a == "sync" then
+						app:ReceiveSyncRequest(target, a);
+					elseif a == "syncsum" then
+						table.remove(args, 1);
+						table.remove(args, 1);
+						app:ReceiveSyncSummary(target, args);
+					elseif a == "syncsumchar" then
+						table.remove(args, 1);
+						table.remove(args, 1);
+						app:ReceiveSyncSummary(target, args, true);
+					end
+				else
+					local character = app.CurrentCharacter;
+					if character then
+						local data = character.PrimeData;
+						if data then
+							response = "ATTC\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. data.modeString;
+						end
+					end
+				end
+				if response then SendResponseMessage("!\t" .. response, sender); end
+			elseif cmd == "!" then	-- Query Response
+				if a == "ATTC" then
+					print(target .. ": " .. GetProgressColorText(tonumber(args[3]), tonumber(args[4])) .. " " .. args[5]);
+				else
+					if a == "q" then
+						local processor = GetDataMember("AddonMessageProcessor");
+						for i=3,#args,2 do
+							local b = tonumber(args[i]);
+							local c = tonumber(args[i + 1]);
+							if c == 1 then table.insert(processor, { target, "q", b }); end
+						end
+						app:GetWindow("Attuned"):DelayedUpdate(true);
+					elseif a == "syncsum" then
+						table.remove(args, 1);
+						table.remove(args, 1);
+						app:ReceiveSyncSummaryResponse(target, args);
+					elseif a == "syncsumchar" then
+						table.remove(args, 1);
+						table.remove(args, 1);
+						for i,guid in ipairs(args) do
+							local character = ATTCharacterData[guid];
+							if character then
+								print(character.text .. " is already up-to-date.");
+							end
+						end
+					end
+				end
+			elseif cmd == "to" then	-- To Command
+				local myName = UnitName("player");
+				local name,server = strsplit("-", a);
+				if myName == name and (not server or GetRealmName() == server) then
+					app.events.CHAT_MSG_ADDON(prefix, strsub(text, 5 + strlen(a)), "WHISPER", sender);
+				end
+			elseif cmd == "chks" then	-- Total Chunks Command [sender, uid, total]
+				app:AcknowledgeIncomingChunks(target, tonumber(a), tonumber(args[3]));
+			elseif cmd == "chk" then	-- Incoming Chunk Command [sender, uid, index, chunk]
+				app:AcknowledgeIncomingChunk(target, tonumber(a), tonumber(args[3]), args[4]);
+			elseif cmd == "chksack" then	-- Chunks Acknowledge Command [sender, uid]
+				app:SendChunk(target, tonumber(a), 1, 1);
+			elseif cmd == "chkack" then	-- Chunk Acknowledge Command [sender, uid, index, success]
+				app:SendChunk(target, tonumber(a), tonumber(args[3]) + 1, tonumber(args[4]));
+			end
 		end
-		
-		-- Search for the Link in the database
-		local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		if group then app:CreateMiniListForGroup(group); end
-	else
-		-- Default command
-		app.ToggleMainList();
 	end
 end
-
-SLASH_ATTCU1 = "/attu";
-SLASH_ATTCU2 = "/attyou";
-SLASH_ATTCU3 = "/attwho";
-SlashCmdList["ATTCU"] = function(cmd)
+SLASH_ATTYELL1 = "/attyell";
+SLASH_ATTYELL2 = "/attrohduh";
+SlashCmdList["ATTYELL"] = function(cmd)
+	C_ChatInfo.SendAddonMessage("ATTC", "?", "YELL");
+end
+SLASH_ATTWHO1 = "/attu";
+SLASH_ATTWHO2 = "/attyou";
+SLASH_ATTWHO3 = "/attwho";
+SlashCmdList["ATTWHO"] = function(cmd)
 	local name,server = UnitName("target");
 	if name then
 		if UnitIsPlayer("target") then
@@ -14343,19 +14505,42 @@ SlashCmdList["ATTCU"] = function(cmd)
 	end
 end
 
-SLASH_ATTCUYELL1 = "/attyell";
-SLASH_ATTCUYELL2 = "/attrohduh";
-SlashCmdList["ATTCUYELL"] = function(cmd)
-	C_ChatInfo.SendAddonMessage("ATTC", "?", "YELL");
+-- Game Events that trigger visual updates, but no computation updates.
+local softRefresh = function() app:RefreshDataQuietly(); end;
+app.events.BAG_NEW_ITEMS_UPDATED = softRefresh;
+app.events.QUEST_ACCEPTED = softRefresh;
+app.events.CRITERIA_UPDATE = softRefresh;
+app.events.QUEST_REMOVED = softRefresh;
+app.events.QUEST_WATCH_UPDATE = softRefresh;
+app.events.QUEST_LOG_UPDATE = function()
+	app:UnregisterEvent("QUEST_LOG_UPDATE");
+	GetQuestsCompleted(CompletedQuests);
+	for questID,completed in pairs(DirtyQuests) do
+		app.QuestCompletionHelper(tonumber(questID));
+	end
+	wipe(DirtyQuests);
+	softRefresh();
+end
+app.events.QUEST_TURNED_IN = function(questID)
+	local quest = app.SearchForField("questID", questID);
+	if quest and (not quest[1].repeatable or (quest[1].isDaily or quest[1].isMonthly or quest[1].isYearly)) then
+		CompletedQuests[questID] = true;
+		for questID,completed in pairs(DirtyQuests) do
+			app.QuestCompletionHelper(tonumber(questID));
+		end
+		wipe(DirtyQuests);
+	end
+	app:RefreshDataQuietly(true);
 end
 
+-- Game Events that trigger computation updates.
+app.events.PLAYER_LEVEL_UP = function(newLevel)
+	app.Level = newLevel;
+	app:RefreshDataCompletely();
+end
 
-
--- Register Events required at the start
+-- Startup Event
 app:RegisterEvent("ADDON_LOADED");
-app:RegisterEvent("CHAT_MSG_ADDON");
-
--- Define Event Behaviours
 app.events.ADDON_LOADED = function(addonName)
 	-- Only execute for this addon.
 	if addonName ~= appName then return; end
@@ -14678,177 +14863,4 @@ app.events.ADDON_LOADED = function(addonName)
 			end
 		end
 	end
-end
-app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
-	if prefix == "ATTC" then
-		--print(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
-		local args = { strsplit("\t", text) };
-		local cmd = args[1];
-		if cmd then
-			local a = args[2];
-			if cmd == "?" then		-- Query Request
-				local response;
-				if a then
-					if a == "a" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Achievements[b] and 1 or 0);
-						end
-					elseif a == "e" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Exploration[b] and 1 or 0);
-						end
-					elseif a == "f" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Factions[b] and 1 or 0);
-						end
-					elseif a == "fp" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.FlightPaths[b] and 1 or 0);
-						end
-					elseif a == "p" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.BattlePets[b] and 1 or 0);
-						end
-					elseif a == "q" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (IsQuestFlaggedCompleted(b) and 1 or 0);
-						end
-					--[[
-					elseif a == "s" then
-						response = "s";
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (ATTAccountWideData.Sources[b] or 0);
-						end
-					]]--
-					elseif a == "sp" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Spells[b] and 1 or 0);
-						end
-					elseif a == "t" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Titles[b] and 1 or 0);
-						end
-					elseif a == "toy" then
-						response = a;
-						for i=3,#args,1 do
-							local b = tonumber(args[i]);
-							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Toys[b] and 1 or 0);
-						end
-					elseif a == "sync" then
-						app:ReceiveSyncRequest(target, a);
-					elseif a == "syncsum" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						app:ReceiveSyncSummary(target, args);
-					elseif a == "syncsumchar" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						app:ReceiveSyncSummary(target, args, true);
-					end
-				else
-					local character = app.CurrentCharacter;
-					if character then
-						local data = character.PrimeData;
-						if data then
-							response = "ATTC\t" .. (data.progress or 0) .. "\t" .. (data.total or 0) .. "\t" .. data.modeString;
-						end
-					end
-				end
-				if response then SendResponseMessage("!\t" .. response, sender); end
-			elseif cmd == "!" then	-- Query Response
-				if a == "ATTC" then
-					print(target .. ": " .. GetProgressColorText(tonumber(args[3]), tonumber(args[4])) .. " " .. args[5]);
-				else
-					if a == "q" then
-						local processor = GetDataMember("AddonMessageProcessor");
-						for i=3,#args,2 do
-							local b = tonumber(args[i]);
-							local c = tonumber(args[i + 1]);
-							if c == 1 then table.insert(processor, { target, "q", b }); end
-						end
-						app:GetWindow("Attuned"):DelayedUpdate(true);
-					elseif a == "syncsum" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						app:ReceiveSyncSummaryResponse(target, args);
-					elseif a == "syncsumchar" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						for i,guid in ipairs(args) do
-							local character = ATTCharacterData[guid];
-							if character then
-								print(character.text .. " is already up-to-date.");
-							end
-						end
-					end
-				end
-			elseif cmd == "to" then	-- To Command
-				local myName = UnitName("player");
-				local name,server = strsplit("-", a);
-				if myName == name and (not server or GetRealmName() == server) then
-					app.events.CHAT_MSG_ADDON(prefix, strsub(text, 5 + strlen(a)), "WHISPER", sender);
-				end
-			elseif cmd == "chks" then	-- Total Chunks Command [sender, uid, total]
-				app:AcknowledgeIncomingChunks(target, tonumber(a), tonumber(args[3]));
-			elseif cmd == "chk" then	-- Incoming Chunk Command [sender, uid, index, chunk]
-				app:AcknowledgeIncomingChunk(target, tonumber(a), tonumber(args[3]), args[4]);
-			elseif cmd == "chksack" then	-- Chunks Acknowledge Command [sender, uid]
-				app:SendChunk(target, tonumber(a), 1, 1);
-			elseif cmd == "chkack" then	-- Chunk Acknowledge Command [sender, uid, index, success]
-				app:SendChunk(target, tonumber(a), tonumber(args[3]) + 1, tonumber(args[4]));
-			end
-		end
-	end
-end
-
-
--- Game Events that trigger visual updates, but no computation updates.
-local softRefresh = function() app:RefreshDataQuietly(); end;
-app.events.BAG_NEW_ITEMS_UPDATED = softRefresh;
-app.events.QUEST_ACCEPTED = softRefresh;
-app.events.CRITERIA_UPDATE = softRefresh;
-app.events.QUEST_REMOVED = softRefresh;
-app.events.QUEST_WATCH_UPDATE = softRefresh;
-app.events.QUEST_LOG_UPDATE = function()
-	app:UnregisterEvent("QUEST_LOG_UPDATE");
-	GetQuestsCompleted(CompletedQuests);
-	for questID,completed in pairs(DirtyQuests) do
-		app.QuestCompletionHelper(tonumber(questID));
-	end
-	wipe(DirtyQuests);
-	softRefresh();
-end
-app.events.QUEST_TURNED_IN = function(questID)
-	local quest = app.SearchForField("questID", questID);
-	if quest and (not quest[1].repeatable or (quest[1].isDaily or quest[1].isMonthly or quest[1].isYearly)) then
-		CompletedQuests[questID] = true;
-		for questID,completed in pairs(DirtyQuests) do
-			app.QuestCompletionHelper(tonumber(questID));
-		end
-		wipe(DirtyQuests);
-	end
-	app:RefreshDataQuietly(true);
-end
-
--- Game Events that trigger computation updates.
-app.events.PLAYER_LEVEL_UP = function(newLevel)
-	app.Level = newLevel;
-	app:RefreshDataCompletely();
 end
