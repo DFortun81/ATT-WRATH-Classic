@@ -23,6 +23,7 @@ app:GetWindow("Maps", {
 				text = "All The Maps!",
 				icon = app.asset("Category_Zones"), 
 				description = "This window helps debug when we're missing map IDs in the addon.",
+				back = 1,
 				indent = 0,
 				visible = true, 
 				expanded = true,

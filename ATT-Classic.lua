@@ -13881,45 +13881,6 @@ app:GetWindow("ItemFinder", {
 		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
 	end
 });
-app:GetWindow("Objects", {
-	parent = UIParent,
-	Silent = true,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			local db = {};
-			db.text = "Object Debugger";
-			db.icon = app.asset("Achievement_Dungeon_GloryoftheRaider");
-			db.description = "This is a contribution debug tool. NOT intended to be used by the majority of the player base.";
-			db.visible = true;
-			db.expanded = true;
-			db.progress = 0;
-			db.total = 0;
-			db.back = 1;
-			self.data = db;
-			db.g = {};
-			local objectIDs = {};
-			for objectID,o in pairs(app.SearchForFieldContainer("objectID")) do
-				tinsert(objectIDs, tonumber(objectID));
-			end
-			app.Sort(objectIDs, app.SortDefaults.Number);
-			for _,objectID in ipairs(objectIDs) do
-				tinsert(db.g, app.CreateObject(objectID));
-			end
-			BuildGroups(db);
-		end
-		self.data.progress = 0;
-		self.data.total = 0;
-		
-		-- Update the groups without forcing Debug Mode.
-		local visibilityFilter = app.VisibilityFilter;
-		app.VisibilityFilter = app.NoFilter;
-		UpdateGroups(self.data, self.data.g);
-		UpdateWindow(self, ...);
-		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
-		app.VisibilityFilter = visibilityFilter;
-	end
-});
 app:GetWindow("Quests", {
 	parent = UIParent,
 	Silent = true,
