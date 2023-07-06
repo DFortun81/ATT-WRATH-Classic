@@ -1,10 +1,11 @@
-do
+-- App locals
 local appName, app = ...;
-local L = app.L;
 local contains, CloneReference, searchCache =
 	app.contains, app.CloneReference, app.searchCache;
 
--- Performance Cache
+-- Global locals
+local ipairs, tinsert, pairs, wipe
+	= ipairs, tinsert, pairs, wipe;
 local C_Map_GetMapInfo = C_Map.GetMapInfo;
 
 -- Helper Functions
@@ -203,6 +204,7 @@ local function SetSearchFilter(self, filter)
 	return true;
 end
 
+-- Implementation
 app:GetWindow("Random", {
 	parent = UIParent,
 	Silent = true,
@@ -352,4 +354,3 @@ app:GetWindow("Random", {
 		return false;
 	end
 });
-end

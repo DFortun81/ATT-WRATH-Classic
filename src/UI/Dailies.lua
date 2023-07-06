@@ -1,5 +1,7 @@
-do
+-- App locals
 local appName, app = ...;
+
+-- Implementation
 app:GetWindow("Dailies", {
 	parent = UIParent,
 	Silent = true,
@@ -37,4 +39,3 @@ app:GetWindow("Dailies", {
 		return false;
 	end
 });
-end
