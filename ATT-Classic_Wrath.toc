@@ -44,6 +44,7 @@ src\Root.lua
 src\UI\Auctions.lua
 src\UI\Breadcrumbs.lua
 src\UI\Dailies.lua
+src\UI\Maps.lua
 src\UI\Random.lua
 src\UI\Removed With Patch Loot.lua
 src\UI\Soft Reserves.lua
