@@ -939,7 +939,7 @@ fp = oldFP;
 
 
 -- These items never made it in.
-root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
+root("NeverImplemented", {
 	filter(1, {	-- Held in Off-hand
 	
 	}),
@@ -1128,11 +1128,11 @@ root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
 	filter(200, {	-- Recipe
 		
 	}),
-}));
+});
 
 -- #if AFTER TBC
 -- These items never made it in.
-root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
+root("NeverImplemented", {
 	filter(1, {	-- Held in Off-hand
 		i(26560),	-- 59 TEST Green Off Hand
 		i(26561),	-- 60 TEST Green Off Hand
@@ -2578,5 +2578,5 @@ root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
 			["description"] = "Not actually sure if this is in the game at all since the spell trained by this recipe can be learned at the trainer.",
 		})),
 	}),
-}));
+});
 -- #endif

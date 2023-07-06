@@ -1706,9 +1706,9 @@ root("Achievements", {
 });
 
 -- #if BEFORE 4.2.0
-root("NeverImplemented", bubbleDown({ ["u"] = NEVER_IMPLEMENTED }, {
+root("NeverImplemented", {
 	i(54810, {	-- Celestial Dragon (PET!)
 		["timeline"] = { "created 3.3.0", "added 4.2.0" },
 	}),
-}));
+});
 -- #endif
