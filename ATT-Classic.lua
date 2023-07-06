@@ -740,6 +740,16 @@ local function GetDisplayID(data)
 end
 
 
+local function AssignFieldValue(group, field, value)
+	if group then
+		group[field] = value;
+		if group.g then
+			for i,o in ipairs(group.g) do
+				AssignFieldValue(o, field, value)
+			end
+		end
+	end
+end
 local function GetBestMapForGroup(group)
 	if group then
 		return group.mapID or (group.maps and group.maps[1]) or (group.coords and group.coords[1][3]) or GetBestMapForGroup(group.parent);
@@ -1896,7 +1906,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				abbrevs_post[" true "] = " 1 ";
 			end
 			for i,j in ipairs(group) do
-				if j.parent and not j.parent.hideText and j.parent.parent
+				if j.parent and not GetRelativeValue(j, "hideText") and j.parent.parent
 					and (app.Settings:GetTooltipSetting("SourceLocations:Completed") or not app.IsComplete(j)) then
 					local text = BuildSourceText(paramA ~= "itemID" and j.parent or j, paramA ~= "itemID" and 1 or 0);
 					for source,replacement in pairs(abbrevs) do
@@ -3755,61 +3765,67 @@ function app:GetDataCache()
 			wipe(tierCache);
 		end
 		
-		
-		-- Now build the hidden "Unsorted" Window's Data
-		local unsortedData = {
-			text = L["TITLE"],
-			title = "Unsorted" .. DESCRIPTION_SEPARATOR .. app.Version,
-			icon = app.asset("logo_32x32"),
-			preview = app.asset("Discord_2_128"),
-			description = "This data hasn't been implemented yet.",
-			font = "GameFontNormalLarge",
-			expanded = true,
-			visible = true,
-			progress = 0,
-			total = 0,
-			g = {},
-		};
-		g = unsortedData.g;
-		
-		-- Never Implemented
-		if app.Categories.NeverImplemented then
-			table.insert(g, app.CacheFields({
-				text = "Never Implemented",
-				g = app.Categories.NeverImplemented,
-			}));
-		end
-		
-		-- Hidden Achievement Triggers
+		-- Hidden Triggers
+		-- TODO: Move these to their own separate module, after formatting is updated.
+		-- At that point, explicitly caching the associated fileds will no longer be necessary.
 		if app.Categories.HiddenAchievementTriggers then
-			table.insert(g, {
+			local hqtData = app.CacheFields({
 				text = "Hidden Achievement Triggers",
 				description = "Hidden Achievement Triggers",
 				g = app.Categories.HiddenAchievementTriggers,
 				_hqt = true,
 			});
+			app:GetWindow("HiddentAchievementTriggers").data = hqtData;
+			BuildGroups(hqtData);
+			app.Categories.HiddenAchievementTriggers = nil;
 		end
-		
 		if app.Categories.HiddenQuestTriggers then
-			table.insert(g, app.CacheFields({
+			local hqtData = app.CacheFields({
 				text = "Hidden Quest Triggers",--L["HIDDEN_QUEST_TRIGGERS"]
 				description = "These quests are triggered by completing things in the game.",--L["HIDDEN_QUEST_TRIGGERS_DESC"]
 				g = app.Categories.HiddenQuestTriggers,
 				_hqt = true
-			}));
-		end
-		
-		-- Unsorted
-		if app.Categories.Unsorted then
-			table.insert(g, {
-				text = "Unsorted",
-				g = app.Categories.Unsorted
 			});
+			app:GetWindow("HiddentQuestTriggers").data = hqtData;
+			BuildGroups(hqtData);
+			app.Categories.HiddenQuestTriggers = nil;
 		end
 		
-		-- Build Unsorted as well!
-		BuildGroups(unsortedData);
-		app:GetWindow("Unsorted").data = unsortedData;
+		-- Never Implemented
+		-- TODO: Move this to its own module!
+		if app.Categories.NeverImplemented then
+			local nyiData = app.CacheFields({
+				text = "Never Implemented",
+				hideText = true,
+				indent = 2,
+				g = app.Categories.NeverImplemented,
+			});
+			AssignFieldValue(nyiData, "u", 1);
+			app:GetWindow("NeverImplemented").data = nyiData;
+			BuildGroups(nyiData);
+			app.Categories.NeverImplemented = nil;
+		end
+		
+		-- Now build the hidden "Unsorted" Window's Data
+		-- TODO: Move this to its own module!
+		if app.Categories.Unsorted then
+			local unsortedData = {
+				text = L["TITLE"],
+				title = "Unsorted" .. DESCRIPTION_SEPARATOR .. app.Version,
+				icon = app.asset("logo_32x32"),
+				preview = app.asset("Discord_2_128"),
+				description = "This data hasn't been implemented yet.",
+				font = "GameFontNormalLarge",
+				expanded = true,
+				visible = true,
+				progress = 0,
+				total = 0,
+				g = app.Categories.Unsorted,
+			};
+			BuildGroups(unsortedData);
+			app:GetWindow("Unsorted").data = unsortedData;
+			app.Categories.Unsorted = nil;
+		end
 		
 		-- All future calls to this function will return the root data.
 		app.GetDataCache = function()
@@ -10489,7 +10505,7 @@ local function SetRowData(self, row, data)
 	end
 	
 	-- If the data has a texture, assign it.
-	if SetPortraitIcon(row.Texture, data) then
+	if SetPortraitIcon(row.Texture, data) and row.Texture:GetTextureFilePath() then
 		row.Texture:Show();
 		row.Label:SetPoint("LEFT", row.Texture, "RIGHT", 2, 0);
 		
@@ -10508,7 +10524,7 @@ local function SetRowData(self, row, data)
 		-- If we have a texture, let's assign it.
 		if indicatorTexture then
 			row.Indicator:SetTexture(indicatorTexture);
-			row.Indicator:SetPoint("RIGHT", row, "RIGHT", row.indent, 0);
+			row.Indicator:SetPoint("RIGHT", row, "LEFT", row.indent, 0);
 			row.Indicator:Show();
 		else
 			row.Indicator:Hide();
@@ -12637,6 +12653,39 @@ app:GetWindow("Prime", {
 		};
 	end
 }):SetSize(425, 305);
+app:GetWindow("HiddentAchievementTriggers", {
+	parent = UIParent,
+	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTHATS1 = "/atthat";
+		SLASH_ATTHATS2 = "/atthats";
+		SlashCmdList["ATTHATS"] = function(cmd)
+			self:Toggle();
+		end
+	end,
+});
+app:GetWindow("HiddentQuestTriggers", {
+	parent = UIParent,
+	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTHQTS1 = "/atthqt";
+		SLASH_ATTHQTS2 = "/atthqts";
+		SlashCmdList["ATTHQTS"] = function(cmd)
+			self:Toggle();
+		end
+	end,
+});
+app:GetWindow("NeverImplemented", {
+	parent = UIParent,
+	Silent = true,
+	OnInit = function(self)
+		SLASH_ATTNYI1 = "/attnyi";
+		SLASH_ATTNYI2 = "/attni";
+		SlashCmdList["ATTNYI"] = function(cmd)
+			self:Toggle();
+		end
+	end,
+});
 app:GetWindow("Unsorted", {
 	parent = UIParent,
 	Silent = true,
