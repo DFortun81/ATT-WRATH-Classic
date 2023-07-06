@@ -4359,6 +4359,21 @@ local LOREMASTER_CreateQuestsAndStructures = function(t, mapID, extraQuestIDs)
 	return quests, structures;
 end
 commonAchievementHandlers = {
+["COMPANIONS_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local template = {};
+		for i,o in pairs(app.SearchForFieldContainer("speciesID")) do
+			table.insert(template, o[1]);
+		end
+		
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], template)).data;
+		clone.OnTooltip = t.OnTooltip;
+		clone.OnUpdate = t.OnUpdate;
+		clone.rank = t.rank;
+		return true;
+	end
+end,
 ["DEDICATED_10M_OnUpdate"] = function(t)
 	rawset(t, "collectible", nil);
 	if app.Settings:Get("DebugMode") or app.Settings:Get("AccountMode") then
@@ -4430,6 +4445,45 @@ end,
 		local data = t.structures or (t.BuildStructures and t:BuildStructures()) or t.quests;
 		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], data)).data;
 		clone.description = t.description;
+		return true;
+	end
+end,
+["MOUNTS_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local template,r = {},{};
+		for i,o in pairs(app.SearchForFieldContainer("spellID")) do
+			if ((o[1].f and o[1].f == 100) or (o[1].filterID and o[1].filterID == 100)) and not r[i] then
+				table.insert(template, o[1]);
+				r[i] = 1;
+			end
+		end
+		
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], template)).data;
+		clone.OnTooltip = t.OnTooltip;
+		clone.OnUpdate = t.OnUpdate;
+		clone.rank = t.rank;
+		return true;
+	end
+end,
+["REPUTATIONS_OnClick"] = function(row, button)
+	if button == "RightButton" then
+		local t = row.ref;
+		local template = {};
+		for i,o in ipairs(app:GetDataCache().g) do
+			if o.headerID == app.HeaderConstants.FACTIONS then
+				for j,p in ipairs(o.g) do
+					if (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
+						table.insert(template, p);
+					end
+				end
+			end
+		end
+		
+		local clone = app:CreateMiniListForGroup(app.CreateAchievement(t[t.key], template)).data;
+		clone.OnTooltip = t.OnTooltip;
+		clone.OnUpdate = t.OnUpdate;
+		clone.rank = t.rank;
 		return true;
 	end
 end,
@@ -5003,6 +5057,67 @@ else
 		end
 		t.SetAchievementCollected(t.achievementID, collected);
 	end
+	commonAchievementHandlers.COMPANIONS_OnUpdate = function(t)
+		if app.CollectibleBattlePets then
+			local count = 0;
+			local pets = app.SearchForFieldContainer("speciesID");
+			for i,g in pairs(pets) do
+				if g[1].collected then
+					count = count + 1;
+				end
+			end
+			if t.rank > 1 then
+				t.progress = math.min(count, t.rank);
+				t.total = t.rank;
+				t.collectible = false;
+				
+				if app.GroupFilter(t) then
+					local parent = t.parent;
+					parent.total = (parent.total or 0) + t.total;
+					parent.progress = (parent.progress or 0) + t.progress;
+					t.visible = (t.progress < t.total or app.CollectedItemVisibilityFilter(t));
+				else
+					t.visible = false;
+				end
+			else
+				t.collected = count >= 1;
+				t.collectible = collectible;
+				
+				if app.GroupFilter(t) then
+					local parent = t.parent;
+					parent.total = (parent.total or 0) + 1;
+					if t.collected then parent.progress = (parent.progress or 0) + 1; end
+					t.visible = (not t.collected or app.CollectedItemVisibilityFilter(t));
+				else
+					t.visible = false;
+				end
+			end
+		else
+			t.collected = nil;
+			t.collectible = false;
+			t.progress = nil;
+			t.total = nil;
+			t.visible = false;
+		end
+		return true;
+	end
+	commonAchievementHandlers.COMPANIONS_OnTooltip = function(t)
+		GameTooltip:AddLine("Collect " .. t.rank .. " companion pets.");
+		if t.total and t.progress < t.total and t.rank >= 25 then
+			GameTooltip:AddLine(" ");
+			local c = 0;
+			for i,g in pairs(app.SearchForFieldContainer("speciesID")) do
+				local p = g[1];
+				if p.visible then
+					c = c + 1;
+					if c < 16 then
+						GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, app.L[p.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+					end
+				end
+			end
+			if c > 15 then GameTooltip:AddLine(" And " .. (c - 15) .. " more!"); end
+		end
+	end
 	commonAchievementHandlers.EXALTED_REP_OnUpdate = function(t, factionID, override)
 		if t.collectible then
 			local r = t.rep;
@@ -5155,7 +5270,7 @@ else
 					if f and #f > 0 then
 						tinsert(spells, f[1]);
 					else
-						return true;
+						tinsert(spells, app.CreateSpell(spellID));
 					end
 				end
 				if #spells < 1 then return true; end
@@ -5187,6 +5302,9 @@ else
 				GameTooltip:AddDoubleLine(" |T" .. spell.icon .. ":0|t " .. spell.text, app.L[spell.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
 			end
 		end
+	end
+	commonAchievementHandlers.LEVEL_OnUpdate = function(t)
+		t.SetAchievementCollected(t.achievementID, app.Level >= t.lvl);
 	end
 	commonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate = function(t, mapID, ...)
 		if t.collectible and t.parent then
@@ -5283,6 +5401,141 @@ else
 			GameTooltip:AddLine(" ");
 			for i,achievement in ipairs(t.achievements) do
 				GameTooltip:AddDoubleLine(" |T" .. achievement.icon .. ":0|t " .. achievement.text, app.L[achievement.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+			end
+		end
+	end
+	commonAchievementHandlers.MOUNTS_OnUpdate = function(t)
+		if app.CollectibleMounts then
+			local count,r = 0,{};
+			local spells = app.SearchForFieldContainer("spellID");
+			for i,g in pairs(spells) do
+				if ((g[1].f and g[1].f == 100) or (g[1].filterID and g[1].filterID == 100)) and not r[i] then
+					if g[1].collected then count = count + 1; end
+					r[i] = 1;
+				end
+			end
+			if t.rank > 1 then
+				t.progress = math.min(count, t.rank);
+				t.total = t.rank;
+				t.collectible = false;
+				
+				if app.GroupFilter(t) then
+					local parent = t.parent;
+					parent.total = (parent.total or 0) + t.total;
+					parent.progress = (parent.progress or 0) + t.progress;
+					t.visible = (t.progress < t.total or app.CollectedItemVisibilityFilter(t));
+				else
+					t.visible = false;
+				end
+			else
+				t.collected = count >= 1;
+				t.collectible = collectible;
+				
+				if app.GroupFilter(t) then
+					local parent = t.parent;
+					parent.total = (parent.total or 0) + 1;
+					if t.collected then parent.progress = (parent.progress or 0) + 1; end
+					t.visible = (not t.collected or app.CollectedItemVisibilityFilter(t));
+				else
+					t.visible = false;
+				end
+			end
+		else
+			t.collected = nil;
+			t.collectible = false;
+			t.progress = nil;
+			t.total = nil;
+			t.visible = false;
+		end
+		return true;
+	end
+	commonAchievementHandlers.MOUNTS_OnTooltip = function(t)
+		GameTooltip:AddLine("Collect " .. t.rank .. " mounts.");
+		if t.total and t.progress < t.total and t.rank >= 25 then
+			GameTooltip:AddLine(" ");
+			local c = 0;
+			local template,r = {},{};
+			for i,o in pairs(app.SearchForFieldContainer("spellID")) do
+				local p = o[1];
+				if ((p.f and p.f == 100) or (p.filterID and p.filterID == 100)) and not r[i] then
+					r[i] = 1;
+					if p.visible then
+						c = c + 1;
+						if c < 16 then
+							GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, app.L[p.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+						end
+					end
+				end
+			end
+			if c > 15 then GameTooltip:AddLine(" And " .. (c - 15) .. " more!"); end
+		end
+	end
+	commonAchievementHandlers.REPUTATIONS_OnUpdate = function(t)
+		if app.CollectibleAchievements then
+			local count = 0;
+			local ignored = app.IgnoredReputationsForAchievements;
+			if not ignored then
+				ignored = {[169] = 1};
+				app.IgnoredReputationsForAchievements = ignored;
+			end
+			local factions = app.SearchForFieldContainer("factionID");
+			for factionID,g in pairs(factions) do
+				if not ignored[factionID] and g[1].standing == 8 then
+					count = count + 1;
+				end
+			end
+			if t.rank > 1 then
+				t.progress = math.min(count, t.rank);
+				t.total = t.rank;
+				t.collectible = false;
+				
+				if app.GroupFilter(t) then
+					local parent = t.parent;
+					parent.total = (parent.total or 0) + t.total;
+					parent.progress = (parent.progress or 0) + t.progress;
+					t.visible = (t.progress < t.total or app.CollectedItemVisibilityFilter(t));
+				else
+					t.visible = false;
+				end
+			else
+				t.collected = count >= 1;
+				t.collectible = collectible;
+				
+				if app.GroupFilter(t) then
+					local parent = t.parent;
+					parent.total = (parent.total or 0) + 1;
+					if t.collected then parent.progress = (parent.progress or 0) + 1; end
+					t.visible = (not t.collected or app.CollectedItemVisibilityFilter(t));
+				else
+					t.visible = false;
+				end
+			end
+		else
+			t.collected = nil;
+			t.collectible = false;
+			t.progress = nil;
+			t.total = nil;
+			t.visible = false;
+		end
+		return true;
+	end
+	commonAchievementHandlers.REPUTATIONS_OnTooltip = function(t)
+		GameTooltip:AddLine("Raise " .. t.rank .. " reputations to Exalted.");
+		if t.total and t.progress < t.total and t.rank >= 25 then
+			GameTooltip:AddLine(" ");
+			local ignored = app.IgnoredReputationsForAchievements;
+			if not ignored then
+				ignored = {[169] = 1};
+				app.IgnoredReputationsForAchievements = ignored;
+			end
+			for i,o in ipairs(app:GetDataCache().g) do
+				if o.headerID == app.HeaderConstants.FACTIONS then
+					for j,p in ipairs(o.g) do
+						if (p.visible or p.factionID == 909) and not ignored[p.factionID] and (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
+							GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, app.L[p.standing >= 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+						end
+					end
+				end
 			end
 		end
 	end

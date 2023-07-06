@@ -1,276 +1,6 @@
 --------------------------------------------------
 --    A C H I E V E M E N T S    M O D U L E    --
 --------------------------------------------------
-local COMPANIONS_OnClick = [[function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local template = {};
-		for i,o in pairs(_.SearchForFieldContainer("speciesID")) do
-			table.insert(template, o[1]);
-		end
-		
-		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
-		clone.OnTooltip = t.OnTooltip;
-		clone.OnUpdate = t.OnUpdate;
-		clone.rank = t.rank;
-		return true;
-	end
-end]];
-local COMPANIONS_OnUpdate = [[function(t)
-	if _.CollectibleBattlePets then
-		local count = 0;
-		local pets = _.SearchForFieldContainer("speciesID");
-		for i,g in pairs(pets) do
-			if g[1].collected then
-				count = count + 1;
-			end
-		end
-		if t.rank > 1 then
-			t.progress = math.min(count, t.rank);
-			t.total = t.rank;
-			t.collectible = false;
-			
-			if _.GroupFilter(t) then
-				local parent = t.parent;
-				parent.total = (parent.total or 0) + t.total;
-				parent.progress = (parent.progress or 0) + t.progress;
-				t.visible = (t.progress < t.total or _.CollectedItemVisibilityFilter(t));
-			else
-				t.visible = false;
-			end
-		else
-			t.collected = count >= 1;
-			t.collectible = collectible;
-			
-			if _.GroupFilter(t) then
-				local parent = t.parent;
-				parent.total = (parent.total or 0) + 1;
-				if t.collected then parent.progress = (parent.progress or 0) + 1; end
-				t.visible = (not t.collected or _.CollectedItemVisibilityFilter(t));
-			else
-				t.visible = false;
-			end
-		end
-	else
-		t.collected = nil;
-		t.collectible = false;
-		t.progress = nil;
-		t.total = nil;
-		t.visible = false;
-	end
-	return true;
-end]];
-local COMPANIONS_OnTooltip = [[function(t)
-	GameTooltip:AddLine("Collect " .. t.rank .. " companion pets.");
-	if t.total and t.progress < t.total and t.rank >= 25 then
-		GameTooltip:AddLine(" ");
-		local c = 0;
-		for i,g in pairs(_.SearchForFieldContainer("speciesID")) do
-			local p = g[1];
-			if p.visible then
-				c = c + 1;
-				if c < 16 then
-					GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, _.L[p.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-				end
-			end
-		end
-		if c > 15 then GameTooltip:AddLine(" And " .. (c - 15) .. " more!"); end
-	end
-end]];
-local LEVEL_OnUpdate = [[function(t) t.SetAchievementCollected(t.achievementID, _.Level >= t.lvl); end]];
-local MOUNTS_OnClick = [[function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local template,r = {},{};
-		for i,o in pairs(_.SearchForFieldContainer("spellID")) do
-			if ((o[1].f and o[1].f == 100) or (o[1].filterID and o[1].filterID == 100)) and not r[i] then
-				table.insert(template, o[1]);
-				r[i] = 1;
-			end
-		end
-		
-		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
-		clone.OnTooltip = t.OnTooltip;
-		clone.OnUpdate = t.OnUpdate;
-		clone.rank = t.rank;
-		return true;
-	end
-end]];
-local MOUNTS_OnUpdate = [[function(t)
-	if _.CollectibleMounts then
-		local count,r = 0,{};
-		local spells = _.SearchForFieldContainer("spellID");
-		for i,g in pairs(spells) do
-			if ((g[1].f and g[1].f == 100) or (g[1].filterID and g[1].filterID == 100)) and not r[i] then
-				if g[1].collected then count = count + 1; end
-				r[i] = 1;
-			end
-		end
-		if t.rank > 1 then
-			t.progress = math.min(count, t.rank);
-			t.total = t.rank;
-			t.collectible = false;
-			
-			if _.GroupFilter(t) then
-				local parent = t.parent;
-				parent.total = (parent.total or 0) + t.total;
-				parent.progress = (parent.progress or 0) + t.progress;
-				t.visible = (t.progress < t.total or _.CollectedItemVisibilityFilter(t));
-			else
-				t.visible = false;
-			end
-		else
-			t.collected = count >= 1;
-			t.collectible = collectible;
-			
-			if _.GroupFilter(t) then
-				local parent = t.parent;
-				parent.total = (parent.total or 0) + 1;
-				if t.collected then parent.progress = (parent.progress or 0) + 1; end
-				t.visible = (not t.collected or _.CollectedItemVisibilityFilter(t));
-			else
-				t.visible = false;
-			end
-		end
-	else
-		t.collected = nil;
-		t.collectible = false;
-		t.progress = nil;
-		t.total = nil;
-		t.visible = false;
-	end
-	return true;
-end]];
-local MOUNTS_OnTooltip = [[function(t)
-	GameTooltip:AddLine("Collect " .. t.rank .. " mounts.");
-	if t.total and t.progress < t.total and t.rank >= 25 then
-		GameTooltip:AddLine(" ");
-		local c = 0;
-		local template,r = {},{};
-		for i,o in pairs(_.SearchForFieldContainer("spellID")) do
-			local p = o[1];
-			if ((p.f and p.f == 100) or (p.filterID and p.filterID == 100)) and not r[i] then
-				r[i] = 1;
-				if p.visible then
-					c = c + 1;
-					if c < 16 then
-						GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, _.L[p.collected and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-					end
-				end
-			end
-		end
-		if c > 15 then GameTooltip:AddLine(" And " .. (c - 15) .. " more!"); end
-	end
-end]];
-local REPUTATIONS_OnClick = [[function(row, button)
-	if button == "RightButton" then
-		local t = row.ref;
-		local template = {};
-		for i,o in ipairs(_:GetDataCache().g) do
-			if o.headerID == ]] .. FACTIONS .. [[ then
-				for j,p in ipairs(o.g) do
-					if (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
-						table.insert(template, p);
-					end
-				end
-			end
-		end
-		
-		local clone = _:CreateMiniListForGroup(_.CreateAchievement(t[t.key], template)).data;
-		clone.OnTooltip = t.OnTooltip;
-		clone.OnUpdate = t.OnUpdate;
-		clone.rank = t.rank;
-		return true;
-	end
-end]];
--- #if AFTER WRATH
-local REPUTATIONS_OnUpdate = nil;
-local REPUTATIONS_OnTooltip = [[function(t)
-	if not t.collected and t.rank >= 25 then
-		GameTooltip:AddLine(" ");
-		local ignored = _.IgnoredReputationsForAchievements;
-		if not ignored then
-			ignored = {[169] = 1};
-			_.IgnoredReputationsForAchievements = ignored;
-		end
-		for i,o in ipairs(_:GetDataCache().g) do
-			if o.headerID == ]] .. FACTIONS .. [[ then
-				for j,p in ipairs(o.g) do
-					if (p.visible or p.factionID == 909) and not ignored[p.factionID] and (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
-						GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, _.L[p.standing >= 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-					end
-				end
-			end
-		end
-	end
-end]];
--- #else
-local REPUTATIONS_OnUpdate = [[function(t)
-	if _.CollectibleAchievements then
-		local count = 0;
-		local ignored = _.IgnoredReputationsForAchievements;
-		if not ignored then
-			ignored = {[169] = 1};
-			_.IgnoredReputationsForAchievements = ignored;
-		end
-		local factions = _.SearchForFieldContainer("factionID");
-		for factionID,g in pairs(factions) do
-			if not ignored[factionID] and g[1].standing == 8 then
-				count = count + 1;
-			end
-		end
-		if t.rank > 1 then
-			t.progress = math.min(count, t.rank);
-			t.total = t.rank;
-			t.collectible = false;
-			
-			if _.GroupFilter(t) then
-				local parent = t.parent;
-				parent.total = (parent.total or 0) + t.total;
-				parent.progress = (parent.progress or 0) + t.progress;
-				t.visible = (t.progress < t.total or _.CollectedItemVisibilityFilter(t));
-			else
-				t.visible = false;
-			end
-		else
-			t.collected = count >= 1;
-			t.collectible = collectible;
-			
-			if _.GroupFilter(t) then
-				local parent = t.parent;
-				parent.total = (parent.total or 0) + 1;
-				if t.collected then parent.progress = (parent.progress or 0) + 1; end
-				t.visible = (not t.collected or _.CollectedItemVisibilityFilter(t));
-			else
-				t.visible = false;
-			end
-		end
-	else
-		t.collected = nil;
-		t.collectible = false;
-		t.progress = nil;
-		t.total = nil;
-		t.visible = false;
-	end
-	return true;
-end]];
-local REPUTATIONS_OnTooltip = [[function(t)
-	GameTooltip:AddLine("Raise " .. t.rank .. " reputations to Exalted.");
-	if t.total and t.progress < t.total and t.rank >= 25 then
-		GameTooltip:AddLine(" ");
-		local ignored = _.IgnoredReputationsForAchievements or {};
-		for i,o in ipairs(_:GetDataCache().g) do
-			if o.headerID == ]] .. FACTIONS .. [[ then
-				for j,p in ipairs(o.g) do
-					if (p.visible or p.factionID == 909) and not ignored[p.factionID] and (not p.minReputation or (p.minReputation[1] == p.factionID and p.minReputation[2] >= 41999)) and (not p.maxReputation or (p.maxReputation[1] ~= p.factionID and p.reputation >= 0)) then
-						GameTooltip:AddDoubleLine(" |T" .. p.icon .. ":0|t " .. p.text, _.L[p.standing >= 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
-					end
-				end
-			end
-		end
-	end
-end]];
--- #endif
 root("Achievements", {
 	achcat(ACHIEVEMENT_CATEGORY_CHARACTER, {
 		-- Armored Brown Bear, located in Dalaran.
@@ -279,9 +9,11 @@ root("Achievements", {
 			["rank"] = 5,
 		})),
 		classicAch(1017, {	-- Can I Keep Him?
-			["OnClick"] = COMPANIONS_OnClick,
-			["OnTooltip"] = COMPANIONS_OnTooltip,
-			["OnUpdate"] = COMPANIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
+			-- #if BEFORE WRATH
+			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.COMPANIONS_OnUpdate]],
+			-- #endif
 			["f"] = 101,
 			["rank"] = 1,
 		}),
@@ -299,10 +31,10 @@ root("Achievements", {
 		}),
 		-- #endif
 		classicAch(2142, {	-- Filling Up The Barn
-			["OnClick"] = MOUNTS_OnClick,
-			["OnTooltip"] = MOUNTS_OnTooltip,
+			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
-			["OnUpdate"] = MOUNTS_OnUpdate,
+			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
 			["rank"] = 25,
 			["f"] = 100,
@@ -359,10 +91,10 @@ root("Achievements", {
 		})),
 		ach(1833),	-- It's Happy Hour Somewhere
 		applyclassicphase(TBC_PHASE_ONE, ach(2143, {	-- Leading the Cavalry
-			["OnClick"] = MOUNTS_OnClick,
-			["OnTooltip"] = MOUNTS_OnTooltip,
+			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
-			["OnUpdate"] = MOUNTS_OnUpdate,
+			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
 			["rank"] = 50,
 			["f"] = 100,
@@ -373,49 +105,49 @@ root("Achievements", {
 		classicAch(6, {	-- Level 10
 			["lvl"] = 10,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		classicAch(7, {	-- Level 20
 			["lvl"] = 20,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		classicAch(8, {	-- Level 30
 			["lvl"] = 30,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		classicAch(9, {	-- Level 40
 			["lvl"] = 40,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		classicAch(10, {	-- Level 50
 			["lvl"] = 50,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		classicAch(11, {	-- Level 60
 			["lvl"] = 60,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(12, {	-- Level 70
 			["lvl"] = 70,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(13, {	-- Level 80
 			["lvl"] = 80,
 			-- #if BEFORE WRATH
-			["OnUpdate"] = LEVEL_OnUpdate,
+			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 			["groups"] = {
 				i(41426, {	-- Magically Wrapped Gift
@@ -424,9 +156,11 @@ root("Achievements", {
 			},
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(2516, {	-- Lil' Game Hunter
-			["OnClick"] = COMPANIONS_OnClick,
-			["OnTooltip"] = COMPANIONS_OnTooltip,
-			["OnUpdate"] = COMPANIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
+			-- #if BEFORE WRATH
+			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.COMPANIONS_OnUpdate]],
+			-- #endif
 			["f"] = 101,
 			["rank"] = 75,
 			["groups"] = {
@@ -435,10 +169,10 @@ root("Achievements", {
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(705)),	-- Master of Arms
 		applyclassicphase(WRATH_PHASE_ONE, ach(2536, {	-- Mountain o' Mounts [A]
-			["OnClick"] = MOUNTS_OnClick,
-			["OnTooltip"] = MOUNTS_OnTooltip,
+			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
-			["OnUpdate"] = MOUNTS_OnUpdate,
+			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
 			["races"] = ALLIANCE_ONLY,
 			["rank"] = 100,
@@ -448,10 +182,10 @@ root("Achievements", {
 			},
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(2537, {	-- Mountain o' Mounts [H]
-			["OnClick"] = MOUNTS_OnClick,
-			["OnTooltip"] = MOUNTS_OnTooltip,
+			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
-			["OnUpdate"] = MOUNTS_OnUpdate,
+			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
 			["races"] = HORDE_ONLY,
 			["rank"] = 100,
@@ -463,16 +197,20 @@ root("Achievements", {
 		applyclassicphase(WRATH_PHASE_ONE, ach(559)),	-- Needy
 		applyclassicphase(WRATH_PHASE_ONE, ach(2556)),	-- Pest Control
 		classicAch(15, {	-- Plenty of Pets
-			["OnClick"] = COMPANIONS_OnClick,
-			["OnTooltip"] = COMPANIONS_OnTooltip,
-			["OnUpdate"] = COMPANIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
+			-- #if BEFORE WRATH
+			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.COMPANIONS_OnUpdate]],
+			-- #endif
 			["f"] = 101,
 			["rank"] = 15,
 		}),
 		classicAch(1248, {	-- Plethora of Pets
-			["OnClick"] = COMPANIONS_OnClick,
-			["OnTooltip"] = COMPANIONS_OnTooltip,
-			["OnUpdate"] = COMPANIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
+			-- #if BEFORE WRATH
+			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.COMPANIONS_OnUpdate]],
+			-- #endif
 			["f"] = 101,
 			["rank"] = 25,
 		}),
@@ -493,9 +231,11 @@ root("Achievements", {
 			["maps"] = { STORMWIND_CITY, ORGRIMMAR, NORTHREND_DALARAN },
 		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(1250, {	-- Shop Smart, Shop Pet...Smart
-			["OnClick"] = COMPANIONS_OnClick,
-			["OnTooltip"] = COMPANIONS_OnTooltip,
-			["OnUpdate"] = COMPANIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
+			-- #if BEFORE WRATH
+			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.COMPANIONS_OnUpdate]],
+			-- #endif
 			["f"] = 101,
 			["rank"] = 50,
 			["groups"] = {
@@ -503,10 +243,10 @@ root("Achievements", {
 			},
 		})),
 		classicAch(2141, {	-- Stable Keeper
-			["OnClick"] = MOUNTS_OnClick,
-			["OnTooltip"] = MOUNTS_OnTooltip,
+			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
-			["OnUpdate"] = MOUNTS_OnUpdate,
+			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
 			["rank"] = 10,
 			["f"] = 100,
@@ -684,146 +424,10 @@ root("Achievements", {
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_EXPLORATION, {
 		applyclassicphase(TBC_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_OUTLAND_EXP, {
-			--[[
-			ach(1312, {	-- Bloody Rare
-				crit(4504, {	-- Ambassador Jerrikar (Shadowmoon Valley)
-					["_npcs"] = { 18695 },
-				}),
-				crit(4505, {	-- Bog Lurker (Zangarmarsh)
-					["_npcs"] = { 18682 },
-				}),
-				crit(4506, {	-- Chief Engineer Lorthander (Netherstorm)
-					["_npcs"] = { 18697 },
-				}),
-				crit(4507, {	-- Coilfang Emissary (Zangarmarsh)
-					["_npcs"] = { 18681 },
-				}),
-				crit(4508, {	-- Collidus the Warp-Watcher (Shadowmoon Valley)
-					["_npcs"] = { 18694 },
-				}),
-				crit(4509, {	-- Crippler (Terokkar Forest)
-					["_npcs"] = { 18689 },
-				}),
-				crit(4510, {	-- Doomsayer Jurim (Terokkar Forest)
-					["_npcs"] = { 18686 },
-				}),
-				crit(4511, {	-- Ever-Core the Punisher (Netherstorm)
-					["_npcs"] = { 18698 },
-				}),
-				crit(4512, {	-- Fulgorge (Hellfire Peninsula)
-					["_npcs"] = { 18678 },
-				}),
-				crit(4513, {	-- Goretooth (Nagrand)
-					["_npcs"] = { 17144 },
-				}),
-				crit(4514, {	-- Hemathion (Blade's Edge Mountains)
-					["_npcs"] = { 18692 },
-				}),
-				crit(4515, {	-- Kraator (Shadowmoon Valley)
-					["_npcs"] = { 18696 },
-				}),
-				crit(4516, {	-- Marticar (Zangarmarsh)
-					["_npcs"] = { 18680 },
-				}),
-				crit(4517, {	-- Mekthorg the Wild (Hellfire Peninsula)
-					["_npcs"] = { 18677 },
-				}),
-				crit(4518, {	-- Morcrush (Blade's Edge Mountains)
-					["_npcs"] = { 18690 },
-				}),
-				crit(4519, {	-- Nuramoc (Netherstorm)
-					["_npcs"] = { 20932 },
-				}),
-				crit(4520, {	-- Okrek (Terokkar Forest)
-					["_npcs"] = { 18685 },
-				}),
-				crit(4521, {	-- Speaker Mar'grom (Blade's Edge Mountains)
-					["_npcs"] = { 18693 },
-				}),
-				crit(4522, {	-- Voidhunter Yar (Nagrand)
-					["_npcs"] = { 18683 },
-				}),
-				crit(4523, {	-- Vorakem Doomspeaker (Hellfire Peninsula)
-					["_npcs"] = { 18679 },
-				}),
-			}),
-			ach(1311),	-- Medium Rare
-			]]--
+		
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
-			--[[ach(2257, {	-- Frostbitten
-				crit(8100, {	-- Loque'nahak (Sholazar Basin)
-					["_npcs"] = { 32517 },
-				}),
-				crit(8101, {	-- High Thane Jorfus (Icecrown)
-					["_npcs"] = { 32501 },
-				}),
-				crit(8102, {	-- Hildana Deathstealer (Icecrown)
-					["_npcs"] = { 32495 },
-				}),
-				crit(8103, {	-- Old Crystalbark (Borean Tundra)
-					["_npcs"] = { 32357 },
-				}),
-				crit(8104, {	-- Fumblub Gearwind (Borean Tundra)
-					["_npcs"] = { 32358 },
-				}),
-				crit(8105, {	-- Icehorn (Borean Tundra)
-					["_npcs"] = { 32361 },
-				}),
-				crit(8106, {	-- Perobas the Bloodthirster (Howling Fjord)
-					["_npcs"] = { 32377 },
-				}),
-				crit(8107, {	-- Vigdis the War Maiden (Howling Fjord)
-					["_npcs"] = { 32386 },
-				}),
-				crit(8108, {	-- King Ping (Howling Fjord)
-					["_npcs"] = { 32398 },
-				}),
-				crit(8109, {	-- Tukemuth (Dragonblight)
-					["_npcs"] = { 32400 },
-				}),
-				crit(8110, {	-- Crazed Indu'le Survivor (Dragonblight)
-					["_npcs"] = { 32409 },
-				}),
-				crit(8111, {	-- Scarlet Highlord Daion (Dragonblight)
-					["_npcs"] = { 32417 },
-				}),
-				crit(8112, {	-- Grocklar (Grizzly Hills)
-					["_npcs"] = { 32422 },
-				}),
-				crit(8113, {	-- Seething Hate (Grizzly Hills)
-					["_npcs"] = { 32429 },
-				}),
-				crit(8114, {	-- Syreian the Bonecarver (Grizzly Hills)
-					["_npcs"] = { 32438 },
-				}),
-				crit(8115, {	-- Zul'drak Sentinel (Zul'Drak)
-					["_npcs"] = { 32447 },
-				}),
-				crit(8116, {	-- Griegen (Zul'Drak)
-					["_npcs"] = { 32471 },
-				}),
-				crit(8117, {	-- Terror Spinner (Zul'Drak and Storm Peaks)
-					["_npcs"] = { 32475 },
-				}),
-				crit(8118, {	-- Aotona (Sholazar Basin)
-					["_npcs"] = { 32481 },
-				}),
-				crit(8119, {	-- King Krush (Sholazar Basin)
-					["_npcs"] = { 32485 },
-				}),
-				crit(8120, {	-- Vyragosa (The Storm Peaks)
-					["_npcs"] = { 32630 },
-				}),
-				crit(8121, {	-- Dirkee (The Storm Peaks)
-					["_npcs"] = { 32500 },
-				}),
-				crit(8122, {	-- Putridus the Ancient (Icecrown)
-					["_npcs"] = { 32487 },
-				}),
-			}),
-			ach(2256),	-- Northern Exposure
-			--]]
+		
 		})),
 		applyclassicphase(BFA_PHASE_ONE, ach(12988, {	-- Battle for Azeroth Explorer
 			-- Meta Achievement
@@ -1903,57 +1507,57 @@ root("Achievements", {
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_REPUTATION, {
 		classicAch(522, {	-- Somebody Likes Me
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 1,
 		}),
 		classicAch(523, {	-- 5 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 5,
 		}),
 		classicAch(524, {	-- 10 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 10,
 		}),
 		classicAch(521, {	-- 15 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 15,
 		}),
 		classicAch(520, {	-- 20 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 20,
 		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(519, {	-- 25 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 25,
 		})),
 		applyclassicphase(TBC_PHASE_ONE, ach(518, {	-- 30 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 30,
 		})),
 		applyclassicphase(TBC_PHASE_TWO, ach(1014, {	-- 35 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 35,
 		})),
 		applyclassicphase(TBC_PHASE_FIVE, ach(1015, {	-- 40 Exalted Reputations
-			["OnClick"] = REPUTATIONS_OnClick,
-			["OnTooltip"] = REPUTATIONS_OnTooltip,
-			["OnUpdate"] = REPUTATIONS_OnUpdate,
+			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
+			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
+			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 40,
 			-- #if AFTER 3.0.1
 			["groups"] = {
