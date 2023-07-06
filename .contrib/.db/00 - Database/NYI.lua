@@ -2,10 +2,6 @@
 --         N E V E R       I M P L E M E N T E D       M O D U L E       --
 ---------------------------------------------------------------------------
 -- Everything in this file hasn't been implemented yet.
-local oldI, oldQ, oldFP = i, q, fp;
-i = function(...) return un(NEVER_IMPLEMENTED, oldI(...)); end
-q = function(...) return un(NEVER_IMPLEMENTED, oldQ(...)); end
-fp = function(...) return un(NEVER_IMPLEMENTED, oldFP(...)); end
 root("NeverImplemented", {
 	n(FLIGHT_PATHS, {
 		fp(84),	-- Plaguewood Tower, Eastern Plaguelands
@@ -117,7 +113,7 @@ root("NeverImplemented", {
 	q(55296),	-- This quest was reported as missing on Discord, but has no information related to it similar to 6842 and 7069.
 	q(3366),	-- The Glowing Shard [Quests #6981 and #3366 look identical, but WoWHead doesn't have much info on 3366]
 	
-	un(NEVER_IMPLEMENTED, q(8226, {	-- Rare Fish - Pale Ghoulfish
+	q(8226, {	-- Rare Fish - Pale Ghoulfish
 		--["qg"] = 15079,	-- Fishbot 5000
 		["requireSkill"] = FISHING,
 		--["coord"] = { 27.4, 76.9, STRANGLETHORN_VALE },
@@ -126,9 +122,9 @@ root("NeverImplemented", {
 			{ "i", 19804, 1 },	-- Pale Ghoulfish
 		},
 		["groups"] = {
-			un(NEVER_IMPLEMENTED, i(7996)),	-- Worn Fishing Hat
+			i(7996),	-- Worn Fishing Hat
 		},
-	})),
+	}),
 	
 	-- Arathi Highlands
 	q(636),	-- Legends of the Earth <NYI>
@@ -932,11 +928,6 @@ root("NeverImplemented", {
 	}),
 	-- #endif
 });
-i = oldI;
-q = oldQ;
-fp = oldFP;
-
-
 
 -- These items never made it in.
 root("NeverImplemented", {
