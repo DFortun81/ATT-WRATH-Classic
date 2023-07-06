@@ -1855,10 +1855,21 @@ root("Achievements", {
 				["rank"] = 6,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(137, {	-- Stocking Up
+				["provider"] = { "i", 34722 },	-- Heavy Frostweave Bandage
 				["requireSkill"] = FIRST_AID,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(141, {	-- Ultimate Triage
-				["requireSkill"] = FIRST_AID,
+				["providers"] = {
+					{ "i", 34722 },	-- Heavy Frostweave Bandage
+					-- #if AFTER CATA
+					{ "i", 53049 },	-- Embersilk Bandage
+					{ "i", 53051 },	-- Dense Embersilk Bandage
+					-- #endif
+					-- #if AFTER MOP
+					{ "i", 72985 },	-- Windwool Bandage
+					{ "i", 72986 },	-- Heavy Windwool Bandage
+					-- #endif
+				},
 			})),
 		}),
 		applyclassicphase(WRATH_PHASE_ONE, ach(730, {	-- Skills to Pay the Bills

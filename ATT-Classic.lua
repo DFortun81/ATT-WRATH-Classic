@@ -9315,10 +9315,10 @@ UpdateGroups = function(parent, g)
 		for i=1,#g,1 do
 			local group = g[i];
 			if group.OnUpdate then
-				--local lastUpdate = GetTimePreciseSec();
+				local lastUpdate = GetTimePreciseSec();
 				local result = group:OnUpdate(group);
-				--local duration = (GetTimePreciseSec() - lastUpdate) * 10000;
-				--if duration > 10 then print(group.text, "OnUpdate: ", duration); end
+				local duration = (GetTimePreciseSec() - lastUpdate) * 10000;
+				if duration > 10 then print(group.text, "OnUpdate: ", duration); end
 				if not result then
 					if UpdateGroup(parent, group) then
 						visible = true;
@@ -11246,7 +11246,7 @@ local function UpdateWindow(self, force, fromTrigger)
 			end
 			data.progress = 0;
 			data.total = 0;
-			--local lastUpdate = GetTimePreciseSec();
+			local lastUpdate = GetTimePreciseSec();
 			if not (data.OnUpdate and data:OnUpdate()) then
 				UpdateGroups(data, data.g);
 				
@@ -11260,7 +11260,7 @@ local function UpdateWindow(self, force, fromTrigger)
 				return;
 			end
 			self.forceFullDataRefresh = nil;
-			--print("UpdateGroups RESULT", (GetTimePreciseSec() - lastUpdate) * 10000);
+			print("UpdateGroups RESULT", (GetTimePreciseSec() - lastUpdate) * 10000);
 		end
 		ProcessGroup(self.rowData, data);
 		
