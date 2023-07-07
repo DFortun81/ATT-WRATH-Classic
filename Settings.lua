@@ -204,9 +204,6 @@ settings.Initialize = function(self)
 	if self:GetTooltipSetting("Auto:MainList") then
 		app:OpenMainList();
 	end
-	if self:GetTooltipSetting("Auto:RaidAssistant") then
-		app:GetWindow("RaidAssistant"):Show();
-	end
 	if self:GetTooltipSetting("Auto:WorldQuestsList") then
 		app:GetWindow("WorldQuests"):Show();
 	end

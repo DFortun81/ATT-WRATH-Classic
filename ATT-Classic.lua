@@ -5631,51 +5631,74 @@ app.CreateCharacterClass, app.BaseCharacterClass = app.CreateClass("CharacterCla
 });
 app.CreateUnit = app.CreateClass("Unit", "unit", {
 	["text"] = function(t)
-		return t.name;
+		return t.classText;
 	end,
-	["name"] = function(t)
+	["info"] = function(t)
 		local unit = t.unit;
 		for guid,character in pairs(ATTCharacterData) do
 			if guid == unit or character.name == unit then
-				rawset(t, "name", character.text);
+				rawset(t, "guid", character.guid);
+				rawset(t, "name", character.name);
 				rawset(t, "lvl", character.lvl);
 				if character.classID then
 					rawset(t, "classID", character.classID);
 					rawset(t, "classes", { character.classID });
-					rawset(t, "class", C_CreatureInfo.GetClassInfo(character.classID).className);
+					local classInfo = C_CreatureInfo.GetClassInfo(character.classID);
+					if classInfo then
+						rawset(t, "className", classInfo.className);
+						rawset(t, "classFile", classInfo.classFile);
+					end
 				end
 				if character.raceID then
 					rawset(t, "raceID", character.raceID);
 					rawset(t, "races", { character.raceID });
 					rawset(t, "race", C_CreatureInfo.GetRaceInfo(character.raceID).raceName);
 				end
-				return character.text;
+				return t;
 			end
 		end
-		local name, className, classFile, classID = UnitName(unit);
-		if name then
-			className, classFile, classID = UnitClass(unit);
-		elseif #{strsplit("-", unit)} > 1 then
+		local name, guid, className, classFile, classID, raceName, raceFile, raceID;
+		if #{strsplit("-", unit)} > 1 then
 			-- It's a GUID.
-			rawset(t, "guid", unit);
-			className, classFile, _, _, _, name = GetPlayerInfoByGUID(unit);
+			guid = unit;
+			className, classFile, raceName, raceFile, raceID, name = GetPlayerInfoByGUID(guid);
 			classID = GetClassIDFromClassFile(classFile);
+		else
+			name = UnitName(unit);
+			if name then
+				guid = UnitGUID(unit);
+				className, classFile, classID = UnitClass(unit);
+				raceName, raceFile, raceID = UnitRace(unit);
+			else
+				return t;
+			end
 		end
 		if name then
-			if classFile then name = "|c" .. RAID_CLASS_COLORS[classFile].colorStr .. name .. "|r"; end
 			rawset(t, "name", name);
-			rawset(t, "className", className);
-			rawset(t, "classFile", classFile);
-			rawset(t, "classID", classID);
-			return name;
+			rawset(t, "guid", guid);
+			if classID then
+				rawset(t, "className", className);
+				rawset(t, "classFile", classFile);
+				rawset(t, "classID", classID);
+			end
+			if raceID then
+				rawset(t, "raceID", raceID);
+				rawset(t, "races", { raceID });
+				rawset(t, "race", C_CreatureInfo.GetRaceInfo(raceID).raceName);
+			end
 		end
-		return RETRIEVING_DATA;
+		return t;
+	end,
+	["name"] = function(t)
+		return rawget(t.info, "name");
 	end,
 	["icon"] = function(t)
-		if t.classID then return classIcons[t.classID]; end
+		local classID = rawget(t.info, "classID");
+		if classID then return classIcons[classID]; end
 	end,
 	["guid"] = function(t)
-		return UnitGUID(t.unit);
+		local guid = rawget(t.info, "guid");
+		if guid then return guid; end
 	end,
 	["title"] = function(t)
 		if IsInGroup() then
@@ -5683,17 +5706,25 @@ app.CreateUnit = app.CreateClass("Unit", "unit", {
 			if UnitIsGroupLeader(t.unit, "raid") then return RAID_LEADER; end
 		end
 	end,
-	["level"] = function(t)
+	["lvl"] = function(t)
 		return UnitLevel(t.unit);
 	end,
 	["race"] = function(t)
-		return UnitRace(t.unit);
+		return rawget(t.info, "race");
 	end,
-	["class"] = function(t)
-		return UnitClass(t.unit);
+	["className"] = function(t)
+		return rawget(t.info, "className");
+	end,
+	["classFile"] = function(t)
+		return rawget(t.info, "classFile");
+	end,
+	["classText"] = function(t)
+		local classFile = t.classFile;
+		if classFile then return "|c" .. RAID_CLASS_COLORS[classFile].colorStr .. t.name .. "|r"; end
+		return t.name;
 	end,
 	["tooltipText"] = function(t)
-		local text = t.name;
+		local text = t.text;
 		local icon = t.icon;
 		if icon then text = "|T" .. icon .. ":0|t " .. text; end
 		return text;
@@ -11491,6 +11522,11 @@ end
 
 -- Collection Window Creation
 app.Windows = {};
+local defaultNoEntriesRow = {
+	text = "No data was found.",
+	preview = app.asset("Discord_2_128"),
+	description = "If you believe this was in error, try activating 'Debug Mode'. One of your filters may be restricting the visibility of the group.",
+};
 local function SetWindowData(self, data)
 	if self.data ~= data then
 		self.data = data;
@@ -11548,7 +11584,7 @@ local function UpdateWindow(self, force, fromTrigger)
 		ProcessGroup(self.rowData, data);
 		
 		-- Does this user have everything?
-		if data.total then
+		if data.total and data.total > 0 then
 			if data.total <= data.progress then
 				if #self.rowData < 1 then
 					data.back = 1;
@@ -11561,11 +11597,9 @@ local function UpdateWindow(self, force, fromTrigger)
 					end
 				end
 				if not self.ignoreNoEntries then
-					tinsert(self.rowData, {
-						text = "No entries matching your filters were found.",
-						description = "If you believe this was in error, try activating 'Debug Mode'. One of your filters may be restricting the visibility of the group.",
-						back = 0.7
-					});
+					local noentries = self.noEntriesRow or defaultNoEntriesRow;
+					noentries.parent = self.data;
+					tinsert(self.rowData, noentries);
 				end
 			else
 				self.missingData = true;
@@ -13928,252 +13962,6 @@ app:GetWindow("ItemFinder", {
 		UpdateGroups(self.data, self.data.g);
 		UpdateWindow(self, ...);
 		if self.data.OnUpdate then self.data.OnUpdate(self.data); end
-	end
-});
-app:GetWindow("RaidAssistant", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTRAIDASSIST1 = "/attra";
-		SLASH_ATTRAIDASSIST2 = "/attraid";
-		SlashCmdList["ATTRAIDASSIST"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			self.ignoreNoEntries = true;
-			
-			-- Loot Method Switching
-			local lootmethod, lootmasters, lootthreshold, raidassistant;
-			lootmethod = {
-				['text'] = LOOT_METHOD,
-				['icon'] = "Interface\\Icons\\INV_Misc_Coin_01.blp",
-				["description"] = "This setting allows you to customize what kind of loot will drop and how much.\n\nThis only works while in a party - If you're by yourself, you can create a Premade Group (just don't invite anyone) and then change it.\n\nClick this row to go back to the Raid Assistant.",
-				['OnClick'] = function(row, button)
-					self.data = raidassistant;
-					self:Update(true);
-					return true;
-				end,
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['g'] = {},
-				['OnUpdate'] = function(data)
-					data.g = {};
-					if data.options then
-						for i,option in ipairs(data.options) do
-							table.insert(data.g, option);
-						end
-					end
-					for key,value in pairs(UnitLootMethod or { group = 1, master = 2 }) do
-						table.insert(data.g, app.CreateLootMethod(key));
-					end
-				end,
-			};
-			lootmasters = {
-				['text'] = MASTER_LOOTER,
-				['icon'] = "Interface\\Icons\\INV_Misc_Coin_01.blp",
-				["description"] = "This setting allows you to select a new Master Looter.",
-				['OnClick'] = function(row, button)
-					self.data = raidassistant;
-					self:Update(true);
-					return true;
-				end,
-				['OnUpdate'] = function(data)
-					data.g = {};
-					local count = GetNumGroupMembers();
-					if count > 0 then
-						for raidIndex = 1, 40, 1 do
-							local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(raidIndex);
-							if name then
-								table.insert(data.g, app.CreateUnit(name, {
-									['isML'] = isML,
-									['name'] = name,
-									['visible'] = true,
-									['OnClick'] = function(row, button)
-										SetLootMethod("master", row.ref.name);
-										self:Reset();
-										return true;
-									end,
-									['back'] = 0.5,
-								}));
-							end
-						end
-					end
-				end,
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['g'] = {},
-			};
-			lootthreshold = {
-				['text'] = "Loot Threshold",
-				['icon'] = "Interface\\Icons\\INV_Misc_Coin_01.blp",
-				["description"] = "Select a new loot threshold.",
-				['OnClick'] = function(row, button)
-					self.data = raidassistant;
-					self:Update(true);
-					return true;
-				end,
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['g'] = {
-					app.CreateLootThreshold(2),
-					app.CreateLootThreshold(3),
-					app.CreateLootThreshold(4)
-				},
-			};
-			
-			-- Raid Assistant
-			raidassistant = {
-				['text'] = "Raid Assistant",
-				['icon'] = app.asset("Achievement_Dungeon_GloryoftheRaider"), 
-				["description"] = "Never enter the instance with the wrong settings again! Verify that everything is as it should be!",
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['g'] = {
-					app.CreateLootMethod("group", {
-						['title'] = LOOT_METHOD,
-						['visible'] = true,
-						['OnClick'] = function(row, button)
-							if UnitIsGroupLeader("player", "raid") then
-								self.data = lootmethod;
-								self:Update(true);
-							end
-							return true;
-						end,
-						['OnUpdate'] = function(data)
-							data.visible = IsInGroup();
-							if data.visible then
-								data.id = GetLootMethod();
-							end
-						end,
-						['back'] = 0.5,
-					}),
-					app.CreateUnit("player", {
-						['title'] = MASTER_LOOTER,
-						["description"] = "This player is currently the Master Looter.",
-						['visible'] = true,
-						['isML'] = true,
-						['OnClick'] = function(row, button)
-							if UnitIsGroupLeader("player", "raid") then
-								self.data = lootmasters;
-								self:Update(true);
-							end
-							return true;
-						end,
-						['OnUpdate'] = function(data)
-							if IsInGroup() then
-								local lootMethod, partyIndex, raidIndex = GetLootMethod();
-								if lootMethod == "master" then
-									if raidIndex then
-										data.unit = "raid" .. raidIndex;
-									elseif partyIndex == 0 then
-										data.unit = "player";
-									else
-										data.unit = "party" .. partyIndex;
-									end
-									data.text = nil;
-									data.visible = true;
-								else
-									data.visible = false;
-								end
-							else
-								data.visible = false;
-							end
-						end,
-						['back'] = 0.5,
-					}),
-					app.CreateLootThreshold(2, {
-						['title'] = LOOT_TRESHOLD,
-						['visible'] = true,
-						['OnClick'] = function(row, button)
-							if UnitIsGroupLeader("player", "raid") then
-								self.data = lootthreshold;
-								self:Update(true);
-							end
-							return true;
-						end,
-						['OnUpdate'] = function(data)
-							data.visible = IsInGroup();
-							if data.visible then
-								data.id = GetLootThreshold();
-							end
-						end,
-						['back'] = 0.5,
-					}),
-					{
-						['text'] = "Reset Instances",
-						['icon'] = app.asset("Ability_Priest_VoidShift"),
-						['description'] = "Click here to reset your instances.\n\nAlt+Click to toggle automatically resetting your instances when you leave a dungeon.\n\nWARNING: BE CAREFUL WITH THIS!",
-						['visible'] = true,
-						['OnClick'] = function(row, button)
-							if IsAltKeyDown() then
-								row.ref.saved = not row.ref.saved;
-								self:Update();
-							else
-								ResetInstances();
-							end
-							return true;
-						end,
-						['OnUpdate'] = function(data)
-							data.visible = not IsInGroup() or UnitIsGroupLeader("player", "raid");
-							if data.visible and data.saved then
-								if IsInInstance() then
-									data.shouldReset = true;
-								elseif data.shouldReset then
-									data.shouldReset = nil;
-									C_Timer.After(0.5, ResetInstances);
-								end
-							end
-						end,
-					},
-					{
-						['text'] = "Leave Group",
-						['icon'] = "Interface\\Icons\\Ability_Vanish",
-						['description'] = "Click here to leave the group. In most instances, this will also port you to the nearest graveyard after 60 seconds or so.\n\nNOTE: Only works if you're in a group or if the game thinks you're in a group.",
-						['visible'] = true,
-						['OnClick'] = function(row, button)
-							LeaveParty();
-							self:Reset();
-							UpdateWindow(self, true);
-							return true;
-						end,
-						['OnUpdate'] = function(data)
-							data.visible = IsInGroup();
-						end,
-					},
-				}
-			};
-			self.Reset = function()
-				self.data = raidassistant;
-			end
-			
-			-- Setup Event Handlers and register for events
-			self:SetScript("OnEvent", function(self, e, ...) self:Update(); end);
-			self:RegisterEvent("CHAT_MSG_SYSTEM");
-			self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-			self:RegisterEvent("GROUP_ROSTER_UPDATE");
-			self:Reset();
-		end
-		
-		-- Update the groups without forcing Debug Mode.
-		local visibilityFilter = app.VisibilityFilter;
-		app.VisibilityFilter = function() return true; end;
-		
-		-- Update the window and all of its row data
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		for i,g in ipairs(self.data.g) do
-			if g.OnUpdate then g.OnUpdate(g, self); end
-		end
-		
-		BuildGroups(self.data);
-		UpdateWindow(self, true);
-		app.VisibilityFilter = visibilityFilter;
 	end
 });
 app:GetWindow("Tradeskills", {

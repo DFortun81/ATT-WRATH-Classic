@@ -400,12 +400,8 @@ root("Achievements", {
 		-- #endif
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_EXPLORATION, {
-		applyclassicphase(TBC_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_OUTLAND_EXP, {
-		
-		})),
-		applyclassicphase(WRATH_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP, {
-		
-		})),
+		applyclassicphase(TBC_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_OUTLAND_EXP)),
+		applyclassicphase(WRATH_PHASE_ONE, achcat(ACHIEVEMENT_CATEGORY_NORTHREND_EXP)),
 		applyclassicphase(BFA_PHASE_ONE, ach(12988, {	-- Battle for Azeroth Explorer
 			-- Meta Achievement
 			["sym"] = {{"meta_achievement",
@@ -1629,12 +1625,8 @@ root("Achievements", {
 			},
 		})),
 	}),
-	achcat(ACHIEVEMENT_CATEGORY_COLLECTIONS, {
-		
-	}),
-	achcat(ACHIEVEMENT_CATEGORY_EXPANSION_FEATURES, {
-		
-	}),
+	achcat(ACHIEVEMENT_CATEGORY_COLLECTIONS),
+	achcat(ACHIEVEMENT_CATEGORY_EXPANSION_FEATURES),
 	-- #endif
 	achcat(ACHIEVEMENT_CATEGORY_FEATS_OF_STRENGTH, {
 		classicAch(2358, {	-- Charger
@@ -1676,9 +1668,7 @@ root("Achievements", {
 		})),
 	}),
 	-- #if AFTER 4.1.0
-	achcat(ACHIEVEMENT_CATEGORY_LEGACY, {
-		
-	}),
+	achcat(ACHIEVEMENT_CATEGORY_LEGACY),
 	-- #endif
 });
 
