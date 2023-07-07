@@ -278,30 +278,7 @@ root("Achievements", {
 		achcat(ACHIEVEMENT_CATEGORY_OUTLAND_QUESTS),
 		-- #endif
 		-- #if AFTER 3.0.1
-		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_QUESTS, {
-			applyclassicphase(WRATH_PHASE_ONE, ach(41, {	-- Loremaster of Northrend (A)
-				-- #if AFTER WRATH
-				["sym"] = { {"select","achievementID", 33, 35, 36, 37, 38, 39, 34, 40 } },
-				-- #else
-				["description"] = "Complete the Northrend quest achievements listed below.",
-				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
-				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
-				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 33, 35, 36, 37, 38, 39, 34, 40); end]],
-				-- #endif
-				["races"] = ALLIANCE_ONLY,
-			})),
-			applyclassicphase(WRATH_PHASE_ONE, ach(1360, {	-- Loremaster of Northrend (H)
-				-- #if AFTER WRATH
-				["sym"] = { {"select","achievementID", 1358, 1356, 38, 1357, 1359, 39, 36, 40 } },
-				-- #else
-				["description"] = "Complete the Northrend quest achievements listed below.",
-				["OnClick"] = [[_.CommonAchievementHandlers.META_OnClick]],
-				["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
-				["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 1358, 1356, 38, 1357, 1359, 39, 36, 40); end]],
-				-- #endif
-				["races"] = HORDE_ONLY,
-			})),
-		}),
+		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_QUESTS),
 		-- #endif
 		ach(973, {	-- 5 Daily Quests Complete
 			["rank"] = 5,
