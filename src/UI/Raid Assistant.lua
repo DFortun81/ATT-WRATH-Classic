@@ -8,8 +8,8 @@ local C_Timer, GetLootMethod, GetLootThreshold, GetNumGroupMembers, GetRaidRoste
 	  C_Timer, GetLootMethod, GetLootThreshold, GetNumGroupMembers, GetRaidRosterInfo;
 local IsInGroup, IsInInstance, LeaveParty, ResetInstances, SetLootMethod =
 	  IsInGroup, IsInInstance, LeaveParty, ResetInstances, SetLootMethod;
-local CanShowResetInstances, GetBuildInfo, ResetInstances, UnitIsGroupLeader =
-	  CanShowResetInstances, GetBuildInfo, ResetInstances, UnitIsGroupLeader;
+local GetBuildInfo, ResetInstances, UnitIsGroupLeader =
+	  GetBuildInfo, ResetInstances, UnitIsGroupLeader;
 
 -- Implementation
 app:GetWindow("RaidAssistant", {
@@ -244,7 +244,7 @@ app:GetWindow("RaidAssistant", {
 							return true;
 						end,
 						OnUpdate = function(data)
-							data.visible = (not IsInGroup() or UnitIsGroupLeader("player", "raid")) and CanShowResetInstances();
+							data.visible = (not IsInGroup() or UnitIsGroupLeader("player", "raid"));
 							if data.visible and data.saved then
 								if IsInInstance() then
 									data.shouldReset = true;
