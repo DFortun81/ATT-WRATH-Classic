@@ -14050,6 +14050,14 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 		end
 	end
 end
+SLASH_ATTGUILD1 = "/attguild";
+SlashCmdList["ATTGUILD"] = function(cmd)
+	C_ChatInfo.SendAddonMessage("ATTC", "?", "GUILD");
+end
+SLASH_ATTRAID1 = "/attraid";
+SlashCmdList["ATTRAID"] = function(cmd)
+	C_ChatInfo.SendAddonMessage("ATTC", "?", "RAID");
+end
 SLASH_ATTYELL1 = "/attyell";
 SLASH_ATTYELL2 = "/attrohduh";
 SlashCmdList["ATTYELL"] = function(cmd)

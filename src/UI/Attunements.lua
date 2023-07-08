@@ -91,7 +91,7 @@ app:GetWindow("Attunements", {
 				app.CreateMap(435, {	-- Scarlet Monastery
 					attunementKeys = { 7146 },	-- Scarlet Key
 				}),
-				app.CreateMap(235, {	-- Dire Maul
+				app.CreateMap(234, {	-- Dire Maul
 					attunementKeys = { 18249 },	-- Crescent Key
 				}),
 				app.CreateMap(317, {	-- Stratholme

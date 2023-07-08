@@ -22,7 +22,7 @@ app:GetWindow("Quests", {
 				back = 1,
 				OnUpdate = function(data)
 					local g = app:BuildSearchResponseForField(app:GetDataCache().g, "questID");
-					if #g > 0 then
+					if g and #g > 0 then
 						data.g = g;
 						data.OnUpdate = nil;
 					end

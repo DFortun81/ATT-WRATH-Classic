@@ -182,7 +182,7 @@ app:GetWindow("RaidAssistant", {
 		self:RegisterEvent("GROUP_ROSTER_UPDATE");
 		
 		-- Does Difficulty have some options to change?
-		if GetDungeonDifficultyID then
+		if GetDifficultyInfo and GetDifficultyInfo(1) then
 			self:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
 		end
 		
@@ -277,7 +277,7 @@ app:GetWindow("RaidAssistant", {
 			};
 			
 			-- If Difficulties exist, this means we can use the API!
-			if GetDifficultyInfo then
+			if GetDifficultyInfo and GetDifficultyInfo(1) then
 				-- If Dungeon Difficulty exists, we can change that using the API!
 				if GetDungeonDifficultyID then
 					local setDungeonDifficulty = function(row, button)

@@ -22,7 +22,7 @@ app:GetWindow("Dailies", {
 				back = 1,
 				OnUpdate = function(data)
 					local g = app:BuildSearchResponse(app:GetDataCache().g, "isDaily", 1);
-					if #g > 0 then
+					if g and #g > 0 then
 						data.g = g;
 						data.OnUpdate = nil;
 					end
