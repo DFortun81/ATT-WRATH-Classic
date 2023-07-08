@@ -37,7 +37,9 @@ local function GetAttunementRequirement(t)
 						if item.key == "itemID" and item.itemID == itemID then
 							if item.OnUpdate then item:OnUpdate(); end
 							if item.GetItemCount and item:GetItemCount() > 0 then
-								return CloneReference(item);
+								item = CloneReference(item);
+								item.saved = true;
+								return item;
 							else
 								anyMatch = item;
 								if not item.nmr then
