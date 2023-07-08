@@ -209,7 +209,7 @@ app:GetWindow("RaidAssistant", {
 					text = "Create a Group",
 					icon = "Interface\\Icons\\Ability_Vanish",
 					description = "Click here to attempt to create a group.\n\nNOTE: This will invite a fake character and you can use this to force teleport out of dungeons when used in conjection with Leave Group option.",
-					priority = 8,
+					priority = 20,
 					OnClick = function(row, button)
 						InviteUnit(InviteCharacterName);
 						self:Reset();
@@ -224,7 +224,7 @@ app:GetWindow("RaidAssistant", {
 					text = "Create a Raid",
 					icon = "Interface\\Icons\\Ability_Vanish",
 					description = "Click here to attempt to create a raid group.\n\nNOTE: This will invite a fake character and you can use this to force enter a raid without actually needing to be in a raid group. You need to run into the instance the moment you see 'Party converted to Raid'. It may take a couple of attempts.",
-					priority = 9,
+					priority = 20,
 					OnClick = function(row, button)
 						InviteUnit(InviteCharacterName);
 						C_Timer.After(.5,function() ConvertToRaid() end);
@@ -240,7 +240,7 @@ app:GetWindow("RaidAssistant", {
 					text = "Leave Group",
 					icon = "Interface\\Icons\\Ability_Vanish",
 					description = "Click here to leave the group. In most instances, this will also port you to the nearest graveyard after 60 seconds or so.\n\nNOTE: Only works if you're in a group or if the game thinks you're in a group.",
-					priority = 7,
+					priority = 19,
 					OnClick = function(row, button)
 						LeaveParty();
 						CloseGroupFinder();
@@ -256,7 +256,7 @@ app:GetWindow("RaidAssistant", {
 					text = "Reset Instances",
 					icon = app.asset("Ability_Priest_VoidShift"),
 					description = "Click here to reset your instances.\n\nAlt+Click to toggle automatically resetting your instances when you leave a dungeon.\n\nWARNING: BE CAREFUL WITH THIS!",
-					priority = 4,
+					priority = 16,
 					OnClick = function(row, button)
 						if IsAltKeyDown() then
 							row.ref.saved = not row.ref.saved;
@@ -276,8 +276,268 @@ app:GetWindow("RaidAssistant", {
 				},
 			};
 			
-			-- If Dungeon Difficulty exists, we can change that using the API!
-			if GetDungeonDifficultyID then
+			-- If Difficulties exist, this means we can use the API!
+			if GetDifficultyInfo then
+				-- If Dungeon Difficulty exists, we can change that using the API!
+				if GetDungeonDifficultyID then
+					local setDungeonDifficulty = function(row, button)
+						local difficultyID = row.ref.difficultyID;
+						SetDungeonDifficultyID(difficultyID);
+						if not self.swappingdungeon then
+							self.swappingdungeon = true;
+						else
+							self.swappingdungeon = nil;
+						end
+						self:StartATTCoroutine("DungeonDifficulty", function()
+							while InCombatLockdown() do coroutine.yield(); end
+							while self.swappingdungeon do
+								for i=0,10,1 do
+									if self.swappingdungeon then
+										coroutine.yield();
+									else
+										break;
+									end
+								end
+								if GetDungeonDifficultyID() == difficultyID then
+									self.swappingdungeon = nil;
+									self:Update(true);
+									break;
+								else
+									SetDungeonDifficultyID(difficultyID);
+								end
+							end
+						end);
+						self:Reset();
+						return true;
+					end
+					local dungeondifficulty = app.CreateDifficulty(1, {
+						text = "Dungeon Difficulty",
+						description = "This setting allows you to customize the difficulty of a dungeon.\n\nClick this row to go back to the Raid Assistant.",
+						back = 1,
+						g = {},
+						OnClick = function(row, button)
+							self:Reset();
+							return true;
+						end,
+						OnUpdate = function(data)
+							local g = data.g;
+							if #g < 1 then
+								for i,difficultyID in ipairs({1, 2, 23 }) do
+									if GetDifficultyInfo(difficultyID) then
+										tinsert(g, app.CreateDifficulty(difficultyID, {
+											description = "Click to change now. (if available)",
+											OnClick = setDungeonDifficulty,
+											OnUpdate = app.AlwaysShowUpdate,
+											parent = data,
+										}));
+									end
+								end
+							end
+							data.visible = true;
+						end,
+					});
+					tinsert(options, app.CreateDifficulty(1, {
+						title = "Dungeon Difficulty",
+						description = "The difficulty setting for dungeons.\n\nClick this row to change it now!",
+						priority = 4,
+						OnClick = function(row, button)
+							if IsInInstance() then return true; end
+							self.data = dungeondifficulty;
+							self:Update(true);
+							return true;
+						end,
+						OnUpdate = function(data)
+							local difficultyID = GetDungeonDifficultyID() or 1;
+							data.difficultyID = difficultyID;
+							local difficultyName = GetDifficultyInfo(difficultyID) or "???";
+							local instanceName, instanceType, instanceDifficulty, instanceDifficultyName = GetInstanceInfo();
+							if instanceDifficulty and difficultyID ~= instanceDifficulty and instanceType == 'party' then
+								data.name = difficultyName .. " (" .. (instanceDifficultyName or "???") .. ") (Dungeon)";
+							else
+								data.name = difficultyName .. " (Dungeon)";
+							end
+							data.visible = true;
+							return true;
+						end,
+					}));
+				end
+				
+				-- If Raid Difficulty exists, we can change that using the API!
+				if GetRaidDifficultyID then
+					-- At some point Blizzard decided that difficulties made too much sense and scrapped them and added new ones.
+					local raidDifficultyIDs = { 3, 5, 4, 6 };
+					if GetDifficultyInfo(14) and SetLegacyRaidDifficultyID then
+						-- This means we need to implement Legacy Raid Difficulties as well. :(
+						local legactRaidDifficultyIDs = raidDifficultyIDs;
+						raidDifficultyIDs = { 14, 15, 16 };
+						local setLegacyRaidDifficulty = function(row, button)
+							local difficultyID = row.ref.difficultyID;
+							SetLegacyRaidDifficultyID(difficultyID);
+							if not self.swappinglegacy then
+								self.swappinglegacy = true;
+							else
+								self.swappinglegacy = nil;
+							end
+							self:StartATTCoroutine("LegacyRaidDifficulty", function()
+								while InCombatLockdown() do coroutine.yield(); end
+								while self.swappinglegacy do
+									for i=0,10,1 do
+										if self.swappinglegacy then
+											coroutine.yield();
+										else
+											break;
+										end
+									end
+									if GetLegacyRaidDifficultyID() == difficultyID then
+										self.swappinglegacy = nil;
+										self:Update(true);
+										break;
+									else
+										SetLegacyRaidDifficultyID(difficultyID);
+									end
+								end
+							end);
+							self:Reset();
+							return true;
+						end
+						local highestDifficultyID = legactRaidDifficultyIDs[#legactRaidDifficultyIDs];
+						local legacyraiddifficulty = app.CreateDifficulty(highestDifficultyID, {
+							text = "Legacy Raid Difficulty",
+							description = "This setting allows you to customize the difficulty of a legacy raid.\n\nClick this row to go back to the Raid Assistant.",
+							back = 1,
+							g = {},
+							OnClick = function(row, button)
+								self:Reset();
+								return true;
+							end,
+							OnUpdate = function(data)
+								local g = data.g;
+								if #g < 1 then
+									for i,difficultyID in ipairs(raidDifficultyIDs) do
+										if GetDifficultyInfo(difficultyID) then
+											tinsert(g, app.CreateDifficulty(difficultyID, {
+												description = "Click to change now. (if available)",
+												OnClick = setLegacyRaidDifficulty,
+												OnUpdate = app.AlwaysShowUpdate,
+												parent = data,
+											}));
+										end
+									end
+								end
+								data.visible = true;
+							end,
+						});
+						tinsert(options, app.CreateDifficulty(highestDifficultyID, {
+							title = "Legacy Raid Difficulty",
+							description = "The difficulty setting for legacy raids.\n\nClick this row to change it now!",
+							priority = 5,
+							OnClick = function(row, button)
+								-- Don't allow you to change difficulties when you're in LFR / Raid Finder
+								if row.ref.difficultyID == 7 or row.ref.difficultyID == 17 then return true; end
+								self.data = legacyraiddifficulty;
+								self:Update(true);
+								return true;
+							end,
+							OnUpdate = function(data)
+								local difficultyID = GetLegacyRaidDifficultyID() or 1;
+								data.difficultyID = difficultyID;
+								local difficultyName = GetDifficultyInfo(difficultyID) or "???";
+								local instanceName, instanceType, instanceDifficulty, instanceDifficultyName = GetInstanceInfo();
+								if instanceDifficulty and difficultyID ~= instanceDifficulty and instanceType == 'raid' then
+									data.name = difficultyName .. " (" .. (instanceDifficultyName or "???") .. ") (Legacy)";
+								else
+									data.name = difficultyName .. " (Legacy)";
+								end
+								data.visible = true;
+								return true;
+							end,
+						}));
+					end
+					
+					-- Create the normal raid difficulty header.
+					local highestDifficultyID = raidDifficultyIDs[#raidDifficultyIDs];
+					local setRaidDifficulty = function(row, button)
+						local difficultyID = row.ref.difficultyID;
+						SetRaidDifficultyID(difficultyID);
+						if not self.swappingraid then
+							self.swappingraid = true;
+						else
+							self.swappingraid = nil;
+						end
+						self:StartATTCoroutine("RaidDifficulty", function()
+							while InCombatLockdown() do coroutine.yield(); end
+							while self.swappingraid do
+								for i=0,10,1 do
+									if self.swappingraid then
+										coroutine.yield();
+									else
+										break;
+									end
+								end
+								if GetRaidDifficultyID() == difficultyID then
+									self.swappingraid = nil;
+									self:Update(true);
+									break;
+								else
+									SetRaidDifficultyID(difficultyID);
+								end
+							end
+						end);
+						self:Reset();
+						return true;
+					end
+					local raiddifficulty = app.CreateDifficulty(highestDifficultyID, {
+						text = "Raid Difficulty",
+						description = "This setting allows you to customize the difficulty of a raid.\n\nClick this row to go back to the Raid Assistant.",
+						back = 1,
+						g = {},
+						OnClick = function(row, button)
+							self:Reset();
+							return true;
+						end,
+						OnUpdate = function(data)
+							local g = data.g;
+							if #g < 1 then
+								for i,difficultyID in ipairs(raidDifficultyIDs) do
+									if GetDifficultyInfo(difficultyID) then
+										tinsert(g, app.CreateDifficulty(difficultyID, {
+											description = "Click to change now. (if available)",
+											OnClick = setRaidDifficulty,
+											OnUpdate = app.AlwaysShowUpdate,
+											parent = data,
+										}));
+									end
+								end
+							end
+							data.visible = true;
+						end,
+					});
+					tinsert(options, app.CreateDifficulty(highestDifficultyID, {
+						title = "Raid Difficulty",
+						description = "The difficulty setting for raids.\n\nClick this row to change it now!",
+						priority = 5,
+						OnClick = function(row, button)
+							-- Don't allow you to change difficulties when you're in LFR / Raid Finder
+							if row.ref.difficultyID == 7 or row.ref.difficultyID == 17 then return true; end
+							self.data = raiddifficulty;
+							self:Update(true);
+							return true;
+						end,
+						OnUpdate = function(data)
+							local difficultyID = GetRaidDifficultyID() or 1;
+							data.difficultyID = difficultyID;
+							local difficultyName = GetDifficultyInfo(difficultyID) or "???";
+							local instanceName, instanceType, instanceDifficulty, instanceDifficultyName = GetInstanceInfo();
+							if instanceDifficulty and difficultyID ~= instanceDifficulty and instanceType == 'raid' then
+								data.name = difficultyName .. " (" .. (instanceDifficultyName or "???") .. ") (Raid)";
+							else
+								data.name = difficultyName .. " (Raid)";
+							end
+							data.visible = true;
+							return true;
+						end,
+					}));
+				end
 				
 			end
 			
@@ -516,9 +776,8 @@ app:GetWindow("RaidAssistant", {
 											icon = icon,
 											description = description,
 											OnClick = function(row, button)
-												self:SetData(raidassistant);
 												SetLootSpecialization(row.ref.id);
-												Callback(self.Update, self);
+												self:Reset();
 												return true;
 											end,
 										});
@@ -530,7 +789,7 @@ app:GetWindow("RaidAssistant", {
 					tinsert(options, {
 						text = RETRIEVING_DATA,
 						description = "In dungeons, raids, and outdoor encounters, this setting will dictate which items are available for you.\n\nClick this row to change it now!",
-						priority = 3,
+						priority = 4,
 						OnClick = function(row, button)
 							self.data = lootspecialization;
 							self:Update(true);
@@ -549,11 +808,11 @@ app:GetWindow("RaidAssistant", {
 						end,
 					});
 				end
-			else
-				-- If Dual Spec exists, we have the ability to confirm which specialization the player currently is.
-				if GetActiveTalentGroup then
-					print("TODO: Setup Talent Swapping");
-				end
+			end
+			
+			-- If Dual Spec exists, we have the ability to confirm which specialization the player currently is.
+			if GetActiveTalentGroup then
+				--TODO: Setup Talent Swapping
 			end
 			
 			-- If LFG exists, we get some access to some special api functions.
@@ -567,7 +826,7 @@ app:GetWindow("RaidAssistant", {
 						toText = "Teleport to Dungeon",
 						toDescription = "Click here to teleport to the instance if using LFG.",
 						icon = "Interface\\Icons\\Spell_Shadow_Teleport",
-						priority = 5,
+						priority = 17,
 						OnClick = function(row, button)
 							LFGTeleport(IsInLFGDungeon());
 							self:Update();
@@ -597,7 +856,7 @@ app:GetWindow("RaidAssistant", {
 						text = "Delist Group",
 						icon = "Interface\\Icons\\Ability_Vehicle_LaunchPlayer",
 						description = "Click here to delist the group. If you are by yourself, it will softly leave the group without porting you out of any instance you are in.",
-						priority = 6,
+						priority = 18,
 						OnClick = function(row, button)
 							C_LFGList_RemoveListing();
 							CloseGroupFinder();

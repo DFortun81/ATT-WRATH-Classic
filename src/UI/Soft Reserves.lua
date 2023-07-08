@@ -1237,7 +1237,7 @@ app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
 		return t.itemID and select(2, _GetItemInfo(t.itemID));
 	end,
 	["tooltipText"] = function(t)
-		local text = t.name;
+		local text = t.classText;
 		local guid = t.guid;
 		local roll = t.roll;
 		local icon = t.icon;
