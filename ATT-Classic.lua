@@ -2067,6 +2067,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 					if o.key == "instanceID" or ((o.key == "difficultyID" or o.key == "mapID" or o.key == "headerID") and (o.parent and GetRelativeValue(o.parent, "instanceID"))) then
 						if app.CollectibleQuests then
 							local d = CreateObject(o);
+							d.sourceParent = o.parent;
 							d.collectible = true;
 							d.collected = _GetItemCount(paramB, true) > 0;
 							d.progress = nil;
@@ -7811,7 +7812,7 @@ local createMap, mapClass = app.CreateClass("Map", "mapID", {
 });
 app.BaseMap = mapClass;
 app.CreateMap = function(id, t)
-	local map = createMap(id, t);
+	local t = createMap(id, t);
 	local artID = t.artID;
 	if artID and t.g then
 		local explorationByAreaID = {};
@@ -7867,14 +7868,14 @@ app.CreateMap = function(id, t)
 			app.Sort(explorationHeader.g, app.SortDefaults.Text);
 		end
 		if not rawget(t, "OnUpdate") then
-			map.OnUpdate = onMapUpdate;
+			t.OnUpdate = onMapUpdate;
 		end
 	end
 	if t.creatureID and t.creatureID < 0 then
 		t.headerID = t.creatureID;
 		t.creatureID = nil;
 	end
-	return map;
+	return t;
 end
 app.CreateInstance = app.CreateClass("Instance", "instanceID", {
 	["text"] = function(t)
@@ -12634,451 +12635,7 @@ app:GetWindow("Unsorted", {
 		end
 	end,
 });
-app:GetWindow("Attuned", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTATTUNED1 = "/attattuned";
-		SlashCmdList["ATTATTUNED"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-	OnUpdate = function(self, ...)
-		if not self.initialized then
-			self.initialized = true;
-			
-			local sortByName = function(a, b)
-				return b.text > a.text;
-			end;
-			-- Attunements
-			local instances, instanceSelector, selectedInstance, attunements;
-			instances = {
-				['text'] = 'Instances',
-				['icon'] = "Interface\\Icons\\Spell_Fire_Immolation",
-				["description"] = "This setting allows you to change which instance's attunement data is displayed or queried for.\n\nClick this row to go back to the Attunements List.",
-				['OnClick'] = function(row, button)
-					self.data = attunements;
-					self:Update(true);
-					return true;
-				end,
-				['visible'] = true, 
-				['expanded'] = true,
-				['back'] = 1,
-				['g'] = {},
-				['OnUpdate'] = function(data)
-					data.g = {};
-					if data.options then
-						for i,option in ipairs(data.options) do
-							table.insert(data.g, option);
-						end
-					end
-				end,
-				['options'] = {
-					app.CreateMap(250, {	-- Upper Blackrock Spire
-						['icon'] = app.asset("Achievement_Boss_Overlord_Wyrmthalak"),
-						['description'] = "These are players attuned to Upper Blackrock Spire.\n\nYou only need one person in your group that is attuned in order to enter the instance.",
-						['questID'] = 4743,
-						['visible'] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(232, {	-- Molten Core
-						['icon'] = "Interface\\Icons\\Spell_Fire_Immolation",
-						['description'] = "These are players attuned to Molten Core.",
-						['questID'] = 7848,
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(248, {	-- Onyxia's Lair
-						['icon'] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
-						['description'] = "These are players attuned to Onyxia's Lair.",
-						['questID'] = app.FactionID == HORDE_FACTION_ID and 6602 or 6502,
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(287, {	-- Blackwing Lair
-						['icon'] = "Interface\\Icons\\inv_misc_head_dragon_black",
-						['description'] = "These are players attuned to Blackwing Lair.",
-						['questID'] = 7761,
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(162, {	-- Naxxramas
-						['icon'] = "Interface\\Icons\\INV_Trinket_Naxxramas03",
-						['description'] = "These are players attuned to Naxxramas.",
-						['questID'] = 9378,	-- Attunement [HIDDEN QUEST TRIGGER]
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(350, {	-- Karazhan
-						['icon'] = "Interface\\Icons\\Ability_mount_dreadsteed",
-						['description'] = "These are players attuned to Karazhan.",
-						['questID'] = 9837,	-- Return to Khadgar [The Master's Key]
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(332, {	-- SSC
-						['icon'] = "Interface\\Icons\\inv_weapon_shortblade_42",
-						['description'] = "These are players attuned to Serpentshrine Cavern.",
-						['questID'] = 10901,	-- The Cudgel of Kar'desh
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(334, {	-- The Eye
-						['icon'] = "Interface\\Icons\\inv_misc_summerfest_brazierorange",
-						['description'] = "These are players attuned to The Eye.",
-						['questID'] = 10888,	-- Trial of the Naaru: Magtheridon
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(329, {	-- Hyjal Summit
-						['icon'] = "Interface\\Icons\\inv_weapon_bow_30",
-						['description'] = "These are players attuned to Hyjal Summit.",
-						['questID'] = 10445,	-- The Vials of Eternity
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-					app.CreateMap(340, {	-- Black Temple
-						['icon'] = "Interface\\Icons\\inv_helmet_98",
-						['description'] = "These are players attuned to the Black Temple.",
-						['questID'] = 10985,	-- A Distraction for Akama
-						['visible'] = true,
-						["isRaid"] = true,
-						['back'] = 0.5,
-						['OnUpdate'] = app.AlwaysShowUpdate,
-						['OnClick'] = function(row, button)
-							selectedInstance = row.ref;
-							self:Reset();
-							return true;
-						end
-					}),
-				},
-			};
-			selectedInstance = instances.options[#instances.options];
-			selectedQuest = app.CreateQuest(971);
-			instanceSelector = app.CreateMap(1455, {
-				['visible'] = true,
-				['back'] = 0.5,
-				['OnUpdate'] = app.AlwaysShowUpdate,
-				['OnClick'] = function(row, button)
-					self.data = instances;
-					self:Update(true);
-					return true;
-				end,
-			});
-			attunements = {
-				['text'] = "Attunements",
-				['icon'] = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
-				["description"] = "This list shows you all of the players you have encountered that are Attuned to raids.",
-				['visible'] = true,
-				['expanded'] = true,
-				['nameToGUID'] = {},
-				['back'] = 1,
-				['OnUpdate'] = function(data)
-					data.progress = 0;
-					data.total = 0;
-					data.indent = 0;
-					data.back = 1;
-					wipe(data.g);
-					
-					-- Assign the Selected Instance.
-					instanceSelector.locks = nil;
-					data.questID = selectedInstance.questID;
-					instanceSelector.mapID = selectedInstance.mapID;
-					instanceSelector.icon = selectedInstance.icon;
-					instanceSelector.text = selectedInstance.text;
-					instanceSelector.description = selectedInstance.description;
-					instanceSelector.questID = selectedInstance.questID;
-					table.insert(data.g, data.queryGroupMembers);
-					table.insert(data.g, data.queryGuildMembers);
-					table.insert(data.g, instanceSelector);
-					table.insert(data.g, selectedQuest);
-					if data.questID == 9378 then	-- Naxx Attunement needs to be handled different, display-wise.
-						-- Based on current Argent Dawn rep, show a different quest. (still querying for the hidden attunement quest)
-						local currentStanding = app.CreateFaction(529).standing or 6;
-						local specificQuestID = (currentStanding == 8 and 9123) or (currentStanding == 7 and 9122) or 9121;
-						local searchResults = app.SearchForField("questID", specificQuestID);
-						if searchResults and #searchResults > 0 then
-							wipe(selectedQuest);
-							for i,questData in ipairs(searchResults) do
-								if questData.questID == specificQuestID then
-									for key,value in pairs(questData) do
-										selectedQuest[key] = value;
-									end
-								end
-							end
-							selectedQuest.OnUpdate = app.AlwaysShowUpdate;
-						end
-						selectedQuest.text = "The Dread Citadel - Naxxramas";
-					else
-						local searchResults = app.SearchForField("questID", data.questID);
-						if searchResults and #searchResults > 0 then
-							wipe(selectedQuest);
-							for i,questData in ipairs(searchResults) do
-								for key,value in pairs(questData) do
-									selectedQuest[key] = value;
-								end
-							end
-							selectedQuest.OnUpdate = app.AlwaysShowUpdate;
-						end
-					end
-					selectedQuest.questID = selectedInstance.questID;
-					
-					local groupMembers = {};
-					local count = GetNumGroupMembers();
-					if count > 0 then
-						for raidIndex = 2, 40, 1 do
-							local name = GetRaidRosterInfo(raidIndex);
-							if name then
-								local unit = app.CreateQuestUnit(name);
-								local guid = unit.guid;
-								if guid then data.nameToGUID[strsplit("-",name)] = guid; end
-								table.insert(groupMembers, unit);
-							end
-						end
-					end
-					
-					-- Sort Member List
-					app.Sort(groupMembers, sortByName);
-					for i,unit in ipairs(groupMembers) do
-						table.insert(data.g, unit);
-					end
-					
-					-- Insert Guild Members
-					local guildRanks = data.guildMembersHeader.g;
-					if #guildRanks < 1 then
-						local numRanks = GuildControlGetNumRanks();
-						if numRanks > 0 then
-							local tempRanks = {};
-							for rankIndex = 1, numRanks, 1 do
-								table.insert(tempRanks, {
-									["text"] = GuildControlGetRankName(rankIndex),
-									["icon"] = format("%s%02d","Interface\\PvPRankBadges\\PvPRank", (15 - rankIndex)),
-									["visible"] = true,
-									["g"] = {}
-								});
-							end
-							for rankIndex = 1, min(#tempRanks, #guildRanks), 1 do
-								if guildRanks[rankIndex].expanded then
-									tempRanks[rankIndex].expanded = true;
-								end
-							end
-							data.guildMembersHeader.g = tempRanks;
-							guildRanks = tempRanks;
-							
-							local debugMode = app.Settings:Get("DebugMode");
-							local count = GetNumGuildMembers();
-							if count > 0 then
-								for guildIndex = 1, count, 1 do
-									local name, _, rankIndex, level, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(guildIndex);
-									if guid and level > 54 then
-										local yearsOffline, monthsOffline, daysOffline, hoursOffline = GetGuildRosterLastOnline(guildIndex);
-										if (((yearsOffline or 0) * 12) + (monthsOffline or 0)) < 3 or debugMode then
-											local unit = app.CreateQuestUnit(guid);
-											local name = unit.name;
-											if name then data.nameToGUID[strsplit("-",name)] = guid;  end
-											local a = guildRanks[rankIndex + 1];
-											if a then table.insert(a.g, unit); end
-										end
-									end
-								end
-								
-								local any = false;
-								for rankIndex = 1, numRanks, 1 do
-									if #guildRanks[rankIndex].g > 0 then
-										app.Sort(guildRanks[rankIndex].g, sortByName);
-										any = true;
-									end
-								end
-								if any then
-									table.insert(data.g, data.guildMembersHeader);
-								end
-							end
-						end
-					else
-						table.insert(data.g, data.guildMembersHeader);
-					end
-					
-					-- Process Addon Messages
-					local addonMessages = GetDataMember("AddonMessageProcessor");
-					if addonMessages and #addonMessages > 0 then
-						local unprocessedMessages = {};
-						for i,message in ipairs(addonMessages) do
-							local guid = data.nameToGUID[message[1]];
-							if guid then
-								-- Attempt to process a quest message.
-								if message[2] == 'q' then
-									GetDataSubMember("GroupQuestsByGUID", guid, {})[message[3]] = 1;
-								else
-									table.insert(unprocessedMessages, message);
-								end
-							end
-						end
-						SetDataMember("AddonMessageProcessor", unprocessedMessages);
-						
-					end
-				end,
-				['g'] = {},
-				['guildMembersHeader'] = {
-					['text'] = "Guild Members",
-					['icon'] = "Interface\\Icons\\Ability_Warrior_BattleShout",
-					['description'] = "These active characters are in your guild.\n\nOnly showing level 55+. (2 months)",
-					['visible'] = true,
-					['dirty'] = true,
-					['g'] = {},
-				},
-				['queryGroupMembers'] = {
-					['text'] = "Query Group Members",
-					['icon'] = "Interface\\Icons\\INV_Wand_05",
-					['description'] = "Press this button to send an addon message to your Group Members if they are attuned for all of these instances.",
-					['visible'] = true,
-					['back'] = 0.5,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						local message = "?\tq";
-						for i,instance in ipairs(instances) do
-							message = message .. "\t" .. instance.questID;
-						end
-						SendGroupMessage(message);
-						self:Reset();
-						return true;
-					end,
-					['OnUpdate'] = function(data)
-						data.visible = IsInGroup();
-					end,
-				},
-				['queryGuildMembers'] = {
-					['text'] = "Query Guild Members",
-					['icon'] = "Interface\\Icons\\INV_Wand_04",
-					['description'] = "Press this button to send an addon message to your Guild Members if they are attuned for all of these instances.",
-					['visible'] = true,
-					['back'] = 0.5,
-					['g'] = {},
-					['OnClick'] = function(row, button)
-						local message = "?\tq";
-						for i,instance in ipairs(instances.options) do
-							message = message .. "\t" .. instance.questID;
-						end
-						SendGuildMessage(message);
-						self:Reset();
-						
-						--[[
-						local s, count = "", 0;
-						for i,o in ipairs(self.data.guildMembersHeader.g) do
-							for j,p in ipairs(o.g) do
-								if p.guid then
-									if count > 0 then
-										s = s .. "\n";
-									end
-									s = s .. i .. "\\t" .. p.guid .. "\\t" .. p.name;
-									if p.classID then
-										s = s .. "\\t" .. p.classID;
-									end
-									count = count + 1;
-								end
-							end
-						end
-						
-						app:ShowPopupDialogWithMultiLineEditBox(s);
-						]]--
-						return true;
-					end,
-					['OnUpdate'] = app.AlwaysShowUpdate,
-				},
-			};
-			
-			self.Reset = function()
-				self.data = attunements;
-				self:Update(true);
-			end
-			
-			-- Setup Event Handlers and register for events
-			self:SetScript("OnEvent", function(self, e, ...)
-				self.dirty = true;
-				self:Update();
-			end);
-			self:RegisterEvent("CHAT_MSG_SYSTEM");
-			self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-			self:RegisterEvent("GROUP_ROSTER_UPDATE");
-			self:Reset();
-		end
-		
-		-- Update the groups without forcing Debug Mode.
-		local visibilityFilter, groupFilter = app.VisibilityFilter, app.GroupFilter;
-		app.GroupFilter = app.ObjectVisibilityFilter;
-		app.VisibilityFilter = app.ObjectVisibilityFilter;
-		if self.data.OnUpdate then self.data.OnUpdate(self.data, self); end
-		BuildGroups(self.data);
-		for i,g in ipairs(self.data.g) do
-			if g.OnUpdate then g.OnUpdate(g, self); end
-		end
-		UpdateGroups(self.data, self.data.g);
-		UpdateWindow(self, true);
-		app.GroupFilter = groupFilter;
-		app.VisibilityFilter = visibilityFilter;
-	end
-});
+
 
 app:GetWindow("CurrentInstance", {
 	parent = UIParent,
@@ -14460,15 +14017,7 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 				if a == "ATTC" then
 					print(target .. ": " .. GetProgressColorText(tonumber(args[3]), tonumber(args[4])) .. " " .. args[5]);
 				else
-					if a == "q" then
-						local processor = GetDataMember("AddonMessageProcessor");
-						for i=3,#args,2 do
-							local b = tonumber(args[i]);
-							local c = tonumber(args[i + 1]);
-							if c == 1 then table.insert(processor, { target, "q", b }); end
-						end
-						app:GetWindow("Attuned"):DelayedUpdate(true);
-					elseif a == "syncsum" then
+					if a == "syncsum" then
 						table.remove(args, 1);
 						table.remove(args, 1);
 						app:ReceiveSyncSummaryResponse(target, args);
@@ -14774,13 +14323,11 @@ app.events.ADDON_LOADED = function(addonName)
 	-- Check to see if we have a leftover ItemDB cache
 	GetDataMember("LinkedAccounts", {});
 	GetDataMember("GroupQuestsByGUID", {});
-	GetDataMember("AddonMessageProcessor", {});
 	GetDataMember("ValidSuffixesPerItemID", {});
 	
 	-- Clean up settings
 	local oldsettings = {};
 	for i,key in ipairs({
-		"AddonMessageProcessor",
 		"GroupQuestsByGUID",
 		"LinkedAccounts",
 		"LocalizedCategoryNames",

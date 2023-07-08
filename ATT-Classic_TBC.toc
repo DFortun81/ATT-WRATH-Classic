@@ -41,6 +41,7 @@ Settings.lua
 ATT-Classic.lua
 db\TBC\Categories.lua
 src\Root.lua
+src\UI\Attunements.lua
 src\UI\Auctions.lua
 src\UI\Breadcrumbs.lua
 src\UI\Dailies.lua
