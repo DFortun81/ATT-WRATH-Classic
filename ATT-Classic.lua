@@ -6995,7 +6995,11 @@ local collectibleAsCostForItem = function(t)
 						if ref.providers then
 							for k,v in ipairs(ref.providers) do
 								if v[2] == id and v[1] == "i" then
-									costTotal = costTotal + 1;
+									if ref.objectiveID then
+										costTotal = costTotal + (t.objectiveCost or 0);
+									else
+										costTotal = costTotal + 1;
+									end
 								end
 							end
 						end
@@ -8763,6 +8767,33 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 			end
 		end
 	end,
+	["objectiveCost"] = function(t)
+		-- This is only used to calculate how many things are required for an objective when its using a provider.
+		local questID = t.questID;
+		if questID then
+			-- If the player isn't on that quest, return.
+			local index = GetQuestLogIndexByID(questID);
+			if index == 0 then return 0; end
+			
+			-- If the player completed the quest, return.
+			if select(6, GetQuestLogTitle(index)) then return 0; end
+			
+			local objectives = C_QuestLog_GetQuestObjectives(questID);
+			if objectives then
+				local objective = objectives[t.objectiveID];
+				if objective then
+					if objective.finished then
+						return 0;
+					end
+					if questID == 14107 then
+					print(t.text, objective.numRequired);
+					end
+					return objective.numRequired or 1;
+				end
+			end
+		end
+		return 0;
+	end
 });
 app.CompareQuestieDB = function()
 	if QuestieLoader then
