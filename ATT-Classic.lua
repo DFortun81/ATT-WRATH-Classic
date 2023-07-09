@@ -2794,26 +2794,44 @@ local function SearchForLink(link)
 			kind = "spellID";
 		elseif kind == "pet" or kind == "battlepet" then
 			kind = "speciesID";
+		elseif kind == "filterforrwp" then
+			kind = "filterForRWP";
 		end
-		local cache = app.SearchForField(kind, id) or {};
-		if #cache == 0 then
-			local obj = CreateObject({
-				key = kind, [kind] = id,
-				hash = kind .. ":" .. id,
-			});
-			if not obj.__type then
-				obj.icon = "Interface\\ICONS\\INV_Misc_EngGizmos_20";
-				obj.text = "Search Results for '" .. obj.hash .. "'";
-				local response = app:BuildSearchResponse(app:GetDataCache().g, kind, id);
-				if response and #response > 0 then
-					obj.g = {};
-					for i,o in ipairs(response) do
-						tinsert(obj.g, o);
+		local cache;
+		if id then
+			cache = app.SearchForField(kind, id) or {};
+			if #cache == 0 then
+				local obj = CreateObject({
+					key = kind, [kind] = id,
+					hash = kind .. ":" .. id,
+				});
+				if not obj.__type then
+					obj.icon = "Interface\\ICONS\\INV_Misc_EngGizmos_20";
+					obj.text = "Search Results for '" .. obj.hash .. "'";
+					local response = app:BuildSearchResponse(app:GetDataCache().g, kind, id);
+					if response and #response > 0 then
+						obj.g = {};
+						for i,o in ipairs(response) do
+							tinsert(obj.g, o);
+						end
 					end
+				else
+					obj.description = "@Crieve: This has not been sourced in ATT yet!";
 				end
-			else
-				obj.description = "@Crieve: This has not been sourced in ATT yet!";
+				tinsert(cache, obj);
 			end
+		else
+			local obj = { hash = kind };
+			obj.icon = "Interface\\ICONS\\INV_Misc_EngGizmos_20";
+			obj.text = "Search Results for '" .. obj.hash .. "'";
+			local response = app:BuildSearchResponseForField(app:GetDataCache().g, kind);
+			if response and #response > 0 then
+				obj.g = {};
+				for i,o in ipairs(response) do
+					tinsert(obj.g, o);
+				end
+			end
+			cache = {};
 			tinsert(cache, obj);
 		end
 		return cache, kind, id;
@@ -7036,7 +7054,7 @@ local collectedAsRWP = function(t)
 		if b and b == 1 then
 			-- BOP Rules
 			if t.parent and t.parent.key == "questID" and not t.parent.repeatable then
-				if app.Settings:GetFilterForRWP(t.f) then
+				if (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f) then
 					local searchResults = app.SearchForField("itemID", id);
 					if searchResults and #searchResults > 0 then
 						local any = false;
@@ -7060,7 +7078,7 @@ local collectedAsRWP = function(t)
 		end
 		
 		-- BOE Rules
-		if _GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or app.Settings:GetFilterForRWP(t.f)) then
+		if _GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f)) then
 			if not ATTAccountWideData.RWP[id] then
 				if app.Settings:GetTooltipSetting("Report:Collected") then
 					print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
@@ -10893,7 +10911,13 @@ local function RowOnEnter(self)
 		end
 		if reference.b and app.Settings:GetTooltipSetting("binding") then GameTooltip:AddDoubleLine("Binding", tostring(reference.b)); end
 		if reference.requireSkill then GameTooltip:AddDoubleLine(L["REQUIRES"], GetSpellInfo(app.SkillIDToSpellID[reference.requireSkill] or 0) or RETRIEVING_DATA); end
-		if reference.f and reference.f > 0 and app.Settings:GetTooltipSetting("filterID") then GameTooltip:AddDoubleLine(L["FILTER_ID"], tostring(L["FILTER_ID_TYPES"][reference.f])); end
+		if reference.f and reference.f > 0 and app.Settings:GetTooltipSetting("filterID") then
+			if reference.filterForRWP then
+				GameTooltip:AddDoubleLine(L["FILTER_ID"], tostring(L["FILTER_ID_TYPES"][reference.f]) .. " -> " .. tostring(L["FILTER_ID_TYPES"][reference.filterForRWP]));
+			else
+				GameTooltip:AddDoubleLine(L["FILTER_ID"], tostring(L["FILTER_ID_TYPES"][reference.f]));
+			end
+		end
 		if reference.achievementID and app.Settings:GetTooltipSetting("achievementID") then
 			GameTooltip:AddDoubleLine(L["ACHIEVEMENT_ID"], tostring(reference.achievementID));
 			if reference.sourceQuests and not (_GetCategoryInfo and _GetCategoryInfo(92) ~= "") then

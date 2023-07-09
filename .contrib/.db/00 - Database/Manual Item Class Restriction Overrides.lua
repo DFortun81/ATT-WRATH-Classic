@@ -1,4 +1,4 @@
-local itemDB = root("ItemDB", {});
+local itemDB = root(ROOTS.ItemDBConditional);
 local i = function(itemID, ...)
 	itemDB[itemID] = { ["classes"] = { ... } };
 	return o;

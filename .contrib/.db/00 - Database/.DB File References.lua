@@ -10,10 +10,12 @@
 -- #IMPORT: 00 - Item Database\\ProfessionDB\\
 -- #IMPORT: 00 - Item Database\\BindOnAccountItems.lua
 -- #IMPORT: 00 - Item Database\\Blueprints.lua
+-- #IMPORT: 00 - Item Database\\ClassItemDB.lua
 -- #IMPORT: 00 - Item Database\\Conduits.lua
 -- #IMPORT: 00 - Item Database\\Garrison Buildings.lua
 -- #IMPORT: 00 - Item Database\\Grand Commendations.lua
 -- Can't use 00 - Item Database\\ItemRecipes.lua
+-- #IMPORT: 00 - Item Database\\Item Filters for RWP.lua
 -- #IMPORT: 00 - Item Database\\MusicRolls.lua
 -- #IMPORT: 00 - Item Database\\RuneforgePowers.lua
 -- Can't use 00 - Item Database\\SourceIDs.lua
