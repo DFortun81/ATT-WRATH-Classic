@@ -8178,7 +8178,6 @@ app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 		return IsQuestFlaggedCompletedForObject(t) == 1;
 	end
 }, (function(t) return t.questID; end));
-end);
 end)();
 
 -- Object Lib (as in "World Object")
