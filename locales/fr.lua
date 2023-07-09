@@ -3,11 +3,6 @@ if GetLocale() ~= "frFR" then return; end
 local app = select(2, ...);
 local L = app.L;
 
-L.SAVED_TO_DJ_INSTANCES["Temple noir"] = "Le Temple noir";
-L.SAVED_TO_DJ_INSTANCES["Le Puits de soleil"] = "Plateau du Puits de soleil";
-L.SAVED_TO_DJ_INSTANCES["Donjon de la Tempête"] = "L'Œil";
-L.SAVED_TO_DJ_INSTANCES["Glissecroc : caverne du sanctuaire du Serpent"] = "Caverne du sanctuaire du Serpent";
-
 local a = L.ZONE_TEXT_TO_MAP_ID;
 wipe(a);
 for key,value in pairs({

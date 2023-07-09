@@ -648,44 +648,6 @@ app.L = {
 		},
 	};
 
-	-- Saved Instance Name => Dungeon Journal Instance Name Converter
-	-- If your saves aren't lining up, it's probably because Blizzard
-	-- didn't use the same localization for the instance. Sorry.
-	["SAVED_TO_DJ_INSTANCES"] = {
-		-- Classic
-		["Stormwind Stockade"] = "The Stockade";
-		["Temple of Ahn'Qiraj"] = "Ahn'Qiraj";
-		["Ahn'Qiraj Temple"] = "Ahn'Qiraj";
-		["Sunken Temple"] = "The Temple of Atal'hakkar";
-		["Auchindoun: Auchenai Crypts"] = "Auchenai Crypts";
-		["Auchindoun: Crypts"] = "Auchenai Crypts";
-		["Auchindoun: Mana-Tombs"] = "Mana Tombs";
-		["Auchindoun: The Mana Tombs"] = "Mana Tombs";
-		["Auchindoun: Sethekk Halls"] = "Sethekk Halls";
-		["Auchindoun: Shadow Labyrinth"] = "Shadow Labyrinth";
-		["Auchindoun: The Shadow Labyrinth"] = "Shadow Labyrinth";
-		["Coilfang: Serpentshrine Cavern"] = "Serpentshrine Cavern";
-		["Coilfang: Slave Pens"] = "The Slave Pens";
-		["Coilfang: The Slave Pens"] = "The Slave Pens";
-		["Coilfang: The Steamvault"] = "The Steamvault";
-		["Coilfang: Underbog"] = "The Underbog";
-		["Coilfang: The Underbog"] = "The Underbog";
-		["Caverns of Time: Old Hillsbrad Foothills"] = "Old Hillsbrad Foothills";
-		["Caverns of Time: The Black Morass"] = "The Black Morass";
-		["Hellfire Citadel: Ramparts"] = "Hellfire Ramparts";
-		["Hellfire Citadel: Blood Furnace"] = "The Blood Furnace";
-		["Hellfire Citadel: The Blood Furnace"] = "The Blood Furnace";
-		["Hellfire Citadel: The Shattered Halls"] = "The Shattered Halls";
-		["Magister's Terrace"] = "Magisters' Terrace";
-		["Tempest Keep: The Arcatraz"] = "The Arcatraz";
-		["Tempest Keep: The Botanica"] = "The Botanica";
-		["Tempest Keep: The Mechanar"] = "The Mechanar";
-		["The Battle for Mount Hyjal"] = "Hyjal Summit";
-		["Black Temple"] = "The Black Temple";
-		["The Sunwell"] = "Sunwell Plateau";
-		["Violet Hold"] = "The Violet Hold";
-	};
-
 	-- This is necessary to have because Blizzard does not always have the correct map ID at the time of zone change.
 	["ZONE_TEXT_TO_MAP_ID"] = {
 		-- Classic

@@ -7800,10 +7800,21 @@ local createMap, mapClass = app.CreateClass("Map", "mapID", {
 		return C_Map_GetMapLevels(t.mapID);
 	end,
 	["locks"] = function(t)
-		local locks = app.CurrentCharacter.Lockouts[t.name];
+		local lockouts = app.CurrentCharacter.Lockouts;
+		local locks = lockouts[t.name];
 		if locks then
 			t.locks = locks;
 			return locks;
+		end
+		local sins = t.sins;
+		if sins then
+			for i=1,#sins,1 do
+				lock = sins[i];
+				if locks then
+					t.locks = locks;
+					return locks;
+				end
+			end
 		end
 	end,
 	["saved"] = function(t)
@@ -7899,10 +7910,21 @@ app.CreateInstance = app.CreateClass("Instance", "instanceID", {
 		return C_Map_GetMapLevels(t.mapID);
 	end,
 	["locks"] = function(t)
-		local locks = app.CurrentCharacter.Lockouts[t.name];
+		local lockouts = app.CurrentCharacter.Lockouts;
+		local locks = lockouts[t.name];
 		if locks then
 			t.locks = locks;
 			return locks;
+		end
+		local sins = t.sins;
+		if sins then
+			for i=1,#sins,1 do
+				lock = lockouts[sins[i]];
+				if locks then
+					t.locks = locks;
+					return locks;
+				end
+			end
 		end
 	end,
 	["saved"] = function(t)
@@ -9759,14 +9781,12 @@ local function RefreshSaves()
 	end
 	
 	-- Update Saved Instances
-	local converter = L["SAVED_TO_DJ_INSTANCES"];
 	local myLockouts = app.CurrentCharacter.Lockouts;
 	for instanceIter=1,GetNumSavedInstances() do
 		local name, id, reset, difficulty, locked, _, _, isRaid, _, _, numEncounters = GetSavedInstanceInfo(instanceIter);
 		if locked then
 			-- Update the name of the instance and cache the lock for this instance
 			difficulty = difficulty or 7;
-			name = converter[name] or name;
 			reset = serverTime + reset;
 			local locks = myLockouts[name];
 			if not locks then

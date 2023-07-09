@@ -85,7 +85,6 @@ local a = L.HEADER_ICONS;
 for key,value in pairs({
 	[-1000004] = _.asset("Category_Achievements"),
 	[-1000006] = _.asset("Interface_World_boss"),
-	[-1000008] = "Interface/MINIMAP/TRACKING/Class",
 	[-1000009] = _.asset("Achievement_Garrison_Horde_PVE"),
 	[-1000012] = "Interface/Icons/INV_Misc_Coin_02",
 	[-1000013] = _.asset("Category_Crafting"),
@@ -220,7 +219,6 @@ local a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000004] = ACHIEVEMENTS,
 	[-1000006] = RAID_BOSSES,
-	[-1000008] = CLASS,
 	[-1000009] = BATTLE_PET_BREED_QUALITY2.." "..TRANSMOG_SOURCE_1,
 	[-1000012] = "Common Vendor Items",
 	[-1000013] = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM,
