@@ -8163,7 +8163,22 @@ app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 			end
 		end
 	end,
-});
+},
+"WithQuest", {
+	collectible = function(t)
+		return app.CollectibleQuests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
+	end,
+	collected = function(t)
+		return IsQuestFlaggedCompletedForObject(t);
+	end,
+	trackable = function(t)
+		return true;
+	end,
+	saved = function(t)
+		return IsQuestFlaggedCompletedForObject(t) == 1;
+	end
+}, (function(t) return t.questID; end));
+end);
 end)();
 
 -- Object Lib (as in "World Object")
