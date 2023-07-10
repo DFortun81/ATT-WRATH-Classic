@@ -6440,7 +6440,6 @@ if EJ_GetEncounterInfo then
 		["icon"] = function(t)
 			return app.DifficultyIcons[GetRelativeValue(t, "difficultyID") or 1];
 		end,
-		end,
 	},
 	"WithQuest", {
 		trackable = function(t)
