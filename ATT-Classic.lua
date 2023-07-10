@@ -6440,15 +6440,16 @@ if EJ_GetEncounterInfo then
 		["icon"] = function(t)
 			return app.DifficultyIcons[GetRelativeValue(t, "difficultyID") or 1];
 		end,
-		["trackable"] = function(t)
-			return t.questID;
 		end,
-		["saved"] = function(t)
-			if t.questID then
-				return IsQuestFlaggedCompleted(t.questID);
-			end
+	},
+	"WithQuest", {
+		trackable = function(t)
+			return true;
 		end,
-	});
+		saved = function(t)
+			return IsQuestFlaggedCompletedForObject(t) == 1;
+		end
+	}, (function(t) return t.questID; end));
 else
 	app.CreateEncounter = function(id, t)
 		local npcID = t.creatureID or (t.crs and t.crs[1]) or t.npcID or (t.qgs and t.qgs[1]);
