@@ -5,7 +5,7 @@ local appName, app = ...;
 app:GetWindow("RWP", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	OnInit = function(self, handlers)
 		SLASH_ATTRWP1 = "/attrwp";
 		SlashCmdList["ATTRWP"] = function()
 			self:Toggle();

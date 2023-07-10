@@ -139,7 +139,8 @@ end
 app:GetWindow("RaidAssistant", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	IgnoreQuestUpdates = true,
+	OnInit = function(self, handlers)
 		self.ignoreNoEntries = true;
 		SLASH_ATTRAIDASSIST1 = "/attra";
 		SLASH_ATTRAIDASSIST2 = "/attraid";
@@ -147,26 +148,6 @@ app:GetWindow("RaidAssistant", {
 			self:Toggle();
 		end
 		
-		-- Setup Event Handlers and register for events
-		self:SetScript("OnEvent", function(self, e, ...)
-			if e == "ADDON_LOADED" then
-				local addonName = ...;
-				if addonName == appName then
-					self:UnregisterEvent("ADDON_LOADED");
-					if app.Settings:GetTooltipSetting("Auto:RaidAssistant") then
-						self:Show();
-					end
-				end
-			elseif e == "GROUP_ROSTER_UPDATE"
-				or e == "ZONE_CHANGED_NEW_AREA"
-				or e == "ACTIVE_TALENT_GROUP_CHANGED"
-				or e == "PLAYER_DIFFICULTY_CHANGED"
-				or e == "PLAYER_LOOT_SPEC_UPDATED" then
-				self:Update(true);
-			else
-				self:Update();
-			end
-		end);
 		local isBusy = not C_Scenario_IsInScenario and IsInInstance or function()
 			return IsInInstance() or C_Scenario_IsInScenario();
 		end;
@@ -176,7 +157,16 @@ app:GetWindow("RaidAssistant", {
 			end
 			ResetInstances();
 		end
-		self:RegisterEvent("ADDON_LOADED");
+		
+		-- Setup Event Handlers and register for events
+		local updateWithTrigger = function()
+			self:Update(true);
+		end;
+		handlers.GROUP_ROSTER_UPDATE = updateWithTrigger;
+		handlers.ZONE_CHANGED_NEW_AREA = updateWithTrigger;
+		handlers.ACTIVE_TALENT_GROUP_CHANGED = updateWithTrigger;
+		handlers.PLAYER_DIFFICULTY_CHANGED = updateWithTrigger;
+		handlers.PLAYER_LOOT_SPEC_UPDATED = updateWithTrigger;
 		self:RegisterEvent("CHAT_MSG_SYSTEM");
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 		self:RegisterEvent("GROUP_ROSTER_UPDATE");
@@ -200,6 +190,14 @@ app:GetWindow("RaidAssistant", {
 		if C_Scenario_IsInScenario then
 			self:RegisterEvent("SCENARIO_UPDATE");
 		end
+	end,
+	OnLoad = function(self, settings)
+		if app.Settings:GetTooltipSetting("Auto:RaidAssistant") then
+			self:Show();
+		end
+	end,
+	OnSave = function(self, settings)
+		
 	end,
 	OnRebuild = function(self, ...)
 		if not self.data then

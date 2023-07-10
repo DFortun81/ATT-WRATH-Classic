@@ -10,7 +10,8 @@ local C_Map_GetMapInfo = C_Map.GetMapInfo;
 app:GetWindow("Maps", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	IgnoreQuestUpdates = true,
+	OnInit = function(self, handlers)
 		SLASH_ATTMAPS1 = "/attmaps";
 		SlashCmdList["ATTMAPS"] = function(cmd)
 			self:Toggle();

@@ -5,7 +5,7 @@ local appName, app = ...;
 app:GetWindow("Dailies", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	OnInit = function(self, handlers)
 		SLASH_ATTDAILIES1 = "/attdailies";
 		SlashCmdList["ATTDAILIES"] = function(cmd)
 			self:Toggle();

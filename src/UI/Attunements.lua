@@ -61,29 +61,13 @@ end
 app:GetWindow("Attunements", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	OnInit = function(self, handlers)
 		SLASH_ATTATTUNED1 = "/attuned";
 		SLASH_ATTATTUNED2 = "/attattuned";
 		SLASH_ATTATTUNED3 = "/attunements";
 		SlashCmdList["ATTATTUNED"] = function(cmd)
 			self:Toggle();
 		end
-		
-		-- Setup Event Handlers and register for events
-		self:SetScript("OnEvent", function(self, e, ...)
-			if e == "ADDON_LOADED" then
-				local addonName = ...;
-				if addonName == appName then
-					self:UnregisterEvent("ADDON_LOADED");
-				end
-			else
-				self:Update();
-			end
-		end);
-		self:RegisterEvent("ADDON_LOADED");
-		self:RegisterEvent("CHAT_MSG_SYSTEM");
-		self:RegisterEvent("GROUP_ROSTER_UPDATE");
-		self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 	end,
 	OnRebuild = function(self, ...)
 		if not self.data then

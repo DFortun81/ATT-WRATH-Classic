@@ -113,7 +113,8 @@ end
 app:GetWindow("Objects", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	IgnoreQuestUpdates = true,
+	OnInit = function(self, handlers)
 		SLASH_ATTOBJECTS1 = "/attobjects";
 		SlashCmdList["ATTOBJECTS"] = function(cmd)
 			self:Toggle();

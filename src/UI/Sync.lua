@@ -89,6 +89,8 @@ end
 app:GetWindow("Sync", {
 	parent = UIParent,
 	Silent = true,
+	IgnoreSettings = true,
+	IgnoreQuestUpdates = true,
 	OnRebuild = function(self)
 		if self.data then return true; end
 		self.data = {

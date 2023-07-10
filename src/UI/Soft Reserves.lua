@@ -504,52 +504,13 @@ local function CHAT_MSG_WHISPER_HANDLER(text, playerName, _, _, _, _, _, _, _, _
 		end
 	end
 end
-local function ADDON_LOADED(self, addonName)
-	-- Only execute for this addon.
-	if addonName ~= appName then return; end
-	self:UnregisterEvent("ADDON_LOADED");
-
-	-- Check the format of the Soft Reserve Cache
-	local reserves = app.GetDataMember("SoftReserves", {});
-	local persistence = app.GetDataMember("SoftReservePersistence", {});
-	for guid,reserve in pairs(reserves) do
-		if type(reserve) == 'number' then
-			reserve = { reserve, time() };
-			reserves[guid] = reserve;
-		end
-		local itemID = reserve[1];
-		local reservesForItem = SoftReservesByItemID[itemID];
-		if not reservesForItem then
-			reservesForItem = {};
-			SoftReservesByItemID[itemID] = reservesForItem;
-		end
-		table.insert(reservesForItem, guid);
-	end
-	
-	-- Push the player's SR
-	PushSoftReserve(true);
-	
-	-- Check if the SRs are locked
-	if IsInGroup() then
-		if not IsPrimaryLooter() then
-			SendGroupMessage("?\tsrlock");
-			SendGroupMessage("?\tsrpersistence");
-		end
-	else
-		-- Unlock the Soft Reserves when not in a group
-		local locked = app.Settings:GetTooltipSetting("SoftReservesLocked");
-		if locked then
-			app.Settings:SetTooltipSetting("SoftReservesLocked", false);
-			wipe(searchCache);
-		end
-	end
-end
 
 -- Implementation
 SoftReserveWindow = app:GetWindow("SoftReserves", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	IgnoreQuestUpdates = true,
+	OnInit = function(self, handlers)
 		self.ignoreNoEntries = true;
 		SLASH_ATTSOFTRES1 = "/attsr";
 		SLASH_ATTSOFTRES2 = "/attsoft";
@@ -565,28 +526,63 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 		end
 		
 		-- Setup Event Handlers and register for events
-		self:SetScript("OnEvent", function(self, e, ...)
-			if e == "GROUP_ROSTER_UPDATE" then
-				self:Update(true);
-			elseif e == "CHAT_MSG_ADDON" then
-				CHAT_MSG_ADDON_HANDLER(...);
-			elseif e == "CHAT_MSG_WHISPER" then
-				CHAT_MSG_WHISPER_HANDLER(...);
-			elseif e == "PARTY_LOOT_METHOD_CHANGED" then
-				PushSoftReserve();
-				self:Update(true);
-			elseif e == "ADDON_LOADED" then
-				ADDON_LOADED(self, ...);
-			else
-				self:Refresh();
-			end			
-		end);
+		handlers.CHAT_MSG_ADDON = function(self, ...)
+			CHAT_MSG_ADDON_HANDLER(...);
+		end
+		handlers.CHAT_MSG_SYSTEM = function(self)
+			self:Refresh();
+		end
+		handlers.CHAT_MSG_WHISPER = function(self, ...)
+			CHAT_MSG_WHISPER_HANDLER(...);
+		end
+		handlers.GROUP_ROSTER_UPDATE = function(self)
+			self:Update(true);
+		end
+		handlers.PARTY_LOOT_METHOD_CHANGED = function(self, ...)
+			PushSoftReserve();
+			self:Update(true);
+		end
+		self:RegisterEvent("CHAT_MSG_ADDON");
 		self:RegisterEvent("CHAT_MSG_SYSTEM");
 		self:RegisterEvent("CHAT_MSG_WHISPER");
-		self:RegisterEvent("CHAT_MSG_ADDON");
 		self:RegisterEvent("GROUP_ROSTER_UPDATE");
 		self:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");
-		self:RegisterEvent("ADDON_LOADED");
+	end,
+	OnLoad = function(self, settings)
+		-- Check the format of the Soft Reserve Cache
+		local reserves = app.GetDataMember("SoftReserves", {});
+		local persistence = app.GetDataMember("SoftReservePersistence", {});
+		for guid,reserve in pairs(reserves) do
+			if type(reserve) == 'number' then
+				reserve = { reserve, time() };
+				reserves[guid] = reserve;
+			end
+			local itemID = reserve[1];
+			local reservesForItem = SoftReservesByItemID[itemID];
+			if not reservesForItem then
+				reservesForItem = {};
+				SoftReservesByItemID[itemID] = reservesForItem;
+			end
+			table.insert(reservesForItem, guid);
+		end
+		
+		-- Push the player's SR
+		PushSoftReserve(true);
+		
+		-- Check if the SRs are locked
+		if IsInGroup() then
+			if not IsPrimaryLooter() then
+				SendGroupMessage("?\tsrlock");
+				SendGroupMessage("?\tsrpersistence");
+			end
+		else
+			-- Unlock the Soft Reserves when not in a group
+			local locked = app.Settings:GetTooltipSetting("SoftReservesLocked");
+			if locked then
+				app.Settings:SetTooltipSetting("SoftReservesLocked", false);
+				wipe(searchCache);
+			end
+		end
 	end,
 	OnRebuild = function(self)
 		if self.data then return true; end

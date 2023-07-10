@@ -9,7 +9,7 @@ local ipairs, tinsert
 app:GetWindow("Breadcrumbs", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	OnInit = function(self, handlers)
 		SLASH_ATTBREADCRUMBS1 = "/attbreadcrumbs";
 		SlashCmdList["ATTBREADCRUMBS"] = function(cmd)
 			self:Toggle();

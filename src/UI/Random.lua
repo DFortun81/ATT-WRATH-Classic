@@ -208,7 +208,7 @@ end
 app:GetWindow("Random", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	OnInit = function(self, handlers)
 		SLASH_ATTRANDOM1 = "/attran";
 		SLASH_ATTRANDOM2 = "/attrandom";
 		SlashCmdList["ATTRANDOM"] = function(cmd)

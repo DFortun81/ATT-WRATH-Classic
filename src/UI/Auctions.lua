@@ -12,7 +12,8 @@ local auctionData = {};
 app:GetWindow("Auctions", {
 	parent = UIParent,
 	Silent = true,
-	OnInit = function(self)
+	IgnoreQuestUpdates = true,
+	OnInit = function(self, handlers)
 		SLASH_ATTAUCTIONS1 = "/attauctions";
 		SlashCmdList["ATTAUCTIONS"] = function(cmd)
 			self:Toggle();
@@ -59,20 +60,9 @@ app:GetWindow("Auctions", {
 				self:Update(true);
 			end
 		end
-		self:SetScript("OnEvent", function(self, e, a, b, c)
-			if e == "AUCTION_ITEM_LIST_UPDATE" then
-				self:StartATTCoroutine("ProcessAuctions", ProcessAuctions);
-			elseif e == "ADDON_LOADED" then
-				-- If the setting to automatically show it is activated, then do it!
-				if a == "Blizzard_AuctionUI" or a == "Blizzard_AuctionHouseUI" then
-					self:UnregisterEvent("ADDON_LOADED");
-					if app.Settings:GetTooltipSetting("Auto:AuctionList") then
-						self:Show();
-					end
-				end
-			end
-		end);
-		self:RegisterEvent("ADDON_LOADED");
+		handlers.AUCTION_ITEM_LIST_UPDATE = function()
+			self:StartATTCoroutine("ProcessAuctions", ProcessAuctions);
+		end
 		self.UpdatePosition = function(self)
 			self:ClearAllPoints();
 			if AuctionFrame and not AuctionFrame.__ATTSETUP then
@@ -112,6 +102,14 @@ app:GetWindow("Auctions", {
 				self:Hide();
 			end
 		end
+	end,
+	OnLoad = function(self, settings)
+		if app.Settings:GetTooltipSetting("Auto:AuctionList") then
+			self:Show();
+		end
+	end,
+	OnSave = function(self, settings)
+		
 	end,
 	OnRebuild = function(self, ...)
 		if not self.data then
