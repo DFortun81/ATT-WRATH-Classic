@@ -135,6 +135,9 @@ local fieldConverters = {
 		if group.isToy then CacheField(group, "toyID", value); end
 		CacheField(group, "itemID", value);
 	end,
+	["otherItemID"] = function(group, value)
+		CacheField(group, "itemID", value);
+	end,
 	["mapID"] = cacheMapID,
 	["npcID"] = cacheCreatureID,
 	["objectID"] = cacheObjectID,

@@ -1024,6 +1024,10 @@ local function CreateObject(t)
 				t = app.CreateMap(t.mapID, t);
 			elseif t.currencyID then
 				t = app.CreateCurrencyClass(t.currencyID, t);
+			elseif t.achID then
+				t = app.CreateAchievement(t.achID, t);
+			elseif t.achievementID then
+				t = app.CreateAchievement(t.achievementID, t);
 			elseif t.objectID then
 				t = app.CreateObject(t.objectID, t);
 			elseif t.professionID then
