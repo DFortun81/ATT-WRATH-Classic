@@ -101,6 +101,99 @@ function distance( x1, y1, x2, y2 )
 	return math.sqrt( (x2-x1)^2 + (y2-y1)^2 )
 end
 
+local pendingCollection, pendingRemovals, retrievingCollection, pendingCollectionCooldown = {},{},{},0;
+local function PendingCollectionCoroutine()
+	while not app.IsReady do coroutine.yield(); end
+	while pendingCollectionCooldown > 0 do
+		pendingCollectionCooldown = pendingCollectionCooldown - 1;
+		coroutine.yield();
+		
+		-- If any of the collection objects is retrieving data, try again.
+		local anyRetrieving = false;
+		for hash,thing in pairs(retrievingCollection) do
+			local retries = thing[1];
+			if retries > 0 then
+				retries = retries - 1;
+				thing[1] = retries;
+				local text = thing[2].text;
+				if not text or text == RETRIEVING_DATA then
+					retrievingCollection[hash] = nil;
+					anyRetrieving = true;
+				end
+			end
+		end
+		if anyRetrieving then
+			pendingCollectionCooldown = pendingCollectionCooldown + 1;
+		end
+	end
+	
+	-- Report new things to your collection!
+	local any,allTypes = false,{};
+	local reportCollected = app.Settings:GetTooltipSetting("Report:Collected");
+	for hash,t in pairs(pendingCollection) do
+		local f = t.f;
+		if f then allTypes[f] = true; end
+		if reportCollected then
+			print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
+		end
+		any = true;
+	end
+	if any then
+		wipe(pendingCollection);
+		
+		-- Check if there was a mount.
+		if allTypes[100] then
+			app:PlayRareFindSound();
+		else
+			app:PlayFanfare();
+		end
+	end
+	
+	-- Report removed things from your collection...
+	any = false;
+	for hash,t in pairs(pendingRemovals) do
+		if reportCollected then
+			print((t.text or RETRIEVING_DATA) .. " was removed from your collection!");
+		end
+		any = true;
+	end
+	if any then
+		wipe(pendingRemovals);
+		app:PlayRemoveSound();
+	end
+end
+local function AddToCollection(group)
+	local hash = group.hash;
+	local text = group.text;
+	if not text or text == RETRIEVING_DATA then
+		retrievingCollection[hash] = { 5, group };
+	end
+	
+	-- Do not add the item to the pending list if it was already in it.
+	if pendingRemovals[hash] then
+		pendingRemovals[hash] = nil;
+	else
+		pendingCollection[hash] = group;
+		pendingCollectionCooldown = 10;
+		app:StartATTCoroutine("Pending Collection", PendingCollectionCoroutine);
+	end
+end
+local function RemoveFromCollection(group)
+	local hash = group.hash;
+	local text = group.text;
+	if not text or text == RETRIEVING_DATA then
+		retrievingCollection[hash] = { 5, group };
+	end
+	
+	-- Do not add the item to the pending list if it was already in it.
+	if pendingCollection[hash] then
+		pendingCollection[hash] = nil;
+	else
+		pendingRemovals[hash] = group;
+		pendingCollectionCooldown = 10;
+		app:StartATTCoroutine("Pending Collection", PendingCollectionCoroutine);
+	end
+end
 
 -- Data Lib
 local attData;
@@ -3748,10 +3841,9 @@ function app:GetDataCache()
 			end
 		}));
 		
-		-- Now that we have data, build the structure for the main window.
+		-- Now that we have data, build the structures
 		app.CacheFields(rootData);
 		BuildGroups(rootData);
-		app:GetWindow("Prime").data = rootData;
 		
 		-- Determine how many tierID instances could be found
 		local tierCounter = 0;
@@ -5791,10 +5883,13 @@ end)();
 
 -- Companion Lib
 (function()
-local SetBattlePetCollected = function(speciesID, collected)
+local SetBattlePetCollected = function(t, speciesID, collected)
 	if collected then
-		app.CurrentCharacter.BattlePets[speciesID] = 1;
-		ATTAccountWideData.BattlePets[speciesID] = 1;
+		if not app.CurrentCharacter.BattlePets[speciesID] then
+			AddToCollection(t);
+			app.CurrentCharacter.BattlePets[speciesID] = 1;
+			ATTAccountWideData.BattlePets[speciesID] = 1;
+		end
 		return 1;
 	elseif app.CurrentCharacter.BattlePets[speciesID] == 1 then
 		app.CurrentCharacter.BattlePets[speciesID] = nil;
@@ -5810,10 +5905,13 @@ local SetBattlePetCollected = function(speciesID, collected)
 		return 2;
 	end
 end
-local SetMountCollected = function(spellID, collected)
+local SetMountCollected = function(t, spellID, collected)
 	if collected then
-		app.CurrentCharacter.Spells[spellID] = 1;
-		ATTAccountWideData.Spells[spellID] = 1;
+		if not app.CurrentCharacter.Spells[spellID] then
+			AddToCollection(t);
+			app.CurrentCharacter.Spells[spellID] = 1;
+			ATTAccountWideData.Spells[spellID] = 1;
+		end
 		return 1;
 	elseif app.CurrentCharacter.Spells[spellID] == 1 then
 		app.CurrentCharacter.Spells[spellID] = nil;
@@ -5904,7 +6002,7 @@ if C_PetJournal then
 		return select(6, C_PetJournal.GetPetInfoBySpeciesID(t.speciesID));
 	end
 	speciesFields.collected = function(t)
-		return SetBattlePetCollected(t.speciesID, C_PetJournal.GetNumCollectedInfo(t.speciesID) > 0);
+		return SetBattlePetCollected(t, t.speciesID, C_PetJournal.GetNumCollectedInfo(t.speciesID) > 0);
 	end
 
 	local SpellIDToMountID = setmetatable({}, { __index = function(t, id)
@@ -5935,26 +6033,13 @@ if C_PetJournal then
 		if mountID then return select(2, C_MountJournal.GetMountInfoExtraByID(mountID)); end
 	end
 	mountFields.collected = function(t)
-		-- Check all of the matches
-		for i,o in ipairs(app.SearchForField("spellID", t.spellID)) do
+		local spellID = t.spellID;
+		for i,o in ipairs(app.SearchForField("spellID", spellID)) do
 			if o.explicitlyCollected then
-				app.CurrentCharacter.Spells[t.spellID] = 1;
-				ATTAccountWideData.Spells[t.spellID] = 1;
-				return 1;
+				return SetMountCollected(t, spellID, true);
 			end
 		end
-		
-		-- Unflag collection
-		if app.CurrentCharacter.Spells[t.spellID] == 1 then
-			app.CurrentCharacter.Spells[t.spellID] = nil;
-			ATTAccountWideData.Spells[t.spellID] = nil;
-			for guid,characterData in pairs(ATTCharacterData) do
-				if characterData.Spells and characterData.Spells[t.spellID] then
-					ATTAccountWideData.Spells[t.spellID] = 1;
-				end
-			end
-		end
-		if app.AccountWideMounts and ATTAccountWideData.Spells[t.spellID] then return 2; end
+		return SetMountCollected(t, spellID, false);
 	end
 else
 	speciesFields.icon = function(t)
@@ -6011,10 +6096,10 @@ else
 		setmetatable(CollectedBattlePetHelper, meta);
 		setmetatable(CollectedMountHelper, meta);
 		speciesFields.collected = function(t)
-			return SetBattlePetCollected(t.speciesID, (t.spellID and CollectedBattlePetHelper[t.spellID]));
+			return SetBattlePetCollected(t, t.speciesID, (t.spellID and CollectedBattlePetHelper[t.spellID]));
 		end
 		mountFields.collected = function(t)
-			return SetMountCollected(t.spellID, (t.spellID and CollectedMountHelper[t.spellID]));
+			return SetMountCollected(t, t.spellID, (t.spellID and CollectedMountHelper[t.spellID]));
 		end
 		app:RegisterEvent("COMPANION_LEARNED");
 		app:RegisterEvent("COMPANION_UNLEARNED");
@@ -6024,29 +6109,16 @@ else
 		app.events.COMPANION_UPDATE = RefreshCompanionCollectionStatus;
 	else
 		speciesFields.collected = function(t)
-			return SetBattlePetCollected(t.speciesID, t.itemID and _GetItemCount(t.itemID, true) > 0);
+			return SetBattlePetCollected(t, t.speciesID, t.itemID and _GetItemCount(t.itemID, true) > 0);
 		end
 		mountFields.collected = function(t)
-			-- Check all of the matches
-			for i,o in ipairs(app.SearchForField("spellID", t.spellID)) do
+			local spellID = t.spellID;
+			for i,o in ipairs(app.SearchForField("spellID", spellID)) do
 				if o.explicitlyCollected then
-					app.CurrentCharacter.Spells[t.spellID] = 1;
-					ATTAccountWideData.Spells[t.spellID] = 1;
-					return 1;
+					return SetMountCollected(t, spellID, true);
 				end
 			end
-			
-			-- Unflag collection
-			if app.CurrentCharacter.Spells[t.spellID] == 1 then
-				app.CurrentCharacter.Spells[t.spellID] = nil;
-				ATTAccountWideData.Spells[t.spellID] = nil;
-				for guid,characterData in pairs(ATTCharacterData) do
-					if characterData.Spells and characterData.Spells[t.spellID] then
-						ATTAccountWideData.Spells[t.spellID] = 1;
-					end
-				end
-			end
-			if app.AccountWideMounts and ATTAccountWideData.Spells[t.spellID] then return 2; end
+			return SetMountCollected(t, spellID, false);
 		end
 	end
 end
@@ -6468,6 +6540,28 @@ end)();
 
 -- Faction Lib
 (function()
+local setFactionCollected = function(t, factionID, collected)
+	local accountWideFactions = ATTAccountWideData.Factions;
+	local wasCollected = app.CurrentCharacter.Factions[factionID];
+	if collected then
+		if not wasCollected then
+			AddToCollection(t);
+			app.CurrentCharacter.Factions[factionID] = 1;
+			accountWideFactions[factionID] = 1;
+		end
+		return 1;
+	elseif wasCollected then
+		app.CurrentCharacter.Factions[factionID] = nil;
+		accountWideFactions[factionID] = nil;
+		for guid,character in pairs(ATTCharacterData) do
+			if character.Factions and character.Factions[factionID] then
+				accountWideFactions[factionID] = 1;
+				return app.AccountWideReputations and 2;
+			end
+		end
+	end
+	if app.AccountWideReputations and accountWideFactions[factionID] then return 2; end
+end
 local StandingByID = {
 	{	-- 1: HATED
 		["color"] = GetProgressColor(0),
@@ -6558,7 +6652,7 @@ app.IsFactionExclusive = function(factionID)
 end
 local fields = {
 	["text"] = function(t)
-		return app.ColorizeStandingText((t.saved and 8) or (t.standing + (t.isFriend and 2 or 0)), t.name);
+		return app.ColorizeStandingText(t.standing, t.name);
 	end,
 	["name"] = function(t)
 		return app.FactionNameByID[t.factionID] or (t.creatureID and app.NPCNameFromID[t.creatureID]) or (FACTION .. " #" .. t.factionID);
@@ -6580,24 +6674,13 @@ local fields = {
 		return false;
 	end,
 	["saved"] = function(t)
-		if t.minReputation and t.minReputation[1] == t.factionID and (select(6, _GetFactionInfoByID(t.minReputation[1])) or 0) >= t.minReputation[2] then
-			app.CurrentCharacter.Factions[t.factionID] = 1;
-			ATTAccountWideData.Factions[t.factionID] = 1;
-			return 1;
-		elseif (not t.minReputation or t.minReputation[1] ~= t.factionID) and t.standing >= t.maxstanding then
-			app.CurrentCharacter.Factions[t.factionID] = 1;
-			ATTAccountWideData.Factions[t.factionID] = 1;
-			return 1;
-		elseif app.CurrentCharacter.Factions[t.factionID] then
-			app.CurrentCharacter.Factions[t.factionID] = nil;
-			ATTAccountWideData.Factions[t.factionID] = nil;
-			for guid,character in pairs(ATTCharacterData) do
-				if character.Factions and character.Factions[t.factionID] then
-					ATTAccountWideData.Factions[t.factionID] = 1;
-				end
-			end
+		local factionID = t.factionID;
+		local minReputation = t.minReputation;
+		if minReputation and minReputation[1] == factionID then
+			return setFactionCollected(t, factionID, (select(6, _GetFactionInfoByID(factionID)) or 0) >= minReputation[2]);
+		else
+			return setFactionCollected(t, factionID, t.standing >= t.maxstanding);
 		end
-		if app.AccountWideReputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
 	end,
 	["title"] = function(t)
 		local reputation = t.reputation;
@@ -7069,8 +7152,7 @@ local collectedAsRWP = function(t)
 						end
 						if any then
 							if not ATTAccountWideData.RWP[id] then
-								print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
-								app:PlayFanfare();
+								AddToCollection(t);
 							end
 							app.CurrentCharacter.RWP[id] = 1;
 							ATTAccountWideData.RWP[id] = 1;
@@ -7084,10 +7166,7 @@ local collectedAsRWP = function(t)
 		-- BOE Rules
 		if _GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f)) then
 			if not ATTAccountWideData.RWP[id] then
-				if app.Settings:GetTooltipSetting("Report:Collected") then
-					print((t.text or RETRIEVING_DATA) .. " was added to your collection!");
-				end
-				app:PlayFanfare();
+				AddToCollection(t);
 			end
 			app.CurrentCharacter.RWP[id] = 1;
 			ATTAccountWideData.RWP[id] = 1;
@@ -7101,11 +7180,8 @@ local collectedAsRWP = function(t)
 				end
 			end
 			if ATTAccountWideData.RWP[id] then
-				if app.Settings:GetTooltipSetting("Report:Collected") then
-					print((t.text or RETRIEVING_DATA) .. " was removed from your collection!");
-				end
+				RemoveFromCollection(t);
 				ATTAccountWideData.RWP[id] = nil;
-				app:PlayRemoveSound();
 			end
 			return;
 		end
@@ -11921,7 +11997,7 @@ function app:GetWindow(suffix, settings)
 		end
 		
 		-- Whether or not to debug things
-		local debugging = app.Debugging and window.Suffix == "CurrentInstance";
+		local debugging = app.Debugging and window.Suffix == "Prime";
 		
 		-- Load / Save, which allows windows to keep track of key pieces of information.
 		window.ClearSettings = ClearSettingsForWindow;
@@ -12000,9 +12076,8 @@ function app:GetWindow(suffix, settings)
 		
 		-- Phase 1: Rebuild, which prepares the data for row data generation (first pass filters checking)
 		-- NOTE: You can return true from the rebuild function to call the default on your new group data.
-		local defaultOnRebuild = BuildGroups;
 		window.DefaultRebuild = function(self)
-			defaultOnRebuild(self.data);
+			BuildGroups(self.data);
 		end
 		local onRebuild = settings.OnRebuild;
 		if onRebuild then
@@ -12011,9 +12086,8 @@ function app:GetWindow(suffix, settings)
 					print("ForceRebuild: " .. suffix);
 					local lastUpdate = GetTimePreciseSec();
 					local response = onRebuild(self);
-					local data = self.data;
-					if data then
-						if response then defaultOnRebuild(data); end
+					if self.data then
+						if response then self:DefaultRebuild(); end
 						print("ForceRebuild (DATA): " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 						self:ForceUpdate(true);
 					else
@@ -12024,9 +12098,8 @@ function app:GetWindow(suffix, settings)
 					print("Rebuild: " .. suffix);
 					local lastUpdate = GetTimePreciseSec();
 					local response = onRebuild(self);
-					local data = self.data;
-					if data then
-						if response then defaultOnRebuild(data); end
+					if self.data then
+						if response then self:DefaultRebuild(); end
 						print("Rebuild (DATA): " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 						self:Update(true);
 					else
@@ -12036,17 +12109,15 @@ function app:GetWindow(suffix, settings)
 			else
 				window.ForceRebuild = function(self)
 					local response = onRebuild(self);
-					local data = self.data;
-					if data then
-						if response then defaultOnRebuild(data); end
+					if self.data then
+						if response then self:DefaultRebuild(); end
 						self:ForceUpdate(true);
 					end
 				end
 				window.Rebuild = function(self)
 					local response = onRebuild(self);
-					local data = self.data;
-					if data then
-						if response then defaultOnRebuild(data); end
+					if self.data then
+						if response then self:DefaultRebuild(); end
 						self:Update(true);
 					end
 				end
@@ -12054,37 +12125,33 @@ function app:GetWindow(suffix, settings)
 		else
 			if debugging then
 				window.ForceRebuild = function(self)
-					local data = self.data;
-					if data then
+					if self.data then
 						print("ForceRebuild: " .. suffix);
 						local lastUpdate = GetTimePreciseSec();
-						defaultOnRebuild(data);
+						self:DefaultRebuild();
 						print("ForceRebuild: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 						self:ForceUpdate(true);
 					end
 				end
 				window.Rebuild = function(self)
-					local data = self.data;
-					if data then
+					if self.data then
 						print("Rebuild: " .. suffix);
 						local lastUpdate = GetTimePreciseSec();
-						defaultOnRebuild(data);
+						self:DefaultRebuild();
 						print("Rebuild: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 						self:Update(true);
 					end
 				end
 			else
 				window.ForceRebuild = function(self)
-					local data = self.data;
-					if data then
-						defaultOnRebuild(data);
+					if self.data then
+						self:DefaultRebuild();
 						self:ForceUpdate(true);
 					end
 				end
 				window.Rebuild = function(self)
-					local data = self.data;
-					if data then
-						defaultOnRebuild(data);
+					if self.data then
+						self:DefaultRebuild();
 						self:Update(true);
 					end
 				end
@@ -12944,10 +13011,17 @@ end
 app:GetWindow("Prime", {
 	parent = UIParent,
 	Silent = true,
+	Defaults = {
+		["y"] = 20,
+		["x"] = 0,
+		["scale"] = 1.2,
+		["width"] = 360,
+		["height"] = 600,
+		["visible"] = false,
+		["point"] = "CENTER",
+		["relativePoint"] = "CENTER",
+	},
 	OnInit = function(self)
-		app.OpenMainList = function()
-			self:Show();
-		end
 		app.ToggleMainList = function()
 			self:Toggle();
 		end
@@ -12968,9 +13042,24 @@ app:GetWindow("Prime", {
 				self:Toggle();
 			end
 		end
+		
+	end,
+	OnLoad = function(self, settings)
+		if not settings.visible then
+			if app.Settings:GetTooltipSetting("Auto:MainList") then
+				self:Show();
+			else
+				self:ForceRebuild();
+			end
+		end
+	end,
+	OnRebuild = function(self)
+		-- Prime's data is built elsewhere.
+		self.data = app:GetDataCache();
+		return false;
 	end,
 	OnUpdate = function(self, ...)
-		UpdateWindow(self, ...);
+		self.DefaultUpdate(self, ...);
 		
 		-- Write the current character's progress.
 		app.CurrentCharacter.PrimeData = {
@@ -13262,9 +13351,9 @@ app:GetWindow("CurrentInstance", {
 	Defaults = {
 		["y"] = 0,
 		["x"] = 0,
-		["scale"] = 0.7000000476837158,
-		["width"] = 360.9525451660156,
-		["height"] = 175.8374786376953,
+		["scale"] = 0.7,
+		["width"] = 360,
+		["height"] = 176,
 		["visible"] = true,
 		["point"] = "BOTTOMRIGHT",
 		["relativePoint"] = "BOTTOMRIGHT",
@@ -14131,7 +14220,7 @@ app:GetWindow("Tradeskills", {
 				if not app.CurrentCharacter.Spells[spellID] then
 					app.CurrentCharacter.Spells[spellID] = 1;
 					if not previousState or not app.Settings:Get("AccountWide:Recipes") then
-						app:PlayFanfare();
+						AddToCollection(app.CreateRecipe(spellID));
 					end
 					app:RefreshDataQuietly("NEW_SPELL_LEARNED", true);
 				else
@@ -14406,6 +14495,7 @@ end
 
 -- Startup Event
 app:RegisterEvent("ADDON_LOADED");
+app:RegisterEvent("VARIABLES_LOADED");
 app.events.ADDON_LOADED = function(addonName)
 	-- Only execute for this addon.
 	if addonName ~= appName then return; end
@@ -14650,37 +14740,6 @@ app.events.ADDON_LOADED = function(addonName)
 	
 	-- Tooltip Settings
 	app.Settings:Initialize();
-	app.CurrentMapID = app.GetCurrentMapID();
-	C_ChatInfo.RegisterAddonMessagePrefix("ATTC");
-	
-	-- TODO: Move this to a startup runner
-	app.CacheFlightPathData();
-	
-	-- Mark all previously completed quests.
-	GetQuestsCompleted(CompletedQuests);
-	wipe(DirtyQuests);
-	app.events.UPDATE_INSTANCE_INFO();
-	app:StartATTCoroutine("Initial Prime Lookup", function()
-		local countdown = 5;
-		while countdown > 0 do
-			coroutine.yield();
-			countdown = countdown - 1;
-		end
-		app:GetWindow("Prime"):ForceRebuild();
-	end);
-	
-	-- Setup the Saved Variables if they aren't already.
-	local savedVariables = AllTheThingsSavedVariables;
-	if not AllTheThingsSavedVariables then
-		savedVariables = {};
-		AllTheThingsSavedVariables = savedVariables;
-	end
-	local windowSettings = savedVariables.Windows;
-	if not windowSettings then
-		windowSettings = {};
-		savedVariables.Windows = windowSettings;
-	end
-	LoadSettingsForWindows(windowSettings);
 	
 	if GroupBulletinBoard_Addon then
 		local oldGroupBulletinBoard_Addon_ClickDungeon = GroupBulletinBoard_Addon.ClickDungeon;
@@ -14731,4 +14790,35 @@ app.events.ADDON_LOADED = function(addonName)
 			end
 		end
 	end
+end
+app.events.VARIABLES_LOADED = function()
+	app:StartATTCoroutine("Startup", function()
+		coroutine.yield();
+		
+		-- Cache some things
+		app.CurrentMapID = app.GetCurrentMapID();
+		app.CacheFlightPathData();
+		
+		-- Mark all previously completed quests.
+		GetQuestsCompleted(CompletedQuests);
+		wipe(DirtyQuests);
+		app.events.UPDATE_INSTANCE_INFO();
+		C_ChatInfo.RegisterAddonMessagePrefix("ATTC");
+		
+		-- Setup the Saved Variables if they aren't already.
+		local savedVariables = AllTheThingsSavedVariables;
+		if not AllTheThingsSavedVariables then
+			savedVariables = {};
+			AllTheThingsSavedVariables = savedVariables;
+		end
+		local windowSettings = savedVariables.Windows;
+		if not windowSettings then
+			windowSettings = {};
+			savedVariables.Windows = windowSettings;
+		end
+		LoadSettingsForWindows(windowSettings);
+		
+		-- Mark that we're ready now!
+		app.IsReady = true;
+	end);
 end

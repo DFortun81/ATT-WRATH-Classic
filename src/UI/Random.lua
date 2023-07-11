@@ -220,8 +220,7 @@ app:GetWindow("Random", {
 		
 		-- For this window's options to work, Prime needs to be fully initialized.
 		local prime = app:GetWindow("Prime");
-		prime:DefaultRebuild();
-		prime:DefaultUpdate(true);
+		if not prime.data then prime:ForceUpdate(); end
 	
 		self.defaultHeader = {
 			text = "Random - Go Get 'Em!",

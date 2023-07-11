@@ -388,7 +388,7 @@ local constructor = function(id, t, typeID)
 end
 
 -- Creates a Base Object Table which will evaluate the provided set of 'fields' (each field value being a keyed function)
-local classDefinitions = {};
+local classDefinitions, _cache = {};
 app.BaseObjectFields = function(fields, className)
 	if not className then
 		print("A Class Name must be declared when using BaseObjectFields");
@@ -414,17 +414,9 @@ app.BaseObjectFields = function(fields, className)
 	return {
 		__index = function(t, key)
 			_cache = rawget(class, key);
-			return _cache and _cache(t);
+			if _cache then return _cache(t); end
 		end
 	};
-	--[[
-	return {
-		__index = function(t, key)
-			_cache = rawget(fields, key);
-			return _cache and _cache(t);
-		end
-	};
-	]]--
 end
 app.BaseClass = app.BaseObjectFields(nil, "BaseClass");
 

@@ -200,13 +200,6 @@ settings.Initialize = function(self)
 	end
 	OnClickForTab(self.Tabs[1]);
 	self:UpdateMode();
-
-	if self:GetTooltipSetting("Auto:MainList") then
-		app:OpenMainList();
-	end
-	if self:GetTooltipSetting("Auto:WorldQuestsList") then
-		app:GetWindow("WorldQuests"):Show();
-	end
 	
 	-- Account Synchronization
 	self.TabsByName["Features"]:InitializeSyncWindow();
