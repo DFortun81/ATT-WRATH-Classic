@@ -2559,7 +2559,7 @@ function(self)
 	settings:SetTooltipSetting("Auto:AuctionList", checked);
 	if checked then
 		local window = app:GetWindow("Auctions");
-		if window then window:Show(); end
+		if window then window:UpdatePosition(); end
 	end
 end);
 OpenAuctionListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Auction List when you open the auction house.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Auction List\n\nShortcut Command: /attauctions");

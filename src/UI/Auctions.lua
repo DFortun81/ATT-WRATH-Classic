@@ -12,6 +12,7 @@ local auctionData = {};
 app:GetWindow("Auctions", {
 	parent = UIParent,
 	Silent = true,
+	IgnoreSettings = true,
 	IgnoreQuestUpdates = true,
 	OnInit = function(self, handlers)
 		SLASH_ATTAUCTIONS1 = "/attauctions";
@@ -63,6 +64,15 @@ app:GetWindow("Auctions", {
 		handlers.AUCTION_ITEM_LIST_UPDATE = function()
 			self:StartATTCoroutine("ProcessAuctions", ProcessAuctions);
 		end
+		handlers.ADDON_LOADED = function(self, addonName)
+			if addonName == "Blizzard_AuctionUI" or addonName == "Blizzard_AuctionHouseUI" then
+				self:UnregisterEvent("ADDON_LOADED");
+				if app.Settings:GetTooltipSetting("Auto:AuctionList") then
+					self:Show();
+				end
+			end
+		end
+		self:RegisterEvent("ADDON_LOADED");
 		self.UpdatePosition = function(self)
 			self:ClearAllPoints();
 			if AuctionFrame and not AuctionFrame.__ATTSETUP then
@@ -97,21 +107,16 @@ app:GetWindow("Auctions", {
 				else
 					self:SetPoint("LEFT", AuctionFrame, "RIGHT", 0, 0);
 				end
-				self:Show();
+				if app.Settings:GetTooltipSetting("Auto:AuctionList") then
+					self:Show();
+				end
 			else
 				self:Hide();
 			end
 		end
 	end,
-	OnLoad = function(self, settings)
-		if app.Settings:GetTooltipSetting("Auto:AuctionList") then
-			self:Show();
-		end
-	end,
-	OnSave = function(self, settings)
-		
-	end,
 	OnRebuild = function(self, ...)
+		print("AuctionList:OnRebuild()");
 		if not self.data then
 			-- If we have left over auction data from previous, then use it.
 			if ATTClassicAuctionData and not ATTClassicAuctionData[1] then auctionData = ATTClassicAuctionData; end
@@ -425,6 +430,7 @@ app:GetWindow("Auctions", {
 				end,
 			};
 			self:RegisterEvent("AUCTION_ITEM_LIST_UPDATE");
+			print("AuctionList:OnRebuild() = SUCCESS");
 		end
 		self:UpdatePosition();
 	end
