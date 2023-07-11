@@ -8870,10 +8870,14 @@ local softRefresh = function()
 	wipe(searchCache);
 end;
 app.events.BAG_NEW_ITEMS_UPDATED = softRefresh;
-app.events.QUEST_ACCEPTED = softRefresh;
 app.events.CRITERIA_UPDATE = softRefresh;
 app.events.QUEST_REMOVED = softRefresh;
 app.events.QUEST_WATCH_UPDATE = softRefresh;
+app.events.QUEST_ACCEPTED = function(questLogIndex, questID)
+	if not questID then questID = questLogIndex; end
+	if questID then rawset(QuestTitleFromID, questID, nil); end
+	softRefresh();
+end
 app.events.QUEST_LOG_UPDATE = function()
 	app:UnregisterEvent("QUEST_LOG_UPDATE");
 	GetQuestsCompleted(CompletedQuests);
@@ -10879,7 +10883,7 @@ local function RowOnEnter(self)
 		GameTooltip:ClearLines();
 		GameTooltipIcon:ClearAllPoints();
 		GameTooltipModel:ClearAllPoints();
-		if self:GetCenter() > (UIParent:GetWidth() / 2) and (not AuctionFrame or not AuctionFrame:IsVisible()) then
+		if self:GetCenter() > (UIParent:GetWidth() / 2) then
 			GameTooltip:SetOwner(self, "ANCHOR_LEFT");
 			GameTooltipIcon:SetPoint("TOPRIGHT", GameTooltip, "TOPLEFT", 0, 0);
 			GameTooltipModel:SetPoint("TOPRIGHT", GameTooltip, "TOPLEFT", 0, 0);

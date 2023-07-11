@@ -116,7 +116,6 @@ app:GetWindow("Auctions", {
 		end
 	end,
 	OnRebuild = function(self, ...)
-		print("AuctionList:OnRebuild()");
 		if not self.data then
 			-- If we have left over auction data from previous, then use it.
 			if ATTClassicAuctionData and not ATTClassicAuctionData[1] then auctionData = ATTClassicAuctionData; end
@@ -430,7 +429,6 @@ app:GetWindow("Auctions", {
 				end,
 			};
 			self:RegisterEvent("AUCTION_ITEM_LIST_UPDATE");
-			print("AuctionList:OnRebuild() = SUCCESS");
 		end
 		self:UpdatePosition();
 	end
