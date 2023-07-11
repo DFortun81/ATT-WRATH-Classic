@@ -13275,6 +13275,11 @@ app:GetWindow("CurrentInstance", {
 		app.ToggleMiniListForCurrentZone = function() self:Toggle(); end;
 		SlashCmdList["ATTMINILIST"] = app.ToggleMiniListForCurrentZone;
 		
+		local delayedUpdate = function()
+			self:DelayedUpdate(true);
+		end;
+		handlers.QUEST_TURNED_IN = delayedUpdate;
+		handlers.QUEST_LOG_UPDATE = delayedUpdate;
 		handlers.ZONE_CHANGED = RefreshLocation;
 		handlers.ZONE_CHANGED_NEW_AREA = RefreshLocation;
 		self.SetMapID = function(self, mapID)
