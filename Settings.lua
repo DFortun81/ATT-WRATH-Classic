@@ -2516,7 +2516,6 @@ LocationsSlider:SetScript("OnValueChanged", function(self, newValue)
 		return 1;
 	end
 	settings:SetTooltipSetting("Locations", newValue)
-	app:UpdateWindows("LocationsSlider");
 end);
 LocationsSlider.OnRefresh = function(self)
 	if not settings:GetTooltipSetting("Enabled") or not settings:GetTooltipSetting("SourceLocations") then

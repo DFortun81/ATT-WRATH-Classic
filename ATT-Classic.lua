@@ -4342,7 +4342,6 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
 		ATTAccountWideData.Achievements[achievementID] = 1;
-		if refresh then app:RefreshDataQuietly("SetAchievementCollected", true); end
 	elseif app.CurrentCharacter.Achievements[achievementID] then
 		app.CurrentCharacter.Achievements[achievementID] = nil;
 		ATTAccountWideData.Achievements[achievementID] = nil;
@@ -4352,7 +4351,6 @@ local SetAchievementCollected = function(achievementID, collected, refresh)
 				break;
 			end
 		end
-		if refresh then app:RefreshDataQuietly("SetAchievementCollected", true); end
 	end
 end
 
@@ -11776,7 +11774,7 @@ local function ProcessGroup(data, object)
 		end
 	end
 end
-local function UpdateWindow(self, force, fromTrigger)
+local function UpdateWindow(self, force, trigger)
 	-- If this window doesn't have data, do nothing.
 	local data = self.data;
 	if not data then
@@ -11788,7 +11786,7 @@ local function UpdateWindow(self, force, fromTrigger)
 	else
 		wipe(self.rowData);
 	end
-	self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
+	self.forceFullDataRefresh = self.forceFullDataRefresh or force or trigger;
 	if force or self:IsVisible() then
 		data.expanded = true;
 		if self.forceFullDataRefresh then
@@ -11825,7 +11823,9 @@ local function UpdateWindow(self, force, fromTrigger)
 				end
 				if self.missingData then
 					self.missingData = nil;
-					if fromTrigger and not self.ignoreCompleteSound then
+					--print("UNSETTING MISSING DATA", trigger, self.AllowCompleteSound);
+					if trigger and self.AllowCompleteSound then
+						--print("PLAY COMPLETE SOUND", self.data.text);
 						app:PlayCompleteSound();
 					end
 				end
@@ -11868,11 +11868,12 @@ function app:RefreshWindows(source)
 	end
 	print("RefreshWindows: ", (GetTimePreciseSec() - lastUpdate) * 10000);
 end
-function app:UpdateWindows(source, force, fromTrigger)
-	print("UpdateWindows: ", source, force, fromTrigger);
+function app:UpdateWindows(source, force, trigger)
+	print("UpdateWindows: ", source, force, trigger);
+	if trigger then trigger = source; end
 	local lastUpdate = GetTimePreciseSec();
 	for name, window in pairs(app.Windows) do
-		window:Update(force, fromTrigger);
+		window:Update(force, trigger);
 	end
 	print("UpdateWindows: ", (GetTimePreciseSec() - lastUpdate) * 10000);
 end
@@ -11887,9 +11888,10 @@ function app:RefreshWindows(source)
 		window:Refresh();
 	end
 end
-function app:UpdateWindows(source, force, fromTrigger)
+function app:UpdateWindows(source, force, trigger)
+	if trigger then trigger = source; end
 	for name, window in pairs(app.Windows) do
-		window:Update(force, fromTrigger);
+		window:Update(force, trigger);
 	end
 end
 end
@@ -11900,14 +11902,17 @@ function app:UpdateWindowColors()
 end
 
 local refreshDataCooldown = 5;
-local refreshFromTrigger = false;
+local refreshFromTrigger;
 local currentlyRefreshingData = false;
-local function RefreshData(source, fromTrigger)
+local function RefreshData(source, trigger)
 	wipe(searchCache);
 	refreshDataCooldown = 5;
-	refreshFromTrigger = refreshFromTrigger or fromTrigger;
+	if trigger then
+		print("REFRESH_DATA", source, trigger);
+		trigger = source;
+	end
+	refreshFromTrigger = refreshFromTrigger or trigger;
 	if currentlyRefreshingData then return; end
-	--print("REFRESH_DATA(" .. source .. ", " .. tostring(fromTrigger or false) .. ")");
 	app:StartATTCoroutine("RefreshData", function()
 		currentlyRefreshingData = true;
 		
@@ -11946,12 +11951,12 @@ local function RefreshData(source, fromTrigger)
 		currentlyRefreshingData = nil;
 	end);
 end
-function app:RefreshDataCompletely(source, fromTrigger)
+function app:RefreshDataCompletely(source, trigger)
 	app.forceFullDataRefresh = true;
-	RefreshData("RefreshDataCompletely:" .. source, fromTrigger);
+	RefreshData("RefreshDataCompletely:" .. source, trigger);
 end
-function app:RefreshDataQuietly(source, fromTrigger)
-	RefreshData("RefreshDataQuietly:" .. source, fromTrigger);
+function app:RefreshDataQuietly(source, trigger)
+	RefreshData("RefreshDataQuietly:" .. source, trigger);
 end
 local function SetWindowVisible(self, show)
 	if show then
@@ -11971,6 +11976,7 @@ function app:GetWindow(suffix, settings)
 		app.Windows[suffix] = window;
 		window.Suffix = suffix;
 		window.SetData = SetWindowData;
+		window.AllowCompleteSound = settings.AllowCompleteSound;
 		window:SetScript("OnMouseDown", StartMovingOrSizing);
 		window:SetScript("OnMouseUp", StopMovingOrSizing);
 		window:SetScript("OnHide", StopMovingOrSizing);
@@ -11997,7 +12003,7 @@ function app:GetWindow(suffix, settings)
 		end
 		
 		-- Whether or not to debug things
-		local debugging = app.Debugging and window.Suffix == "Prime";
+		local debugging = settings.Debugging;--app.Debugging and window.Suffix == "Prime";
 		
 		-- Load / Save, which allows windows to keep track of key pieces of information.
 		window.ClearSettings = ClearSettingsForWindow;
@@ -12163,67 +12169,67 @@ function app:GetWindow(suffix, settings)
 		window.DefaultUpdate = UpdateWindow;
 		if settings.Silent then
 			if debugging then
-				window.ForceUpdate = function(self, force, fromTrigger)
-					print("ForceUpdate: " .. suffix, force, fromTrigger);
+				window.ForceUpdate = function(self, force, trigger)
+					print("ForceUpdate: " .. suffix, force, trigger);
 					local lastUpdate = GetTimePreciseSec();
-					local result = OnUpdate(self, force, fromTrigger);
+					local result = OnUpdate(self, force, trigger);
 					print("ForceUpdate: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 					self:Refresh();
 					return result;
 				end
-				window.Update = function(self, force, fromTrigger)
+				window.Update = function(self, force, trigger)
 					if self:IsVisible() then
-						print("UpdateWindow: " .. suffix, force, fromTrigger);
+						print("UpdateWindow: " .. suffix, force, trigger);
 						local lastUpdate = GetTimePreciseSec();
-						local result = OnUpdate(self, force, fromTrigger);
+						local result = OnUpdate(self, force, trigger);
 						print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 						self:Refresh();
 						return result;
 					else
-						self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
+						self.forceFullDataRefresh = self.forceFullDataRefresh or force or trigger;
 					end
 				end
 			else
-				window.ForceUpdate = function(self, force, fromTrigger)
-					local result = OnUpdate(self, force, fromTrigger);
+				window.ForceUpdate = function(self, force, trigger)
+					local result = OnUpdate(self, force, trigger);
 					self:Refresh();
 					return result;
 				end
-				window.Update = function(self, force, fromTrigger)
+				window.Update = function(self, force, trigger)
 					if self:IsVisible() then
-						local result = OnUpdate(self, force, fromTrigger);
+						local result = OnUpdate(self, force, trigger);
 						self:Refresh();
 						return result;
 					else
-						self.forceFullDataRefresh = self.forceFullDataRefresh or force or fromTrigger;
+						self.forceFullDataRefresh = self.forceFullDataRefresh or force or trigger;
 					end
 				end
 			end
 		elseif debugging then
-			window.ForceUpdate = function(self, ...)
-				print("ForceUpdate: " .. suffix, ...);
+			window.ForceUpdate = function(self, force, trigger)
+				print("ForceUpdate: " .. suffix, force, trigger);
 				local lastUpdate = GetTimePreciseSec();
-				local result = OnUpdate(self, ...);
+				local result = OnUpdate(self, force, trigger);
 				print("ForceUpdate: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 				self:Refresh();
 				return result;
 			end
-			window.Update = function(self, ...)
-				print("UpdateWindow: " .. suffix, ...);
+			window.Update = function(self, force, trigger)
+				print("UpdateWindow: " .. suffix, force, trigger);
 				local lastUpdate = GetTimePreciseSec();
-				local result = OnUpdate(self, ...);
+				local result = OnUpdate(self, force, trigger);
 				print("UpdateWindow: " .. suffix, (GetTimePreciseSec() - lastUpdate) * 10000);
 				self:Refresh();
 				return result;
 			end
 		else
-			window.ForceUpdate = function(self, force, fromTrigger)
-				local result = OnUpdate(self, force, fromTrigger);
+			window.ForceUpdate = function(self, force, trigger)
+				local result = OnUpdate(self, force, trigger);
 				self:Refresh();
 				return result;
 			end
-			window.Update = function(self, force, fromTrigger)
-				local result = OnUpdate(self, force, fromTrigger);
+			window.Update = function(self, force, trigger)
+				local result = OnUpdate(self, force, trigger);
 				self:Refresh();
 				return result;
 			end
@@ -12973,6 +12979,8 @@ function app:CreateMiniListForGroup(group, retried)
 	-- Pop Out Functionality! :O
 	local popout = app:GetWindow(CreateSuffixForPopout(group), {
 		Silent = true,
+		AllowCompleteSound = true,
+		--Debugging = true,
 		OnInit = function(self)
 			self.reference = group;
 			OnInitForPopout(self);
@@ -13011,6 +13019,7 @@ end
 app:GetWindow("Prime", {
 	parent = UIParent,
 	Silent = true,
+	AllowCompleteSound = true,
 	Defaults = {
 		["y"] = 20,
 		["x"] = 0,
@@ -13348,6 +13357,7 @@ end
 app:GetWindow("CurrentInstance", {
 	parent = UIParent,
 	Silent = true,
+	AllowCompleteSound = true,
 	Defaults = {
 		["y"] = 0,
 		["x"] = 0,
@@ -13829,6 +13839,7 @@ app:GetWindow("ItemFinder", {
 app:GetWindow("Tradeskills", {
 	parent = UIParent,
 	Silent = true,
+	AllowCompleteSound = true,
 	OnInit = function(self, handlers)
 		SLASH_ATTSKILLS1 = "/attskills";
 		SLASH_ATTSKILLS2 = "/atttradeskill";

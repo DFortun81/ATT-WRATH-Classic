@@ -9,6 +9,7 @@ local ipairs, tinsert
 app:GetWindow("Breadcrumbs", {
 	parent = UIParent,
 	Silent = true,
+	AllowCompleteSound = true,
 	OnInit = function(self, handlers)
 		SLASH_ATTBREADCRUMBS1 = "/attbreadcrumbs";
 		SlashCmdList["ATTBREADCRUMBS"] = function(cmd)
