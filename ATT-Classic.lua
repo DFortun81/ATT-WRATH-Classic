@@ -12366,15 +12366,15 @@ function app:GetWindow(suffix, settings)
 			end;
 			handlers.QUEST_ACCEPTED = delayedUpdateWithTrigger;
 			handlers.QUEST_REMOVED = delayedUpdateWithTrigger;
-			handlers.QUEST_LOG_UPDATE = delayedUpdateWithTrigger;
 			window:RegisterEvent("QUEST_ACCEPTED");
 			window:RegisterEvent("QUEST_REMOVED");
-			window:RegisterEvent("QUEST_LOG_UPDATE");
 			local delayedUpdate = function(self)
 				self:DelayedUpdate();
 			end;
 			handlers.QUEST_TURNED_IN = delayedUpdate;
+			handlers.QUEST_LOG_UPDATE = delayedUpdate;
 			window:RegisterEvent("QUEST_TURNED_IN");
+			window:RegisterEvent("QUEST_LOG_UPDATE");
 		end
 		if settings.OnInit then
 			settings.OnInit(window, handlers);
