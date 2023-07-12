@@ -35,6 +35,7 @@ for w,f in ipairs({
 	"flightPathID",
 	"headerID",
 	"illusionID",
+	"instanceID",
 	"itemID",
 	"itemIDAsCost",
 	"mapID",
@@ -130,6 +131,9 @@ local fieldConverters = {
 	end,
 	["illusionID"] = function(group, value)
 		CacheField(group, "illusionID", value);
+	end,
+	["instanceID"] = function(group, value)
+		CacheField(group, "instanceID", value);
 	end,
 	["itemID"] = function(group, value)
 		if group.isToy then CacheField(group, "toyID", value); end

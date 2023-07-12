@@ -762,6 +762,14 @@ local function BuildSourceTextForChat(group, l)
 	end
 	return "ATT";
 end
+local function BuildSourceTextForDynamicPath(group)
+	local parent = group.parent;
+	if parent then
+		return BuildSourceTextForDynamicPath(parent) .. ">" .. (group.hash or group.name or group.text);
+	else
+		return group.hash or group.name or group.text;
+	end
+end
 local function BuildSourceTextForTSM(group, l)
 	if group.parent then
 		if l < 1 or not group.text then
@@ -3217,6 +3225,7 @@ function app:GetDataCache()
 	if app.Categories then
 		local rootData = setmetatable({
 			text = L["TITLE"],
+			hash = "ATT",
 			icon = app.asset("logo_32x32"),
 			preview = app.asset("Discord_2_128"),
 			description = L["DESCRIPTION"],
@@ -11731,10 +11740,7 @@ local function LoadSettingsForWindows(windowSettings)
 	end
 	for name,settings in pairs(dynamicWindows) do
 		settings.visible = false;
-		-- Search for the Link in the database
-		local cmd = string.lower(settings.key .. ":" .. settings.id);
-		local group = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		if group then app:CreateMiniListForGroup(group); end
+		app:CreateMiniListFromSource(settings.key, settings.id, settings.sourcePath);
 	end
 end
 app:RegisterEvent("PLAYER_LOGOUT");
@@ -12529,20 +12535,8 @@ function app:BuildSearchResponseForField(groups, field)
 end
 
 -- Dynamic Popouts for Quest Chains and other Groups
-local function CreateSuffixForPopout(group)
-	return BuildSourceTextForChat(group, 0) .. " > " .. (group.text or "") .. (group.key and group[group.key] or "");
-end
-local function OnInitForPopout(self)
-	local group = self.reference;
+local function OnInitForPopout(self, group)
 	if group.questID or group.sourceQuests then
-		-- This is a quest object. Let's show prereqs and breadcrumbs.
-		local questID = group.questID;
-		if questID and group.parent and group.parent.parent then
-			if group.parent.questID == questID then
-				group = group.parent;
-			end
-		end
-		
 		local mainQuest = CloneReference(group);
 		if group.parent then mainQuest.sourceParent = group.parent; end
 		if mainQuest.sym then
@@ -12938,50 +12932,49 @@ local function OnInitForPopout(self)
 	
 	BuildGroups(self.data);
 	UpdateGroups(self.data, self.data.g);
-	if group.parent then self.data.sourceParent = group.parent; end
 end
-function app:CreateMiniListForGroup(group, retried)
+function app:CreateMiniListForGroup(group)
+	-- Is this an achievement criteria or lacking some achievement information?
 	local achievementID = group.achievementID;
-	if achievementID and not retried then
-		if group.criteriaID or not group.g then
-			local searchResults = app.SearchForField("achievementID", achievementID);
-			if searchResults and #searchResults > 0 then
-				local bestResult;
-				for i=1,#searchResults,1 do
-					local searchResult = searchResults[i];
-					if searchResult.achievementID == achievementID and not searchResult.criteriaID then
-						if not bestResult or searchResult.g then
-							bestResult = searchResult;
-						end
+	if achievementID and (group.criteriaID or not group.g) then
+		local searchResults = app.SearchForField("achievementID", achievementID);
+		if searchResults and #searchResults > 0 then
+			local bestResult;
+			for i=1,#searchResults,1 do
+				local searchResult = searchResults[i];
+				if searchResult.achievementID == achievementID and not searchResult.criteriaID then
+					if not bestResult or searchResult.g then
+						bestResult = searchResult;
 					end
 				end
-				if bestResult then
-					return app:CreateMiniListForGroup(bestResult, true);
-				end
 			end
+			if bestResult then group = bestResult; end
 		end
 	end
 	
+	-- Is this a quest object or objective?
+	local questID, parent = group.questID, group.parent;
+	if questID and parent and parent.questID == questID then
+		group = parent;
+	end
+	
 	-- Pop Out Functionality! :O
-	local popout = app:GetWindow(CreateSuffixForPopout(group), {
+	local popout = app:GetWindow(BuildSourceTextForDynamicPath(group), {
 		Silent = true,
 		AllowCompleteSound = true,
 		--Debugging = true,
 		OnInit = function(self)
-			self.reference = group;
-			OnInitForPopout(self);
+			OnInitForPopout(self, (group.OnPopout and group:OnPopout()) or group);
 		end,
 		OnLoad = function(self, settings)
 			settings.dynamic = true;
-			local ref = self.reference;
-			if ref then
-				-- This might be something we can rebuild
-				local key = ref.key;
-				if key then
-					settings.key = key;
-					settings.id = ref[key];
-					settings.sourcePath = self.Suffix;
-				end
+			settings.sourcePath = self.Suffix;
+			
+			-- This might be something we can rebuild
+			local key = group.key;
+			if key then
+				settings.key = key;
+				settings.id = group[key];
 			end
 		end,
 		OnSave = function(self, settings)
@@ -12999,6 +12992,51 @@ function app:CreateMiniListForGroup(group, retried)
 		popout:SetVisible(true);
 	end
 	return popout;
+end
+local function SearchForSourcePath(g, hashes, i, count)
+	if g then
+		local hash = hashes[i];
+		if hash then
+			for i,o in ipairs(g) do
+				if (o.hash or o.name or o.text) == hash then
+					if i == count then return o; end
+					return SearchForSourcePath(o.g, hashes, i + 1, count);
+				end
+			end
+		end
+	end
+end
+function app:CreateMiniListFromSource(key, id, sourcePath)
+	-- If we provided the original source path, then we can find the exact element to popout.
+	if sourcePath then
+		local hashes = strsplit(">", sourcePath);
+		local ref = SearchForSourcePath(app:GetDataCache().g, hashes, 2, #hashes);
+		if ref then
+			app:CreateMiniListForGroup(ref);
+			return;
+		end
+	end
+	
+	-- Without this it can't be recovered. :(
+	if key and id then
+		if sourcePath then
+			-- Try to find an exact match.
+			local searchResults = app.SearchForField(key, id);
+			if searchResults and #searchResults > 0 then
+				for i,ref in ipairs(searchResults) do
+					if BuildSourceTextForDynamicPath(ref) == sourcePath then
+						app:CreateMiniListForGroup(ref);
+						return;
+					end
+				end
+			end
+		end
+	
+		-- Search for the Link in the database
+		local cmd = key .. ":" .. id;
+		local ref = GetCachedSearchResults(cmd, SearchForLink, cmd);
+		if ref then app:CreateMiniListForGroup(ref); end
+	end
 end
 
 -- Create the Primary Collection Window (this allows you to save the size and location)
