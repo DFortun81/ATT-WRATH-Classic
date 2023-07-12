@@ -2887,6 +2887,8 @@ local function SearchForLink(link)
 			kind = "speciesID";
 		elseif kind == "filterforrwp" then
 			kind = "filterForRWP";
+		elseif kind == "pettype" or kind == "pettypeID" then
+			kind = "petTypeID";
 		end
 		local cache;
 		if id then
@@ -12993,14 +12995,14 @@ function app:CreateMiniListForGroup(group)
 	end
 	return popout;
 end
-local function SearchForSourcePath(g, hashes, i, count)
+local function SearchForSourcePath(g, hashes, level, count)
 	if g then
-		local hash = hashes[i];
+		local hash = hashes[level];
 		if hash then
 			for i,o in ipairs(g) do
 				if (o.hash or o.name or o.text) == hash then
-					if i == count then return o; end
-					return SearchForSourcePath(o.g, hashes, i + 1, count);
+					if level == count then return o; end
+					return SearchForSourcePath(o.g, hashes, level + 1, count);
 				end
 			end
 		end
@@ -13009,7 +13011,7 @@ end
 function app:CreateMiniListFromSource(key, id, sourcePath)
 	-- If we provided the original source path, then we can find the exact element to popout.
 	if sourcePath then
-		local hashes = strsplit(">", sourcePath);
+		local hashes = { strsplit(">", sourcePath) };
 		local ref = SearchForSourcePath(app:GetDataCache().g, hashes, 2, #hashes);
 		if ref then
 			app:CreateMiniListForGroup(ref);
@@ -13035,7 +13037,21 @@ function app:CreateMiniListFromSource(key, id, sourcePath)
 		-- Search for the Link in the database
 		local cmd = key .. ":" .. id;
 		local ref = GetCachedSearchResults(cmd, SearchForLink, cmd);
-		if ref then app:CreateMiniListForGroup(ref); end
+		if ref then
+			app:CreateMiniListForGroup(ref);
+			return;
+		end
+		
+		-- Search for the field/value pair everywhere in the DB.
+		local t = {};
+		app:BuildFlatSearchResponse(app:GetDataCache().g, key, id, t);
+		if t and #t > 0 then
+			local ref = #t == 1 and t[1] or CreateObject({ hash = key .. id, key = key, [key] = id, g = t });
+			if ref then
+				app:CreateMiniListForGroup(ref);
+				return;
+			end
+		end
 	end
 end
 

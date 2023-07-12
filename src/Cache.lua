@@ -27,6 +27,7 @@ end
 -- These are the fields we store.
 for w,f in ipairs({
 	"achievementID",
+	"achievementCategoryID",
 	"creatureID",
 	"currencyID",
 	"currencyIDAsCost",
@@ -107,6 +108,9 @@ local fieldConverters = {
 	-- Simple Converters
 	["achievementID"] = function(group, value)
 		CacheField(group, "achievementID", value);
+	end,
+	["achievementCategoryID"] = function(group, value)
+		CacheField(group, "achievementCategoryID", value);
 	end,
 	["achID"] = function(group, value)
 		CacheField(group, "achievementID", value);
