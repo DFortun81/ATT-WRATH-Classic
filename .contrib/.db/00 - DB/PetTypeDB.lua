@@ -2989,6 +2989,12 @@ root("ItemSpeciesDB", {
 	[200060] = {
 		["petTypeID"] = 5,
 	},
+	[204982] = {
+		["petTypeID"] = 9,
+	},
 	-- #endif
 	-- #endif
+	[45180] = {
+		["petTypeID"] = 1,
+	},
 });

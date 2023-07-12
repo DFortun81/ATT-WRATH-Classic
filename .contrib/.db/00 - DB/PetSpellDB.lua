@@ -994,6 +994,7 @@ local CompanionPetSpellIDToSpeciesID = {
 	-- #if AFTER WRATH
 	[384796] = 384796,	-- Pebble
 	[388541] = 388541,	-- Hoplet
+	[407786] = 407786,	-- Glub
 	-- #endif
 	-- #endif
 };
@@ -2107,5 +2108,6 @@ p(3249, {			-- Lil' Ursoc
 -- #if AFTER WRATH
 pet(198665, 384796);	-- Pebble's Pebble
 pet(200060, 388541);	-- Hoplet
+pet(204982, 407786);	-- Glub
 -- #endif
 -- #endif
