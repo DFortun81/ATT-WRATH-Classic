@@ -40,6 +40,7 @@ for w,f in ipairs({
 	"itemIDAsCost",
 	"mapID",
 	"objectID",
+	"professionID",
 	"questID",
 	"requireSkill",
 	"sourceQuestID",
@@ -145,6 +146,9 @@ local fieldConverters = {
 	["mapID"] = cacheMapID,
 	["npcID"] = cacheCreatureID,
 	["objectID"] = cacheObjectID,
+	["professionID"] = function(group, value)
+		CacheField(group, "professionID", value);
+	end,
 	["questID"] = function(group, value)
 		CacheField(group, "questID", value);
 	end,
