@@ -6,7 +6,7 @@
 -- App locals
 local appName, app = ...;
 local contains, containsAny, containsValue = app.contains, app.containsAny, app.containsValue;
-local CloneReference = app.CloneReference;
+local CloneArray, CloneDictionary, CloneReference = app.CloneArray, app.CloneDictionary, app.CloneReference;
 local L = app.L;
 
 -- Binding Localizations
@@ -788,20 +788,6 @@ local function CloneData(group)
 	end
 	return clone;
 end
-local function RawCloneData(data)
-	local clone = {};
-	for key,value in pairs(data) do
-		clone[key] = value;
-	end
-	return clone;
-end
-local function RawCloneArray(arr)
-	local clone = {};
-	for i,value in ipairs(arr) do
-		tinsert(clone, value);
-	end
-	return clone;
-end
 app.IsComplete = function(o)
 	if o.total then return o.total == o.progress; end
 	if o.collectible then return o.collected; end
@@ -1186,7 +1172,7 @@ MergeObject = function(g, t, index)
 					if k == "races" or k == "c" then
 						local c = rawget(o, k);
 						if not c then
-							c = RawCloneArray(v);
+							c = CloneArray(v);
 							if o.itemID and o.itemID == 46752 then
 								for _,p in ipairs(c) do
 									print("INSERTING (CLONE)", p, C_CreatureInfo.GetRaceInfo(p).raceName);
@@ -1246,10 +1232,10 @@ local function MergeClone(g, o)
 			clone.races = nil;
 		else
 			local races = GetRelativeValue(o, "races");
-			if races then clone.races = RawCloneArray(races); end
+			if races then clone.races = CloneArray(races); end
 		end
 		local c = GetRelativeValue(o, "c");
-		if c then clone.c = RawCloneArray(c); end
+		if c then clone.c = CloneArray(c); end
 	end
 	return MergeObject(g, clone);
 end
@@ -7305,7 +7291,7 @@ app.CreateHeirloom = function(id, t)
 	return app.CreateItem(id, t);
 end
 
-local fields = RawCloneData(itemFields);
+local fields = CloneDictionary(itemFields);
 fields.collectible = function(t)
 	return app.CollectibleToys;
 end
@@ -7333,7 +7319,7 @@ fields.isToy = function(t) return true; end
 app.CreateToy = app.CreateClass("Toy", "itemID", fields);
 
 local HarvestedItemDatabase = {};
-local itemHarvesterFields = RawCloneData(itemFields);
+local itemHarvesterFields = CloneDictionary(itemFields);
 itemHarvesterFields.collectible = function(t)
 	return true;
 end
@@ -9149,7 +9135,7 @@ local spellFields = {
 };
 local createSpell = app.CreateClass("Spell", "spellID", spellFields);
 
-local recipeFields = RawCloneData(spellFields);
+local recipeFields = CloneDictionary(spellFields);
 recipeFields.collectible = function(t)
 	return app.CollectibleRecipes;
 end;
@@ -11908,7 +11894,7 @@ local function RefreshData(source, trigger)
 	wipe(searchCache);
 	refreshDataCooldown = 5;
 	if trigger then
-		print("REFRESH_DATA", source, trigger);
+		--print("REFRESH_DATA", source, trigger);
 		trigger = source;
 	end
 	refreshFromTrigger = refreshFromTrigger or trigger;

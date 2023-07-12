@@ -175,6 +175,20 @@ app.StartATTCoroutine = function(self, ...)
 end
 
 -- API Functions
+local function CloneArray(arr)
+	local clone = {};
+	for i,value in ipairs(arr) do
+		tinsert(clone, value);
+	end
+	return clone;
+end
+local function CloneDictionary(data)
+	local clone = {};
+	for key,value in pairs(data) do
+		clone[key] = value;
+	end
+	return clone;
+end
 local function CloneReference(group)
 	local clone = {};
 	if group.g then
@@ -188,6 +202,8 @@ local function CloneReference(group)
 	end
 	return setmetatable(clone, { __index = group });
 end
+app.CloneArray = CloneArray;
+app.CloneDictionary = CloneDictionary;
 app.CloneReference = CloneReference;
 
 function app:ShowPopupDialog(msg, callback)
