@@ -2700,7 +2700,6 @@ function app:RecalculateAccountWideData()
 	ATTAccountWideData.Deaths = deaths;
 end
 function app:ReceiveSyncRequest(sender, battleTag, bnetAccountID)
-	print("ReceiveSyncRequest", sender, battleTag, bnetAccountID);
 	if battleTag ~= app.CurrentCharacter.battleTag then
 		-- Check to see if the the character/account is linked.
 		if not (ATTClassicAD.LinkedAccounts[sender] or ATTClassicAD.LinkedAccounts[battleTag]) then
@@ -14496,7 +14495,7 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Toys[b] and 1 or 0);
 						end
 					elseif a == "sync" then
-						app:ReceiveSyncRequest(target, a);
+						app:ReceiveSyncRequest(target, args[3], args[4]);
 					elseif a == "syncsum" then
 						table.remove(args, 1);
 						table.remove(args, 1);
