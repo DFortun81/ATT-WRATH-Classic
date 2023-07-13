@@ -1,6 +1,76 @@
 --------------------------------------------------
 --    A C H I E V E M E N T S    M O D U L E    --
 --------------------------------------------------
+local INSANE_IN_THE_MEMBRANE_OnInit = [[function(t)
+	t.CacheFactions = function(t)
+		local factions = t.factions;
+		if not factions then
+			factions = {};
+			for i,factionID in ipairs({
+				87,
+				21,
+				577,
+				369,
+				470,
+				909,
+				349,
+				809,
+			}) do
+				local f = _.SearchForField("factionID", factionID);
+				if f and #f > 0 then
+					tinsert(factions, f and f[1] or _.CreateFaction(factionID));
+				else
+					return;
+				end
+			end
+			local bloodsail = _.CreateFaction(87);
+			bloodsail.minReputation = { 87, ]] .. HONORED .. [[ };
+			bloodsail.OnTooltip = factions[1].OnTooltip;
+			factions[1] = bloodsail;
+			t.factions = factions;
+		end
+		return factions;
+	end
+	t.OnPopout = function(t)
+		local clone = _.CloneReference(t);
+		clone.sourceParent = t.parent;
+		local factions = t:CacheFactions();
+		if factions then
+			local g = clone.g;
+			if g then
+				for i,o in ipairs(factions) do
+					tinsert(g, o);
+				end
+			else
+				clone.g = _.CloneArray(factions);
+			end
+		end
+		return clone;
+	end
+	return t;
+end]];
+local INSANE_IN_THE_MEMBRANE_OnUpdate = [[function(t)
+	if t.collectible then
+		local fs = t:CacheFactions();
+		if not fs then return; end
+		local collected = true;
+		for i,f in ipairs(fs) do
+			if f.saved ~= 1 then
+				collected = false;
+				break;
+			end
+		end
+		t.SetAchievementCollected(t.achievementID, collected);
+	end
+end]];
+local INSANE_IN_THE_MEMBRANE_OnTooltip = [[function(t)
+	local fs = t:CacheFactions();
+	if not fs then return; end
+	GameTooltip:AddLine(" ");
+	for i,f in ipairs(fs) do
+		GameTooltip:AddDoubleLine(" |T" .. f.icon .. ":0|t " .. f.text, _.L[f.saved == 1 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
+	end
+end]];
 root("Achievements", {
 	achcat(ACHIEVEMENT_CATEGORY_CHARACTER, {
 		-- Armored Brown Bear, located in Dalaran.
@@ -1647,6 +1717,21 @@ root("Achievements", {
 			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
 		})),
 		-- #endif
+		applyclassicphase(PHASE_THREE, classicAch(2336, {	-- Insane in the Membrane
+			-- #if ANYCLASSIC
+			["OnInit"] = INSANE_IN_THE_MEMBRANE_OnInit,
+			["OnTooltip"] = INSANE_IN_THE_MEMBRANE_OnTooltip,
+			-- #if BEFORE WRATH
+			["OnUpdate"] = INSANE_IN_THE_MEMBRANE_OnUpdate,
+			-- #endif
+			["description"] = "Insane in the Membrane is a Feat of Strength that rewards the title <The Insane>. This feat requires you to become honored with the Bloodsail Buccaneers and exalted with the Steamwheedle Cartel (Booty Bay, Everlook, Gadgetzan, Ratchet), Ravenholdt, Darkmoon Faire, and the Shen'dralar. After Cataclysm it does not require that all of these reputation levels be reached at the same time, however, prior to that you must have them all at the same time. Raising reputation with these factions is typically very difficult, time-consuming, and costly.",
+			-- #endif
+			["groups"] = {
+				title(112, {	-- the Insane
+					["timeline"] = { "added 3.0.1" },
+				}),
+			},
+		})),
 		applyclassicphase(PHASE_ONE, ach(879, {	-- Old School Ride
 			["providers"] = {
 				{ "i", 13328 },	-- Black Ram

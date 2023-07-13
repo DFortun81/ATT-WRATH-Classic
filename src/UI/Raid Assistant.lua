@@ -191,14 +191,6 @@ app:GetWindow("RaidAssistant", {
 			self:RegisterEvent("SCENARIO_UPDATE");
 		end
 	end,
-	OnLoad = function(self, settings)
-		if app.Settings:GetTooltipSetting("Auto:RaidAssistant") then
-			self:Show();
-		end
-	end,
-	OnSave = function(self, settings)
-		
-	end,
 	OnRebuild = function(self, ...)
 		if not self.data then
 			-- Default Raid Assistant Options

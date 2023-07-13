@@ -86,30 +86,35 @@ local function OnTooltipForLinkedAccount(t)
 end
 
 -- Implementation
-app:GetWindow("Sync", {
+app:GetWindow("Synchronization", {
 	parent = UIParent,
 	Silent = true,
-	IgnoreSettings = true,
+	--IgnoreSettings = true,
 	IgnoreQuestUpdates = true,
+	OnInit = function(self, handlers)
+		SLASH_ATTSYNC1 = "/attsync";
+		SlashCmdList["ATTSYNC"] = function(cmd)
+			self:Toggle();
+		end
+	end,
+	OnLoad = function(self, settings)
+		if app.Settings:GetTooltipSetting("Auto:Sync") then
+			app:Synchronize(true);
+		end
+	end,
 	OnRebuild = function(self)
-		if self.data then return true; end
-		self.data = {
-			text = "Account Management",
-			icon = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
-			description = "This list shows you all of the functionality related to syncing account data.",
-			visible = true, 
-			expanded = true,
-			indent = 0,
-			back = 1,
-			g = {
+		if not self.data then
+			local options = {
 				{
-					text = "Add Linked Character / Account",
+					text = "Add Linked Character",
 					icon = app.asset("Ability_Priest_VoidShift"),
-					description = "Click here to link a character or account to your account.",
+					description = "Click here to link a character to your account.",
 					OnUpdate = app.AlwaysShowUpdate,
 					OnClick = function(row, button)
-						app:ShowPopupDialogWithEditBox("Please type the name of the character or BNET account to link to.", "", function(cmd)
+						app:ShowPopupDialogWithEditBox("Please type the name of the character to link to.", "", function(cmd)
 							if cmd and cmd ~= "" then
+								-- Prevent server names.
+								cmd = strsplit("-", cmd);
 								ATTClassicAD.LinkedAccounts[cmd] = true;
 								self:Rebuild();
 							end
@@ -153,8 +158,8 @@ app:GetWindow("Sync", {
 									});
 									characters[guid] = character;
 								end
-								table.insert(g, character);
 								character.saved = not characterData.ignored and 1;
+								table.insert(g, character);
 							end
 						end
 						
@@ -172,11 +177,11 @@ app:GetWindow("Sync", {
 					end,
 				},
 				
-				-- Linked Accounts Section
+				-- Linked Characters Section
 				{
-					text = "Linked Accounts",
+					text = "Linked Characters",
 					icon = "Interface\\FriendsFrame\\Battlenet-Portrait",
-					description = "This shows all of the linked accounts you have defined so far.",
+					description = "This shows all of the linked characters you have defined so far.",
 					expanded = true,
 					g = {},
 					OnUpdate = function(data)
@@ -238,8 +243,26 @@ app:GetWindow("Sync", {
 						return app.AlwaysShowUpdate(data);
 					end,
 				},
-			},
-		};
-		return true;
+			};
+			self.data = {
+				text = "Account Management",
+				icon = app.asset("Achievement_Dungeon_HEROIC_GloryoftheRaider"), 
+				description = "This list shows you all of the functionality related to syncing account data.",
+				visible = true, 
+				expanded = true,
+				indent = 0,
+				back = 1,
+				g = {},
+				OnUpdate = function(data)
+					local g = data.g;
+					if #g < 1 then
+						for i,option in ipairs(options) do
+							option.parent = data;
+							table.insert(g, option);
+						end
+					end
+				end,
+			};
+		end
 	end,
 });

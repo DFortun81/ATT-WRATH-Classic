@@ -92,7 +92,6 @@ local RWPFilterSettingsBase = {
 local TooltipSettingsBase = {
 	__index = {
 		["Auto:AuctionList"] = true,
-		["Auto:MiniList"] = true,
 		["Auto:ProfessionList"] = true,
 		["Auto:Sync"] = true,
 		["Integrate:LFGBulletinBoard"] = true,
@@ -202,7 +201,7 @@ settings.Initialize = function(self)
 	self:UpdateMode();
 	
 	-- Account Synchronization
-	self.TabsByName["Features"]:InitializeSyncWindow();
+	--self.TabsByName["Features"]:InitializeSyncWindow();
 end
 settings.CheckSeasonalDate = function(self, eventID, startMonth, startDay, endMonth, endDay)
 	local today = date("*t");
@@ -2535,95 +2534,29 @@ end)();
 ------------------------------------------
 (function()
 local tab = settings:CreateTab("Features");
-local ModulesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-ModulesLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
-ModulesLabel:SetJustifyH("LEFT");
-ModulesLabel:SetText("Modules & Mini Lists");
-ModulesLabel:Show();
-tinsert(settings.MostRecentTab.objects, ModulesLabel);
 
-local OpenAuctionListAutomatically = settings:CreateCheckBox("Automatically Open the Auction Module",
+local SyncLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+SyncLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 330, -8);
+SyncLabel:SetJustifyH("LEFT");
+SyncLabel:SetText("Account Synchronization");
+SyncLabel:Show();
+tinsert(settings.MostRecentTab.objects, SyncLabel);
+
+local AutomaticallySyncAccountDataCheckBox = settings:CreateCheckBox("Automatically Sync Account Data",
 function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:AuctionList"));
+	self:SetChecked(settings:GetTooltipSetting("Auto:Sync"));
 end,
 function(self)
 	local checked = self:GetChecked();
-	settings:SetTooltipSetting("Auto:AuctionList", checked);
-	if checked then
-		local window = app:GetWindow("Auctions");
-		if window then window:UpdatePosition(); end
-	end
+	settings:SetTooltipSetting("Auto:Sync", checked);
+	if checked then app:Synchronize(true); end
 end);
-OpenAuctionListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Auction List when you open the auction house.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Auction List\n\nShortcut Command: /attauctions");
-OpenAuctionListAutomatically:SetPoint("TOPLEFT", ModulesLabel, "BOTTOMLEFT", 4, 0);
-
-local OpenMainListAutomatically = settings:CreateCheckBox("Automatically Open the Main List",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:MainList"));
-end,
-function(self)
-	local checked = self:GetChecked();
-	settings:SetTooltipSetting("Auto:MainList", checked);
-	if checked then
-		local window = app:GetWindow("Prime");
-		if window then window:Show(); end
-	end
-end);
-OpenMainListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Main List when you login.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Main List\n\nShortcut Command: /att");
-OpenMainListAutomatically:SetPoint("TOPLEFT", OpenAuctionListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local OpenMiniListAutomatically = settings:CreateCheckBox("Automatically Open the Mini List",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:MiniList"));
-end,
-function(self)
-	local checked = self:GetChecked();
-	settings:SetTooltipSetting("Auto:MiniList", checked);
-	if checked then
-		local window = app:GetWindow("CurrentInstance");
-		if window then window:Show(); end
-	end
-end);
-OpenMiniListAutomatically:SetATTTooltip("Enable this option if you want to see everything you can collect in your current zone. The list will automatically switch when you change zones. Some people don't like this feature, but when you are solo farming, this feature is extremely useful.\n\nYou can also bind this setting to a Key.\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Mini List\n\nShortcut Command: /att mini");
-OpenMiniListAutomatically:SetPoint("TOPLEFT", OpenMainListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local OpenProfessionListAutomatically = settings:CreateCheckBox("Automatically Open the Profession List",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:ProfessionList"));
-end,
-function(self)
-	settings:SetTooltipSetting("Auto:ProfessionList", self:GetChecked());
-end);
-OpenProfessionListAutomatically:SetATTTooltip("Enable this option if you want ATT to open and refresh the profession list when you open your professions. Due to an API limitation imposed by Blizzard, the only time an addon can interact with your profession data is when it is open. The list will automatically switch when you change to a different profession.\n\nWe don't recommend disabling this option as it may prevent recipes from tracking correctly.\n\nYou can also bind this setting to a Key. (only works when a profession is open)\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Profession Mini List\n\nShortcut Command: /att prof");
-OpenProfessionListAutomatically:SetPoint("TOPLEFT", OpenMiniListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local OpenRaidAssistantAutomatically = settings:CreateCheckBox("Automatically Open the Raid Assistant",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:RaidAssistant"));
-end,
-function(self)
-	local checked = self:GetChecked();
-	settings:SetTooltipSetting("Auto:RaidAssistant", checked);
-	if checked then
-		local window = app:GetWindow("RaidAssistant");
-		if window then window:Show(); end
-	end
-end);
-OpenRaidAssistantAutomatically:SetATTTooltip("Enable this option if you want to see an alternative group/party/raid settings manager called the 'Raid Assistant'. The list will automatically update whenever group settings change.\n\nYou can also bind this setting to a Key.\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Raid Assistant\n\nShortcut Command: /attra");
-OpenRaidAssistantAutomatically:SetPoint("TOPLEFT", OpenProfessionListAutomatically, "BOTTOMLEFT", 0, 4);
-
-local IntegrateWithLFGBulletinBoard = settings:CreateCheckBox("Integrate With LFG Bulletin Board",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Integrate:LFGBulletinBoard"));
-end,
-function(self)
-	settings:SetTooltipSetting("Integrate:LFGBulletinBoard", self:GetChecked());
-end);
-IntegrateWithLFGBulletinBoard:SetATTTooltip("Enable this option if you want ATT to inject completion data on to the headers of LFG Bulletin Board if it is installed. In addition, holding Shift while Right Clicking the instance header will open the instance in an ATT mini list.\n\nDefault: On");
-IntegrateWithLFGBulletinBoard:SetPoint("TOPLEFT", OpenRaidAssistantAutomatically, "BOTTOMLEFT", 0, -4);
+AutomaticallySyncAccountDataCheckBox:SetATTTooltip("Enable this option if you want ATT to attempt to automatically synchronize account data between accounts when logging in or reloading the UI.");
+AutomaticallySyncAccountDataCheckBox:SetPoint("TOPLEFT", SyncLabel, "BOTTOMLEFT", 4, 0);
 
 local CelebrationsLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-CelebrationsLabel:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", -50, -8);
+CelebrationsLabel:SetPoint("TOP", AutomaticallySyncAccountDataCheckBox, "BOTTOM", 0, -8);
+CelebrationsLabel:SetPoint("LEFT", SyncLabel, "LEFT", 0, 0);
 CelebrationsLabel:SetJustifyH("LEFT");
 CelebrationsLabel:SetText("Celebrations & Sound Effects");
 CelebrationsLabel:Show();
@@ -2698,48 +2631,90 @@ end);
 WarnRemovedThingsCheckBox:SetATTTooltip("Enable this option if you want to hear a warning sound effect when you accidentally sell back or trade an item that granted you an appearance that would cause you to lose that appearance from your collection.\n\nThis can be extremely helpful if you vendor an item with a purchase timer. The addon will tell you that you've made a mistake.");
 WarnRemovedThingsCheckBox:SetPoint("TOPLEFT", DeathSoundCheckBox, "BOTTOMLEFT", 0, 4);
 
-local SyncLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-SyncLabel:SetPoint("LEFT", ModulesLabel, "LEFT", 0, 0);
-SyncLabel:SetPoint("TOP", IntegrateWithLFGBulletinBoard, "BOTTOM", 0, -4);
-SyncLabel:SetJustifyH("LEFT");
-SyncLabel:SetText("Account Synchronization");
-SyncLabel:Show();
-tinsert(settings.MostRecentTab.objects, SyncLabel);
+local ModulesLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+ModulesLabel:SetPoint("TOP", WarnRemovedThingsCheckBox, "BOTTOM", 0, -8);
+ModulesLabel:SetPoint("LEFT", CelebrationsLabel, "LEFT", 0, 0);
+ModulesLabel:SetJustifyH("LEFT");
+ModulesLabel:SetText("Modules & Mini Lists");
+ModulesLabel:Show();
+tinsert(settings.MostRecentTab.objects, ModulesLabel);
 
-local AutomaticallySyncAccountDataCheckBox = settings:CreateCheckBox("Automatically Sync Account Data",
+local OpenAuctionListAutomatically = settings:CreateCheckBox("Automatically Open the Auction Module",
 function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:Sync"));
+	self:SetChecked(settings:GetTooltipSetting("Auto:AuctionList"));
 end,
 function(self)
 	local checked = self:GetChecked();
-	settings:SetTooltipSetting("Auto:Sync", checked);
-	if checked then app:Synchronize(true); end
+	settings:SetTooltipSetting("Auto:AuctionList", checked);
+	if checked then
+		local window = app:GetWindow("Auctions");
+		if window then window:UpdatePosition(); end
+	end
 end);
-AutomaticallySyncAccountDataCheckBox:SetATTTooltip("Enable this option if you want ATT to attempt to automatically synchronize account data between accounts when logging in or reloading the UI.");
-AutomaticallySyncAccountDataCheckBox:SetPoint("TOPLEFT", SyncLabel, "BOTTOMLEFT", 4, 0);
+OpenAuctionListAutomatically:SetATTTooltip("Enable this option if you want to automatically open the Auction List when you open the auction house.\n\nYou can also bind this setting to a Key:\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Auction List\n\nShortcut Command: /attauctions");
+OpenAuctionListAutomatically:SetPoint("TOPLEFT", ModulesLabel, "BOTTOMLEFT", 4, 0);
+
+local OpenProfessionListAutomatically = settings:CreateCheckBox("Automatically Open the Profession List",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Auto:ProfessionList"));
+end,
+function(self)
+	settings:SetTooltipSetting("Auto:ProfessionList", self:GetChecked());
+end);
+OpenProfessionListAutomatically:SetATTTooltip("Enable this option if you want ATT to open and refresh the profession list when you open your professions. Due to an API limitation imposed by Blizzard, the only time an addon can interact with your profession data is when it is open. The list will automatically switch when you change to a different profession.\n\nWe don't recommend disabling this option as it may prevent recipes from tracking correctly.\n\nYou can also bind this setting to a Key. (only works when a profession is open)\n\nKey Bindings -> Addons -> ALL THE THINGS -> Toggle Profession Mini List\n\nShortcut Command: /attskills");
+OpenProfessionListAutomatically:SetPoint("TOPLEFT", OpenAuctionListAutomatically, "BOTTOMLEFT", 0, 4);
+
+local IntegrationsLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+IntegrationsLabel:SetPoint("TOP", OpenProfessionListAutomatically, "BOTTOM", 0, -8);
+IntegrationsLabel:SetPoint("LEFT", CelebrationsLabel, "LEFT", 0, 0);
+IntegrationsLabel:SetJustifyH("LEFT");
+IntegrationsLabel:SetText("Integrations");
+IntegrationsLabel:Show();
+tinsert(settings.MostRecentTab.objects, IntegrationsLabel);
+
+local IntegrateWithLFGBulletinBoard = settings:CreateCheckBox("Integrate With LFG Bulletin Board",
+function(self)
+	self:SetChecked(settings:GetTooltipSetting("Integrate:LFGBulletinBoard"));
+end,
+function(self)
+	settings:SetTooltipSetting("Integrate:LFGBulletinBoard", self:GetChecked());
+end);
+IntegrateWithLFGBulletinBoard:SetATTTooltip("Enable this option if you want ATT to inject completion data on to the headers of LFG Bulletin Board if it is installed. In addition, holding Shift while Right Clicking the instance header will open the instance in an ATT mini list.\n\nDefault: On");
+IntegrateWithLFGBulletinBoard:SetPoint("TOPLEFT", IntegrationsLabel, "BOTTOMLEFT", 4, 0);
+
+local temporaryText = settings:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+temporaryText:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 8, -8);
+temporaryText:SetPoint("TOPRIGHT", line, "BOTTOMLEFT", 300, -8);
+temporaryText:SetJustifyH("LEFT");
+temporaryText:SetText("The sync tool has temporarily left this menu.\n\nYou can still access it via the command: /attsync\n\n\nIf someone knows what started causing the window to freeze when you changed to a different addon's settings context, hit me up.\n\nCool things are in development that should make this feature a whole lot better!");
+temporaryText:Show();
+tinsert(settings.MostRecentTab.objects, temporaryText);
 
 function tab:InitializeSyncWindow()
 	-- Synchronization Window
 	local syncWindow = app:GetWindow("Sync");
 	syncWindow.CloseButton:Disable();
 	syncWindow:SetClampedToScreen(false);
-	syncWindow:SetToplevel(false);
+	syncWindow:SetToplevel(true);
 	syncWindow:SetMovable(false);
 	syncWindow:SetResizable(false);
-	syncWindow:ClearAllPoints();
-	syncWindow:SetParent(settings);
-	syncWindow:SetPoint("LEFT", SyncLabel, "LEFT", 0, 0);
-	syncWindow:SetPoint("RIGHT", SyncLabel, "LEFT", 300, 0);
-	syncWindow:SetPoint("TOP", AutomaticallySyncAccountDataCheckBox, "BOTTOM", 0, 4);
-	syncWindow:SetPoint("BOTTOM", settings, "BOTTOM", 0, 4);
-	syncWindow:SetScale(1);
-	tinsert(tab.objects, syncWindow);
-	
-	if settings:GetTooltipSetting("Auto:Sync") then
-		C_Timer.After(1, function()
-			app:Synchronize(true);
-		end);
+	local oldShow, oldHide = syncWindow.Show, syncWindow.Hide;
+	syncWindow.Show = function(self)
+		self:ClearAllPoints();
+		self:SetParent(settings);
+		self:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 0, 0);
+		self:SetSize(300, 530);
+		self:SetScale(1);
+		oldShow(self);
 	end
+	syncWindow.Hide = function(self)
+		self:ClearAllPoints();
+		self:SetParent(UIParent);
+		self:SetSize(300, 530);
+		oldHide(self);
+	end
+	
+	tinsert(tab.objects, syncWindow);
 end
 end)();
 

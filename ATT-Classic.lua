@@ -2699,8 +2699,9 @@ function app:RecalculateAccountWideData()
 	end
 	ATTAccountWideData.Deaths = deaths;
 end
-function app:ReceiveSyncRequest(sender, battleTag)
-	if battleTag ~= select(2, BNGetInfo()) then
+function app:ReceiveSyncRequest(sender, battleTag, bnetAccountID)
+	print("ReceiveSyncRequest", sender, battleTag, bnetAccountID);
+	if battleTag ~= app.CurrentCharacter.battleTag then
 		-- Check to see if the the character/account is linked.
 		if not (ATTClassicAD.LinkedAccounts[sender] or ATTClassicAD.LinkedAccounts[battleTag]) then
 			return false;
@@ -2801,16 +2802,61 @@ function app:ReceiveSyncSummaryResponse(sender, summary)
 end
 function app:Synchronize(automatically)
 	-- Update the last played timestamp. This ensures the sync process does NOT destroy unsaved progress on this character.
-	local battleTag = select(2, BNGetInfo());
-	if battleTag then
-		app.CurrentCharacter.lastPlayed = time();
-		local any, msg = false, "?\tsync\t" .. battleTag;
+	local currentCharacter = app.CurrentCharacter;
+	if currentCharacter then
+		currentCharacter.lastPlayed = time();
+		local myBattleTag, myBNETAccountID = currentCharacter.battleTag, currentCharacter.bnetAccountID;
+		local msg = "?\tsync\t" .. myBattleTag .. "\t" .. myBNETAccountID .. "\t1";
+		
+		-- Battle Net is pretty sweet, but sadly only available with Wrath. :(
+		local any, sent = false, {};
+		if C_BattleNet then
+			for guid,character in pairs(ATTCharacterData) do
+				local battleTag, bnetAccountID = character.battleTag, character.bnetAccountID;
+				if not (battleTag and bnetAccountID) then
+					-- We haven't updated this character since the patch, look it up!
+					local accountInfo = C_BattleNet.GetAccountInfoByGUID(guid);
+					if accountInfo then
+						bnetAccountID = accountInfo.bnetAccountID;
+						battleTag = accountInfo.battleTag;
+						character.bnetAccountID = bnetAccountID;
+						character.battleTag = battleTag;
+					end
+				end
+				
+				if bnetAccountID and bnetAccountID == myBNETAccountID then
+					local gameAccountInfo = C_BattleNet.GetGameAccountInfoByGUID(guid);
+					if gameAccountInfo then
+						local gameAccountID = gameAccountInfo.gameAccountID;
+						if gameAccountID then
+							character.gameAccountID = gameAccountID;
+							if gameAccountInfo.isOnline and character ~= currentCharacter then
+								--print("ACCOUNT ONLINE", gameAccountID, gameAccountInfo.characterName);
+								if BNSendGameData and false then
+									if not sent[gameAccountID] then
+										BNSendGameData(gameAccountID, "ATTC", msg);
+									end
+								else
+									C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", gameAccountInfo.characterName);
+								end
+								sent[gameAccountInfo.characterName] = true;
+								sent[gameAccountID] = true;
+								any = true;
+							end
+						end
+					end
+				end
+			end
+		end
+		
 		for playerName,allowed in pairs(ATTClassicAD.LinkedAccounts) do
-			if allowed and not string.find(playerName, "#") then
+			if allowed and not sent[playerName] and not string.find(playerName, "#") then
 				C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", playerName);
+				sent[playerName] = true;
 				any = true;
 			end
 		end
+		
 		if not any and not automatically then
 			app.print("You need to link a character or BNET account in the settings first before you can Sync accounts.");
 		end
@@ -11781,7 +11827,7 @@ local function UpdateWindow(self, force, trigger)
 		wipe(self.rowData);
 	end
 	self.forceFullDataRefresh = self.forceFullDataRefresh or force or trigger;
-	if force or self:IsVisible() then
+	if force or self:IsShown() then
 		data.expanded = true;
 		if self.forceFullDataRefresh then
 			local rows = self.Container.rows;
@@ -12047,9 +12093,9 @@ function app:GetWindow(suffix, settings)
 		-- Visible, which overrides the default functions and gives the addon the ability to recieve information about it.
 		local visible, oldShow, oldHide = false, window.Show, window.Hide;
 		window.Show = function(self)
-			oldShow(self);
 			if not visible then
 				visible = true;
+				oldShow(self);
 				if not self.data then
 					self:Rebuild();
 				else
@@ -12058,18 +12104,18 @@ function app:GetWindow(suffix, settings)
 				if settings.OnShow then
 					settings.OnShow(self);
 				end
+				self:RecordSettings();
 			end
-			self:RecordSettings();
 		end
 		window.Hide = function(self)
-			oldHide(self);
 			if visible then
 				visible = false;
+				oldHide(self);
 				if settings.OnHide then
 					settings.OnHide(self);
 				end
+				self:RecordSettings();
 			end
-			self:RecordSettings();
 		end
 		window.SetVisible = SetWindowVisible;
 		window.Toggle = ToggleWindow;
@@ -12172,7 +12218,7 @@ function app:GetWindow(suffix, settings)
 					return result;
 				end
 				window.Update = function(self, force, trigger)
-					if self:IsVisible() then
+					if self:IsShown() then
 						print("UpdateWindow: " .. suffix, force, trigger);
 						local lastUpdate = GetTimePreciseSec();
 						local result = OnUpdate(self, force, trigger);
@@ -12190,7 +12236,7 @@ function app:GetWindow(suffix, settings)
 					return result;
 				end
 				window.Update = function(self, force, trigger)
-					if self:IsVisible() then
+					if self:IsShown() then
 						local result = OnUpdate(self, force, trigger);
 						self:Refresh();
 						return result;
@@ -12260,7 +12306,7 @@ function app:GetWindow(suffix, settings)
 		
 		-- Phase 4: Redraw, which only updates the rows that already have row data visually.
 		window.Redraw = function(self)
-			if self:IsVisible() then
+			if self:IsShown() then
 				RedrawVisibleRowData(self);
 			end
 		end
@@ -13095,11 +13141,7 @@ app:GetWindow("Prime", {
 	end,
 	OnLoad = function(self, settings)
 		if not settings.visible then
-			if app.Settings:GetTooltipSetting("Auto:MainList") then
-				self:Show();
-			else
-				self:ForceRebuild();
-			end
+			self:ForceRebuild();
 		end
 	end,
 	OnRebuild = function(self)
@@ -13884,6 +13926,7 @@ app:GetWindow("Tradeskills", {
 		SLASH_ATTSKILLS1 = "/attskills";
 		SLASH_ATTSKILLS2 = "/atttradeskill";
 		SLASH_ATTSKILLS3 = "/attprofession";
+		SLASH_ATTSKILLS4 = "/attprof";
 		SlashCmdList["ATTSKILLS"] = function(cmd)
 			self:Toggle();
 		end
@@ -14378,6 +14421,7 @@ app:GetWindow("Tradeskills", {
 
 
 -- Addon Message Handling
+pcall(app.RegisterEvent, app, "BN_CHAT_MSG_ADDON");
 app:RegisterEvent("CHAT_MSG_ADDON");
 app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
 	if prefix == "ATTC" then
@@ -14509,6 +14553,9 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 		end
 	end
 end
+app.events.BN_CHAT_MSG_ADDON = function(...)
+	--print("BN_CHAT_MSG_ADDON", ...);
+end
 SLASH_ATTGUILD1 = "/attguild";
 SlashCmdList["ATTGUILD"] = function(cmd)
 	C_ChatInfo.SendAddonMessage("ATTC", "?", "GUILD");
@@ -14611,6 +14658,11 @@ app.events.ADDON_LOADED = function(addonName)
 	if not currentCharacter.SpellRanks then currentCharacter.SpellRanks = {}; end
 	if not currentCharacter.Titles then currentCharacter.Titles = {}; end
 	if not currentCharacter.Toys then currentCharacter.Toys = {}; end
+	if BNGetInfo then
+		local battleTag, bnetAccountID = select(2, BNGetInfo());
+		currentCharacter.battleTag = battleTag;
+		currentCharacter.bnetAccountID = bnetAccountID;
+	end
 	currentCharacter.lastPlayed = time();
 	app.CurrentCharacter = currentCharacter;
 	
