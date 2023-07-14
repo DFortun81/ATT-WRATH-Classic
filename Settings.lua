@@ -93,7 +93,6 @@ local TooltipSettingsBase = {
 	__index = {
 		["Auto:AuctionList"] = true,
 		["Auto:ProfessionList"] = true,
-		["Auto:Sync"] = true,
 		["Integrate:LFGBulletinBoard"] = true,
 		["Celebrate"] = true,
 		["Channel"] = "master",
@@ -2534,29 +2533,8 @@ end)();
 ------------------------------------------
 (function()
 local tab = settings:CreateTab("Features");
-
-local SyncLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-SyncLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 330, -8);
-SyncLabel:SetJustifyH("LEFT");
-SyncLabel:SetText("Account Synchronization");
-SyncLabel:Show();
-tinsert(settings.MostRecentTab.objects, SyncLabel);
-
-local AutomaticallySyncAccountDataCheckBox = settings:CreateCheckBox("Automatically Sync Account Data",
-function(self)
-	self:SetChecked(settings:GetTooltipSetting("Auto:Sync"));
-end,
-function(self)
-	local checked = self:GetChecked();
-	settings:SetTooltipSetting("Auto:Sync", checked);
-	if checked then app:Synchronize(true); end
-end);
-AutomaticallySyncAccountDataCheckBox:SetATTTooltip("Enable this option if you want ATT to attempt to automatically synchronize account data between accounts when logging in or reloading the UI.");
-AutomaticallySyncAccountDataCheckBox:SetPoint("TOPLEFT", SyncLabel, "BOTTOMLEFT", 4, 0);
-
 local CelebrationsLabel = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-CelebrationsLabel:SetPoint("TOP", AutomaticallySyncAccountDataCheckBox, "BOTTOM", 0, -8);
-CelebrationsLabel:SetPoint("LEFT", SyncLabel, "LEFT", 0, 0);
+CelebrationsLabel:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 330, -8);
 CelebrationsLabel:SetJustifyH("LEFT");
 CelebrationsLabel:SetText("Celebrations & Sound Effects");
 CelebrationsLabel:Show();

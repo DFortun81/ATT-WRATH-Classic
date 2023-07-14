@@ -2550,327 +2550,6 @@ local function SendResponseMessage(msg, player)
 	end
 end
 
--- Synchronization Functions
-(function()
-local outgoing,incoming,queue,active = {},{},{};
-local whiteListedFields = { "FlightPaths", "Exploration", "BattlePets", "Achievements", "RWP", "Spells", "Titles", "Toys", "Quests", "Factions"};
-function splittoarray(sep, inputstr)
-	local t = {};
-	for str in string.gmatch(inputstr, "([^" .. (sep or "%s") .. "]+)") do
-		table.insert(t, str);
-	end
-	return t;
-end
-local function processQueue()
-	if #queue > 0 and not active then
-		local data = queue[1];
-		table.remove(queue, 1);
-		active = data[1];
-		if data[4] then
-			C_ChatInfo.SendAddonMessage("ATTC", "!\tsyncsumchar\t" .. data[1], "WHISPER", data[3]);
-			active = nil;
-			processQueue();
-		else
-			app.print("Updating " .. data[2] .. " from " .. data[3] .. "...");
-			C_ChatInfo.SendAddonMessage("ATTC", "!\tsyncsum\t" .. data[1], "WHISPER", data[3]);
-		end
-	end
-end
-
-function app:AcknowledgeIncomingChunks(sender, uid, total)
-	local incomingFromSender = incoming[sender];
-	if not incomingFromSender then
-		incomingFromSender = {};
-		incoming[sender] = incomingFromSender;
-	end
-	incomingFromSender[uid] = { ["chunks"] = {}, ["total"] = total };
-	C_ChatInfo.SendAddonMessage("ATTC", "chksack\t" .. uid, "WHISPER", sender);
-end
-local function ProcessIncomingChunk(sender, uid, index, chunk)
-	if not (chunk and index and uid and sender) then return false; end
-	local incomingFromSender = incoming[sender];
-	if not incomingFromSender then return false; end
-	local incomingForUID = incomingFromSender[uid];
-	if not incomingForUID then return false; end
-	incomingForUID.chunks[index] = chunk;
-	if index < incomingForUID.total then
-		return true;
-	end
-	
-	incomingFromSender[uid] = nil;
-	
-	local msg = "";
-	for i=1,incomingForUID.total,1 do
-		msg = msg .. incomingForUID.chunks[i];
-	end
-	-- app:ShowPopupDialogWithMultiLineEditBox(msg);
-	local characters = splittoarray("\t", msg);
-	for _,characterString in ipairs(characters) do
-		local data = splittoarray(":", characterString);
-		local guid = data[1];
-		local character = ATTCharacterData[guid];
-		if not character then
-			character = {};
-			character.guid = guid;
-			ATTCharacterData[guid] = character;
-		end
-		character.name = data[2];
-		character.lvl = tonumber(data[3]);
-		character.text = data[4];
-		character.realm = data[5];
-		character.factionID = tonumber(data[6]);
-		character.classID = tonumber(data[7]);
-		character.raceID = tonumber(data[8]);
-		character.lastPlayed = tonumber(data[9]);
-		character.Deaths = tonumber(data[10]);
-		character.class = C_CreatureInfo.GetClassInfo(character.classID).classFile;
-		character.race = C_CreatureInfo.GetRaceInfo(character.raceID).clientFileString;
-		for i=11,#data,1 do
-			local piece = splittoarray("/", data[i]);
-			local key = piece[1];
-			local field = {};
-			character[key] = field;
-			if key == "ActiveSkills" then
-				for j=2,#piece,1 do
-					local skill = splittoarray("|", piece[j]);
-					field[tonumber(skill[1])] = { tonumber(skill[2]), tonumber(skill[3]) };
-				end
-			else
-				for j=2,#piece,1 do
-					local index = tonumber(piece[j]);
-					if index then field[index] = 1; end
-				end
-			end
-		end
-		app.print("Update complete for " .. character.text .. ".");
-	end
-	
-	app:RecalculateAccountWideData();
-	app.Settings:Refresh();
-	active = nil;
-	processQueue();
-	return false;
-end
-function app:AcknowledgeIncomingChunk(sender, uid, index, chunk)
-	if chunk and ProcessIncomingChunk(sender, uid, index, chunk) then
-		C_ChatInfo.SendAddonMessage("ATTC", "chkack\t" .. uid .. "\t" .. index .. "\t1", "WHISPER", sender);
-	else
-		C_ChatInfo.SendAddonMessage("ATTC", "chkack\t" .. uid .. "\t" .. index .. "\t0", "WHISPER", sender);
-	end
-end
-function app:SendChunk(sender, uid, index, success)
-	local outgoingForSender = outgoing[sender];
-	if outgoingForSender then
-		local chunksForUID = outgoingForSender.uids[uid];
-		if chunksForUID and success == 1 then
-			local chunk = chunksForUID[index];
-			if chunk then
-				C_ChatInfo.SendAddonMessage("ATTC", "chk\t" .. uid .. "\t" .. index .. "\t" .. chunk, "WHISPER", sender);
-			end
-		else
-			outgoingForSender.uids[uid] = nil;
-		end
-	end
-end
-
-function app:IsAccountLinked(sender)
-	return ATTClassicAD.LinkedAccounts[sender] or ATTClassicAD.LinkedAccounts[strsplit("-", sender)[1]];
-end
-function app:RecalculateAccountWideData()
-	for key,data in pairs(ATTAccountWideData) do
-		if type(data) == "table" then
-			data = {};
-			for guid,character in pairs(ATTCharacterData) do
-				local characterData = character[key];
-				if characterData then
-					for index,_ in pairs(characterData) do
-						data[index] = 1;
-					end
-				end
-			end
-			ATTAccountWideData[key] = data;
-		end
-	end
-	local deaths = 0;
-	for guid,character in pairs(ATTCharacterData) do
-		if character.Deaths then
-			deaths = deaths + character.Deaths;
-		end
-	end
-	ATTAccountWideData.Deaths = deaths;
-end
-function app:ReceiveSyncRequest(sender, battleTag, bnetAccountID)
-	if battleTag ~= app.CurrentCharacter.battleTag then
-		-- Check to see if the the character/account is linked.
-		if not (ATTClassicAD.LinkedAccounts[sender] or ATTClassicAD.LinkedAccounts[battleTag]) then
-			return false;
-		end
-	end
-	
-	-- Whitelist the character name, if not already. (This is needed for future sync methods)
-	ATTClassicAD.LinkedAccounts[sender] = true;
-	
-	-- Generate the sync string (there may be several depending on how many alts there are)
-	local msgs = {};
-	local msg = "?\tsyncsum";
-	for guid,character in pairs(ATTCharacterData) do
-		if character.lastPlayed and not character.ignored then
-			local charsummary = "\t" .. guid .. ":" .. character.lastPlayed;
-			if (string.len(msg) + string.len(charsummary)) < 255 then
-				msg = msg .. charsummary;
-			else
-				C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", sender);
-				msg = "?\tsyncsum" .. charsummary;
-			end
-		end
-	end
-	C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", sender);
-end
-function app:ReceiveSyncSummary(sender, summary, shouldPrint)
-	if app:IsAccountLinked(sender) then
-		local first = #queue == 0;
-		for i,data in ipairs(summary) do
-			local guid,lastPlayed = strsplit(":", data);
-			local character = ATTCharacterData[guid];
-			if not character or not character.lastPlayed or (character.lastPlayed < tonumber(lastPlayed)) and guid ~= app.GUID then
-				tinsert(queue, { guid, character and character.text or guid, sender });
-			elseif shouldPrint then
-				tinsert(queue, { guid, character and character.text or guid, sender, true });
-			end
-			if first then processQueue(); end
-		end
-	end
-end
-function app:ReceiveSyncSummaryResponse(sender, summary)
-	if app:IsAccountLinked(sender) then
-		local rawMsg;
-		for i,guid in ipairs(summary) do
-			local character = ATTCharacterData[guid];
-			if character and character.realm then
-				-- Put easy character data into a raw data string
-				local rawData = character.guid .. ":" .. character.name .. ":" .. character.lvl .. ":" .. character.text .. ":" .. character.realm .. ":" .. character.factionID .. ":" .. character.classID .. ":" .. character.raceID .. ":" .. character.lastPlayed .. ":" .. character.Deaths;
-				
-				-- Difficult character data
-				rawData = rawData .. ":ActiveSkills";
-				for skillID,skill in pairs(character.ActiveSkills) do
-					rawData = rawData .. "/" .. skillID .. "|" .. skill[1] .. "|" .. skill[2];
-				end
-				
-				for i,field in ipairs(whiteListedFields) do
-					if character[field] then
-						rawData = rawData .. ":" .. field;
-						for index,value in pairs(character[field]) do
-							if value then
-								rawData = rawData .. "/" .. index;
-							end
-						end
-					end
-				end
-				
-				if not rawMsg then
-					rawMsg = rawData;
-				else
-					rawMsg = rawMsg .. "\t" .. rawData;
-				end
-			else
-				app.print("There was an issue accessing the character with GUID " .. guid);
-				print("Please login to " .. (character and character.text or "this character") .. " to correct the problem.");
-			end
-		end
-		
-		if rawMsg then
-			-- Send Addon Message Back
-			local length = string.len(rawMsg);
-			local chunks = {};
-			for i=1,length,241 do
-				tinsert(chunks, string.sub(rawMsg, i, math.min(length, i + 240)));
-			end
-			local outgoingForSender = outgoing[sender];
-			if not outgoingForSender then
-				outgoingForSender = { ["total"] = 0, ["uids"] = {}};
-				outgoing[sender] = outgoingForSender;
-			end
-			local uid = outgoingForSender.total + 1;
-			outgoingForSender.uids[uid] = chunks;
-			outgoingForSender.total = uid;
-			
-			-- Send Addon Message Back
-			C_ChatInfo.SendAddonMessage("ATTC", "chks\t" .. uid .. "\t" .. #chunks, "WHISPER", sender);
-		end
-	end
-end
-function app:Synchronize(automatically)
-	-- Update the last played timestamp. This ensures the sync process does NOT destroy unsaved progress on this character.
-	local currentCharacter = app.CurrentCharacter;
-	if currentCharacter then
-		currentCharacter.lastPlayed = time();
-		local myBattleTag, myBNETAccountID = currentCharacter.battleTag, currentCharacter.bnetAccountID;
-		local msg = "?\tsync\t" .. myBattleTag .. "\t" .. myBNETAccountID .. "\t1";
-		
-		-- Battle Net is pretty sweet, but sadly only available with Wrath. :(
-		local any, sent = false, {};
-		if C_BattleNet then
-			for guid,character in pairs(ATTCharacterData) do
-				local battleTag, bnetAccountID = character.battleTag, character.bnetAccountID;
-				if not (battleTag and bnetAccountID) then
-					-- We haven't updated this character since the patch, look it up!
-					local accountInfo = C_BattleNet.GetAccountInfoByGUID(guid);
-					if accountInfo then
-						bnetAccountID = accountInfo.bnetAccountID;
-						battleTag = accountInfo.battleTag;
-						character.bnetAccountID = bnetAccountID;
-						character.battleTag = battleTag;
-					end
-				end
-				
-				if bnetAccountID and bnetAccountID == myBNETAccountID then
-					local gameAccountInfo = C_BattleNet.GetGameAccountInfoByGUID(guid);
-					if gameAccountInfo then
-						local gameAccountID = gameAccountInfo.gameAccountID;
-						if gameAccountID then
-							character.gameAccountID = gameAccountID;
-							if gameAccountInfo.isOnline and character ~= currentCharacter then
-								--print("ACCOUNT ONLINE", gameAccountID, gameAccountInfo.characterName);
-								if BNSendGameData and false then
-									if not sent[gameAccountID] then
-										BNSendGameData(gameAccountID, "ATTC", msg);
-									end
-								else
-									C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", gameAccountInfo.characterName);
-								end
-								sent[gameAccountInfo.characterName] = true;
-								sent[gameAccountID] = true;
-								any = true;
-							end
-						end
-					end
-				end
-			end
-		end
-		
-		for playerName,allowed in pairs(ATTClassicAD.LinkedAccounts) do
-			if allowed and not sent[playerName] and not string.find(playerName, "#") then
-				C_ChatInfo.SendAddonMessage("ATTC", msg, "WHISPER", playerName);
-				sent[playerName] = true;
-				any = true;
-			end
-		end
-		
-		if not any and not automatically then
-			app.print("You need to link a character or BNET account in the settings first before you can Sync accounts.");
-		end
-	end
-end
-function app:SynchronizeWithPlayer(playerName)
-	-- Update the last played timestamp. This ensures the sync process does NOT destroy unsaved progress on this character.
-	local battleTag = select(2, BNGetInfo());
-	if battleTag then
-		app.CurrentCharacter.lastPlayed = time();
-		C_ChatInfo.SendAddonMessage("ATTC", "?\tsync\t" .. battleTag, "WHISPER", playerName);
-	end
-end
-end)();
-
 -- Item Information Lib
 local function SearchForLink(link)
 	if string.match(link, "item") then
@@ -14420,7 +14099,6 @@ app:GetWindow("Tradeskills", {
 
 
 -- Addon Message Handling
-pcall(app.RegisterEvent, app, "BN_CHAT_MSG_ADDON");
 app:RegisterEvent("CHAT_MSG_ADDON");
 app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID, ...)
 	if prefix == "ATTC" then
@@ -14494,16 +14172,6 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 							local b = tonumber(args[i]);
 							response = response .. "\t" .. b .. "\t" .. (app.CurrentCharacter.Toys[b] and 1 or 0);
 						end
-					elseif a == "sync" then
-						app:ReceiveSyncRequest(target, args[3], args[4]);
-					elseif a == "syncsum" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						app:ReceiveSyncSummary(target, args);
-					elseif a == "syncsumchar" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						app:ReceiveSyncSummary(target, args, true);
 					end
 				else
 					local character = app.CurrentCharacter;
@@ -14518,21 +14186,6 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 			elseif cmd == "!" then	-- Query Response
 				if a == "ATTC" then
 					print(target .. ": " .. GetProgressColorText(tonumber(args[3]), tonumber(args[4])) .. " " .. args[5]);
-				else
-					if a == "syncsum" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						app:ReceiveSyncSummaryResponse(target, args);
-					elseif a == "syncsumchar" then
-						table.remove(args, 1);
-						table.remove(args, 1);
-						for i,guid in ipairs(args) do
-							local character = ATTCharacterData[guid];
-							if character then
-								print(character.text .. " is already up-to-date.");
-							end
-						end
-					end
 				end
 			elseif cmd == "to" then	-- To Command
 				local myName = UnitName("player");
@@ -14540,20 +14193,9 @@ app.events.CHAT_MSG_ADDON = function(prefix, text, channel, sender, target, zone
 				if myName == name and (not server or GetRealmName() == server) then
 					app.events.CHAT_MSG_ADDON(prefix, strsub(text, 5 + strlen(a)), "WHISPER", sender);
 				end
-			elseif cmd == "chks" then	-- Total Chunks Command [sender, uid, total]
-				app:AcknowledgeIncomingChunks(target, tonumber(a), tonumber(args[3]));
-			elseif cmd == "chk" then	-- Incoming Chunk Command [sender, uid, index, chunk]
-				app:AcknowledgeIncomingChunk(target, tonumber(a), tonumber(args[3]), args[4]);
-			elseif cmd == "chksack" then	-- Chunks Acknowledge Command [sender, uid]
-				app:SendChunk(target, tonumber(a), 1, 1);
-			elseif cmd == "chkack" then	-- Chunk Acknowledge Command [sender, uid, index, success]
-				app:SendChunk(target, tonumber(a), tonumber(args[3]) + 1, tonumber(args[4]));
 			end
 		end
 	end
-end
-app.events.BN_CHAT_MSG_ADDON = function(...)
-	--print("BN_CHAT_MSG_ADDON", ...);
 end
 SLASH_ATTGUILD1 = "/attguild";
 SlashCmdList["ATTGUILD"] = function(cmd)
@@ -14657,11 +14299,6 @@ app.events.ADDON_LOADED = function(addonName)
 	if not currentCharacter.SpellRanks then currentCharacter.SpellRanks = {}; end
 	if not currentCharacter.Titles then currentCharacter.Titles = {}; end
 	if not currentCharacter.Toys then currentCharacter.Toys = {}; end
-	if BNGetInfo then
-		local battleTag, bnetAccountID = select(2, BNGetInfo());
-		currentCharacter.battleTag = battleTag;
-		currentCharacter.bnetAccountID = bnetAccountID;
-	end
 	currentCharacter.lastPlayed = time();
 	app.CurrentCharacter = currentCharacter;
 	
@@ -14812,7 +14449,6 @@ app.events.ADDON_LOADED = function(addonName)
 	
 	
 	-- Check to see if we have a leftover ItemDB cache
-	GetDataMember("LinkedAccounts", {});
 	GetDataMember("GroupQuestsByGUID", {});
 	GetDataMember("ValidSuffixesPerItemID", {});
 	
@@ -14820,7 +14456,6 @@ app.events.ADDON_LOADED = function(addonName)
 	local oldsettings = {};
 	for i,key in ipairs({
 		"GroupQuestsByGUID",
-		"LinkedAccounts",
 		"LocalizedCategoryNames",
 		"LocalizedFlightPathDB",
 		"Position",
