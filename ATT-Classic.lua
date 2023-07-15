@@ -14299,7 +14299,16 @@ app.events.ADDON_LOADED = function(addonName)
 	if not currentCharacter.SpellRanks then currentCharacter.SpellRanks = {}; end
 	if not currentCharacter.Titles then currentCharacter.Titles = {}; end
 	if not currentCharacter.Toys then currentCharacter.Toys = {}; end
-	currentCharacter.lastPlayed = time();
+	
+	-- Update timestamps.
+	local now = time();
+	local timeStamps = currentCharacter.TimeStamps;
+	for key,value in pairs(currentCharacter) do
+		if type(value) == "table" and not timeStamps[key] then
+			timeStamps[key] = now;
+		end
+	end
+	currentCharacter.lastPlayed = now;
 	app.CurrentCharacter = currentCharacter;
 	
 	-- Convert over the deprecated Characters table.

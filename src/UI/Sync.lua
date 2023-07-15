@@ -646,7 +646,47 @@ MESSAGE_HANDLERS.chars = function(self, sender, content, responses)
 		ReceiveCharacterSummary(self, sender, responses, guid, tonumber(lastPlayed), false);
 	end
 end
+MESSAGE_HANDLERS.link = function(self, sender, content, responses)
+	-- Validate inputs. Battle Tag MUST be supplied and the account must be linked!
+	local battleTag = content[2];
+	if not battleTag then return false; end
+	if not LinkedCharacters[battleTag] then
+		app.print("ERROR WITH SYNC: BattleTag '" .. battleTag .. "' not linked!");
+		return false;
+	else
+		-- White list any future communications with this sender for the rest of the session.
+		getmetatable(LinkedCharacters).__index[sender] = true;
+	end
+	
+	-- Generate the linked string, which gets the character ready on the other end and connects the bnet account
+	tinsert(responses, "linked," .. CurrentCharacter.guid .. "," .. CurrentCharacter.text .. "," .. CurrentCharacter.lastPlayed);
+	return true;
+end
+MESSAGE_HANDLERS.linked = function(self, sender, content, responses)
+	if not LinkedCharacters[sender] then return false; end
+	
+	-- Parse the linked string.
+	local guid = content[2];
+	local text = content[3];
+	local lastPlayed = tonumber(content[4]);
+	
+	-- Check for a Character
+	local character = CharacterData[guid];
+	if not character then
+		character = { text = text, guid = guid, lastPlayed = 0 };
+		CharacterData[guid] = character;
+		
+		-- Update Battle.net stuff.
+		UpdateBattleTags();
+		UpdateOnlineAccounts();
+		SendCharacterMessage(character, "check," .. CurrentCharacter.battleTag);
+	else
+		app.print("Already linked with " .. (character.text or guid) .. ".");
+	end
+	return true;
+end
 MESSAGE_HANDLERS.rawchar = function(self, sender, content, responses)
+	if not LinkedCharacters[sender] then return false; end
 	local guid = content[2];
 	if not guid then return false; end
 	table.remove(content, 1);
@@ -685,6 +725,7 @@ MESSAGE_HANDLERS.rawchar = function(self, sender, content, responses)
 	self:Update(true);
 end
 MESSAGE_HANDLERS.request = function(self, sender, content, responses)
+	if not LinkedCharacters[sender] then return false; end
 	local guid, lastUpdated = content[2], content[3];
 	if lastUpdated then
 		lastUpdated = tonumber(lastUpdated);
@@ -771,12 +812,11 @@ local function OnClickForLinkedAccount(row, button)
 		CurrentCharacter.lastPlayed = time();
 		
 		-- Now send to any explicitly linked accounts.
-		local msg = ValidateMessage("check," .. CurrentCharacter.battleTag);
 		local character = characterByInfo[identifier];
 		if character then
-			SendCharacterMessage(character, msg);
+			SendCharacterMessage(character, ValidateMessage("check," .. CurrentCharacter.battleTag));
 		else
-			SendAddonMessage(identifier, msg);
+			SendAddonMessage(identifier, ValidateMessage("link," .. CurrentCharacter.battleTag));
 		end
 	end
 	return true;
@@ -871,10 +911,10 @@ app:GetWindow("Synchronization", {
 		local linked = settings.LinkedCharacters;
 		if not linked then
 			linked = LinkedCharacters;
-			settings.LinkedCharacters = linked;
 		else
 			LinkedCharacters = linked;
 		end
+		settings.LinkedCharacters = linked;
 		setmetatable(linked, { __index = SilentlyLinkedCharacters });
 		
 		-- Cache the current character's BattleTag. 
@@ -910,6 +950,7 @@ app:GetWindow("Synchronization", {
 								-- Prevent server names.
 								cmd = strsplit("-", cmd);
 								LinkedCharacters[cmd] = true;
+								SendAddonMessage(cmd, "link," .. CurrentCharacter.battleTag);
 								self:Rebuild();
 							end
 						end);
