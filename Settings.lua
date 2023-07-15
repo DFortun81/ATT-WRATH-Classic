@@ -486,35 +486,16 @@ settings.UpdateMode = function(self)
 		app.RequiredSkillFilter = app.NoFilter;
 		app.RequireFactionFilter = app.NoFilter;
 		app.RequireEventFilter = app.NoFilter;
-
-		app.AccountWideAchievements = true;
-		app.AccountWideBattlePets = true;
-		app.AccountWideDeaths = true;
-		app.AccountWideExploration = true;
-		app.AccountWideFlightPaths = true;
-		app.AccountWideIllusions = true;
-		app.AccountWideMounts = true;
-		app.AccountWidePVPRanks = true;
-		app.AccountWideQuests = true;
-		app.AccountWideRecipes = true;
-		app.AccountWideReputations = true;
-		app.AccountWideRWP = true;
-		app.AccountWideTitles = true;
-		app.AccountWideToys = true;
-
-		app.CollectibleAchievements = true;
-		app.CollectibleBattlePets = true;
-		app.CollectibleExploration = true;
-		app.CollectibleFlightPaths = true;
-		app.CollectibleIllusions = true;
-		app.CollectibleLoot = true;
-		app.CollectibleMounts = true;
-		app.CollectibleQuests = true;
-		app.CollectibleRecipes = true;
-		app.CollectibleReputations = true;
-		app.CollectibleRWP = true;
-		app.CollectibleTitles = true;
-		app.CollectibleToys = true;
+		
+		local accountWideSettings = self.AccountWide;
+		for key,value in pairs(accountWideSettings) do
+			accountWideSettings[key] = true;
+		end
+		
+		local collectibleSettings = self.Collectibles;
+		for key,value in pairs(collectibleSettings) do
+			collectibleSettings[key] = true;
+		end
 		
 		-- Modules
 		app.Modules.PVPRanks.SetCollectible(true);
@@ -522,34 +503,15 @@ settings.UpdateMode = function(self)
 		app.VisibilityFilter = app.ObjectVisibilityFilter;
 		app.GroupFilter = app.FilterItemClass;
 
-		app.AccountWideAchievements = self:Get("AccountWide:Achievements");
-		app.AccountWideBattlePets = self:Get("AccountWide:BattlePets");
-		app.AccountWideDeaths = self:Get("AccountWide:Deaths");
-		app.AccountWideExploration = self:Get("AccountWide:Exploration");
-		app.AccountWideFlightPaths = self:Get("AccountWide:FlightPaths");
-		app.AccountWideIllusions = self:Get("AccountWide:Illusions");
-		app.AccountWideMounts = self:Get("AccountWide:Mounts");
-		app.AccountWidePVPRanks = self:Get("AccountWide:PVPRanks");
-		app.AccountWideQuests = self:Get("AccountWide:Quests");
-		app.AccountWideRecipes = self:Get("AccountWide:Recipes");
-		app.AccountWideReputations = self:Get("AccountWide:Reputations");
-		app.AccountWideRWP = self:Get("AccountWide:RWP");
-		app.AccountWideTitles = self:Get("AccountWide:Titles");
-		app.AccountWideToys = self:Get("AccountWide:Toys");
-
-		app.CollectibleAchievements = self:Get("Thing:Achievements");
-		app.CollectibleBattlePets = self:Get("Thing:BattlePets");
-		app.CollectibleExploration = self:Get("Thing:Exploration");
-		app.CollectibleFlightPaths = self:Get("Thing:FlightPaths");
-		app.CollectibleIllusions = self:Get("Thing:Illusions");
-		app.CollectibleLoot = self:Get("Thing:Loot");
-		app.CollectibleMounts = self:Get("Thing:Mounts");
-		app.CollectibleQuests = self:Get("Thing:Quests");
-		app.CollectibleRecipes = self:Get("Thing:Recipes");
-		app.CollectibleReputations = self:Get("Thing:Reputations");
-		app.CollectibleRWP = self:Get("Thing:RWP");
-		app.CollectibleTitles = self:Get("Thing:Titles");
-		app.CollectibleToys = self:Get("Thing:Toys");
+		local accountWideSettings = self.AccountWide;
+		for key,value in pairs(accountWideSettings) do
+			accountWideSettings[key] = self:Get("AccountWide:" .. key);
+		end
+		
+		local collectibleSettings = self.Collectibles;
+		for key,value in pairs(collectibleSettings) do
+			collectibleSettings[key] = self:Get("Thing:" .. key);
+		end
 		
 		-- Modules
 		app.Modules.PVPRanks.SetCollectible(self:Get("Thing:PVPRanks"));
@@ -581,10 +543,10 @@ settings.UpdateMode = function(self)
 	
 	local filters = ATTClassicSettingsPerCharacter.Filters;
 	for filterID,state in pairs({
-		[100] = app.CollectibleMounts,
-		[101] = app.CollectibleBattlePets,
-		[102] = app.CollectibleToys,
-		[200] = app.CollectibleRecipes,
+		[100] = self.Collectibles.Mounts,
+		[101] = self.Collectibles.BattlePets,
+		[102] = self.Collectibles.Toys,
+		[200] = self.Collectibles.Recipes,
 	}) do
 		filters[filterID] = state;
 	end

@@ -1028,7 +1028,7 @@ local IsQuestFlaggedCompleted = function(questID)
 end
 local IsQuestFlaggedCompletedForObject = function(t)
 	if IsQuestFlaggedCompleted(t.questID) then return 1; end
-	if app.AccountWideQuests and not t.repeatable then
+	if app.Settings.AccountWide.Quests and not t.repeatable then
 		if t.questID and ATTAccountWideData.Quests[t.questID] then
 			return 2;
 		end
@@ -1039,7 +1039,7 @@ local IsQuestFlaggedCompletedForObject = function(t)
 				return 2;
 			end
 		end
-		if app.AccountWideQuests then
+		if app.Settings.AccountWide.Quests then
 			for i,questID in ipairs(t.altQuests) do
 				if  ATTAccountWideData.Quests[questID] then
 					return 2;
@@ -2162,7 +2162,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				if not usedToBuy.g then usedToBuy.g = {}; end
 				for i,o in ipairs(costResults) do
 					if o.key == "instanceID" or ((o.key == "difficultyID" or o.key == "mapID" or o.key == "headerID") and (o.parent and GetRelativeValue(o.parent, "instanceID"))) then
-						if app.CollectibleQuests then
+						if app.Settings.Collectibles.Quests then
 							local d = CreateObject(o);
 							d.sourceParent = o.parent;
 							d.collectible = true;
@@ -4348,11 +4348,11 @@ app.CommonAchievementHandlers = commonAchievementHandlers;
 
 local fields = {
 	["collectible"] = function(t)
-		return app.CollectibleAchievements;
+		return app.Settings.Collectibles.Achievements;
 	end,
 	["collected"] = function(t)
 		if app.CurrentCharacter.Achievements[t.achievementID] then return 1; end
-		if app.AccountWideAchievements and ATTAccountWideData.Achievements[t.achievementID] then return 2; end
+		if app.Settings.AccountWide.Achievements and ATTAccountWideData.Achievements[t.achievementID] then return 2; end
 	end,
 	["OnUpdate"] = function(t) ResolveSymbolicLink(t); end,
 };
@@ -4486,7 +4486,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 			return 1;
 		end,
 		["collectible"] = function(t)
-			return app.CollectibleAchievements;
+			return app.Settings.Collectibles.Achievements;
 		end,
 		["trackable"] = function(t)
 			return true;
@@ -4554,7 +4554,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 			local achievementID = t.achievementID;
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
-				if app.AccountWideAchievements and ATTAccountWideData.Achievements[achievementID] then return 2; end
+				if app.Settings.AccountWide.Achievements and ATTAccountWideData.Achievements[achievementID] then return 2; end
 				local criteriaID = t.criteriaID;
 				if criteriaID then
 					if criteriaID <= _GetAchievementNumCriteria(achievementID) then
@@ -4914,7 +4914,7 @@ else
 		t.SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.COMPANIONS_OnUpdate = function(t)
-		if app.CollectibleBattlePets then
+		if app.Settings.Collectibles.BattlePets then
 			local count = 0;
 			local pets = app.SearchForFieldContainer("speciesID");
 			for i,g in pairs(pets) do
@@ -5261,7 +5261,7 @@ else
 		end
 	end
 	commonAchievementHandlers.MOUNTS_OnUpdate = function(t)
-		if app.CollectibleMounts then
+		if app.Settings.Collectibles.Mounts then
 			local count,r = 0,{};
 			local spells = app.SearchForFieldContainer("spellID");
 			for i,g in pairs(spells) do
@@ -5327,7 +5327,7 @@ else
 		end
 	end
 	commonAchievementHandlers.REPUTATIONS_OnUpdate = function(t)
-		if app.CollectibleAchievements then
+		if app.Settings.Collectibles.Achievements then
 			local count = 0;
 			local ignored = app.IgnoredReputationsForAchievements;
 			if not ignored then
@@ -5609,55 +5609,17 @@ end)();
 -- Companion Lib
 (function()
 local SetBattlePetCollected = function(t, speciesID, collected)
-	if collected then
-		if not app.CurrentCharacter.BattlePets[speciesID] then
-			AddToCollection(t);
-			app.CurrentCharacter.BattlePets[speciesID] = 1;
-			ATTAccountWideData.BattlePets[speciesID] = 1;
-		end
-		return 1;
-	elseif app.CurrentCharacter.BattlePets[speciesID] == 1 then
-		app.CurrentCharacter.BattlePets[speciesID] = nil;
-		ATTAccountWideData.BattlePets[speciesID] = nil;
-		for guid,characterData in pairs(ATTCharacterData) do
-			if characterData.BattlePets and characterData.BattlePets[speciesID] then
-				ATTAccountWideData.BattlePets[speciesID] = 1;
-				break;
-			end
-		end
-	end
-	if app.AccountWideBattlePets and ATTAccountWideData.BattlePets[speciesID] then
-		return 2;
-	end
+	return app.SetCollected(t, "BattlePets", speciesID, collected);
 end
 local SetMountCollected = function(t, spellID, collected)
-	if collected then
-		if not app.CurrentCharacter.Spells[spellID] then
-			AddToCollection(t);
-			app.CurrentCharacter.Spells[spellID] = 1;
-			ATTAccountWideData.Spells[spellID] = 1;
-		end
-		return 1;
-	elseif app.CurrentCharacter.Spells[spellID] == 1 then
-		app.CurrentCharacter.Spells[spellID] = nil;
-		ATTAccountWideData.Spells[spellID] = nil;
-		for guid,characterData in pairs(ATTCharacterData) do
-			if characterData.Spells and characterData.Spells[spellID] then
-				ATTAccountWideData.Spells[spellID] = 1;
-				break;
-			end
-		end
-	end
-	if app.AccountWideMounts and ATTAccountWideData.Spells[spellID] then
-		return 2;
-	end
+	return app.SetCollectedForSubType(t, "Spells", "Mounts", spellID, collected);
 end
 local speciesFields = {
 	["f"] = function(t)
 		return 101;
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleBattlePets;
+		return app.Settings.Collectibles.BattlePets;
 	end,
 	["text"] = function(t)
 		return "|cff0070dd" .. (t.name or RETRIEVING_DATA) .. "|r";
@@ -5690,7 +5652,7 @@ local mountFields = {
 		return 100;
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleMounts;
+		return app.Settings.Collectibles.Mounts;
 	end,
 	["explicitlyCollected"] = function(t)
 		return IsSpellKnown(t.spellID) or (t.questID and IsQuestFlaggedCompleted(t.questID)) or (t.itemID and _GetItemCount(t.itemID, true) > 0);
@@ -6064,7 +6026,7 @@ app.CreateDeathClass = app.CreateClass("DeathsTracker", "deaths", {
 		return app.asset("Category_Deaths");
 	end,
 	["progress"] = function(t)
-		return math.min(1000, app.AccountWideDeaths and ATTAccountWideData.Deaths or app.CurrentCharacter.Deaths);
+		return math.min(1000, app.Settings.AccountWide.Deaths and ATTAccountWideData.Deaths or app.CurrentCharacter.Deaths);
 	end,
 	["total"] = function(t)
 		return 1000;
@@ -6281,11 +6243,11 @@ local setFactionCollected = function(t, factionID, collected)
 		for guid,character in pairs(ATTCharacterData) do
 			if character.Factions and character.Factions[factionID] then
 				accountWideFactions[factionID] = 1;
-				return app.AccountWideReputations and 2;
+				return app.Settings.AccountWide.Reputations and 2;
 			end
 		end
 	end
-	if app.AccountWideReputations and accountWideFactions[factionID] then return 2; end
+	if app.Settings.AccountWide.Reputations and accountWideFactions[factionID] then return 2; end
 end
 local StandingByID = {
 	{	-- 1: HATED
@@ -6389,9 +6351,9 @@ local fields = {
 		return true;
 	end,
 	["collectible"] = function(t)
-		if app.CollectibleReputations then
+		if app.Settings.Collectibles.Reputations then
 			-- If your reputation is higher than the maximum for a different faction, return partial completion.
-			if not app.AccountWideReputations and t.maxReputation and t.maxReputation[1] ~= t.factionID and (select(3, _GetFactionInfoByID(t.maxReputation[1])) or 4) >= app.GetFactionStanding(t.maxReputation[2]) then
+			if not app.Settings.AccountWide.Reputations and t.maxReputation and t.maxReputation[1] ~= t.factionID and (select(3, _GetFactionInfoByID(t.maxReputation[1])) or 4) >= app.GetFactionStanding(t.maxReputation[2]) then
 				return false;
 			end
 			return true;
@@ -6614,11 +6576,11 @@ app.CreateFlightPath = app.CreateClass("FlightPath", "flightPathID", {
 		return "Flight paths are cached when you look at the flight master at each location.\n  - Crieve";
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleFlightPaths;
+		return app.Settings.Collectibles.FlightPaths;
 	end,
 	["collected"] = function(t)
 		if app.CurrentCharacter.FlightPaths[t.flightPathID] then return 1; end
-		if app.AccountWideFlightPaths and ATTAccountWideData.FlightPaths[t.flightPathID] then return 2; end
+		if app.Settings.AccountWide.FlightPaths and ATTAccountWideData.FlightPaths[t.flightPathID] then return 2; end
 		if t.altQuests then
 			for i,questID in ipairs(t.altQuests) do
 				if IsQuestFlaggedCompleted(questID) then
@@ -6692,7 +6654,7 @@ local illusionFields = {
 		return "Interface/ICONS/INV_Enchant_Disenchant";
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleIllusions;
+		return app.Settings.Collectibles.Illusions;
 	end,
 	["collected"] = function(t)
 		return ATTAccountWideData.Illusions[t.illusionID];
@@ -6851,7 +6813,7 @@ local collectedAsCostForItem = function(t)
 	end
 end;
 local collectibleAsQuest = function(t)
-	if app.CollectibleQuests then
+	if app.Settings.Collectibles.Quests then
 		if (not t.repeatable and not t.isBreadcrumb) or C_QuestLog.IsOnQuest(t.questID) then
 			return true;
 		end
@@ -6861,7 +6823,7 @@ local isCollectibleRWP = function(t)
 	return t.f and (t.rwp or (t.u and (t.u == 2 or t.u == 3 or t.u == 4))) and not BlacklistedRWPItems[t.itemID] and app.Settings:GetFilterForRWPBase(t.f);
 end
 local collectedAsRWP = function(t)
-	if app.CollectibleRWP then
+	if app.Settings.Collectibles.RWP then
 		local id, b = t.itemID, t.b;
 		if b and b == 1 then
 			-- BOP Rules
@@ -6875,45 +6837,14 @@ local collectedAsRWP = function(t)
 								any = true;
 							end
 						end
-						if any then
-							if not ATTAccountWideData.RWP[id] then
-								AddToCollection(t);
-							end
-							app.CurrentCharacter.RWP[id] = 1;
-							ATTAccountWideData.RWP[id] = 1;
-							return 1;
-						end
+						if any then return app.SetCollected(t, "RWP", id, true); end
 					end
 				end
 			end
 		end
 		
 		-- BOE Rules
-		if _GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f)) then
-			if not ATTAccountWideData.RWP[id] then
-				AddToCollection(t);
-			end
-			app.CurrentCharacter.RWP[id] = 1;
-			ATTAccountWideData.RWP[id] = 1;
-			return 1;
-		elseif app.CurrentCharacter.RWP[id] then
-			app.CurrentCharacter.RWP[id] = nil;
-			for guid,character in pairs(ATTCharacterData) do
-				if character.RWP and character.RWP[id] then
-					ATTAccountWideData.RWP[id] = 1;
-					return app.AccountWideRWP and 2;
-				end
-			end
-			if ATTAccountWideData.RWP[id] then
-				RemoveFromCollection(t);
-				ATTAccountWideData.RWP[id] = nil;
-			end
-			return;
-		end
-		if app.AccountWideRWP and ATTAccountWideData.RWP[id] then
-			return 2;
-		end
-		return;
+		return app.SetCollected(t, "RWP", id, _GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f)));
 	end
 end;
 local itemFields = {
@@ -6958,7 +6889,7 @@ local itemFields = {
 app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 "AsRWP", {
 	collectible = function(t)
-		return t.collectibleAsCost or app.CollectibleRWP;
+		return t.collectibleAsCost or app.Settings.Collectibles.RWP;
 	end,
 	collected = function(t)
 		if t.collectedAsCost == false then
@@ -6969,7 +6900,7 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 }, isCollectibleRWP,
 "WithFactionAndQuest", {
 	collectible = function(t)
-		return t.collectibleAsCost or collectibleAsQuest(t) or app.CollectibleReputations;
+		return t.collectibleAsCost or collectibleAsQuest(t) or app.Settings.Collectibles.Reputations;
 	end,
 	collected = function(t)
 		if t.collectedAsCost == false then
@@ -6980,7 +6911,7 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 		end
 		-- This is used by reputation tokens. (turn in items)
 		if app.CurrentCharacter.Factions[t.factionID] then return 1; end
-		if app.AccountWideReputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
+		if app.Settings.AccountWide.Reputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
 		if select(3, _GetFactionInfoByID(t.factionID)) == 8 then
 			app.CurrentCharacter.Factions[t.factionID] = 1;
 			ATTAccountWideData.Factions[t.factionID] = 1;
@@ -7010,7 +6941,7 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 }, (function(t) return t.questID; end),
 "WithFaction", {
 	collectible = function(t)
-		return t.collectibleAsCost or app.CollectibleReputations;
+		return t.collectibleAsCost or app.Settings.Collectibles.Reputations;
 	end,
 	collected = function(t)
 		if t.collectedAsCost == false then
@@ -7018,7 +6949,7 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 		end
 		-- This is used by reputation tokens. (turn in items)
 		if app.CurrentCharacter.Factions[t.factionID] then return 1; end
-		if app.AccountWideReputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
+		if app.Settings.AccountWide.Reputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
 		if select(3, _GetFactionInfoByID(t.factionID)) == 8 then
 			app.CurrentCharacter.Factions[t.factionID] = 1;
 			ATTAccountWideData.Factions[t.factionID] = 1;
@@ -7034,27 +6965,10 @@ end
 
 local fields = CloneDictionary(itemFields);
 fields.collectible = function(t)
-	return app.CollectibleToys;
+	return app.Settings.Collectibles.Toys;
 end
 fields.collected = function(t)
-	if t.itemID then
-		if _GetItemCount(t.itemID, true) > 0 then
-			app.CurrentCharacter.Toys[t.itemID] = 1;
-			ATTAccountWideData.Toys[t.itemID] = 1;
-			return 1;
-		elseif app.CurrentCharacter.Toys[t.itemID] == 1 then
-			app.CurrentCharacter.Toys[t.itemID] = nil;
-			ATTAccountWideData.Toys[t.itemID] = nil;
-			for guid,characterData in pairs(ATTCharacterData) do
-				if characterData.Toys and characterData.Toys[t.itemID] then
-					ATTAccountWideData.Toys[t.itemID] = 1;
-				end
-			end
-		end
-		if app.AccountWideToys and ATTAccountWideData.Toys[t.itemID] then
-			return 2;
-		end
-	end
+	if t.itemID then return app.SetCollected(t, "Toys", t.itemID, _GetItemCount(t.itemID, true) > 0); end
 end
 fields.isToy = function(t) return true; end
 app.CreateToy = app.CreateClass("Toy", "itemID", fields);
@@ -7311,11 +7225,11 @@ app.CreateExploration = app.CreateClass("Exploration", "explorationID", {
 		return t.parent and (t.parent.mapID or (t.parent.parent and t.parent.parent.mapID));
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleExploration;
+		return app.Settings.Collectibles.Exploration;
 	end,
 	["collected"] = function(t)
 		if app.CurrentCharacter.Exploration[t.explorationID] then return 1; end
-		if app.AccountWideExploration and ATTAccountWideData.Exploration[t.explorationID] then return 2; end
+		if app.Settings.AccountWide.Exploration and ATTAccountWideData.Exploration[t.explorationID] then return 2; end
 		
 		local maphash = t.maphash;
 		if maphash then
@@ -7898,7 +7812,7 @@ local createNPC = app.CreateClass("NPC", "npcID", {
 },
 "WithQuest", {
 	collectible = function(t)
-		return app.CollectibleQuests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
+		return app.Settings.Collectibles.Quests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
 	end,
 	collected = function(t)
 		return IsQuestFlaggedCompletedForObject(t);
@@ -7993,7 +7907,7 @@ app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 },
 "WithQuest", {
 	collectible = function(t)
-		return app.CollectibleQuests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
+		return app.Settings.Collectibles.Quests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
 	end,
 	collected = function(t)
 		return IsQuestFlaggedCompletedForObject(t);
@@ -8048,7 +7962,7 @@ app.CreateObject = app.CreateClass("Object", "objectID", {
 },
 "WithQuest", {
 	collectible = function(t)
-		return app.CollectibleQuests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
+		return app.Settings.Collectibles.Quests and (not t.repeatable and not t.isBreadcrumb or C_QuestLog.IsOnQuest(t.questID));
 	end,
 	collected = function(t)
 		return IsQuestFlaggedCompletedForObject(t);
@@ -8321,11 +8235,11 @@ local createQuest = app.CreateClass("Quest", "questID", {
 		if t.questID then return "[" .. t.name .. " (".. t.questID .. ")]"; end
 	end,
 	["collectible"] = function(t)
-		if app.CollectibleQuests then
+		if app.Settings.Collectibles.Quests then
 			if C_QuestLog.IsOnQuest(t.questID) then
 				return true;
 			end
-			if t.locked then return app.AccountWideQuests; end
+			if t.locked then return app.Settings.AccountWide.Quests; end
 			return not t.repeatable and not t.isBreadcrumb;
 		end
 	end,
@@ -8353,12 +8267,12 @@ local createQuest = app.CreateClass("Quest", "questID", {
 end),
 "WithReputation", {
 	collectible = function(t)
-		if app.CollectibleQuests then
+		if app.Settings.Collectibles.Quests then
 			if C_QuestLog.IsOnQuest(t.questID) then
 				return true;
 			end
-			if t.locked then return app.AccountWideQuests; end
-			if t.maxReputation and app.CollectibleReputations then
+			if t.locked then return app.Settings.AccountWide.Quests; end
+			if t.maxReputation and app.Settings.Collectibles.Reputations then
 				return true;
 			end
 			return not t.repeatable and not t.isBreadcrumb;
@@ -8376,7 +8290,7 @@ end),
 			if (select(6, _GetFactionInfoByID(t.maxReputation[1])) or 0) >= t.maxReputation[2] then
 				return t.repeatable and 1 or 2;
 			end
-			if app.AccountWideReputations then
+			if app.Settings.AccountWide.Reputations then
 				local faction = app.SearchForField("factionID", t.maxReputation[1]);
 				if (faction and #faction > 0 and faction[1].collected) then
 					return 2;
@@ -8387,7 +8301,7 @@ end),
 }, (function(t) return t.maxReputation; end),
 "AsBreadcrumb", {
 	collectible = function(t)
-		if app.CollectibleQuests then
+		if app.Settings.Collectibles.Quests then
 			if C_QuestLog.IsOnQuest(t.questID) or IsQuestFlaggedCompletedForObject(t) then
 				return true;
 			end
@@ -8541,13 +8455,13 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 		if not t.questID then
 			return false;
 		end
-		return app.CollectibleQuests and C_QuestLog.IsOnQuest(t.questID);
+		return app.Settings.Collectibles.Quests and C_QuestLog.IsOnQuest(t.questID);
 	end,
 	["trackable"] = function(t)
 		if not t.questID then
 			return false;
 		end
-		return app.CollectibleQuests and C_QuestLog.IsOnQuest(t.questID);
+		return C_QuestLog.IsOnQuest(t.questID);
 	end,
 	["collected"] = function(t)
 		-- If the parent is collected, return immediately.
@@ -8878,14 +8792,14 @@ local createSpell = app.CreateClass("Spell", "spellID", spellFields);
 
 local recipeFields = CloneDictionary(spellFields);
 recipeFields.collectible = function(t)
-	return app.CollectibleRecipes;
+	return app.Settings.Collectibles.Recipes;
 end;
 recipeFields.collected = function(t)
 	if app.CurrentCharacter.Spells[t.spellID] then
 		ATTAccountWideData.Spells[t.spellID] = 1;
 		return 1;
 	end
-	if app.AccountWideRecipes and ATTAccountWideData.Spells[t.spellID] then return 2; end
+	if app.Settings.AccountWide.Recipes and ATTAccountWideData.Spells[t.spellID] then return 2; end
 	if app.IsSpellKnown(t.spellID, t.rank, GetRelativeValue(t, "requireSkill") == 261) then
 		app.CurrentCharacter.Spells[t.spellID] = 1;
 		ATTAccountWideData.Spells[t.spellID] = 1;
@@ -8910,7 +8824,7 @@ local createRecipe = app.CreateClass("Recipe", "spellID", recipeFields,
 		return string.format("i:%d", t.itemID);
 	end,
 	b = function(t)
-		return app.AccountWideRecipes and 2;
+		return app.Settings.AccountWide.Recipes and 2;
 	end,
 }, (function(t) return t.itemID; end));
 local createItem = app.CreateItem;	-- Temporary Recipe fix until someone fixes parser.
@@ -9066,13 +8980,13 @@ app.CreateTitle = app.CreateClass("Title", "titleID", {
 		return 1;	-- Player Name First
 	end,
 	["collectible"] = function(t)
-		return app.CollectibleTitles;
+		return app.Settings.Collectibles.Titles;
 	end,
 	["trackable"] = function(t)
 		return true;
 	end,
 	["collected"] = function(t)
-		return t.saved or (app.AccountWideTitles and ATTAccountWideData.Titles[t.titleID] and 2);
+		return t.saved or (app.Settings.AccountWide.Titles and ATTAccountWideData.Titles[t.titleID] and 2);
 	end,
 	["saved"] = function(t)
 		if app.CurrentCharacter.Titles[t.titleID] then return true; end
@@ -9089,7 +9003,7 @@ app.CreateTitle = app.CreateClass("Title", "titleID", {
 "WithGender", {
 	collected = function(t)
 		if t.saved then return 1; end
-		if app.AccountWideTitles then
+		if app.Settings.AccountWide.Titles then
 			local ids = t.titleIDs;
 			local m, f = ids[1], ids[2];
 			return (ATTAccountWideData.Titles[m] or ATTAccountWideData.Titles[f]) and 2;
@@ -9415,7 +9329,7 @@ UpdateGroup = function(parent, group)
 					visible = true;
 				elseif app.ShowIncompleteThings(group) and not group.saved then
 					visible = true;
-				elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
+				elseif ((group.itemID and group.f) or group.sym) and app.Settings.Collectibles.Loot then
 					visible = true;
 				end
 			else
@@ -9442,7 +9356,7 @@ UpdateGroup = function(parent, group)
 					if app.ShowIncompleteThings(group) and not group.saved then
 						visible = true;
 					end
-				elseif ((group.itemID and group.f) or group.sym) and app.CollectibleLoot then
+				elseif ((group.itemID and group.f) or group.sym) and app.Settings.Collectibles.Loot then
 					visible = true;
 				elseif app.Settings:Get("DebugMode") then
 					visible = true;
@@ -9531,7 +9445,7 @@ function app.QuestCompletionHelper(questID)
 	local searchResults = app.SearchForField("questID", questID);
 	if searchResults and #searchResults > 0 then
 		-- Only increase progress for Quests as Collectible users.
-		if app.CollectibleQuests then
+		if app.Settings.Collectibles.Quests then
 			-- Attempt to cleanly refresh the data.
 			for i,result in ipairs(searchResults) do
 				if result.visible and result.parent and result.parent.total then
@@ -13859,7 +13773,7 @@ app:GetWindow("Tradeskills", {
 			end
 		end
 		self.RefreshRecipes = function(self)
-			if app.CollectibleRecipes then
+			if app.Settings.Collectibles.Recipes then
 				self.wait = 5;
 				app:StartATTCoroutine("RefreshingRecipes", function()
 					while self.wait > 0 do
@@ -14499,7 +14413,7 @@ app.events.ADDON_LOADED = function(addonName)
 				local otherContainer = other[field];
 				if otherContainer and otherContainer[id] then
 					accountWideData[field][id] = 1;
-					return accountWideSettings[field] and 2;
+					return accountWideSettings[subtype] and 2;
 				end
 			end
 			if accountWideData[field][id] then
