@@ -275,6 +275,12 @@ app.SetDataSubMember = SetDataSubMember;
 app.GetDataSubMember = GetDataSubMember;
 app.GetTempDataMember = GetTempDataMember;
 app.GetTempDataSubMember = GetTempDataSubMember;
+app.SetCollected = function()
+	app.print("SetCollected not initialized yet...");
+end;
+app.SetCollectedForSubType = function()
+	app.print("SetCollectedForSubType not initialized yet...");
+end
 
 local backdrop = {
 	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -4059,7 +4065,7 @@ end
 -- Achievement Lib
 (function()
 local useAchievementAPI, commonAchievementHandlers = false;
-local SetAchievementCollected = function(achievementID, collected, refresh)
+local SetAchievementCollected = function(achievementID, collected)
 	if collected then
 		app.CurrentCharacter.Achievements[achievementID] = 1;
 		ATTAccountWideData.Achievements[achievementID] = 1;
@@ -14447,6 +14453,65 @@ app.events.ADDON_LOADED = function(addonName)
 	if not accountWideData.Spells then accountWideData.Spells = {}; end
 	if not accountWideData.Titles then accountWideData.Titles = {}; end
 	if not accountWideData.Toys then accountWideData.Toys = {}; end
+	
+	-- Account Wide Settings
+	local accountWideSettings = app.Settings.AccountWide;
+	local function SetCollected(t, field, id, collected)
+		local container = currentCharacter[field];
+		local oldstate = container[id];
+		if collected then
+			if not oldstate then
+				container[id] = 1;
+				accountWideData[field][id] = 1;
+				AddToCollection(t);
+			end
+			return 1;
+		elseif oldstate then
+			container[id] = nil;
+			for guid,other in pairs(characterData) do
+				local otherContainer = other[field];
+				if otherContainer and otherContainer[id] then
+					accountWideData[field][id] = 1;
+					return accountWideSettings[field] and 2;
+				end
+			end
+			if accountWideData[field][id] then
+				RemoveFromCollection(t);
+				accountWideData[field][id] = nil;
+			end
+		elseif accountWideSettings[field] and accountWideData[field][id] then
+			return 2;
+		end
+	end
+	local function SetCollectedForSubType(t, field, subtype, id, collected)
+		local container = currentCharacter[field];
+		local oldstate = container[id];
+		if collected then
+			if not oldstate then
+				container[id] = 1;
+				accountWideData[field][id] = 1;
+				AddToCollection(t);
+			end
+			return 1;
+		elseif oldstate then
+			container[id] = nil;
+			for guid,other in pairs(characterData) do
+				local otherContainer = other[field];
+				if otherContainer and otherContainer[id] then
+					accountWideData[field][id] = 1;
+					return accountWideSettings[field] and 2;
+				end
+			end
+			if accountWideData[field][id] then
+				RemoveFromCollection(t);
+				accountWideData[field][id] = nil;
+			end
+		elseif accountWideSettings[subtype] and accountWideData[field][id] then
+			return 2;
+		end
+	end
+	app.SetCollected = SetCollected;
+	app.SetCollectedForSubType = SetCollectedForSubType;
 	
 	-- Convert over the deprecated account wide tables.
 	local data = GetDataMember("Deaths");

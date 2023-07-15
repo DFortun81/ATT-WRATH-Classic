@@ -12,6 +12,37 @@ local ATTClassicSettings, ATTClassicSettingsPerCharacter = {}, {};
 -- The Settings Frame
 local settings = CreateFrame("FRAME", app:GetName() .. "-Settings", InterfaceOptionsFramePanelContainer or UIParent, BackdropTemplateMixin and "BackdropTemplate");
 app.Settings = settings;
+settings.AccountWide = {
+	Achievements = true,
+	BattlePets = true,
+	Deaths = true,
+	Exploration = true,
+	FlightPaths = true,
+	Illusions = true,
+	Mounts = true,
+	PVPRanks = true,
+	Quests = true,
+	Recipes = true,
+	Reputations = true,
+	RWP = true,
+	Titles = true,
+	Toys = true,
+};
+settings.Collectibles = {
+	Achievements = true,
+	BattlePets = true,
+	Exploration = true,
+	FlightPaths = true,
+	Illusions = true,
+	Loot = true,
+	Mounts = true,
+	Quests = true,
+	Recipes = true,
+	Reputations = true,
+	RWP = true,
+	Titles = true,
+	Toys = true,
+};
 settings.name = app:GetName();
 settings.MostRecentTab = nil;
 settings:Hide();
