@@ -14303,6 +14303,10 @@ app.events.ADDON_LOADED = function(addonName)
 	-- Update timestamps.
 	local now = time();
 	local timeStamps = currentCharacter.TimeStamps;
+	if not timeStamps then
+		timeStamps = {};
+		currentCharacter.TimeStamps = timeStamps;
+	end
 	for key,value in pairs(currentCharacter) do
 		if type(value) == "table" and not timeStamps[key] then
 			timeStamps[key] = now;
