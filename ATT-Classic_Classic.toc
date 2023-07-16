@@ -55,3 +55,4 @@ src\UI\Random.lua
 src\UI\Removed With Patch Loot.lua
 src\UI\Soft Reserves.lua
 src\UI\Sync.lua
+src\UI\Unsorted.lua

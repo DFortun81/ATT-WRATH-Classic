@@ -3265,7 +3265,7 @@ function app:GetDataCache()
 					end
 				end
 				if GetCategoryList then
-					local unsortedData = app:GetWindow("Unsorted").data;
+					local unsorted = app:GetWindow("Unsorted");
 					for _,categoryID in ipairs(GetCategoryList()) do
 						local numAchievements = GetCategoryNumAchievements(categoryID);
 						if numAchievements > 0 then
@@ -3279,7 +3279,6 @@ function app:GetDataCache()
 									if not achievement.u or achievement.u ~= 1 then
 										tinsert(achievement.parent.g, achievement);
 									end
-									tinsert(unsortedData, achievement);
 									local numCriteria = _GetAchievementNumCriteria(achievementID);
 									if numCriteria > 0 then
 										local g = {};
@@ -3294,9 +3293,7 @@ function app:GetDataCache()
 									app.CacheFields(achievement);
 									
 									-- Put a copy in Unsorted.
-									achievement = app.CreateAchievement(achievementID);
-									achievement.parent = unsortedData;
-									tinsert(unsortedData.g, achievement);
+									if unsorted then unsorted:AddUnsortedAchievement(achievement); end
 								end
 							end
 						end
@@ -3648,26 +3645,7 @@ function app:GetDataCache()
 			app.Categories.NeverImplemented = nil;
 		end
 		
-		-- Now build the hidden "Unsorted" Window's Data
-		-- TODO: Move this to its own module!
-		if app.Categories.Unsorted then
-			local unsortedData = {
-				text = L["TITLE"],
-				title = "Unsorted" .. DESCRIPTION_SEPARATOR .. app.Version,
-				icon = app.asset("logo_32x32"),
-				preview = app.asset("Discord_2_128"),
-				description = "This data hasn't been implemented yet.",
-				font = "GameFontNormalLarge",
-				expanded = true,
-				visible = true,
-				progress = 0,
-				total = 0,
-				g = app.Categories.Unsorted,
-			};
-			BuildGroups(unsortedData);
-			app:GetWindow("Unsorted").data = unsortedData;
-			app.Categories.Unsorted = nil;
-		end
+		
 		
 		-- All future calls to this function will return the root data.
 		app.GetDataCache = function()
@@ -12709,16 +12687,7 @@ app:GetWindow("NeverImplemented", {
 		end
 	end,
 });
-app:GetWindow("Unsorted", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTUNSORTED1 = "/attunsorted";
-		SlashCmdList["ATTUNSORTED"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-});
+
 
 local IsSameMap = function(data, results)
 	if data.mapID then
