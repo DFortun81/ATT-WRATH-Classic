@@ -834,16 +834,7 @@ local function GetDisplayID(data)
 end
 
 
-local function AssignFieldValue(group, field, value)
-	if group then
-		group[field] = value;
-		if group.g then
-			for i,o in ipairs(group.g) do
-				AssignFieldValue(o, field, value)
-			end
-		end
-	end
-end
+
 local function GetBestMapForGroup(group)
 	if group then
 		return group.mapID or (group.maps and group.maps[1]) or (group.coords and group.coords[1][3]) or GetBestMapForGroup(group.parent);
@@ -3603,24 +3594,6 @@ function app:GetDataCache()
 			-- Wipe out the tier object cache.
 			wipe(tierCache);
 		end
-		
-		
-		-- Never Implemented
-		-- TODO: Move this to its own module!
-		if app.Categories.NeverImplemented then
-			local nyiData = app.CacheFields({
-				text = "Never Implemented",
-				hideText = true,
-				indent = 2,
-				g = app.Categories.NeverImplemented,
-			});
-			AssignFieldValue(nyiData, "u", 1);
-			app:GetWindow("NeverImplemented").data = nyiData;
-			BuildGroups(nyiData);
-			app.Categories.NeverImplemented = nil;
-		end
-		
-		
 		
 		-- All future calls to this function will return the root data.
 		app.GetDataCache = function()
@@ -12632,18 +12605,6 @@ app:GetWindow("Prime", {
 });
 
 
-app:GetWindow("NeverImplemented", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTNYI1 = "/attnyi";
-		SLASH_ATTNYI2 = "/attni";
-		SlashCmdList["ATTNYI"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-});
-
 
 local IsSameMap = function(data, results)
 	if data.mapID then
@@ -14388,7 +14349,6 @@ app.events.VARIABLES_LOADED = function()
 		
 		-- Cache some things
 		app.CurrentMapID = app.GetCurrentMapID();
-		app.CacheFlightPathData();
 		
 		-- Mark all previously completed quests.
 		GetQuestsCompleted(CompletedQuests);
@@ -14408,6 +14368,9 @@ app.events.VARIABLES_LOADED = function()
 			savedVariables.Windows = windowSettings;
 		end
 		LoadSettingsForWindows(windowSettings);
+		
+		-- Now that all the windows are loaded, cache flight paths!
+		app.CacheFlightPathData();
 		
 		-- Mark that we're ready now!
 		app.IsReady = true;

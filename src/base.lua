@@ -175,6 +175,16 @@ app.StartATTCoroutine = function(self, ...)
 end
 
 -- API Functions
+local function AssignFieldValue(group, field, value)
+	if group then
+		group[field] = value;
+		if group.g then
+			for i,o in ipairs(group.g) do
+				AssignFieldValue(o, field, value)
+			end
+		end
+	end
+end
 local function CloneArray(arr)
 	local clone = {};
 	for i,value in ipairs(arr) do
@@ -202,6 +212,7 @@ local function CloneReference(group)
 	end
 	return setmetatable(clone, { __index = group });
 end
+app.AssignFieldValue = AssignFieldValue;
 app.CloneArray = CloneArray;
 app.CloneDictionary = CloneDictionary;
 app.CloneReference = CloneReference;
