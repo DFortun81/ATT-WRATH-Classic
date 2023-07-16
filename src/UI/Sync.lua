@@ -408,7 +408,7 @@ local defaultSerializer = function(field, value, timeStamp, lastUpdated)
 	if typeListID then
 		if t == "table" then
 			-- If the data isn't new, don't bother resending it.
-			if not timeStamp or timeStamp == 0 or lastUpdated >= timeStamp then
+			if timeStamp and lastUpdated >= timeStamp then
 				return;
 			end
 			
@@ -816,7 +816,7 @@ local function OnClickForLinkedAccount(row, button)
 		if character then
 			SendCharacterMessage(character, ValidateMessage("check," .. CurrentCharacter.battleTag));
 		else
-			SendAddonMessage(identifier, ValidateMessage("link," .. CurrentCharacter.battleTag));
+			SendAddonMessage(identifier, ValidateMessage("check," .. CurrentCharacter.battleTag));
 		end
 	end
 	return true;
@@ -950,7 +950,7 @@ app:GetWindow("Synchronization", {
 								-- Prevent server names.
 								cmd = strsplit("-", cmd);
 								LinkedCharacters[cmd] = true;
-								SendAddonMessage(cmd, "link," .. CurrentCharacter.battleTag);
+								SendAddonMessage(cmd, "check," .. CurrentCharacter.battleTag);
 								self:Rebuild();
 							end
 						end);
