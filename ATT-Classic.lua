@@ -8640,11 +8640,11 @@ app.GetSpellName = function(spellID, rank)
 		return spellName;
 	end
 end
+local isSpellKnownHelper = function(spellID)
+	return spellID and (IsPlayerSpell(spellID) or IsSpellKnown(spellID, true) or IsSpellKnownOrOverridesKnown(spellID, true));
+end
 app.IsSpellKnown = function(spellID, rank, ignoreHigherRanks)
-	if IsPlayerSpell(spellID) or IsSpellKnown(spellID) or IsSpellKnown(spellID, true)
-		or IsSpellKnownOrOverridesKnown(spellID) or IsSpellKnownOrOverridesKnown(spellID, true) then
-		return true;
-	end
+	if isSpellKnownHelper(spellID) then return true; end
 	if rank then
 		local spellName = GetSpellInfo(spellID);
 		if spellName then
@@ -8652,9 +8652,7 @@ app.IsSpellKnown = function(spellID, rank, ignoreHigherRanks)
 			if maxRank then
 				spellName = spellName .. " (" .. RANK .. " ";
 				for i=maxRank,rank,-1 do
-					spellID = app.SpellNameToSpellID[spellName .. i .. ")"];
-					if spellID and (IsPlayerSpell(spellID) or IsSpellKnown(spellID) or IsSpellKnown(spellID, true)
-						or IsSpellKnownOrOverridesKnown(spellID) or IsSpellKnownOrOverridesKnown(spellID, true)) then
+					if isSpellKnownHelper(app.SpellNameToSpellID[spellName .. i .. ")"]) then
 						return true;
 					end
 				end
@@ -8756,7 +8754,9 @@ recipeFields.collectible = function(t)
 	return app.Settings.Collectibles.Recipes;
 end;
 recipeFields.collected = function(t)
-	return app.SetCollectedForSubType(t, "Spells", "Recipes", t.spellID, app.IsSpellKnown(t.spellID, t.rank, GetRelativeValue(t, "requireSkill") == 261));
+	if app.CurrentCharacter.Spells[t.spellID] then return 1; end
+	local isKnown = not t.nmc and app.IsSpellKnown(t.spellID, t.rank, GetRelativeValue(t, "requireSkill") == 261);
+	return app.SetCollectedForSubType(t, "Spells", "Recipes", t.spellID, isKnown);
 end;
 recipeFields.f = function(t)
 	return 200;
