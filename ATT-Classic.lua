@@ -6815,27 +6815,32 @@ local isCollectibleRWP = function(t)
 end
 local collectedAsRWP = function(t)
 	if app.Settings.Collectibles.RWP then
+		-- If it's a BOE we can collect it on this character.
 		local id, b = t.itemID, t.b;
-		if b and b == 1 then
-			-- BOP Rules
-			if t.parent and t.parent.key == "questID" and not t.parent.repeatable then
-				if (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f) then
-					local searchResults = app.SearchForField("itemID", id);
-					if searchResults and #searchResults > 0 then
-						local any = false;
-						for i,o in ipairs(searchResults) do
-							if ((o.key == "questID" and o.saved) or (o.parent and o.parent.key == "questID" and o.parent.saved)) and app.RecursiveDefaultClassAndRaceFilter(o) then
-								any = true;
-							end
+		if not b or b == 2 or b == 3 then
+			-- This item is BOE. You CAN collect this on this character! (but not from a quest)
+			return app.SetCollected(t, "RWP", id, _GetItemCount(id, true) > 0);
+		elseif app.Settings:GetFilterForRWP(t.f) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) then
+			-- This character matches requirements
+			if _GetItemCount(id, true) > 0 then
+				-- You kept this item. Nice!
+				return app.SetCollected(t, "RWP", id, true);
+			else
+				-- Check to see if this item was a quest reward.
+				local searchResults = app.SearchForField("itemID", id);
+				if searchResults and #searchResults > 0 then
+					for i,o in ipairs(searchResults) do
+						if ((o.key == "questID" and o.saved) or (o.parent and o.parent.key == "questID" and o.parent.saved)) and app.RecursiveDefaultClassAndRaceFilter(o) then
+							return app.SetCollected(t, "RWP", id, true);
 						end
-						if any then return app.SetCollected(t, "RWP", id, true); end
 					end
+					return app.SetCollected(t, "RWP", id, false);
 				end
 			end
+		else
+			-- This character does NOT match requirements and the item is BOP. You can't collect these on this character. :(
+			return app.SetCollected(t, "RWP", id, false);
 		end
-		
-		-- BOE Rules
-		return app.SetCollected(t, "RWP", id, _GetItemCount(id, true) > 0 and ((not b or b == 2 or b == 3) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) or app.Settings:GetFilterForRWP(t.f)));
 	end
 end;
 local itemFields = {
