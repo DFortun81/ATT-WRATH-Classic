@@ -1,4 +1,4 @@
----------------------------------------------------------
+﻿---------------------------------------------------------
 --   C A T E G O R Y   D A T A B A S E   M O D U L E   --
 ---------------------------------------------------------
 select(2, ...).CategoryNames = {
@@ -7,7 +7,6 @@ select(2, ...).CategoryNames = {
 	[58] = "Holiday Cooking",
 	[63] = "Everyday Cooking",
 	[70] = "Unusual Delights",
-	[71] = "Weapon Skills",
 	[103] = "Off-hand",
 	[104] = "Ink",
 	[106] = "Card",
@@ -225,7 +224,6 @@ select(2, ...).CategoryIcons = {
 	[58] = "Interface/Icons/INV_Misc_Food_62",
 	[63] = "Interface/Icons/INV_Misc_Food_12",
 	[70] = "Interface/Icons/INV_Helmet_66",
-	[71] = "Interface/Icons/INV_Weapon_Halberd_10",
 	[104] = "Interface/Icons/inv_inscription_inkpurple01",
 	[106] = "Interface/Icons/Inv_misc_ticket_tarot_portal_01",
 	[107] = "Interface/Icons/inv_scroll_03",
