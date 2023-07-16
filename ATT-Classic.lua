@@ -10974,7 +10974,7 @@ local function RowOnEnter(self)
 				end
 			end
 		end
-		if reference.crs and app.Settings:GetTooltipSetting("creatures") then
+		if reference.crs then
 			if app.Settings:GetTooltipSetting("creatureID") then 
 				for i,cr in ipairs(reference.crs) do
 					GameTooltip:AddDoubleLine(i == 1 and CREATURE or " ", tostring(cr > 0 and app.NPCNameFromID[cr] or "") .. " (" .. cr .. ")");
