@@ -13556,12 +13556,10 @@ app:GetWindow("Tradeskills", {
 									learned = learned + 1;
 								end
 								if not skillCache[spellID] then
-									if tradeSkillID ~= 773 then
-										app.print("Missing " .. craftName .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
-									end
+									app.print("Missing " .. craftName .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
 									skillCache[spellID] = { {} };
 								end
-							elseif tradeSkillID ~= 773 then
+							else
 								app.print("Missing " .. craftName .. " spellID in ATT Database. Please report it!");
 							end
 							
@@ -13615,12 +13613,10 @@ app:GetWindow("Tradeskills", {
 								end
 								
 								if not skillCache[spellID] then
-									if tradeSkillID ~= 773 then
-										app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
-									end
+									app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
 									skillCache[spellID] = { {} };
 								end
-							elseif tradeSkillID ~= 773 then
+							else
 								app.print("Missing " .. (skillName or "[??]") .. " spellID in ATT Database. Please report it!");
 							end
 							
