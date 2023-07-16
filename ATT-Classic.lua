@@ -49,7 +49,8 @@ local _GetItemInfo = _G["GetItemInfo"];
 local _GetItemInfoInstant = _G["GetItemInfoInstant"];
 local _GetItemCount = _G["GetItemCount"];
 local _InCombatLockdown = _G["InCombatLockdown"];
-local IsTitleKnown = IsTitleKnown;
+local GetSpellInfo, IsPlayerSpell, IsSpellKnown, IsSpellKnownOrOverridesKnown, IsTitleKnown = 
+	  GetSpellInfo, IsPlayerSpell, IsSpellKnown, IsSpellKnownOrOverridesKnown, IsTitleKnown;
 local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
 local HORDE_FACTION_ID = Enum.FlightPathFaction.Horde;
 
@@ -164,6 +165,7 @@ local function PendingCollectionCoroutine()
 	end
 end
 local function AddToCollection(group)
+	if not group then return; end
 	local hash = group.hash;
 	local text = group.text;
 	if not text or text == RETRIEVING_DATA then
@@ -180,6 +182,7 @@ local function AddToCollection(group)
 	end
 end
 local function RemoveFromCollection(group)
+	if not group then return; end
 	local hash = group.hash;
 	local text = group.text;
 	if not text or text == RETRIEVING_DATA then
@@ -517,9 +520,6 @@ end
 local CS = CreateFrame("ColorSelect", nil, app.frame);
 local function Colorize(str, color)
 	return "|c" .. color .. str .. "|r";
-end
-local function HexToARGB(hex)
-	return tonumber("0x"..hex:sub(1,2)) / 255, tonumber("0x"..hex:sub(3,4)) / 255, tonumber("0x"..hex:sub(5,6)) / 255, tonumber("0x"..hex:sub(7,8)) / 255;
 end
 local function HexToRGB(hex)
 	return tonumber("0x"..hex:sub(3,4)) / 255, tonumber("0x"..hex:sub(5,6)) / 255, tonumber("0x"..hex:sub(7,8)) / 255;
@@ -7206,11 +7206,7 @@ app.CreateExploration = app.CreateClass("Exploration", "explorationID", {
 			if exploredMapTextures then
 				for i,info in ipairs(exploredMapTextures) do
 					local hash = info.textureWidth..":"..info.textureHeight..":"..info.offsetX..":"..info.offsetY;
-					if hash == maphash then
-						app.CurrentCharacter.Exploration[t.explorationID] = 1;
-						ATTAccountWideData.Exploration[t.explorationID] = 1;
-						return 1;
-					end
+					if hash == maphash then return app.SetCollected(nil, "Exploration", t.explorationID, true); end
 				end
 				--[[
 				if not app.MAPHASHTHING then app.MAPHASHTHING = {}; end
@@ -7244,8 +7240,7 @@ app.CreateExploration = app.CreateClass("Exploration", "explorationID", {
 			if explored then
 				for _,areaID in ipairs(explored) do
 					if areaID == t.explorationID then
-						app.CurrentCharacter.Exploration[areaID] = 1;
-						ATTAccountWideData.Exploration[areaID] = 1;
+						app.SetCollected(nil, "Exploration", areaID, true);
 						return 1;
 					end
 				end
@@ -7404,8 +7399,7 @@ local onMapUpdate = function(t)
 		local explored = C_MapExplorationInfo_GetExploredAreaIDsAtPosition(pos[3] or id, CreateVector2D(pos[1] / 100, pos[2] / 100));
 		if explored then
 			for _,areaID in ipairs(explored) do
-				app.CurrentCharacter.Exploration[areaID] = 1;
-				ATTAccountWideData.Exploration[areaID] = 1;
+				app.SetCollected(nil, "Exploration", areaID, true);
 				local o = explorationByAreaID[areaID];
 				if not o and not DiscoveredNewArea[areaID] and not app.SearchForField("explorationID", areaID) then
 					DiscoveredNewArea[areaID] = true;
@@ -7422,8 +7416,7 @@ local onMapUpdate = function(t)
 		local explored = C_MapExplorationInfo_GetExploredAreaIDsAtPosition(id, pos);
 		if explored then
 			for _,areaID in ipairs(explored) do
-				app.CurrentCharacter.Exploration[areaID] = 1;
-				ATTAccountWideData.Exploration[areaID] = 1;
+				app.SetCollected(nil, "Exploration", areaID, true);
 				local o = explorationByAreaID[areaID];
 				if not o and not DiscoveredNewArea[areaID] then
 					DiscoveredNewArea[areaID] = true;
@@ -7667,8 +7660,7 @@ app.events.MAP_EXPLORATION_UPDATED = function(...)
 				local newArea = false;
 				for _,areaID in ipairs(explored) do
 					if not app.CurrentCharacter.Exploration[areaID] then
-						app.CurrentCharacter.Exploration[areaID] = 1;
-						ATTAccountWideData.Exploration[areaID] = 1;
+						app.SetCollected(nil, "Exploration", areaID, true);
 						newArea = true;
 						if not app.ExplorationAreaPositionDB[areaID] then
 							local coord = {px, py, app.CurrentMapID};
@@ -8946,15 +8938,11 @@ app.CreateTitle = app.CreateClass("Title", "titleID", {
 		return true;
 	end,
 	["collected"] = function(t)
-		return t.saved or (app.Settings.AccountWide.Titles and ATTAccountWideData.Titles[t.titleID] and 2);
+		local titleID = t.titleID;
+		return app.SetCollected(t, "Titles", titleID, IsTitleKnown(titleID));
 	end,
 	["saved"] = function(t)
-		if app.CurrentCharacter.Titles[t.titleID] then return true; end
-		if IsTitleKnown(t.titleID) then
-			app.CurrentCharacter.Titles[t.titleID] = 1;
-			ATTAccountWideData.Titles[t.titleID] = 1;
-			return true;
-		end
+		return IsTitleKnown(t.titleID);
 	end,
 	["OnUpdateForSpecificGender"] = function(t)
 		return OnUpdateForSpecificGender;
@@ -8962,51 +8950,24 @@ app.CreateTitle = app.CreateClass("Title", "titleID", {
 },
 "WithGender", {
 	collected = function(t)
-		if t.saved then return 1; end
-		if app.Settings.AccountWide.Titles then
-			local ids = t.titleIDs;
-			local m, f = ids[1], ids[2];
-			return (ATTAccountWideData.Titles[m] or ATTAccountWideData.Titles[f]) and 2;
+		local ids, acctTitles, charTitles = t.titleIDs, ATTAccountWideData.Titles, app.CurrentCharacter.Titles;
+		local m, f = ids[1], ids[2];
+		local alreadyHaveOne = charTitles[m] or charTitles[f];
+		local collectedM = app.SetCollected(nil, "Titles", m, IsTitleKnown(m));
+		local collectedF = app.SetCollected(nil, "Titles", f, IsTitleKnown(f));
+		if collectedM == 1 or collectedF == 1 then
+			if not alreadyHaveOne then AddToCollection(t); end
+			return 1;
+		elseif collectedM == 2 or collectedF == 2 then
+			return 2;
 		end
 	end,
 	description = function(t)
 		return "This title changes its state whenever your character changes its gender identity. This is particularly common in Brunnhildar Village in Storm Peaks or by means of using an Engineering teleport. In account mode you will need to have multiple characters with representation of both gender types.";
 	end,
 	saved = function(t)
-		local ids, acctTitles, charTitles = t.titleIDs, ATTAccountWideData.Titles, app.CurrentCharacter.Titles;
-		local m, f = ids[1], ids[2];
-		if IsTitleKnown(m) then
-			charTitles[m] = 1;
-			acctTitles[m] = 1;
-			if charTitles[f] == 1 then
-				-- Check for a character that has this title.
-				charTitles[f] = nil;
-				acctTitles[f] = nil;
-				for guid,characterData in pairs(ATTCharacterData) do
-					if characterData.Titles and characterData.Titles[f] then
-						acctTitles[f] = 1;
-						break;
-					end
-				end
-			end
-			return true;
-		end
-		if IsTitleKnown(f) then
-			charTitles[f] = 1;
-			acctTitles[f] = 1;
-			if charTitles[m] == 1 then
-				-- Check for a character that has this title.
-				charTitles[m] = nil;
-				acctTitles[m] = nil;
-				for guid,characterData in pairs(ATTCharacterData) do
-					if characterData.Titles and characterData.Titles[m] then
-						acctTitles[m] = 1;
-						break;
-					end
-				end
-			end
-			return true;
-		end
+		local ids = t.titleIDs;
+		return IsTitleKnown(ids[1]) or IsTitleKnown(ids[2]);
 	end,
 	title = function(t)
 		local ids, acctTitles = t.titleIDs, ATTAccountWideData.Titles;
@@ -9500,7 +9461,7 @@ local function RefreshCollections()
 		if C_TransmogCollection and C_TransmogCollection.GetIllusions then
 			local collectedIllusions = ATTAccountWideData.Illusions;
 			for _,illusion in ipairs(C_TransmogCollection.GetIllusions()) do
-				if rawget(illusion, "isCollected") then rawset(collectedIllusions, illusion.sourceID, 1); end
+				if illusion.isCollected then collectedIllusions[illusion.sourceID] = 1; end
 			end
 			coroutine.yield();
 		end
