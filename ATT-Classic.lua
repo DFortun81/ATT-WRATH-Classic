@@ -14289,10 +14289,12 @@ app.events.ADDON_LOADED = function(addonName)
 		local oldstate = container[id];
 		if collected then
 			if not oldstate then
+				if t and not (accountWideSettings[field] and accountWideData[field][id]) then
+					AddToCollection(t);
+				end
 				container[id] = 1;
 				accountWideData[field][id] = 1;
 				timeStamps[field] = time();
-				AddToCollection(t);
 			end
 			return 1;
 		elseif oldstate then
@@ -14318,10 +14320,12 @@ app.events.ADDON_LOADED = function(addonName)
 		local oldstate = container[id];
 		if collected then
 			if not oldstate then
+				if t and not (accountWideSettings[field] and accountWideData[field][id]) then
+					AddToCollection(t);
+				end
 				container[id] = 1;
 				accountWideData[field][id] = 1;
 				timeStamps[field] = time();
-				AddToCollection(t);
 			end
 			return 1;
 		elseif oldstate then
