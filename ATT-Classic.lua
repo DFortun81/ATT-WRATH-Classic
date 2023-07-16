@@ -3604,31 +3604,6 @@ function app:GetDataCache()
 			wipe(tierCache);
 		end
 		
-		-- Hidden Triggers
-		-- TODO: Move these to their own separate module, after formatting is updated.
-		-- At that point, explicitly caching the associated fileds will no longer be necessary.
-		if app.Categories.HiddenAchievementTriggers then
-			local hqtData = app.CacheFields({
-				text = "Hidden Achievement Triggers",
-				description = "Hidden Achievement Triggers",
-				g = app.Categories.HiddenAchievementTriggers,
-				_hqt = true,
-			});
-			app:GetWindow("HiddentAchievementTriggers").data = hqtData;
-			BuildGroups(hqtData);
-			app.Categories.HiddenAchievementTriggers = nil;
-		end
-		if app.Categories.HiddenQuestTriggers then
-			local hqtData = app.CacheFields({
-				text = "Hidden Quest Triggers",--L["HIDDEN_QUEST_TRIGGERS"]
-				description = "These quests are triggered by completing things in the game.",--L["HIDDEN_QUEST_TRIGGERS_DESC"]
-				g = app.Categories.HiddenQuestTriggers,
-				_hqt = true
-			});
-			app:GetWindow("HiddentQuestTriggers").data = hqtData;
-			BuildGroups(hqtData);
-			app.Categories.HiddenQuestTriggers = nil;
-		end
 		
 		-- Never Implemented
 		-- TODO: Move this to its own module!
@@ -8149,11 +8124,11 @@ local createQuest = app.CreateClass("Quest", "questID", {
 			end
 		end
 		if t.isWorldQuest then
-			return "Interface\\GossipFrame\\DailyActiveQuestIcon";
+			return app.asset("Interface_WorldQuest");
 		elseif t.repeatable then
-			return "Interface\\GossipFrame\\DailyQuestIcon";
+			return app.asset("Interface_Questd");
 		else
-			return "Interface\\GossipFrame\\AvailableQuestIcon";
+			return app.asset("Interface_Quest");
 		end
 	end,
 	["model"] = function(t)
@@ -12647,35 +12622,16 @@ app:GetWindow("Prime", {
 		self.DefaultUpdate(self, ...);
 		
 		-- Write the current character's progress.
+		local rootData = self.data;
 		app.CurrentCharacter.PrimeData = {
-			progress = self.data.progress,
-			total = self.data.total,
-			modeString = self.data.modeString,
+			progress = rootData.progress,
+			total = rootData.total,
+			modeString = rootData.modeString,
 		};
 	end
 });
-app:GetWindow("HiddentAchievementTriggers", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTHATS1 = "/atthat";
-		SLASH_ATTHATS2 = "/atthats";
-		SlashCmdList["ATTHATS"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-});
-app:GetWindow("HiddentQuestTriggers", {
-	parent = UIParent,
-	Silent = true,
-	OnInit = function(self)
-		SLASH_ATTHQTS1 = "/atthqt";
-		SLASH_ATTHQTS2 = "/atthqts";
-		SlashCmdList["ATTHQTS"] = function(cmd)
-			self:Toggle();
-		end
-	end,
-});
+
+
 app:GetWindow("NeverImplemented", {
 	parent = UIParent,
 	Silent = true,

@@ -47,6 +47,8 @@ src\UI\Attunements.lua
 src\UI\Auctions.lua
 src\UI\Breadcrumbs.lua
 src\UI\Dailies.lua
+src\UI\Hidden Achievement Triggers.lua
+src\UI\Hidden Quest Triggers.lua
 src\UI\Maps.lua
 src\UI\Objects.lua
 src\UI\Quests.lua
