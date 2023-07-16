@@ -4803,10 +4803,7 @@ else
 	local fieldsWithSpellID = {
 		OnUpdate = function(t)
 			if t.collectible then
-				local spellID = t.spellID;
-				local collected = app.IsSpellKnown(spellID, t.rank);
-				app.SetCollected(nil, "Spells", spellID, collected or app.CurrentCharacter.ActiveSkills[spellID]);
-				t:SetAchievementCollected(t.achievementID, collected);
+				t:SetAchievementCollected(t.achievementID, app.IsSpellKnown(t.spellID, t.rank));
 			end
 		end
 	};
@@ -13552,7 +13549,7 @@ app:GetWindow("Tradeskills", {
 								elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
 								app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(craftType) or nil;
 								if not app.CurrentCharacter.Spells[spellID] then
-									app.SetCollected(nil, "Spells", spellID, true);
+									app.SetCollectedForSubType(nil, "Spells", "Recipes", spellID, true);
 									learned = learned + 1;
 								end
 								if not skillCache[spellID] then
@@ -13611,7 +13608,7 @@ app:GetWindow("Tradeskills", {
 								elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
 								app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(skillType) or nil;
 								if not app.CurrentCharacter.Spells[spellID] then
-									app.SetCollected(nil, "Spells", spellID, true);
+									app.SetCollectedForSubType(nil, "Spells", "Recipes", spellID, true);
 									learned = learned + 1;
 								end
 								
@@ -13827,7 +13824,23 @@ app:GetWindow("Tradeskills", {
 		local newSpellLearned = function(self, spellID)
 			if spellID then
 				if not app.CurrentCharacter.Spells[spellID] then
-					app.SetCollected(app.CreateRecipe(spellID), "Spells", spellID, true);
+					local searchResults, spell = app.SearchForField("spellID", spellID);
+					if searchResults and #searchResults > 0 then
+						spell = searchResults[1];
+						for i=2,#searchResults,1 do
+							local searchResult = searchResults[i];
+							if not searchResult.itemID then
+								spell = searchResult;
+							end
+						end
+					else
+						spell = app.CreateSpell(spellID);
+					end
+					if spell.f == 200 then
+						app.SetCollectedForSubType(spell, "Spells", "Recipes", spellID, true);
+					else
+						app.SetCollected(spell, "Spells", spellID, true);
+					end
 					app:RefreshDataQuietly("NEW_SPELL_LEARNED", true);
 				else
 					self:RefreshRecipes();
@@ -14290,6 +14303,7 @@ app.events.ADDON_LOADED = function(addonName)
 		if collected then
 			if not oldstate then
 				if t and not (accountWideSettings[field] and accountWideData[field][id]) then
+					--print("SetCollected", field, id, accountWideSettings[field], accountWideData[field][id]);
 					AddToCollection(t);
 				end
 				container[id] = 1;
@@ -14321,6 +14335,7 @@ app.events.ADDON_LOADED = function(addonName)
 		if collected then
 			if not oldstate then
 				if t and not (accountWideSettings[subtype] and accountWideData[field][id]) then
+					--print("SetCollectedForSubType", field, subtype, id, accountWideSettings[subtype], accountWideData[field][id]);
 					AddToCollection(t);
 				end
 				container[id] = 1;
