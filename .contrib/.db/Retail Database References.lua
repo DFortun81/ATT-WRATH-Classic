@@ -57,4 +57,4 @@
 -- #IMPORT: 17 - NYI\\NYI Recipes.lua
 
 -- Weapon Masters
--- #IMPORT: 23 - Weapon Masters\\
+-- #IMPORT: 23 - NPC Types\\
