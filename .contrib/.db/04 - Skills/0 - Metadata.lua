@@ -1,4 +1,5 @@
 root("Skills", {
+	-- #if BEFORE 3.0.2
 	cl(WARLOCK, bubbleDown({ ["timeline"] = { "removed 3.0.2" } }, {
 		["description"] = "Warlocks can teach their demons new tricks. Some of the higher level grimoires can only be purchased from the <Demon Trainer> in your faction's capital cities.",
 		["maps"] = { IRONFORGE, ORGRIMMAR, STORMWIND_CITY, UNDERCITY, ORGRIMMAR },
@@ -429,6 +430,7 @@ root("Skills", {
 			}),
 		},
 	})),
+	-- #endif
 	{
 		["name"] = "Weapon Skills",
 		["categoryID"] = 71,
