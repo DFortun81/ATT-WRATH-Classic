@@ -14320,7 +14320,7 @@ app.events.ADDON_LOADED = function(addonName)
 		local oldstate = container[id];
 		if collected then
 			if not oldstate then
-				if t and not (accountWideSettings[field] and accountWideData[field][id]) then
+				if t and not (accountWideSettings[subtype] and accountWideData[field][id]) then
 					AddToCollection(t);
 				end
 				container[id] = 1;
