@@ -60,7 +60,7 @@ local INSANE_IN_THE_MEMBRANE_OnUpdate = [[function(t)
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 end]];
 local INSANE_IN_THE_MEMBRANE_OnTooltip = [[function(t)
@@ -291,10 +291,10 @@ root("Achievements", {
 		classicAch(546, {	-- Safe Deposit
 			-- #if BEFORE TBC
 			["description"] = "Buy 6 additional bank slots.",
-			["OnUpdate"] = [[function(t) t.SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 6); end]],
+			["OnUpdate"] = [[function(t) t:SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 6); end]],
 			-- #elseif BEFORE WRATH
 			["description"] = "Buy 7 additional bank slots.",
-			["OnUpdate"] = [[function(t) t.SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 7); end]],
+			["OnUpdate"] = [[function(t) t:SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 7); end]],
 			-- #endif
 		}),
 		ach(545, {	-- Shave and a Haircut

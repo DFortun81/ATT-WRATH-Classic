@@ -49,6 +49,7 @@ local _GetItemInfo = _G["GetItemInfo"];
 local _GetItemInfoInstant = _G["GetItemInfoInstant"];
 local _GetItemCount = _G["GetItemCount"];
 local _InCombatLockdown = _G["InCombatLockdown"];
+local IsTitleKnown = IsTitleKnown;
 local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
 local HORDE_FACTION_ID = Enum.FlightPathFaction.Horde;
 
@@ -4065,20 +4066,8 @@ end
 -- Achievement Lib
 (function()
 local useAchievementAPI, commonAchievementHandlers = false;
-local SetAchievementCollected = function(achievementID, collected)
-	if collected then
-		app.CurrentCharacter.Achievements[achievementID] = 1;
-		ATTAccountWideData.Achievements[achievementID] = 1;
-	elseif app.CurrentCharacter.Achievements[achievementID] then
-		app.CurrentCharacter.Achievements[achievementID] = nil;
-		ATTAccountWideData.Achievements[achievementID] = nil;
-		for guid,characterData in pairs(ATTCharacterData) do
-			if characterData.Achievements and characterData.Achievements[achievementID] then
-				ATTAccountWideData.Achievements[achievementID] = 1;
-				break;
-			end
-		end
-	end
+local SetAchievementCollected = function(t, achievementID, collected)
+	return app.SetCollected(t, "Achievements", achievementID, collected);
 end
 
 -- These achievement handlers are good to use at any point.
@@ -4593,12 +4582,14 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	
 	local function CheckAchievementCollectionStatus(achievementID)
 		achievementID = tonumber(achievementID);
-		SetAchievementCollected(achievementID, select(13, _GetAchievementInfo(achievementID)), true);
+		local achievement = app.SearchForField("achievementID", achievementID);
+		SetAchievementCollected(achievement and achievement[1], achievementID, select(13, _GetAchievementInfo(achievementID)));
 	end
 	local function refreshAchievementCollection()
 		if ATTAccountWideData then
-			for achievementID,_ in pairs(app.SearchForFieldContainer("achievementID")) do
-				CheckAchievementCollectionStatus(achievementID);
+			for achievementID,container in pairs(app.SearchForFieldContainer("achievementID")) do
+				local id = tonumber(achievementID);
+				SetAchievementCollected(container[1], id, select(13, _GetAchievementInfo(id)));
 			end
 		end
 	end
@@ -4821,7 +4812,7 @@ else
 				else
 					app.CurrentCharacter.Spells[spellID] = nil;
 				end
-				t.SetAchievementCollected(t.achievementID, collected);
+				t:SetAchievementCollected(t.achievementID, collected);
 			end
 		end
 	};
@@ -4848,7 +4839,7 @@ else
 				end
 			end
 			t.p = p;
-			t.SetAchievementCollected(t.achievementID, p >= t.rank);
+			t:SetAchievementCollected(t.achievementID, p >= t.rank);
 		else
 			return true;
 		end
@@ -4861,7 +4852,7 @@ else
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.ANY_ITEM_COST = function(t)
 		local collected = false;
@@ -4871,7 +4862,7 @@ else
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.ALL_ITEM_PROVIDERS = function(t)
 		local collected = true;
@@ -4881,7 +4872,7 @@ else
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.ANY_ITEM_PROVIDER = function(t)
 		local collected = false;
@@ -4891,7 +4882,7 @@ else
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.ALL_SOURCE_QUESTS = function(t)
 		local collected = true;
@@ -4901,7 +4892,7 @@ else
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.ANY_SOURCE_QUEST = function(t)
 		local collected = false;
@@ -4911,7 +4902,7 @@ else
 				break;
 			end
 		end
-		t.SetAchievementCollected(t.achievementID, collected);
+		t:SetAchievementCollected(t.achievementID, collected);
 	end
 	commonAchievementHandlers.COMPANIONS_OnUpdate = function(t)
 		if app.Settings.Collectibles.BattlePets then
@@ -4995,7 +4986,7 @@ else
 					return true;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, r.standing == 8);
+			t:SetAchievementCollected(t.achievementID, r.standing == 8);
 		end
 	end
 	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t, ...)
@@ -5028,7 +5019,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.EXALTED_REPS_ANY_OnUpdate = function(t, ...)
@@ -5054,7 +5045,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.EXPLORATION_OnUpdate = function(t)
@@ -5080,7 +5071,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.EXPLORATION_OnClick = function(row, button)
@@ -5114,7 +5105,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.KNOW_SPELLS_ANY_OnUpdate = function(t, ...)
@@ -5140,7 +5131,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.KNOW_SPELLS_OnClick = function(row, button)
@@ -5160,7 +5151,7 @@ else
 		end
 	end
 	commonAchievementHandlers.LEVEL_OnUpdate = function(t)
-		t.SetAchievementCollected(t.achievementID, app.Level >= t.lvl);
+		t:SetAchievementCollected(t.achievementID, app.Level >= t.lvl);
 	end
 	commonAchievementHandlers.LOREMASTER_CONTINENT_OnUpdate = function(t, mapID, ...)
 		if t.collectible and t.parent then
@@ -5216,7 +5207,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.META_OnUpdate = function(t, ...)
@@ -5241,7 +5232,7 @@ else
 					break;
 				end
 			end
-			t.SetAchievementCollected(t.achievementID, collected);
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.META_OnClick = function(row, button)
