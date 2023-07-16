@@ -992,8 +992,7 @@ local CompletedQuests = setmetatable({}, {__newindex = function (t, key, value)
 	if value then
 		rawset(t, key, value);
 		rawset(DirtyQuests, key, true);
-		app.CurrentCharacter.Quests[key] = 1;
-		ATTAccountWideData.Quests[key] = 1;
+		app.SetCollected(nil, "Quests", key, true);
 		if app.Settings:GetTooltipSetting("Report:CompletedQuests") then
 			local searchResults = app.SearchForField("questID", key);
 			if searchResults and #searchResults > 0 then
@@ -4806,12 +4805,7 @@ else
 			if t.collectible then
 				local spellID = t.spellID;
 				local collected = app.IsSpellKnown(spellID, t.rank);
-				if collected or app.CurrentCharacter.ActiveSkills[spellID] then
-					app.CurrentCharacter.Spells[spellID] = 1;
-					ATTAccountWideData.Spells[spellID] = 1;
-				else
-					app.CurrentCharacter.Spells[spellID] = nil;
-				end
+				app.SetCollected(nil, "Spells", spellID, collected or app.CurrentCharacter.ActiveSkills[spellID]);
 				t:SetAchievementCollected(t.achievementID, collected);
 			end
 		end
@@ -6219,26 +6213,7 @@ end)();
 -- Faction Lib
 (function()
 local setFactionCollected = function(t, factionID, collected)
-	local accountWideFactions = ATTAccountWideData.Factions;
-	local wasCollected = app.CurrentCharacter.Factions[factionID];
-	if collected then
-		if not wasCollected then
-			AddToCollection(t);
-			app.CurrentCharacter.Factions[factionID] = 1;
-			accountWideFactions[factionID] = 1;
-		end
-		return 1;
-	elseif wasCollected then
-		app.CurrentCharacter.Factions[factionID] = nil;
-		accountWideFactions[factionID] = nil;
-		for guid,character in pairs(ATTCharacterData) do
-			if character.Factions and character.Factions[factionID] then
-				accountWideFactions[factionID] = 1;
-				return app.Settings.AccountWide.Reputations and 2;
-			end
-		end
-	end
-	if app.Settings.AccountWide.Reputations and accountWideFactions[factionID] then return 2; end
+	return app.SetCollectedForSubType(t, "Factions", "Reputations", factionID, collected);
 end
 local StandingByID = {
 	{	-- 1: HATED
@@ -6597,13 +6572,17 @@ app.CreateFlightPath = app.CreateClass("FlightPath", "flightPathID", {
 app.events.GOSSIP_SHOW = function()
 	local knownNodeIDs = {};
 	if app.CacheFlightPathDataForTarget(knownNodeIDs) > 0 then
+		local any = false;
 		for nodeID,_ in pairs(knownNodeIDs) do
 			nodeID = tonumber(nodeID);
 			if not app.CurrentCharacter.FlightPaths[nodeID] then
-				ATTAccountWideData.FlightPaths[nodeID] = 1;
-				app.CurrentCharacter.FlightPaths[nodeID] = 1;
-				UpdateSearchResults(app.SearchForField("flightPathID", nodeID));
+				local searchResults = app.SearchForField("flightPathID", nodeID);
+				app.SetCollected(searchResults and searchResults[1], "FlightPaths", nodeID, true);
+				any = true;
 			end
+		end
+		if any then
+			app:RefreshDataQuietly("GOSSIP_SHOW", true);
 		end
 	end
 end
@@ -6621,13 +6600,17 @@ app.events.TAXIMAP_OPENED = function()
 		end
 	end
 	
+	local any = false;
 	for nodeID,_ in pairs(knownNodeIDs) do
 		nodeID = tonumber(nodeID);
 		if not app.CurrentCharacter.FlightPaths[nodeID] then
-			ATTAccountWideData.FlightPaths[nodeID] = 1;
-			app.CurrentCharacter.FlightPaths[nodeID] = 1;
-			UpdateSearchResults(app.SearchForField("flightPathID", nodeID));
+			local searchResults = app.SearchForField("flightPathID", nodeID);
+			app.SetCollected(searchResults and searchResults[1], "FlightPaths", nodeID, true);
+			any = true;
 		end
+	end
+	if any then
+		app:RefreshDataQuietly("TAXIMAP_OPENED", true);
 	end
 end
 end)();
@@ -6908,11 +6891,6 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 		-- This is used by reputation tokens. (turn in items)
 		if app.CurrentCharacter.Factions[t.factionID] then return 1; end
 		if app.Settings.AccountWide.Reputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
-		if select(3, _GetFactionInfoByID(t.factionID)) == 8 then
-			app.CurrentCharacter.Factions[t.factionID] = 1;
-			ATTAccountWideData.Factions[t.factionID] = 1;
-			return 1;
-		end
 	end,
 	trackable = function(t)
 		return true;
@@ -6946,11 +6924,6 @@ app.CreateItem = app.CreateClass("Item", "itemID", itemFields,
 		-- This is used by reputation tokens. (turn in items)
 		if app.CurrentCharacter.Factions[t.factionID] then return 1; end
 		if app.Settings.AccountWide.Reputations and ATTAccountWideData.Factions[t.factionID] then return 2; end
-		if select(3, _GetFactionInfoByID(t.factionID)) == 8 then
-			app.CurrentCharacter.Factions[t.factionID] = 1;
-			ATTAccountWideData.Factions[t.factionID] = 1;
-			return 1;
-		end
 	end,
 }, (function(t) return t.factionID; end));
 
@@ -8791,16 +8764,7 @@ recipeFields.collectible = function(t)
 	return app.Settings.Collectibles.Recipes;
 end;
 recipeFields.collected = function(t)
-	if app.CurrentCharacter.Spells[t.spellID] then
-		ATTAccountWideData.Spells[t.spellID] = 1;
-		return 1;
-	end
-	if app.Settings.AccountWide.Recipes and ATTAccountWideData.Spells[t.spellID] then return 2; end
-	if app.IsSpellKnown(t.spellID, t.rank, GetRelativeValue(t, "requireSkill") == 261) then
-		app.CurrentCharacter.Spells[t.spellID] = 1;
-		ATTAccountWideData.Spells[t.spellID] = 1;
-		return 1;
-	end
+	return app.SetCollectedForSubType(t, "Spells", "Recipes", t.spellID, app.IsSpellKnown(t.spellID, t.rank, GetRelativeValue(t, "requireSkill") == 261));
 end;
 recipeFields.f = function(t)
 	return 200;
@@ -13626,9 +13590,8 @@ app:GetWindow("Tradeskills", {
 								elseif spellID == 44151 then spellID = 44157;	-- Fix the Turbo Flying Machine spellID.
 								elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
 								app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(craftType) or nil;
-								app.CurrentCharacter.Spells[spellID] = 1;
-								if not ATTAccountWideData.Spells[spellID] then
-									ATTAccountWideData.Spells[spellID] = 1;
+								if not app.CurrentCharacter.Spells[spellID] then
+									app.SetCollected(nil, "Spells", spellID, true);
 									learned = learned + 1;
 								end
 								if not skillCache[spellID] then
@@ -13685,11 +13648,11 @@ app:GetWindow("Tradeskills", {
 								elseif spellID == 44151 then spellID = 44157;	-- Fix the Turbo Flying Machine spellID.
 								elseif spellID == 20583 then spellID = 24492; end 	-- Fix rank 1 Nature Resistance.
 								app.CurrentCharacter.SpellRanks[spellID] = shouldShowSpellRanks and app.CraftTypeToCraftTypeID(skillType) or nil;
-								app.CurrentCharacter.Spells[spellID] = 1;
-								if not ATTAccountWideData.Spells[spellID] then
-									ATTAccountWideData.Spells[spellID] = 1;
+								if not app.CurrentCharacter.Spells[spellID] then
+									app.SetCollected(nil, "Spells", spellID, true);
 									learned = learned + 1;
 								end
+								
 								if not skillCache[spellID] then
 									if tradeSkillID ~= 773 then
 										app.print("Missing " .. (skillName or "[??]") .. " (Spell ID #" .. spellID .. ") in ATT Database. Please report it!");
@@ -13903,13 +13866,8 @@ app:GetWindow("Tradeskills", {
 		
 		local newSpellLearned = function(self, spellID)
 			if spellID then
-				local previousState = ATTAccountWideData.Spells[spellID];
-				ATTAccountWideData.Spells[spellID] = 1;
 				if not app.CurrentCharacter.Spells[spellID] then
-					app.CurrentCharacter.Spells[spellID] = 1;
-					if not previousState or not app.Settings:Get("AccountWide:Recipes") then
-						AddToCollection(app.CreateRecipe(spellID));
-					end
+					app.SetCollected(app.CreateRecipe(spellID), "Spells", spellID, true);
 					app:RefreshDataQuietly("NEW_SPELL_LEARNED", true);
 				else
 					self:RefreshRecipes();
@@ -14373,11 +14331,13 @@ app.events.ADDON_LOADED = function(addonName)
 			if not oldstate then
 				container[id] = 1;
 				accountWideData[field][id] = 1;
+				timeStamps[field] = time();
 				AddToCollection(t);
 			end
 			return 1;
 		elseif oldstate then
 			container[id] = nil;
+			timeStamps[field] = time();
 			for guid,other in pairs(characterData) do
 				local otherContainer = other[field];
 				if otherContainer and otherContainer[id] then
@@ -14400,11 +14360,13 @@ app.events.ADDON_LOADED = function(addonName)
 			if not oldstate then
 				container[id] = 1;
 				accountWideData[field][id] = 1;
+				timeStamps[field] = time();
 				AddToCollection(t);
 			end
 			return 1;
 		elseif oldstate then
 			container[id] = nil;
+			timeStamps[field] = time();
 			for guid,other in pairs(characterData) do
 				local otherContainer = other[field];
 				if otherContainer and otherContainer[id] then
