@@ -12653,7 +12653,7 @@ app:GetWindow("Prime", {
 			modeString = self.data.modeString,
 		};
 	end
-}):SetSize(425, 305);
+});
 app:GetWindow("HiddentAchievementTriggers", {
 	parent = UIParent,
 	Silent = true,
