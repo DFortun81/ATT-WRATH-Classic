@@ -414,7 +414,7 @@ local defaultSerializer = function(field, value, timeStamp, lastUpdated)
 			
 			local keys = {};
 			for index,v in pairs(value) do
-				if v then tinsert(keys, index); end
+				if v and index then tinsert(keys, tonumber(index)); end
 			end
 			if #keys > 0 then
 				local str = field .. ";" .. typeListID;
@@ -717,6 +717,10 @@ MESSAGE_HANDLERS.rawchar = function(self, sender, content, responses)
 	
 	-- Notify the player.
 	CharacterData[guid] = character;
+	
+	-- Cache some things related to BattleNet.
+	UpdateBattleTags();
+	UpdateOnlineAccounts();
 	local accountCharacter = sender and OnlineAccounts[sender];
 	app.print("Updated " .. (character.text or "??") .. " from " .. (accountCharacter and accountCharacter.text or sender) .. "!");
 	

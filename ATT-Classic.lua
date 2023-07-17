@@ -7998,44 +7998,15 @@ local criteriaFuncs = {
     ["achID"] = function(achievementID)
         return app.CurrentCharacter.Achievements[achievementID];
     end,
-	--[[
-	["label_achID"] = L["LOCK_CRITERIA_ACHIEVEMENT_LABEL"],
-    ["text_achID"] = function(v)
-        return select(2, _GetAchievementInfo(v));
-    end,
-	]]--
-
     ["lvl"] = function(v)
         return app.Level >= v;
     end,
-	--[[
-	["label_lvl"] = L["LOCK_CRITERIA_LEVEL_LABEL"],
-    ["text_lvl"] = function(v)
-        return v;
-    end,
-	]]--
-
     ["questID"] = function(questID)
 		return IsQuestFlaggedCompleted(questID);
 	end,
-	--[[
-	["label_questID"] = L["LOCK_CRITERIA_QUEST_LABEL"],
-    ["text_questID"] = function(v)
-		local questObj = app.SearchForObject("questID", v);
-        return string.format("[%d] %s", v, questObj and questObj.text or "???");
-    end,
-	]]--
-
     ["spellID"] = function(spellID)
         return app.CurrentCharacter.Spells[spellID] or app.CurrentCharacter.ActiveSkills[spellID];
     end,
-	--[[
-	["label_spellID"] = L["LOCK_CRITERIA_SPELL_LABEL"],
-    ["text_spellID"] = function(v)
-        return GetSpellInfo(v);
-    end,
-	]]--
-
     ["factionID"] = function(v)
 		-- v = factionID.standingRequiredToLock
 		local factionID = math.floor(v + 0.00001);
