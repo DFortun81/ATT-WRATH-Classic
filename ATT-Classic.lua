@@ -10219,7 +10219,7 @@ end
 local function UpdateVisibleRowData(self)
 	-- If there is no raw data, then return immediately.
 	if not self.rowData then return; end
-	if self:GetHeight() > 64 then self.ScrollBar:Show(); else self.ScrollBar:Hide(); end
+	if self:GetHeight() > 48 then self.ScrollBar:Show(); else self.ScrollBar:Hide(); end
 	
 	-- Make it so that if you scroll all the way down, you have the ability to see all of the text every time.
 	local totalRowCount = #self.rowData;
@@ -10304,8 +10304,8 @@ local function StopMovingOrSizing(self)
 		self:RecordSettings();
 	end
 end
-local function StartMovingOrSizing(self, fromChild)
-	if not self:IsMovable() and not self:IsResizable() then
+local function StartMovingOrSizing(self)
+	if not (self:IsMovable() or self:IsResizable()) then
 		return
 	end
 	if self.isMoving then
@@ -10442,7 +10442,7 @@ local function RowOnClick(self, button)
 					self:SetScript("OnMouseUp", nil);
 					StopMovingOrSizing(owner);
 				end);
-				StartMovingOrSizing(owner, true);
+				StartMovingOrSizing(owner);
 			end
 		end
 	end
@@ -11815,12 +11815,20 @@ function app:GetWindow(suffix, settings)
 			scrollbar:GetBackStepper():EnableMouse(false);
 			scrollbar:GetForwardStepper():Hide();
 			scrollbar:GetForwardStepper():EnableMouse(false);
-			scrollbar:SetScript("OnMouseDown", function()
+			
+			local scrollBarHide = scrollbar.Hide;
+			scrollbar:SetScript("OnMouseDown", function(self)
 				StartMovingOrSizing(window);
+				scrollbar.Hide = function(self)
+					scrollBarHide(self);
+					self.Hide = scrollBarHide;
+					StopMovingOrSizing(window);
+				end
 			end);
-			scrollbar:SetScript("OnMouseUp", function()
+			scrollbar:SetScript("OnMouseUp", function(self)
 				StopMovingOrSizing(window);
 			end);
+			
 			
 			local MaxDisplayedValue, TotalValue, Difference, ScrollPercentage = 0, 0, 0, 0;
 			scrollbar:RegisterCallback(BaseScrollBoxEvents.OnScroll, function(o, scrollPercentage)
