@@ -54,6 +54,7 @@
 -- NYI
 -- #IMPORT: 17 - NYI\\NYI Professions\\
 -- #IMPORT: 17 - NYI\\NYI Mounts.lua
+-- #IMPORT: 17 - NYI\\NYI Quests.lua
 -- #IMPORT: 17 - NYI\\NYI Recipes.lua
 
 -- Weapon Masters

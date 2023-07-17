@@ -1018,7 +1018,7 @@ root("Achievements", {
 				2184,	-- Just Can't Get Enough (10 player)
 			}},
 			["timeline"] = { "added 3.0.1" },
-			["maps"] = { EYE_OF_ETERNITY, OBSIDIAN_SANCTUM, NAXXRAMAS },
+			["maps"] = { THE_EYE_OF_ETERNITY, THE_OBSIDIAN_SANCTUM, NAXXRAMAS },
 			["groups"] = {
 				i(44175, {	-- Plagued Proto-Drake (MOUNT!)
 					-- #if ANYCLASSIC
@@ -1062,7 +1062,7 @@ root("Achievements", {
 				2185,	-- Just Can't Get Enough (25 player)
 			}},
 			["timeline"] = { "added 3.0.1" },
-			["maps"] = { EYE_OF_ETERNITY, OBSIDIAN_SANCTUM, NAXXRAMAS },
+			["maps"] = { THE_EYE_OF_ETERNITY, THE_OBSIDIAN_SANCTUM, NAXXRAMAS },
 			["groups"] = {
 				i(44164, {	-- Black Proto-Drake (MOUNT!)
 					-- #if ANYCLASSIC
