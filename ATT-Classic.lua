@@ -4162,6 +4162,31 @@ end,
 		return true;
 	end
 end,
+["EXALTED_REP_OnInit"] = function(t, factionID)
+	t.BuildReputation = function()
+		local r = t.rep;
+		if not r then
+			local f = app.SearchForField("factionID", factionID);
+			if f and #f > 0 then
+				r = f[1];
+				for i,o in ipairs(f) do
+					if o.key == "factionID" then
+						if o.maxReputation then
+							r = CloneData(o);
+							r.maxReputation = nil;
+						else
+							r = o;
+						end
+						break;
+					end
+				end
+				t.rep = r;
+			end
+		end
+		return r;
+	end
+	return t;
+end,
 ["EXALTED_REP_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
@@ -4179,6 +4204,39 @@ end,
 			GameTooltip:AddDoubleLine(" |T" .. r.icon .. ":0|t " .. r.text, app.L[r.standing == 8 and "COLLECTED_ICON" or "NOT_COLLECTED_ICON"], 1, 1, 1);
 		end
 	end
+end,
+["EXALTED_REPS_OnInit"] = function(t, ...)
+	local factionIDs = { ... };
+	t.BuildReputations = function()
+		local reps = t.reps;
+		if not reps then
+			reps = {};
+			for i,factionID in ipairs(factionIDs) do
+				local f = app.SearchForField("factionID", factionID);
+				if f and #f > 0 then
+					local best = f[1];
+					for _,o in ipairs(f) do
+						if o.key == "factionID" then
+							best = o;
+							break;
+						end
+					end
+					if best.maxReputation then
+						best = CloneData(best);
+						best.maxReputation = nil;
+					end
+					tinsert(reps, best);
+				end
+			end
+			if #reps > 0 then
+				t.reps = reps;
+			else
+				reps = nil;
+			end
+		end
+		return reps;
+	end
+	return t;
 end,
 ["EXALTED_REPS_OnClick"] = function(row, button)
 	if button == "RightButton" then
@@ -4532,28 +4590,14 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	-- Achievements are supported in this version, so we don't need to manually check anything!
 	-- Most calculations that were previously in the OnUpdate can now exist in a build script instead.
 	commonAchievementHandlers.EXALTED_REP_OnUpdate = function(t, factionID)
-		t.OnUpdate = nil;
-		t.BuildReputation = function()
-			local r = t.rep;
-			if not r then
-				local f = app.SearchForField("factionID", factionID);
-				if f and #f > 0 then
-					r = f[1];
-					for i,o in ipairs(f) do
-						if o.key == "factionID" then
-							if o.maxReputation then
-								r = CloneData(o);
-								r.maxReputation = nil;
-							else
-								r = o;
-							end
-							break;
-						end
-					end
-					t.rep = r;
-				end
-			end
-			return r;
+		if factionID and type(factionID) == 'number' then
+			commonAchievementHandlers.EXALTED_REP_OnInit(t, factionID);
+			return true;
+		end
+		if t.collectible then
+			local r = t.rep or (t.BuildReputation and t:BuildReputation());
+			if not r then return true; end
+			t:SetAchievementCollected(t.achievementID, r.standing == 8);
 		end
 	end
 	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t, ...)
@@ -14165,12 +14209,16 @@ app.events.ADDON_LOADED = function(addonName)
 				end
 				container[id] = 1;
 				accountWideData[field][id] = 1;
-				timeStamps[field] = time();
+				local now = time();
+				timeStamps[field] = now;
+				currentCharacter.lastPlayed = now;
 			end
 			return 1;
 		elseif oldstate then
 			container[id] = nil;
-			timeStamps[field] = time();
+			local now = time();
+			timeStamps[field] = now;
+			currentCharacter.lastPlayed = now;
 			for guid,other in pairs(characterData) do
 				local otherContainer = other[field];
 				if otherContainer and otherContainer[id] then
@@ -14197,12 +14245,16 @@ app.events.ADDON_LOADED = function(addonName)
 				end
 				container[id] = 1;
 				accountWideData[field][id] = 1;
-				timeStamps[field] = time();
+				local now = time();
+				timeStamps[field] = now;
+				currentCharacter.lastPlayed = now;
 			end
 			return 1;
 		elseif oldstate then
 			container[id] = nil;
-			timeStamps[field] = time();
+			local now = time();
+			timeStamps[field] = now;
+			currentCharacter.lastPlayed = now;
 			for guid,other in pairs(characterData) do
 				local otherContainer = other[field];
 				if otherContainer and otherContainer[id] then
