@@ -76,9 +76,10 @@ root("Achievements", {
 		-- Armored Brown Bear, located in Dalaran.
 		applyclassicphase(CATA_PHASE_ONE, ach(5180, {	-- Breaking the Sound Barrier
 			["spellID"] = 90265,	-- Master Riding
+			["timeline"] = { "added 4.0.1" },
 			["rank"] = 5,
 		})),
-		classicAch(1017, {	-- Can I Keep Him?
+		ach(1017, {	-- Can I Keep Him?
 			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
@@ -92,15 +93,19 @@ root("Achievements", {
 			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
 		})),
 		-- #endif
-		ach(2716),	-- Dual Talent Specialization
-		applyclassicphase(WRATH_PHASE_ONE, ach(556)),	-- Epic
+		ach(2716, {	-- Dual Talent Specialization
+			["timeline"] = { "added 3.0.1" },
+		}),
+		applyclassicphase(WRATH_PHASE_ONE, ach(556, {	-- Epic
+			["timeline"] = { "added 3.0.1" },
+		})),
 		-- #if AFTER TBC
-		classicAch(889, {	-- Fast and Furious
+		ach(889, {	-- Fast and Furious
 			["spellID"] = 33391,	-- Journeyman Riding
 			["rank"] = 2,
 		}),
 		-- #endif
-		classicAch(2142, {	-- Filling Up The Barn
+		ach(2142, {	-- Filling Up The Barn
 			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
@@ -115,9 +120,10 @@ root("Achievements", {
 				{ "i", 44413 },	-- Mekgineer's Chopper
 				{ "i", 41508 },	-- Mechano-hog
 			},
+			["timeline"] = { "added 3.0.1" },
 			["f"] = 100,
 		})),
-		classicAch(891, {	-- Giddy Up!
+		ach(891, {	-- Giddy Up!
 			-- #if AFTER TBC
 			["spellID"] = 33388,	-- Apprentice Riding
 			["rank"] = 1,
@@ -139,82 +145,95 @@ root("Achievements", {
 			-- #endif
 		}),
 		ach(1176, {	-- Got My Mind On My Money [100g]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 100,
 		}),
 		ach(1177, {	-- Got My Mind On My Money [1000g]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 1000,
 		}),
 		ach(1178, {	-- Got My Mind On My Money [5000g]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 5000,
 		}),
 		ach(1180, {	-- Got My Mind On My Money [10000g]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 10000,
 		}),
 		ach(1181, {	-- Got My Mind On My Money [25000g]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 25000,
 		}),
-		applyclassicphase(WRATH_PHASE_ONE, ach(558)),	-- Greedy
+		applyclassicphase(WRATH_PHASE_ONE, ach(558, {	-- Greedy
+			["timeline"] = { "added 3.0.1" },
+		})),
 		-- Higher Learning, located in Dalaran.
 		applyclassicphase(TBC_PHASE_ONE, ach(890, {	-- Into the Wild Blue Yonder
 			["spellID"] = 34090,	-- Expert Riding
+			["timeline"] = { "added 2.0.1" },
 			["rank"] = 3,
 		})),
-		ach(1833),	-- It's Happy Hour Somewhere
+		ach(1833, {	-- It's Happy Hour Somewhere
+			["timeline"] = { "added 3.0.1" },
+		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(2143, {	-- Leading the Cavalry
 			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
+			["timeline"] = { "added 2.0.1" },
 			["rank"] = 50,
 			["f"] = 100,
 			["groups"] = {
 				applyclassicphase(WRATH_PHASE_ONE, i(44178)),	-- Reins of the Albino Drake
 			},
 		})),
-		classicAch(6, {	-- Level 10
+		ach(6, {	-- Level 10
 			["lvl"] = 10,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
-		classicAch(7, {	-- Level 20
+		ach(7, {	-- Level 20
 			["lvl"] = 20,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
-		classicAch(8, {	-- Level 30
+		ach(8, {	-- Level 30
 			["lvl"] = 30,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
-		classicAch(9, {	-- Level 40
+		ach(9, {	-- Level 40
 			["lvl"] = 40,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
-		classicAch(10, {	-- Level 50
+		ach(10, {	-- Level 50
 			["lvl"] = 50,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
-		classicAch(11, {	-- Level 60
+		ach(11, {	-- Level 60
 			["lvl"] = 60,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(12, {	-- Level 70
+			["timeline"] = { "added 2.0.1" },
 			["lvl"] = 70,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
 			-- #endif
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(13, {	-- Level 80
+			["timeline"] = { "added 3.0.1" },
 			["lvl"] = 80,
 			-- #if BEFORE WRATH
 			["OnUpdate"] = [[_.CommonAchievementHandlers.LEVEL_OnUpdate]],
@@ -231,19 +250,23 @@ root("Achievements", {
 			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.COMPANIONS_OnUpdate]],
 			-- #endif
+			["timeline"] = { "added 3.0.1" },
 			["f"] = 101,
 			["rank"] = 75,
 			["groups"] = {
 				applyclassicphase(WRATH_PHASE_ONE, i(44841)),	-- Little Fawn's Salt Lick
 			},
 		})),
-		applyclassicphase(WRATH_PHASE_ONE, ach(705)),	-- Master of Arms
+		applyclassicphase(WRATH_PHASE_ONE, ach(705, {	-- Master of Arms
+			["timeline"] = { "added 3.0.1" },
+		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(2536, {	-- Mountain o' Mounts [A]
 			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
+			["timeline"] = { "added 3.0.1" },
 			["races"] = ALLIANCE_ONLY,
 			["rank"] = 100,
 			["f"] = 100,
@@ -257,6 +280,7 @@ root("Achievements", {
 			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.MOUNTS_OnUpdate]],
 			-- #endif
+			["timeline"] = { "added 3.0.1" },
 			["races"] = HORDE_ONLY,
 			["rank"] = 100,
 			["f"] = 100,
@@ -264,9 +288,13 @@ root("Achievements", {
 				applyclassicphase(WRATH_PHASE_ONE, i(44842)),	-- Red Dragonhawk Mount
 			},
 		})),
-		applyclassicphase(WRATH_PHASE_ONE, ach(559)),	-- Needy
-		applyclassicphase(WRATH_PHASE_ONE, ach(2556)),	-- Pest Control
-		classicAch(15, {	-- Plenty of Pets
+		applyclassicphase(WRATH_PHASE_ONE, ach(559, {	-- Needy
+			["timeline"] = { "added 3.0.1" },
+		})),
+		applyclassicphase(WRATH_PHASE_ONE, ach(2556, {	-- Pest Control
+			["timeline"] = { "added 3.0.1" },
+		})),
+		ach(15, {	-- Plenty of Pets
 			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
@@ -275,7 +303,7 @@ root("Achievements", {
 			["f"] = 101,
 			["rank"] = 15,
 		}),
-		classicAch(1248, {	-- Plethora of Pets
+		ach(1248, {	-- Plethora of Pets
 			["OnClick"] = [[_.CommonAchievementHandlers.COMPANIONS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.COMPANIONS_OnTooltip]],
@@ -285,10 +313,11 @@ root("Achievements", {
 			["rank"] = 25,
 		}),
 		ach(621, {	-- Represent [TODO]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 1,
 		}),
 		-- Ring of the Kirin Tor, located in Dalaran.
-		classicAch(546, {	-- Safe Deposit
+		ach(546, {	-- Safe Deposit
 			-- #if BEFORE TBC
 			["description"] = "Buy 6 additional bank slots.",
 			["OnUpdate"] = [[function(t) t:SetAchievementCollected(t.achievementID, GetNumBankSlots() >= 6); end]],
@@ -298,6 +327,7 @@ root("Achievements", {
 			-- #endif
 		}),
 		ach(545, {	-- Shave and a Haircut
+			["timeline"] = { "added 3.0.1" },
 			["maps"] = { STORMWIND_CITY, ORGRIMMAR, NORTHREND_DALARAN },
 		}),
 		applyclassicphase(TBC_PHASE_ONE, ach(1250, {	-- Shop Smart, Shop Pet...Smart
@@ -312,7 +342,7 @@ root("Achievements", {
 				applyclassicphase(WRATH_PHASE_ONE, i(40653)),	-- Reeking Pet Carrier
 			},
 		})),
-		classicAch(2141, {	-- Stable Keeper
+		ach(2141, {	-- Stable Keeper
 			["OnClick"] = [[_.CommonAchievementHandlers.MOUNTS_OnClick]],
 			-- #if BEFORE WRATH
 			["OnTooltip"] = [[_.CommonAchievementHandlers.MOUNTS_OnTooltip]],
@@ -321,25 +351,33 @@ root("Achievements", {
 			["rank"] = 10,
 			["f"] = 100,
 		}),
-		applyclassicphase(WRATH_PHASE_ONE, ach(557)),	-- Superior
-		ach(1832),	-- Tastes Like Chicken
+		applyclassicphase(WRATH_PHASE_ONE, ach(557, {	-- Superior
+			["timeline"] = { "added 3.0.1" },
+		})),
+		ach(1832, {	-- Tastes Like Chicken
+			["timeline"] = { "added 3.0.1" },
+		}),
 		ach(1020, {	-- Ten Tabards [TODO]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 10,
 		}),
-		applyclassicphase(WRATH_PHASE_ONE, ach(1187)),	-- The Keymaster
+		applyclassicphase(WRATH_PHASE_ONE, ach(1187, {	-- The Keymaster
+			["timeline"] = { "added 3.0.1" },
+		})),
 		applyclassicphase(TBC_PHASE_ONE, ach(892, {	-- The Right Stuff
 			["spellID"] = 34091,	-- Artisan Riding
+			["timeline"] = { "added 2.0.1" },
 			["rank"] = 4,
 		})),
 		--ach(1206),	-- To All The Squirrels I've Loved Before
 		--ach(2557),	-- To All The Squirrels Who Shared My Life
 		-- Traveler's Tundra Mammoth, located in Dalaran.
-		ach(1021, {	-- Twenty-Five Tabards [TODO]
+		ach(1021, bubbleDownSelf({ ["timeline"] = { "added 3.0.1" } }, {	-- Twenty-Five Tabards [TODO]
 			["rank"] = 25,
 			["groups"] = {
 				i(40643),	-- Tabard of the Achiever
 			},
-		}),
+		})),
 		-- Wooly Mammoth, located in Dalaran.
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_QUESTS, {
@@ -351,43 +389,56 @@ root("Achievements", {
 		achcat(ACHIEVEMENT_CATEGORY_NORTHREND_QUESTS),
 		-- #endif
 		ach(973, {	-- 5 Daily Quests Complete
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 5,
 		}),
 		ach(974, {	-- 50 Daily Quests Complete
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 50,
 		}),
 		ach(975, {	-- 200 Daily Quests Complete
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 200,
 		}),
 		ach(976, {	-- 500 Daily Quests Complete
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 500,
 		}),
 		ach(977, {	-- 1000 Daily Quests Complete
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 1000,
 		}),
 		
 		ach(503, {	-- 50 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 50,
 		}),
 		ach(504, {	-- 100 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 100,
 		}),
 		ach(505, {	-- 250 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 250,
 		}),
 		ach(506, {	-- 500 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 500,
 		}),
 		ach(507, {	-- 1000 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 1000,
 		}),
 		ach(508, {	-- 1500 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 1500,
 		}),
 		ach(32, {	-- 2000 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 2000,
 		}),
 		applyclassicphase(WRATH_PHASE_ONE, ach(978, {	-- 3000 Quests Completed
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 3000,
 			["groups"] = {
 				-- #if AFTER CATA
@@ -398,8 +449,12 @@ root("Achievements", {
 			},
 		})),
 		
-		ach(31),	-- A Simple Re-Quest
-		ach(1182),	-- The Bread Winner
+		ach(31, {	-- A Simple Re-Quest
+			["timeline"] = { "added 3.0.1" },
+		}),
+		ach(1182, {	-- The Bread Winner
+			["timeline"] = { "added 3.0.1" },
+		}),
 		
 		applyclassicphase(WRATH_PHASE_ONE, ach(941, {	-- Hemet Nesingwary: The Collected Quests
 			-- #if AFTER WRATH
@@ -414,6 +469,7 @@ root("Achievements", {
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_OnUpdate(t, 939, 938, 940); end]],
 			-- #endif
+			["timeline"] = { "added 3.0.1" },
 			["maps"] = {
 				NAGRAND,
 				-- #if AFTER CATA
@@ -429,6 +485,7 @@ root("Achievements", {
 				9977,	-- The Ring of Blood: The Final Challenge
 				12948,	-- The Champion of Anguish
 			},
+			["timeline"] = { "added 3.0.1" },
 			["maps"] = { NAGRAND, ZULDRAK },
 			["groups"] = {
 				crit(5799, {	-- The Champion of Anguish
@@ -448,6 +505,7 @@ root("Achievements", {
 				1262,	-- Loremaster of Outland (A)
 				41,		-- Loremaster of Northrend (A)
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["races"] = ALLIANCE_ONLY,
 			["groups"] = {
 				title(93),	-- Loremaster
@@ -461,6 +519,7 @@ root("Achievements", {
 				1274,	-- Loremaster of Outland (H)
 				1360,	-- Loremaster of Northrend (H)
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["races"] = HORDE_ONLY,
 			["groups"] = {
 				title(93),	-- Loremaster
@@ -482,6 +541,7 @@ root("Achievements", {
 				12561,	-- Explore Nazmir
 				12560,	-- Explore Vol'dun
 			}},
+			["timeline"] = { "added 8.0.1.27326" },
 		})),
 		applyclassicphase(LEGION_PHASE_ONE, ach(11188, {	-- Broken Isles Explorer
 			-- Meta Achievement
@@ -492,6 +552,7 @@ root("Achievements", {
 				10668,	-- Explore Stormheim
 				10669,	-- Explore Suramar
 			}},
+			["timeline"] = { "added 7.0.3.21570" },
 		})),
 		applyclassicphase(CATA_PHASE_ONE, ach(4868, {	-- Cataclysm Explorer [7.0.3] / Explore Cataclysm
 			-- Meta Achievement
@@ -502,6 +563,7 @@ root("Achievements", {
 				4865,	-- Explore Uldum
 				4825,	-- Explore Vashj'ir
 			}},
+			["timeline"] = { "added 4.0.3" },
 		})),
 		applyclassicphase(WOD_PHASE_ONE, ach(8935, {	-- Draenor Explorer [7.0.3] / Explore Draenor
 			-- Meta Achievement
@@ -513,8 +575,9 @@ root("Achievements", {
 				8941,	-- Explore Spires of Arak
 				8940,	-- Explore Talador
 			}},
+			["timeline"] = { "added 6.0.1.18297" },
 		})),
-		classicAch(42, {	-- Eastern Kingdoms Explorer [7.0.3] / Explore Eastern Kingdoms
+		ach(42, {	-- Eastern Kingdoms Explorer [7.0.3] / Explore Eastern Kingdoms
 			-- #if AFTER WRATH
 			-- Meta Achievement
 			["sym"] = {{"meta_achievement",
@@ -561,7 +624,7 @@ root("Achievements", {
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_EASTERN_KINGDOMS_EXP .. [[); end]],
 			-- #endif
 		}),
-		classicAch(43, {	-- Kalimdor Explorer [7.0.3] / Explore Kalimdor
+		ach(43, {	-- Kalimdor Explorer [7.0.3] / Explore Kalimdor
 			-- #if AFTER WRATH
 			-- Meta Achievement
 			["sym"] = {{"meta_achievement",
@@ -614,6 +677,7 @@ root("Achievements", {
 				1269,	-- Explore Storm Peaks
 				1267,	-- Explore Zul'Drak
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["groups"] = {
 				i(43348),	-- Tabard of the Explorer
 			},
@@ -636,6 +700,7 @@ root("Achievements", {
 			["OnTooltip"] = [[_.CommonAchievementHandlers.META_OnTooltip]],
 			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.META_ACHCAT_OnUpdate(t, ]] .. ACHIEVEMENT_CATEGORY_OUTLAND_EXP .. [[); end]],
 			-- #endif
+			["timeline"] = { "added 2.0.1" },
 		})),
 		applyclassicphase(MOP_PHASE_ONE, ach(6974, {	-- Pandaria Explorer [7.0.3] / Explore Pandaria
 			-- Meta Achievement
@@ -648,6 +713,7 @@ root("Achievements", {
 				6979,	-- Explore Vale of Eternal Blossoms
 				6969,	-- Explore Valley of the Four Winds
 			}},
+			["timeline"] = { "added 5.0.4.15890" },
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(46, {	-- Universal Explorer [7.0.3] / World Explorer
 			-- Meta Achievement
@@ -672,6 +738,7 @@ root("Achievements", {
 				12988,	-- Battle for Azeroth Explorer
 				-- #endif
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["groups"] = {
 				title(47),	-- the Explorer
 			},
@@ -679,7 +746,7 @@ root("Achievements", {
 	}),
 	pvp(achcat(ACHIEVEMENT_CATEGORY_PVP, {
 		-- Temporary location while an Arena file is made.
-		achcat(ACHIEVEMENT_CATEGORY_ARENA, {
+		achcat(ACHIEVEMENT_CATEGORY_ARENA, bubbleDownSelf({ ["timeline"] = { "added 3.0.1" } }, {
 			ach(397),	-- Step Into the Arena [1]
 			ach(398),	-- Mercilessly Dedicated [100]
 			ach(875),	-- Vengefully Dedicated
@@ -729,12 +796,12 @@ root("Achievements", {
 			ach(699, {	-- World Wide Winner
 				["sym"] = {{ "achievement_criteria" }},
 			}),
-		}),
+		})),
 	})),
 	achcat(ACHIEVEMENT_CATEGORY_DUNGEONS_AND_RAIDS, {
-		applyclassicphase(WRATH_PHASE_ONE, ach(1658, {	-- Champion of the Frozen Wastes
+		applyclassicphase(WRATH_PHASE_ONE, ach(1658, bubbleDownSelf({ ["timeline"] = { "added 3.0.1" } }, {	-- Champion of the Frozen Wastes
 			title(97),	-- , Champion of the Frozen Wastes
-		})),
+		}))),
 		ach(1283, {	-- Classic Dungeonmaster
 			-- Meta Achievement
 			["sym"] = {{"meta_achievement",
@@ -758,6 +825,7 @@ root("Achievements", {
 				645,	-- Scholomance
 				646,	-- Stratholme
 			}},
+			["timeline"] = { "added 3.0.1" },
 		}),
 		ach(1285, {	-- Classic Raider
 			-- Meta Achievement
@@ -767,6 +835,7 @@ root("Achievements", {
 				687,	-- Temple of Ahn'Qiraj
 				689,	-- Ruins of Ahn'Qiraj
 			}},
+			["timeline"] = { "added 3.0.1" },
 		}),
 		-- #if ANYCLASSIC
 		applyclassicphase(WRATH_PHASE_TWO, ach(17304, {	-- Defense Protocol Alpha: Terminated
@@ -785,6 +854,7 @@ root("Achievements", {
 				17213,	-- Defense Protocol Alpha: Utgarde Keep
 				17301,	-- Defense Protocol Alpha: Utgarde Pinnacle
 			}},
+			["timeline"] = { "added 3.0.1" },
 		})),
 		applyclassicphase(WRATH_PHASE_THREE, ach(18614, {	-- Defense Protocol Beta: Terminated (A)
 			-- Meta Achievement
@@ -803,6 +873,7 @@ root("Achievements", {
 				18590,	-- Defense Protocol Beta: Utgarde Keep
 				18600,	-- Defense Protocol Beta: Utgarde Pinnacle
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["races"] = ALLIANCE_ONLY,
 		})),
 		applyclassicphase(WRATH_PHASE_THREE, ach(18688, {	-- Defense Protocol Beta: Terminated (H)
@@ -822,6 +893,7 @@ root("Achievements", {
 				18590,	-- Defense Protocol Beta: Utgarde Keep
 				18600,	-- Defense Protocol Beta: Utgarde Pinnacle
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["races"] = HORDE_ONLY,
 		})),
 		-- #endif
@@ -866,6 +938,7 @@ root("Achievements", {
 				2045,	-- Emerald Void
 				2046,	-- Amber Void
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["groups"] = {
 				i(44160),	-- Red Proto-Drake (MOUNT!)
 			},
@@ -890,6 +963,7 @@ root("Achievements", {
 				4580,	-- All You Can Eat (10 player)
 				4601,	-- Been Waiting a Long Time for This (10 player)
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["groups"] = {
 				i(51954),		-- Bloodbathed Frostbrood Vanquisher (MOUNT!)
 			},
@@ -915,6 +989,7 @@ root("Achievements", {
 				4621,	-- Been Waiting a Long Time for This (25 player)
 				4622,	-- Neck-Deep in Vile (25 player)
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["groups"] = {
 				i(51955),		-- Icebound Frostbrood Vanquisher (MOUNT!)
 			},
@@ -942,6 +1017,7 @@ root("Achievements", {
 				2148,	-- Denyin' the Scion (10 player)
 				2184,	-- Just Can't Get Enough (10 player)
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["maps"] = { EYE_OF_ETERNITY, OBSIDIAN_SANCTUM, NAXXRAMAS },
 			["groups"] = {
 				i(44175, {	-- Plagued Proto-Drake (MOUNT!)
@@ -985,6 +1061,7 @@ root("Achievements", {
 				2147,	-- The Hundred Club (25 player)
 				2185,	-- Just Can't Get Enough (25 player)
 			}},
+			["timeline"] = { "added 3.0.1" },
 			["maps"] = { EYE_OF_ETERNITY, OBSIDIAN_SANCTUM, NAXXRAMAS },
 			["groups"] = {
 				i(44164, {	-- Black Proto-Drake (MOUNT!)
@@ -1045,6 +1122,7 @@ root("Achievements", {
 				489,	-- Heroic: Utgarde Keep
 				499,	-- Heroic: Utgarde Pinnacle
 			}},
+			["timeline"] = { "added 3.0.1" },
 		})),
 		applyclassicphase(WRATH_PHASE_ONE, ach(1288, {	-- Northrend Dungeonmaster
 			-- Meta Achievement
@@ -1062,6 +1140,7 @@ root("Achievements", {
 				477,	-- Utgarde Keep
 				488,	-- Utgarde Pinnacle
 			}},
+			["timeline"] = { "added 3.0.1" },
 		})),
 		ach(1287, {	-- Outland Dungeon Hero
 			-- Meta Achievement
@@ -1083,6 +1162,7 @@ root("Achievements", {
 				677,	-- Heroic: The Steamvault
 				670,	-- Heroic: Underbog
 			}},
+			["timeline"] = { "added 3.0.1" },
 		}),
 		ach(1284, {	-- Outland Dungeonmaster
 			-- Meta Achievement
@@ -1104,6 +1184,7 @@ root("Achievements", {
 				656,	-- The Steamvault
 				650,	-- Underbog
 			}},
+			["timeline"] = { "added 3.0.1" },
 		}),
 		ach(1286, {	-- Outland Raider
 			-- Meta Achievement
@@ -1117,44 +1198,45 @@ root("Achievements", {
 				697,	-- The Black Temple
 				698,	-- Sunwell Plateau
 			}},
+			["timeline"] = { "added 3.0.1" },
 		}),
-		classicAch(4784, {	-- Emblematic
+		ach(4784, {	-- Emblematic
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 1,
 		}),
-		classicAch(3838, {	-- Dungeon & Raid Emblem
+		ach(3838, {	-- Dungeon & Raid Emblem
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 1,
 		}),
-		classicAch(3839, {	-- 25 Dungeon & Raid Emblems
+		ach(3839, {	-- 25 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 25,
 		}),
-		classicAch(3840, {	-- 50 Dungeon & Raid Emblems
+		ach(3840, {	-- 50 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 50,
 		}),
-		classicAch(3841, {	-- 100 Dungeon & Raid Emblems
+		ach(3841, {	-- 100 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 100,
 		}),
-		classicAch(3842, {	-- 250 Dungeon & Raid Emblems
+		ach(3842, {	-- 250 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 250,
 		}),
-		classicAch(3843, {	-- 500 Dungeon & Raid Emblems
+		ach(3843, {	-- 500 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 500,
 		}),
-		classicAch(3844, {	-- 1000 Dungeon & Raid Emblems
+		ach(3844, {	-- 1000 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 1000,
 		}),
-		classicAch(3876, {	-- 1500 Dungeon & Raid Emblems
+		ach(3876, {	-- 1500 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 1500,
 		}),
-		classicAch(4316, {	-- 2500 Dungeon & Raid Emblems
+		ach(4316, {	-- 2500 Dungeon & Raid Emblems
 			["timeline"] = { "added 3.3.3", "removed 4.0.1", "deleted 4.0.6" },
 			["rank"] = 2500,
 		}),
@@ -1162,83 +1244,98 @@ root("Achievements", {
 	achcat(ACHIEVEMENT_CATEGORY_PROFESSIONS, {
 		achcat(170, {	-- Cooking
 			applyclassicphase(WRATH_PHASE_ONE, ach(1563, {	-- Hail to the Chef [Alliance]
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["races"] = ALLIANCE_ONLY,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1784, {	-- Hail to the Chef [Horde]
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["races"] = HORDE_ONLY,
 			})),
-			classicAch(121, {	-- Journeyman Cook
-				["requireSkill"] = COOKING,
+			ach(121, {	-- Journeyman Cook
 				["spellID"] = 3102,	-- Cooking (Journeyman)
+				["requireSkill"] = COOKING,
 				["rank"] = 2,
 			}),
-			classicAch(122, {	-- Expert Cook
-				["requireSkill"] = COOKING,
+			ach(122, {	-- Expert Cook
 				["spellID"] = 3413,	-- Cooking (Expert)
+				["requireSkill"] = COOKING,
 				["rank"] = 3,
 			}),
-			classicAch(123, {	-- Artisan Cook
-				["requireSkill"] = COOKING,
+			ach(123, {	-- Artisan Cook
 				["spellID"] = 18260,	-- Cooking (Artisan)
+				["requireSkill"] = COOKING,
 				["rank"] = 4,
 			}),
 			applyclassicphase(TBC_PHASE_ONE, ach(124, {	-- Master Cook
-				["requireSkill"] = COOKING,
 				["spellID"] = 33359,	-- Cooking (Master)
+				["timeline"] = { "added 2.0.1" },
+				["requireSkill"] = COOKING,
 				["rank"] = 5,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(125, {	-- Grand Master Cook
-				["requireSkill"] = COOKING,
 				["spellID"] = 51296,	-- Cooking (Grand Master)
+				["timeline"] = { "added 3.0.1" },
+				["requireSkill"] = COOKING,
 				["rank"] = 6,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1998, {	-- Dalaran Cooking Award
 				["cost"] = {{ "c", 81, 1 }},	-- Epicurean's Award
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 1,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1999, {	-- 10 Dalaran Cooking Awards
 				["cost"] = {{ "c", 81, 10 }},	-- Epicurean's Award
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 10,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2000, {	-- 25 Dalaran Cooking Awards
 				["cost"] = {{ "c", 81, 25 }},	-- Epicurean's Award
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 25,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2001, {	-- 50 Dalaran Cooking Awards
 				["cost"] = {{ "c", 81, 50 }},	-- Epicurean's Award
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 50,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(2002, {	-- 100 Dalaran Cooking Awards
 				["cost"] = {{ "c", 81, 100 }},	-- Epicurean's Award
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 100,
 			})),
 			ach(1801, {	-- Captain Rumsey's Lager
 				["provider"] = { "i", 34832 },	-- Captain Rumsey's Lager
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1799, {	-- Chef de Cuisine
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 160,
 			})),
 			ach(1797, {	-- Chef de Partie
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 75,
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1781, {	-- Critter Gitter
 				["provider"] = { "i", 43004 },	-- Critter Bites
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1785, {	-- Dinner Impossible
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 			})),
 			ach(1795, {	-- Lunch Lady
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 25,
 			}),
@@ -1249,33 +1346,41 @@ root("Achievements", {
 					{ "i", 43490 },	-- Tasty Cupcake
 					{ "i", 43488 },	-- Last Weeks Mammoth
 				},
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 			})),
 			ach(1796, {	-- Short Order Cook
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 50,
 			}),
 			ach(1798, {	-- Sous Chef
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 100,
 			}),
 			ach(877, {	-- The Cake Is Not A Lie
 				["provider"] = { "i", 33924 },	-- Delicious Chocolate Cake
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1777, {	-- The Northrend Gourmet (15)
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 15,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1778, {	-- The Northrend Gourmet (30)
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 30,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1779, {	-- The Northrend Gourmet (45)
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 				["rank"] = 45,
 			})),
 			ach(1800, {	-- The Outland Gourmet
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = COOKING,
 			}),
 		}),
@@ -1298,6 +1403,7 @@ root("Achievements", {
 					153,		-- The Old Gnome and the Sea
 					1257,		-- The Scavenger
 				}},
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["groups"] = {
 					-- #if AFTER CATA
@@ -1307,64 +1413,73 @@ root("Achievements", {
 					-- #endif
 				},
 			})),
-			classicAch(126, {	-- Journeyman Fisherman
-				["requireSkill"] = FISHING,
+			ach(126, {	-- Journeyman Fisherman
 				["spellID"] = 7731,	-- Fishing (Journeyman)
+				["requireSkill"] = FISHING,
 				["rank"] = 2,
 			}),
-			classicAch(127, {	-- Expert Fisherman
-				["requireSkill"] = FISHING,
+			ach(127, {	-- Expert Fisherman
 				["spellID"] = 7732,	-- Fishing (Expert)
+				["requireSkill"] = FISHING,
 				["rank"] = 3,
 			}),
-			classicAch(128, {	-- Artisan Fisherman
-				["requireSkill"] = FISHING,
+			ach(128, {	-- Artisan Fisherman
 				["spellID"] = 18248,	-- Fishing (Artisan)
+				["requireSkill"] = FISHING,
 				["rank"] = 4,
 			}),
 			applyclassicphase(TBC_PHASE_ONE, ach(129, {	-- Master Fisherman
-				["requireSkill"] = FISHING,
+				["timeline"] = { "added 2.0.1" },
 				["spellID"] = 33095,	-- Fishing (Master)
+				["requireSkill"] = FISHING,
 				["rank"] = 5,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(130, {	-- Grand Master Fisherman
-				["requireSkill"] = FISHING,
 				["spellID"] = 51294,	-- Fishing (Grand Master)
+				["timeline"] = { "added 3.0.1" },
+				["requireSkill"] = FISHING,
 				["rank"] = 6,
 			})),
-			classicAch(1243, {	-- Fish Don't Leave Footprints
+			ach(1243, {	-- Fish Don't Leave Footprints
 				["timeline"] = { "added 2.3.0" },
 				-- #if BEFORE WRATH
 				["description"] = "Learn the ability to find fish.",
 				-- #endif
-				["requireSkill"] = FISHING,
 				["spellID"] = 43308,	-- Find Fish
+				["requireSkill"] = FISHING,
 			}),
 			ach(1556, {	-- 25 Fish
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["rank"] = 25,
 			}),
 			ach(1557, {	-- 50 Fish
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["rank"] = 50,
 			}),
 			ach(1558, {	-- 100 Fish
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["rank"] = 100,
 			}),
 			ach(1559, {	-- 250 Fish
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["rank"] = 250,
 			}),
 			ach(1560, {	-- 500 Fish
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["rank"] = 500,
 			}),
 			ach(1561, {	-- 1000 Fish
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 				["rank"] = 1000,
 			}),
 			applyclassicphase(WRATH_PHASE_ONE, ach(1517, {	-- Northrend Angler
+				["timeline"] = { "added 3.0.1" },
 				["maps"] = { BOREAN_TUNDRA, DRAGONBLIGHT, HOWLING_FJORD, GRIZZLY_HILLS, CRYSTALSONG_FOREST, SHOLAZAR_BASIN },
 				["requireSkill"] = FISHING,
 			})),
@@ -1383,6 +1498,7 @@ root("Achievements", {
 					{ "i", 19808 },	-- Rockhide Strongfish
 					{ "i", 6360 },	-- Steelscale Crushfish
 				},
+				["timeline"] = { "added 3.0.1" },	-- NOTE: Players didn't actually get credit for this... Sigh.
 				["requireSkill"] = FISHING,
 				-- #if BEFORE WRATH
 				["description"] = "Catch one of the rare fish in the list below.\n\nKeep one in your inventory somewhere to keep credit for this.",
@@ -1390,17 +1506,20 @@ root("Achievements", {
 				-- #endif
 			}),
 			ach(1225, {	-- Outland Angler
+				["timeline"] = { "added 3.0.1" },
 				["maps"] = { NAGRAND, TEROKKAR_FOREST, ZANGARMARSH },
 				["requireSkill"] = FISHING,
 			}),
 			ach(150, {	-- The Fishing Diplomat
-				["requireSkill"] = FISHING,
+				["timeline"] = { "added 3.0.1" },
 				["maps"] = { ORGRIMMAR, STORMWIND_CITY },
+				["requireSkill"] = FISHING,
 			}),
 			ach(153, {	-- The Old Gnome and the Sea
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 			}),
-			ach(1257, {	-- The Scavenger
+			ach(1257, bubbleDownSelf({ ["timeline"] = { "added 3.0.1" }, }, {	-- The Scavenger
 				["requireSkill"] = FISHING,
 				["groups"] = {
 					crit(3873, {	-- Bloodsail Wreckage
@@ -1469,40 +1588,44 @@ root("Achievements", {
 						},
 					}),
 				},
-			}),
+			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(3218, {	-- Turtles All the Way Down
 				["provider"] = { "i", 46109 },	-- Sea Turtle
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FISHING,
 			})),
 		}),
 		achcat(172, {	-- First Aid
-			classicAch(131, {	-- Journeyman in First Aid
+			ach(131, {	-- Journeyman in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 3274,	-- First Aid (Journeyman)
 				["rank"] = 2,
 			}),
-			classicAch(132, {	-- Expert in First Aid
+			ach(132, {	-- Expert in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 7924,	-- First Aid (Expert)
 				["rank"] = 3,
 			}),
-			classicAch(133, {	-- Artisan in First Aid
+			ach(133, {	-- Artisan in First Aid
 				["requireSkill"] = FIRST_AID,
 				["spellID"] = 10846,	-- First Aid (Artisan)
 				["rank"] = 4,
 			}),
 			applyclassicphase(TBC_PHASE_ONE, ach(134, {	-- Master in First Aid
-				["requireSkill"] = FIRST_AID,
 				["spellID"] = 27028,	-- First Aid (Master)
+				["timeline"] = { "added 3.0.1" },
+				["requireSkill"] = FIRST_AID,
 				["rank"] = 5,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(135, {	-- Grand Master in First Aid
-				["requireSkill"] = FIRST_AID,
 				["spellID"] = 45542,	-- First Aid (Grand Master)
+				["timeline"] = { "added 3.0.1" },
+				["requireSkill"] = FIRST_AID,
 				["rank"] = 6,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(137, {	-- Stocking Up
 				["provider"] = { "i", 34722 },	-- Heavy Frostweave Bandage
+				["timeline"] = { "added 3.0.1" },
 				["requireSkill"] = FIRST_AID,
 			})),
 			applyclassicphase(WRATH_PHASE_ONE, ach(141, {	-- Ultimate Triage
@@ -1517,6 +1640,7 @@ root("Achievements", {
 					{ "i", 72986 },	-- Heavy Windwool Bandage
 					-- #endif
 				},
+				["timeline"] = { "added 3.0.1" },
 			})),
 		}),
 		applyclassicphase(WRATH_PHASE_ONE, ach(730, {	-- Skills to Pay the Bills
@@ -1526,21 +1650,29 @@ root("Achievements", {
 				135,	-- Grand Master in First Aid
 				125,	-- Grand Master Cook
 			}},
+			["timeline"] = { "added 3.0.1" },
 		})),
-		applyclassicphase(WRATH_PHASE_ONE, ach(735)),	-- Working Day and Night
+		applyclassicphase(WRATH_PHASE_ONE, ach(735, {	-- Working Day and Night
+			["timeline"] = { "added 3.0.1" },
+		})),
 		ach(116, {	-- Professional Journeyman
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 1,
 		}),
 		ach(731, {	-- Professional Expert
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 2,
 		}),
 		ach(732, {	-- Professional Artisan / Professional Classic Master [BFA]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 3,
 		}),
 		ach(733, {	-- Professional Master / Professional Outland Master [BFA]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 4,
 		}),
 		ach(734, {	-- Professional Grand Master / Professional Northrend Master [BFA]
+			["timeline"] = { "added 3.0.1" },
 			["rank"] = 5,
 		}),
 		ach(4924, {	-- Professional Illustrious Grand Master / Professional Cataclysmic Master [BFA]
@@ -1549,31 +1681,31 @@ root("Achievements", {
 		}),
 	}),
 	achcat(ACHIEVEMENT_CATEGORY_REPUTATION, {
-		classicAch(522, {	-- Somebody Likes Me
+		ach(522, {	-- Somebody Likes Me
 			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 1,
 		}),
-		classicAch(523, {	-- 5 Exalted Reputations
+		ach(523, {	-- 5 Exalted Reputations
 			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 5,
 		}),
-		classicAch(524, {	-- 10 Exalted Reputations
+		ach(524, {	-- 10 Exalted Reputations
 			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 10,
 		}),
-		classicAch(521, {	-- 15 Exalted Reputations
+		ach(521, {	-- 15 Exalted Reputations
 			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
 			["rank"] = 15,
 		}),
-		classicAch(520, {	-- 20 Exalted Reputations
+		ach(520, {	-- 20 Exalted Reputations
 			["OnClick"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnClick]],
 			["OnTooltip"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnTooltip]],
 			["OnUpdate"] = [[_.CommonAchievementHandlers.REPUTATIONS_OnUpdate]],
@@ -1699,7 +1831,7 @@ root("Achievements", {
 	achcat(ACHIEVEMENT_CATEGORY_EXPANSION_FEATURES),
 	-- #endif
 	achcat(ACHIEVEMENT_CATEGORY_FEATS_OF_STRENGTH, {
-		classicAch(2358, {	-- Charger
+		ach(2358, {	-- Charger
 			["classes"] = { PALADIN },
 			["f"] = 100,
 			-- #if BEFORE 3.0.1
@@ -1717,7 +1849,7 @@ root("Achievements", {
 			["timeline"] = { "added 3.0.1", "removed 4.0.1" },
 		})),
 		-- #endif
-		applyclassicphase(PHASE_THREE, classicAch(2336, {	-- Insane in the Membrane
+		applyclassicphase(PHASE_THREE, ach(2336, {	-- Insane in the Membrane
 			-- #if ANYCLASSIC
 			["OnInit"] = INSANE_IN_THE_MEMBRANE_OnInit,
 			["OnTooltip"] = INSANE_IN_THE_MEMBRANE_OnTooltip,
