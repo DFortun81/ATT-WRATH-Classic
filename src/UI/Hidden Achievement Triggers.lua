@@ -20,6 +20,7 @@ app:GetWindow("HiddentAchievementTriggers", {
 				text = "Hidden Achievement Triggers",
 				icon = app.asset("Category_Achievements"),
 				description = "Hidden Achievement Triggers",
+				visible = true,
 				g = hat,
 				_hqt = true,
 			});

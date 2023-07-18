@@ -18,11 +18,13 @@ app:GetWindow("NeverImplemented", {
 			local nyiData = app.CacheFields({
 				text = "Never Implemented",
 				icon = app.asset("Interface_Tchest"),
+				visible = true,
 				hideText = true,
-				indent = 2,
+				indent = 1,
 				g = g,
 			});
 			app.AssignFieldValue(nyiData, "u", 1);
+			nyiData.u = nil;
 			self.nyiData = nyiData;
 		end
 	end,
@@ -35,4 +37,12 @@ app:GetWindow("NeverImplemented", {
 			end
 		end
 	end,
+	OnUpdate = function(self, ...)
+		-- Update the groups without forcing Debug Mode.
+		local UnobtainableItemFilter = app.UnobtainableItemFilter;
+		app.UnobtainableItemFilter = app.NoFilter;
+		self:DefaultUpdate(...);
+		app.UnobtainableItemFilter = UnobtainableItemFilter;
+		return false;
+	end
 });

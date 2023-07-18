@@ -20,6 +20,7 @@ app:GetWindow("HiddentQuestTriggers", {
 				text = "Hidden Quest Triggers",
 				icon = app.asset("Interface_Quest"),
 				description = "These quests are triggered by completing things in the game",
+				visible = true,
 				g = hqt,
 				_hqt = true,
 			});
