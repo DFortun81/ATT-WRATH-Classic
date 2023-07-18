@@ -4245,34 +4245,6 @@ end,
 	end
 	return t;
 end,
-["EXALTED_REPS_OnUpdate"] = function(t)
-	if t.collectible then
-		local reps = t.reps or (t.BuildReputations and t:BuildReputations());
-		if not reps then return true; end
-		local collected = true;
-		for i,r in ipairs(reps) do
-			if r.standing < 8 then
-				collected = false;
-				break;
-			end
-		end
-		t:SetAchievementCollected(t.achievementID, collected);
-	end
-end,
-["EXALTED_REPS_ANY_OnUpdate"] = function(t)
-	if t.collectible then
-		local reps = t.reps or (t.BuildReputations and t:BuildReputations());
-		if not reps then return true; end
-		local collected = false;
-		for i,r in ipairs(reps) do
-			if r.standing == 8 then
-				collected = true;
-				break;
-			end
-		end
-		t:SetAchievementCollected(t.achievementID, collected);
-	end
-end,
 ["EXALTED_REPS_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
@@ -4870,6 +4842,34 @@ else
 				end
 			end
 			if c > 15 then GameTooltip:AddLine(" And " .. (c - 15) .. " more!"); end
+		end
+	end
+	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t)
+		if t.collectible then
+			local reps = t.reps or (t.BuildReputations and t:BuildReputations());
+			if not reps then return true; end
+			local collected = true;
+			for i,r in ipairs(reps) do
+				if r.standing < 8 then
+					collected = false;
+					break;
+				end
+			end
+			t:SetAchievementCollected(t.achievementID, collected);
+		end
+	end
+	commonAchievementHandlers.EXALTED_REPS_ANY_OnUpdate = function(t)
+		if t.collectible then
+			local reps = t.reps or (t.BuildReputations and t:BuildReputations());
+			if not reps then return true; end
+			local collected = false;
+			for i,r in ipairs(reps) do
+				if r.standing == 8 then
+					collected = true;
+					break;
+				end
+			end
+			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.EXPLORATION_OnUpdate = function(t)
