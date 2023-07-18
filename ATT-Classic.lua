@@ -4196,6 +4196,13 @@ end,
 		return true;
 	end
 end,
+["EXALTED_REP_OnUpdate"] = function(t)
+	if t.collectible then
+		local r = t.rep or (t.BuildReputation and t:BuildReputation());
+		if not r then return true; end
+		t:SetAchievementCollected(t.achievementID, r.standing == 8);
+	end
+end,
 ["EXALTED_REP_OnTooltip"] = function(t)
 	if t.collectible then
 		local r = t.rep or (t.BuildReputation and t:BuildReputation());
@@ -4237,6 +4244,34 @@ end,
 		return reps;
 	end
 	return t;
+end,
+["EXALTED_REPS_OnUpdate"] = function(t)
+	if t.collectible then
+		local reps = t.reps or (t.BuildReputations and t:BuildReputations());
+		if not reps then return true; end
+		local collected = true;
+		for i,r in ipairs(reps) do
+			if r.standing < 8 then
+				collected = false;
+				break;
+			end
+		end
+		t:SetAchievementCollected(t.achievementID, collected);
+	end
+end,
+["EXALTED_REPS_ANY_OnUpdate"] = function(t)
+	if t.collectible then
+		local reps = t.reps or (t.BuildReputations and t:BuildReputations());
+		if not reps then return true; end
+		local collected = false;
+		for i,r in ipairs(reps) do
+			if r.standing == 8 then
+				collected = true;
+				break;
+			end
+		end
+		t:SetAchievementCollected(t.achievementID, collected);
+	end
 end,
 ["EXALTED_REPS_OnClick"] = function(row, button)
 	if button == "RightButton" then
@@ -4589,75 +4624,6 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	
 	-- Achievements are supported in this version, so we don't need to manually check anything!
 	-- Most calculations that were previously in the OnUpdate can now exist in a build script instead.
-	commonAchievementHandlers.EXALTED_REP_OnUpdate = function(t, factionID)
-		if factionID and type(factionID) == 'number' then
-			commonAchievementHandlers.EXALTED_REP_OnInit(t, factionID);
-			return true;
-		end
-		if t.collectible then
-			local r = t.rep or (t.BuildReputation and t:BuildReputation());
-			if not r then return true; end
-			t:SetAchievementCollected(t.achievementID, r.standing == 8);
-		end
-	end
-	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t, ...)
-		t.OnUpdate = nil;
-		local factionIDs = { ... };
-		t.BuildReputations = function()
-			local reps = t.reps;
-			if not reps then
-				reps = {};
-				for i,factionID in ipairs(factionIDs) do
-					local f = app.SearchForField("factionID", factionID);
-					if f and #f > 0 then
-						local best = f[1];
-						for _,o in ipairs(f) do
-							if o.key == "factionID" then
-								best = o;
-								break;
-							end
-						end
-						if best.maxReputation then
-							best = CloneData(best);
-							best.maxReputation = nil;
-						end
-						tinsert(reps, best);
-					end
-				end
-				if #reps > 0 then
-					t.reps = reps;
-				else
-					reps = nil;
-				end
-			end
-			return reps;
-		end
-	end
-	commonAchievementHandlers.EXALTED_REPS_ANY_OnUpdate = function(t, ...)
-		t.OnUpdate = nil;
-		local factionIDs = { ... };
-		t.BuildReputations = function(t)
-			local reps = t.reps;
-			if not reps then
-				reps = {};
-				for i,factionID in ipairs(factionIDs) do
-					local f = app.SearchForField("factionID", factionID);
-					if f and #f > 0 then
-						local r = f[1];
-						if r.maxReputation then
-							r = CloneData(r);
-							r.maxReputation = nil;
-						end
-						tinsert(reps, f[1]);
-					end
-				end
-				if #reps > 0 then
-					t.reps = reps;
-				end
-			end
-			return reps;
-		end
-	end
 	commonAchievementHandlers.EXPLORATION_OnClick = function(row, button)
 		if button == "RightButton" then
 			local t = row.ref;
@@ -4924,89 +4890,6 @@ else
 				end
 			end
 			if c > 15 then GameTooltip:AddLine(" And " .. (c - 15) .. " more!"); end
-		end
-	end
-	commonAchievementHandlers.EXALTED_REP_OnUpdate = function(t, factionID, override)
-		if t.collectible then
-			local r = t.rep;
-			if not r then
-				local f = app.SearchForField("factionID", factionID);
-				if f and #f > 0 then
-					r = f[1];
-					for i,o in ipairs(f) do
-						if o.key == "factionID" then
-							r = o;
-							break;
-						end
-					end
-					if not r then
-						return true;
-					end
-					t.rep = r;
-				else
-					return true;
-				end
-			end
-			t:SetAchievementCollected(t.achievementID, r.standing == 8);
-		end
-	end
-	commonAchievementHandlers.EXALTED_REPS_OnUpdate = function(t, ...)
-		if t.collectible then
-			local reps = t.reps;
-			if not reps then
-				reps = {};
-				for i,factionID in ipairs({ ... }) do
-					local f = app.SearchForField("factionID", factionID);
-					if f and #f > 0 then
-						local best = f[1];
-						for _,o in ipairs(f) do
-							if o.key == "factionID" then
-								best = o;
-								break;
-							end
-						end
-						tinsert(reps, best);
-					else
-						return true;
-					end
-				end
-				if #reps < 1 then return true; end
-				t.reps = reps;
-			end
-			local collected = true;
-			for i,faction in ipairs(reps) do
-				if faction.standing < 8 then
-					collected = false;
-					break;
-				end
-			end
-			t:SetAchievementCollected(t.achievementID, collected);
-		end
-	end
-	commonAchievementHandlers.EXALTED_REPS_ANY_OnUpdate = function(t, ...)
-		if t.collectible then
-			local reps = t.reps;
-			if not reps then
-				reps = {};
-				for i,factionID in ipairs({ ... }) do
-					local f = app.SearchForField("factionID", factionID);
-					if f and #f > 0 then
-						tinsert(reps, f[1]);
-					else
-						return true;
-					end
-				end
-				if #reps < 1 then return true; end
-				t.reps = reps;
-			end
-			local collected = false;
-			for i,faction in ipairs(reps) do
-				if faction.standing < 8 then
-					collected = true;
-					break;
-				end
-			end
-			t:SetAchievementCollected(t.achievementID, collected);
 		end
 	end
 	commonAchievementHandlers.EXPLORATION_OnUpdate = function(t)

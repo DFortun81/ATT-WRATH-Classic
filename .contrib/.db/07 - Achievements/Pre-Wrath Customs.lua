@@ -1740,14 +1740,9 @@ root("Achievements", {
 			},
 			-- #endif
 		})),
-		applyclassicphase(PHASE_ONE, ach(948, {	-- Ambassador of the Alliance
+		applyclassicphase(PHASE_ONE, achWithReps(948, { 69, 930, 54, 47, 72 }, {	-- Ambassador of the Alliance
 			-- #if BEFORE WRATH
 			["description"] = "Earn exalted reputation with 5 home cities.",
-			-- #endif
-			-- #if ANYCLASSIC
-			["OnClick"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnClick]],
-			["OnTooltip"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnTooltip]],
-			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 69, 930, 54, 47, 72); end]],
 			-- #endif
 			["races"] = ALLIANCE_ONLY,
 			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
@@ -1758,14 +1753,9 @@ root("Achievements", {
 				-- #endif
 			}),
 		})),
-		applyclassicphase(PHASE_ONE, ach(762, {	-- Ambassador of the Horde
+		applyclassicphase(PHASE_ONE, achWithReps(762, { 530, 76, 911, 81, 68 }, {	-- Ambassador of the Horde
 			-- #if BEFORE WRATH
 			["description"] = "Earn exalted reputation with 5 home cities.",
-			-- #endif
-			-- #if ANYCLASSIC
-			["OnClick"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnClick]],
-			["OnTooltip"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnTooltip]],
-			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 530, 76, 911, 81, 68); end]],
 			-- #endif
 			["races"] = HORDE_ONLY,
 			["groups"] = applyclassicphase(WRATH_PHASE_ONE, {
@@ -1776,14 +1766,9 @@ root("Achievements", {
 				-- #endif
 			}),
 		})),
-		applyclassicphase(TBC_PHASE_ONE, ach(942, {	-- The Diplomat
+		applyclassicphase(TBC_PHASE_ONE, achWithReps(942, { 978, 970, 576 }, {	-- The Diplomat
 			-- #if BEFORE WRATH
 			["description"] = "Raise your reputation level from unfriendly to exalted with Timbermaw Hold, Sporeggar and the Kurenai.",
-			-- #endif
-			-- #if ANYCLASSIC
-			["OnClick"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnClick]],
-			["OnTooltip"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnTooltip]],
-			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 978, 970, 576); end]],
 			-- #endif
 			["maps"] = { FELWOOD, ZANGARMARSH, NAGRAND },
 			["races"] = ALLIANCE_ONLY,
@@ -1795,14 +1780,9 @@ root("Achievements", {
 				-- #endif
 			},
 		})),
-		applyclassicphase(TBC_PHASE_ONE,  ach(943,{	-- The Diplomat
+		applyclassicphase(TBC_PHASE_ONE, achWithReps(943, { 941, 970, 576 }, {	-- The Diplomat
 			-- #if BEFORE WRATH
 			["description"] = "Raise your reputation level from unfriendly to exalted with Timbermaw Hold, Sporeggar and the Mag'har.",
-			-- #endif
-			-- #if ANYCLASSIC
-			["OnClick"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnClick]],
-			["OnTooltip"] = [[_.CommonAchievementHandlers.EXALTED_REPS_OnTooltip]],
-			["OnUpdate"] = [[function(t) return _.CommonAchievementHandlers.EXALTED_REPS_OnUpdate(t, 941, 970, 576); end]],
 			-- #endif
 			["maps"] = { FELWOOD, ZANGARMARSH, NAGRAND },
 			["races"] = HORDE_ONLY,
