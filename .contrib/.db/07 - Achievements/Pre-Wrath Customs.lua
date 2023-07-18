@@ -1498,12 +1498,11 @@ root("Achievements", {
 					{ "i", 19808 },	-- Rockhide Strongfish
 					{ "i", 6360 },	-- Steelscale Crushfish
 				},
-				["timeline"] = { "added 3.0.1" },	-- NOTE: Players didn't actually get credit for this... Sigh.
-				["requireSkill"] = FISHING,
 				-- #if BEFORE WRATH
 				["description"] = "Catch one of the rare fish in the list below.\n\nKeep one in your inventory somewhere to keep credit for this.",
-				["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_ITEM_PROVIDER]],
 				-- #endif
+				["timeline"] = { "added 3.0.1" },	-- NOTE: Players didn't actually get credit for this... Sigh.
+				["requireSkill"] = FISHING,
 			}),
 			ach(1225, {	-- Outland Angler
 				["timeline"] = { "added 3.0.1" },
@@ -1812,8 +1811,6 @@ root("Achievements", {
 	-- #endif
 	achcat(ACHIEVEMENT_CATEGORY_FEATS_OF_STRENGTH, {
 		ach(2358, {	-- Charger
-			["classes"] = { PALADIN },
-			["f"] = 100,
 			-- #if BEFORE 3.0.1
 			["sourceQuests"] = {
 				7647,	-- Judgment and Redemption
@@ -1821,8 +1818,9 @@ root("Achievements", {
 				9737,	-- True Masters of the Light
 				-- #endif
 			},
-			["OnUpdate"] = [[_.CommonAchievementHandlers.ANY_SOURCE_QUEST]],
 			-- #endif
+			["classes"] = { PALADIN },
+			["f"] = 100,
 		}),
 		-- #if AFTER 4.0.1
 		applyclassicphase(WRATH_PHASE_ONE, ach(92, {	-- Did Somebody Order a Knuckle Sandwich?
