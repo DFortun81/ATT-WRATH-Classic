@@ -4771,26 +4771,6 @@ else
 			return true;
 		end
 	end
-	commonAchievementHandlers.ALL_ITEM_COSTS = function(t)
-		local collected = true;
-		for i,provider in ipairs(t.cost) do
-			if provider[1] == "i" and _GetItemCount(provider[2], true) == 0 then
-				collected = false;
-				break;
-			end
-		end
-		t:SetAchievementCollected(t.achievementID, collected);
-	end
-	commonAchievementHandlers.ANY_ITEM_COST = function(t)
-		local collected = false;
-		for i,provider in ipairs(t.cost) do
-			if provider[1] == "i" and _GetItemCount(provider[2], true) > 0 then
-				collected = true;
-				break;
-			end
-		end
-		t:SetAchievementCollected(t.achievementID, collected);
-	end
 	commonAchievementHandlers.ALL_ITEM_PROVIDERS = function(t)
 		local collected = true;
 		for i,provider in ipairs(t.providers) do
