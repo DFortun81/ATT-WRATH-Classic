@@ -125,10 +125,10 @@ local function ReceiveChunk(method, sender, uid, chunkIndex, chunkCount, chunk)
 	end
 end
 local function EncodeMessage(msg)
-	return LibDeflate:EncodeForWoWChatChannel(LibDeflate:CompressDeflate(msg, {level = 9}));
+	return msg;--LibDeflate:EncodeForWoWChatChannel(LibDeflate:CompressDeflate(msg));
 end
 local function DecodeMessage(msg)
-	return LibDeflate:DecompressDeflate(LibDeflate:DecodeForWoWChatChannel(msg));
+	return msg;--LibDeflate:DecompressDeflate(LibDeflate:DecodeForWoWChatChannel(msg));
 end
 local function _SendAddonMessage(target, msg)
 	C_ChatInfo.SendAddonMessage(AddonMessagePrefix, msg, "WHISPER", target);
