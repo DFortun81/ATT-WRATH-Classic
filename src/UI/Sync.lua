@@ -61,6 +61,11 @@ local function ProcessSendChunks()
 							pendingChunk.method(pendingChunk.target, "chunk," .. pendingChunk.uid .. "," .. i .. "," .. chunkCount .. "," .. chunks[i]);
 							pendingChunk.cooldown = 10000;	-- ~10 seconds (resets when an ack is received!)
 							finished = false;
+							cooldown = 60;
+							while cooldown > 0 do
+								cooldown = cooldown - 1;
+								coroutine.yield();
+							end
 							break;
 						end
 					end
@@ -298,6 +303,11 @@ local function ProcessAddonMessageMethod(self, method, sender, datastring)
 			end
 		end
 		
+		-- Fixed a decoding issue involving the string ending with a comma.
+		if string.sub(datastring, string.len(datastring)) == "," then
+			chunk = chunk .. ",";
+		end
+		
 		-- If we have finished receiving chunks for this UID, then return a datastring!
 		datastring = ReceiveChunk(method, sender, uid, chunkIndex, chunkCount, chunk);
 		if not datastring then return; end
@@ -313,11 +323,21 @@ local function ProcessAddonMessageMethod(self, method, sender, datastring)
 	ProcessAddonMessageText(self, sender, text, responses);
 	local responseCount = #responses;
 	if responseCount > 0 then
+		local batches = 0;
 		local wad = responses[1];
 		for i=2,responseCount,1 do
-			wad = wad .. "~" .. responses[i];
+			batches = batches + 1;
+			if batches > 3 then
+				method(sender, wad);
+				wad = responses[i];
+				batches = 1;
+			else
+				wad = wad .. "~" .. responses[i];
+			end
 		end
-		method(sender, wad);
+		if batches > 0 then
+			method(sender, wad);
+		end
 	end
 end
 local function RecalculateAccountWideData()

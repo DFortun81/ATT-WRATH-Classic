@@ -5327,6 +5327,7 @@ app.CreateUnit = app.CreateClass("Unit", "unit", {
 				className, classFile, classID = UnitClass(unit);
 				raceName, raceFile, raceID = UnitRace(unit);
 			else
+				rawset(t, "name", unit);
 				return t;
 			end
 		end
