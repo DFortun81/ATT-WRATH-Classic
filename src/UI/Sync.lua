@@ -22,7 +22,7 @@ local function GenerateChunks(msg, chunksize)
 		-- When the message exceeds the length, we have to cut it into sections and deliver it as a set of chunks.
 		--print("Encoded Message exceeded maximum (" .. chunksize .. "): ", encodedLength);
 		local chunks = {};
-		chunksize = chunksize - 32;
+		chunksize = chunksize - 16;
 		for i=1,encodedLength,chunksize do
 			local chunk;
 			local j = i + chunksize - 1;
@@ -58,7 +58,7 @@ local function ProcessSendChunks()
 					for i=1,chunkCount,1 do
 						if not acks[i] then
 							-- We found one that hasn't been acknowledged yet.
-							pendingChunk.method(pendingChunk.target, "chunk," .. pendingChunk.uid .. "," .. i .. "," .. chunkCount .. "," .. chunks[i]);
+							pendingChunk.method(pendingChunk.target, "chunk`" .. pendingChunk.uid .. "`" .. i .. "`" .. chunkCount .. "`" .. chunks[i]);
 							pendingChunk.cooldown = 10000;	-- ~10 seconds (resets when an ack is received!)
 							finished = false;
 							cooldown = 60;
@@ -162,11 +162,9 @@ local function SendBattleNetMessage(target, msg)
 	end
 end
 local function SplitString(separator, text)
-    local t = {};
-    for str in strgmatch(text, "([^" .. (separator or "%s") .. "]+)") do
-		if str then tinsert(t, str); end
-    end
-    return t;
+    local sep, res = separator or '%s', {}
+    strgsub(text, '[^'..sep..']+', function(x) res[#res+1] = x end)
+    return res;
 end
 local function UpdateBattleTags()
 	-- Attempt to cache each character's battleTag if it is missing.
@@ -218,7 +216,7 @@ local function SendCharacterMessage(character, msg)
 		if BNSendGameData and gameAccountID then
 			SendBattleNetMessage(gameAccountID, msg);
 		elseif character.realm == CurrentCharacter.realm and character.factionID == CurrentCharacter.factionID then
-			SendAddonMessage(name, msg);
+			SendAddonMessage(character.name, msg);
 		end
 	end
 end
@@ -255,6 +253,7 @@ local function BroadcastMessage(msg)
 		for guid,character in pairs(CharacterData) do
 			local name = character.name;
 			if name then characterByInfo[name] = character; end
+			SilentlyLinkedCharacters[character.guid] = true;
 			characterByInfo[guid] = character;
 		end
 		
@@ -290,28 +289,10 @@ local function ProcessAddonMessageText(self, sender, text, responses)
 end
 local function ProcessAddonMessageMethod(self, method, sender, datastring)
 	-- Check for chunks, which are gigantic sets of data.
-	if strsub(datastring, 1, 6) == "chunk," then
-		local content = SplitString(",", datastring);
+	if strsub(datastring, 1, 6) == "chunk`" then
+		local content = SplitString("`", datastring);
 		local uid, chunkIndex, chunkCount, chunk = 
 			tonumber(content[2]), tonumber(content[3]), tonumber(content[4]), content[5];
-		
-		-- Fixed a decoding issue involving the string sometimes starting with a comma.
-		if string.sub(content[5], 1) == "," then
-			chunk = "," .. chunk;
-		end
-		
-		-- These were parts of the chunk that actually contained a comma.
-		local contentLength = #content;
-		if contentLength > 5 then
-			for i=6,contentLength,1 do
-				chunk = chunk .. "," .. content[i];
-			end
-		end
-		
-		-- Fixed a decoding issue involving the string ending with a comma.
-		if string.sub(datastring, string.len(datastring)) == "," then
-			chunk = chunk .. ",";
-		end
 		
 		-- If we have finished receiving chunks for this UID, then return a datastring!
 		datastring = ReceiveChunk(method, sender, uid, chunkIndex, chunkCount, chunk);
@@ -328,21 +309,16 @@ local function ProcessAddonMessageMethod(self, method, sender, datastring)
 	ProcessAddonMessageText(self, sender, text, responses);
 	local responseCount = #responses;
 	if responseCount > 0 then
-		local batches = 0;
 		local wad = responses[1];
 		for i=2,responseCount,1 do
-			batches = batches + 1;
-			if batches > 3 then
+			if string.len(wad) > 5000 then
 				method(sender, wad);
 				wad = responses[i];
-				batches = 1;
 			else
 				wad = wad .. "~" .. responses[i];
 			end
 		end
-		if batches > 0 then
-			method(sender, wad);
-		end
+		method(sender, wad);
 	end
 end
 local function RecalculateAccountWideData()
