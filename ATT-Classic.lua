@@ -4579,7 +4579,9 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 		if ATTAccountWideData then
 			for achievementID,container in pairs(app.SearchForFieldContainer("achievementID")) do
 				local id = tonumber(achievementID);
-				SetAchievementCollected(container[1], id, select(13, _GetAchievementInfo(id)));
+				if achievementID ~= 5788 then
+					SetAchievementCollected(container[1], id, select(13, _GetAchievementInfo(id)));
+				end
 			end
 		end
 	end
