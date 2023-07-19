@@ -2660,6 +2660,23 @@ temporaryText:SetText("The sync tool has temporarily left this menu.\n\nYou can 
 temporaryText:Show();
 tinsert(settings.MostRecentTab.objects, temporaryText);
 
+local f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f:SetPoint("TOP", temporaryText, "BOTTOM", 0, -8);
+f:SetPoint("LEFT", line, "LEFT", 8, -8);
+f:SetPoint("RIGHT", line, "LEFT", 300, -8);
+f:SetText("Open the Sync Window");
+f:SetHeight(30);
+f:RegisterForClicks("AnyUp");
+f:SetScript("OnClick", function()
+	local syncWindow = app:GetWindow("Synchronization");
+	if syncWindow then
+		if SettingsPanel and SettingsPanel:IsShown() then SettingsPanel:Hide(); end
+		syncWindow:Show();
+	end
+end);
+f:SetATTTooltip("Click this button to open the Sync Window");
+tinsert(settings.MostRecentTab.objects, f);
+
 function tab:InitializeSyncWindow()
 	-- Synchronization Window
 	local syncWindow = app:GetWindow("Sync");
