@@ -268,7 +268,6 @@ local function BroadcastMessage(msg)
 						SendCharacterMessage(character, msg);
 						sent[name] = true;
 					end
-					SendCharacterMessage(character, msg);
 				elseif not sent[identifier] then
 					sent[identifier] = true;
 					SendAddonMessage(identifier, msg);
@@ -295,9 +294,15 @@ local function ProcessAddonMessageMethod(self, method, sender, datastring)
 		local content = SplitString(",", datastring);
 		local uid, chunkIndex, chunkCount, chunk = 
 			tonumber(content[2]), tonumber(content[3]), tonumber(content[4]), content[5];
+		
+		-- Fixed a decoding issue involving the string sometimes starting with a comma.
+		if string.sub(content[5], 1) == "," then
+			chunk = "," .. chunk;
+		end
+		
+		-- These were parts of the chunk that actually contained a comma.
 		local contentLength = #content;
 		if contentLength > 5 then
-			-- WHOOPS. Let's concat the chunk back together.
 			for i=6,contentLength,1 do
 				chunk = chunk .. "," .. content[i];
 			end
