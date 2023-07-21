@@ -2978,9 +2978,9 @@ local onUpdateForDynamicCategory = function(data)
 	end
 	
 	-- When nothing has been populated, always show.
-	local parent = data.parent;
-	if parent then
-		parent.progress = parent.progress + data.progress;
+	local parent, progress = data.parent, data.progress;
+	if parent and progress then
+		parent.progress = parent.progress + progress;
 		parent.total = parent.total + data.total;
 	end
 	data.visible = true;
@@ -3521,66 +3521,7 @@ function app:GetDataCache()
 		});
 		
 		-- Titles (Dynamic)
-		table.insert(g, {
-			text = PAPERDOLL_SIDEBAR_TITLES,
-			icon = app.asset("Category_Titles"),
-			titles = {},
-			g = {},
-			OnUpdate = function(self)
-				local headers = {};
-				for i,header in ipairs(self.g) do
-					if header.headerID and header.key == "headerID" then
-						headers[header.headerID] = header;
-						if not header.g then
-							header.g = {};
-						end
-					end
-				end
-				for i,_ in pairs(app.SearchForFieldContainer("titleID")) do
-					local titleID = tonumber(i);
-					if not self.titles[titleID] then
-						local titleIDs = _[1].titleIDs;
-						if titleIDs then
-							for index,j in ipairs(titleIDs) do
-								if not self.titles[j] then
-									local titleObject = app.CreateTitle(j, { ["playerGender"] = index == 1 and 2 or 3 });
-									self.titles[j] = BuildCategory(self, headers, _, titleObject);
-									titleObject.OnUpdate = titleObject.OnUpdateForSpecificGender;
-								end
-							end
-						else
-							self.titles[titleID] = BuildCategory(self, headers, _, app.CreateTitle(titleID));
-						end
-					end
-				end
-				if not headers[app.HeaderConstants.HONOR_TITLES] then
-					local searchResults = app.SearchForField("headerID", app.HeaderConstants.HONOR_TITLES);
-					if searchResults and #searchResults > 0 then
-						header = app.CreateNPC(app.HeaderConstants.HONOR_TITLES);
-						headers[app.HeaderConstants.HONOR_TITLES] = header;
-						tinsert(self.g, header);
-						header.parent = self;
-						header.u = searchResults[1].u;
-						header.g = searchResults[1].g;
-						header.ignoreSort = true;
-					end
-				end
-				app.Sort(self.g, app.SortDefaults.Text);
-				for i,header in pairs(headers) do
-					if not header.ignoreSort then
-						app.Sort(header.g, app.SortDefaults.Text);
-					end
-				end
-				for i=#self.g,1,-1 do
-					header = self.g[i];
-					if header.g and #header.g < 1 and header.headerID and header.key == "headerID" then
-						headers[header.headerID] = nil;
-						table.remove(self.g, i);
-					end
-				end
-				self.OnUpdate = nil;
-			end
-		});
+		table.insert(g, app.CreateDynamicCategory("Titles"));
 		
 		-- Toys (Dynamic)
 		table.insert(g, app.CreateDynamicCategory("Toys"));
