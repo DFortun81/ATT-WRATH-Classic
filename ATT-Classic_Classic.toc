@@ -42,7 +42,6 @@ db\Classic\Custom Headers.lua
 Settings.lua
 ATT-Classic.lua
 db\Classic\Categories.lua
-src\Root.lua
 src\UI\Attunements.lua
 src\UI\Auctions.lua
 src\UI\Breadcrumbs.lua
@@ -58,4 +57,6 @@ src\UI\Random.lua
 src\UI\Removed With Patch Loot.lua
 src\UI\Soft Reserves.lua
 src\UI\Sync.lua
+src\UI\Toys.lua
 src\UI\Unsorted.lua
+src\Root.lua

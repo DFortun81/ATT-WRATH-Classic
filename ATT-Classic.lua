@@ -2757,7 +2757,7 @@ end
 local sortByAccessibility = function(a, b)
 	return calculateAccessibility(a) <= calculateAccessibility(b);
 end
-local buildCategoryEntry = function(self, headers, searchResults, inst)
+local BuildCategory = function(self, headers, searchResults, inst)
 	local sources, header, headerType = {}, self;
 	for j,o in ipairs(searchResults) do
 		if not o.u or o.u ~= 1 then
@@ -2944,6 +2944,89 @@ local function achievementSort(a, b)
 	return app.SortDefaults.Name(a, b);
 end;
 
+do
+local onClickForDynamicCategory = function(row, button)
+	local window = row.ref.dynamicWindow;
+	if window then
+		if button == "RightButton" then
+			window:Toggle();
+			return true;
+		elseif not row.ref.g or #row.ref.g < 1 then
+			if #window.data.g < 1 then window:ForceRebuild(); end
+			local prime = app:GetWindow("Prime");
+			local primeData = prime.data;
+			if primeData then
+				local progress, total = window.data.progress or 0, window.data.total or 0;
+				local g = CloneReference(window.data).g;
+				for i,o in ipairs(g) do
+					o.parent = row.ref;
+				end
+				row.ref.g = g;
+				row.ref.progress = progress;
+				row.ref.total = total;
+				prime:Refresh();
+			end
+		end
+	end
+end
+local onUpdateForDynamicCategory = function(data)
+	local dynamicGroups = data.dynamicWindowData.g;
+	if dynamicGroups and #dynamicGroups > 0 then
+		-- Once we have data, then allow the default update to filter the data.
+		data.OnUpdate = nil;
+		return false;
+	end
+	
+	-- When nothing has been populated, always show.
+	local parent = data.parent;
+	if parent then
+		parent.progress = parent.progress + data.progress;
+		parent.total = parent.total + data.total;
+	end
+	data.visible = true;
+	return true;
+end
+app.CreateDynamicCategory = app.CreateClass("DynamicCategory", "suffix", {
+	["dynamicWindow"] = function(t)
+		local window = app:GetWindow(t.suffix);
+		if window then return window; end
+	end,
+	["dynamicWindowData"] = function(t)
+		local window = app:GetWindow(t.suffix);
+		if window and window.data then
+			return window.data;
+		end
+		return app.EmptyTable;
+	end,
+	["text"] = function(t)
+		return t.dynamicWindowData.text or ("Dynamic Category: " .. t.suffix);
+	end,
+	["icon"] = function(t)
+		return t.dynamicWindowData.icon or "Interface/ICONS/INV_Misc_Gear_02";
+	end,
+	["description"] = function(t)
+		return t.dynamicWindowData.description;
+	end,
+	["progress"] = function(t)
+		return t.dynamicWindowData.progress;
+	end,
+	["total"] = function(t)
+		return t.dynamicWindowData.total;
+	end,
+	["summary"] = function(t)
+		local total = t.total;
+		if not total or total < 1 then
+			return "[Click to Cache]";
+		end
+	end,
+	["OnClick"] = function(t)
+		return onClickForDynamicCategory;
+	end,
+	["OnUpdate"] = function(t)
+		return onUpdateForDynamicCategory;
+	end,
+});
+end
 function app:GetDataCache()
 	if app.Categories then
 		local rootData = setmetatable({
@@ -3412,7 +3495,7 @@ function app:GetDataCache()
 				for i,_ in pairs(app.SearchForFieldContainer("spellID")) do
 					if ((_[1].f and _[1].f == 100) or (_[1].filterID and _[1].filterID == 100)) and not self.mounts[i] then
 						local mount = app.CreateMount(tonumber(i));
-						self.mounts[i] = buildCategoryEntry(self, headers, _, mount);
+						self.mounts[i] = BuildCategory(self, headers, _, mount);
 						if mount.u and mount.u < 3 then
 							for j,o in ipairs(_) do
 								if o.itemID and not o.u or o.u >= 3 then
@@ -3461,12 +3544,12 @@ function app:GetDataCache()
 							for index,j in ipairs(titleIDs) do
 								if not self.titles[j] then
 									local titleObject = app.CreateTitle(j, { ["playerGender"] = index == 1 and 2 or 3 });
-									self.titles[j] = buildCategoryEntry(self, headers, _, titleObject);
+									self.titles[j] = BuildCategory(self, headers, _, titleObject);
 									titleObject.OnUpdate = titleObject.OnUpdateForSpecificGender;
 								end
 							end
 						else
-							self.titles[titleID] = buildCategoryEntry(self, headers, _, app.CreateTitle(titleID));
+							self.titles[titleID] = BuildCategory(self, headers, _, app.CreateTitle(titleID));
 						end
 					end
 				end
@@ -3500,40 +3583,7 @@ function app:GetDataCache()
 		});
 		
 		-- Toys (Dynamic)
-		table.insert(g, {
-			text = TOY_BOX,
-			icon = app.asset("Category_ToyBox"),
-			toys = {},
-			g = {},
-			OnUpdate = function(self)
-				local headers = {};
-				for i,header in ipairs(self.g) do
-					if header.headerID and header.key == "headerID" then
-						headers[header.headerID] = header;
-						if not header.g then
-							header.g = {};
-						end
-					end
-				end
-				for i,_ in pairs(app.SearchForFieldContainer("toyID")) do
-					if not self.toys[i] and i < 160000 then
-						self.toys[i] = buildCategoryEntry(self, headers, _, app.CreateToy(tonumber(i)));
-					end
-				end
-				app.Sort(self.g, app.SortDefaults.Text);
-				for i,header in pairs(headers) do
-					app.Sort(header.g, app.SortDefaults.Text);
-				end
-				for i=#self.g,1,-1 do
-					header = self.g[i];
-					if header.g and #header.g < 1 and header.headerID and header.key == "headerID" then
-						headers[header.headerID] = nil;
-						table.remove(self.g, i);
-					end
-				end
-				self.OnUpdate = nil;
-			end,
-		});
+		table.insert(g, app.CreateDynamicCategory("Toys"));
 		
 		-- Track Deaths!
 		table.insert(g, app:CreateDeathClass());
@@ -11339,6 +11389,7 @@ function app:GetWindow(suffix, settings)
 		app.Windows[suffix] = window;
 		window.Suffix = suffix;
 		window.SetData = SetWindowData;
+		window.BuildCategory = BuildCategory;
 		window.AllowCompleteSound = settings.AllowCompleteSound;
 		window:SetScript("OnMouseDown", StartMovingOrSizing);
 		window:SetScript("OnMouseUp", StopMovingOrSizing);
