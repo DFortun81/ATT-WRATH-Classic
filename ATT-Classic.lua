@@ -2957,8 +2957,10 @@ local onUpdateForDynamicCategory = function(data)
 	if parent and progress then
 		parent.progress = parent.progress + progress;
 		parent.total = parent.total + data.total;
+		data.visible = app.GroupVisibilityFilter(data);
+	else
+		data.visible = true;
 	end
-	data.visible = true;
 	return true;
 end
 app.CreateDynamicCategory = app.CreateClass("DynamicCategory", "suffix", {
