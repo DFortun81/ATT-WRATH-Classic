@@ -11090,7 +11090,19 @@ end
 function app:UpdateWindows(source, force, trigger)
 	if trigger then trigger = source; end
 	for name, window in pairs(app.Windows) do
-		window:Update(force, trigger);
+		local window_oldUpdate = window.Update;
+		window.UpdatePending = true;
+		window.Update = function(self, ...)
+			local result = window_oldUpdate(self, ...);
+			self.Update = window_oldUpdate;
+			self.UpdatePending = nil;
+			return result;
+		end
+	end
+	for name, window in pairs(app.Windows) do
+		if window.UpdatePending then
+			window:Update(force, trigger);
+		end
 	end
 end
 end
