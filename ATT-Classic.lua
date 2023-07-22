@@ -3476,54 +3476,9 @@ function app:GetDataCache()
 		end
 		table.insert(g, battlePetsCategory);
 		
-		-- Mounts
-		table.insert(g, {
-			text = MOUNTS,
-			icon = app.asset("Category_Mounts"),
-			mounts = {},
-			g = {},
-			OnUpdate = function(self)
-				local headers = {};
-				for i,header in ipairs(self.g) do
-					if header.headerID then
-						headers[header.headerID] = header;
-						if not header.g then
-							header.g = {};
-						end
-					end
-				end
-				for i,_ in pairs(app.SearchForFieldContainer("spellID")) do
-					if ((_[1].f and _[1].f == 100) or (_[1].filterID and _[1].filterID == 100)) and not self.mounts[i] then
-						local mount = app.CreateMount(tonumber(i));
-						self.mounts[i] = BuildCategory(self, headers, _, mount);
-						if mount.u and mount.u < 3 then
-							for j,o in ipairs(_) do
-								if o.itemID and not o.u or o.u >= 3 then
-									mount.u = nil;
-								end
-							end
-						end
-					end
-				end
-				app.Sort(self.g, app.SortDefaults.Text);
-				for i,header in pairs(headers) do
-					app.Sort(header.g, app.SortDefaults.Text);
-				end
-				for i=#self.g,1,-1 do
-					header = self.g[i];
-					if header.g and #header.g < 1 and header.headerID then
-						headers[header.headerID] = nil;
-						table.remove(self.g, i);
-					end
-				end
-				self.OnUpdate = nil;
-			end
-		});
-		
-		-- Titles (Dynamic)
+		-- Dynamic Categories (Content generated and managed by a separate Window)
+		table.insert(g, app.CreateDynamicCategory("Mounts"));
 		table.insert(g, app.CreateDynamicCategory("Titles"));
-		
-		-- Toys (Dynamic)
 		table.insert(g, app.CreateDynamicCategory("Toys"));
 		
 		-- Track Deaths!
@@ -11096,10 +11051,20 @@ local function LoadSettingsForWindows(windowSettings)
 			end
 		end
 	end
+	
+	-- Load all of the windows other than Prime.
+	local primeWindow = app.Windows.Prime;
+	app.Windows.Prime = nil;
 	for name, window in pairs(app.Windows) do
 		LoadSettingsForWindow(window);
 		dynamicWindows[name] = nil;
 	end
+	
+	-- Okay, now load Prime last.
+	app.Windows.Prime = primeWindow;
+	LoadSettingsForWindow(primeWindow);
+	dynamicWindows.Prime = nil;
+	
 	for name,settings in pairs(dynamicWindows) do
 		settings.visible = false;
 		app:CreateMiniListFromSource(settings.key, settings.id, settings.sourcePath);

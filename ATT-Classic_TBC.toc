@@ -49,6 +49,7 @@ src\UI\Dailies.lua
 src\UI\Hidden Achievement Triggers.lua
 src\UI\Hidden Quest Triggers.lua
 src\UI\Maps.lua
+src\UI\Mounts.lua
 src\UI\Never Implemented.lua
 src\UI\Objects.lua
 src\UI\Quests.lua

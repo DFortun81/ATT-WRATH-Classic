@@ -64,7 +64,7 @@ app:GetWindow("Titles", {
 							tremove(g, i);
 						end
 					end
-					app.Sort(g, app.SortDefaults.Name);
+					app.Sort(g, app.SortDefaults.Name, true);
 				end
 			end
 		};

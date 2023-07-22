@@ -6,19 +6,19 @@ local ipairs, pairs, tinsert, tremove =
 	  ipairs, pairs, tinsert, table.remove;
 
 -- Implementation
-app:GetWindow("Toys", {
+app:GetWindow("Mounts", {
 	parent = UIParent,
 	Silent = true,
 	AllowCompleteSound = true,
 	OnInit = function(self, handlers)
-		SLASH_ATTTOYS1 = "/atttoys";
-		SlashCmdList["ATTTOYS"] = function(cmd)
+		SLASH_ATTMOUNTS1 = "/attmounts";
+		SlashCmdList["ATTMOUNTS"] = function(cmd)
 			self:Toggle();
 		end
 		self.data = {
-			text = TOY_BOX,
-			icon = app.asset("Category_ToyBox"),
-			description = "This list shows you all of the toys that you can collect.",
+			text = MOUNTS,
+			icon = app.asset("Category_Mounts"),
+			description = "This list shows you all of the mounts that you can collect.",
 			visible = true,
 			expanded = true,
 			back = 1,
@@ -26,9 +26,22 @@ app:GetWindow("Toys", {
 			OnUpdate = function(data)
 				local g = data.g;
 				if #g < 1 then
-					local headers = {};
-					for i,matches in pairs(app.SearchForFieldContainer("toyID")) do
-						self.BuildCategory(data, headers, matches, app.CreateToy(tonumber(i)));
+					local headers, mounts = {}, {};
+					for i,matches in pairs(app.SearchForFieldContainer("spellID")) do
+						if not mounts[i] then
+							local result = matches[1];
+							if (result.f and result.f == 100) or (result.filterID and result.filterID == 100) then
+								local mount = app.CreateMount(tonumber(i));
+								mounts[i] = self.BuildCategory(data, headers, matches, mount);
+								if mount.u and mount.u < 3 then
+									for j,o in ipairs(matches) do
+										if o.itemID and not o.u or o.u >= 3 then
+											mount.u = nil;
+										end
+									end
+								end
+							end
+						end
 					end
 					for i=#g,1,-1 do
 						local header = g[i];
