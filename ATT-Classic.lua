@@ -1274,6 +1274,7 @@ local function ReapplyExpand(g, g2)
 		end
 	end
 end
+app.MergeClone = MergeClone;
 
 local ResolveSymbolicLink;
 (function()
@@ -2731,32 +2732,6 @@ app.SearchForLink = SearchForLink;
 
 -- Helper Functions
 -- Dynamic Category Helper Functions (TODO: Move this)
-local calculateAccessibility = function(source)
-	local score = 0;
-	if source.nmr then
-		score = score + 10;
-	end
-	if source.nmc then
-		score = score + 10;
-	end
-	if source.e then
-		score = score + 1;
-	end
-	if source.u then
-		score = score + 1;
-		if source.u < 3 then
-			score = score + 100;
-		elseif source.u < 4 then
-			score = score + 10;
-		else
-			score = score + 1;
-		end
-	end
-	return score;
-end
-local sortByAccessibility = function(a, b)
-	return calculateAccessibility(a) <= calculateAccessibility(b);
-end
 local BuildCategory = function(self, headers, searchResults, inst)
 	local sources, header, headerType = {}, self;
 	for j,o in ipairs(searchResults) do
@@ -2831,7 +2806,7 @@ local BuildCategory = function(self, headers, searchResults, inst)
 		end
 	elseif count > 1 then
 		-- Find the most accessible version of the thing.
-		app.Sort(sources, sortByAccessibility);
+		app.Sort(sources, app.SortDefaults.Accessibility);
 		for key,value in pairs(sources[1]) do
 			inst[key] = value;
 		end
@@ -3323,7 +3298,7 @@ function app:GetDataCache()
 							end
 						elseif count > 1 then
 							-- Find the most accessible version of the thing.
-							app.Sort(sources, sortByAccessibility);
+							app.Sort(sources, app.SortDefaults.Accessibility);
 							for key,value in pairs(sources[1]) do
 								achievement[key] = value;
 							end
@@ -3382,101 +3357,10 @@ function app:GetDataCache()
 		end
 		table.insert(g, achievementsCategory);
 		
-		-- Battle Pets (Dynamic)
-		local battlePetsCategory = {
-			text = AUCTION_CATEGORY_BATTLE_PETS,
-			icon = app.asset("Category_PetJournal"),
-			battlepets = {},
-			g = {},
-			OnUpdate = function(self)
-				local petTypes = {};
-				for i,petType in ipairs(self.g) do
-					if petType.petTypeID and petType.key == "petTypeID" then
-						petTypes[petType.petTypeID] = petType;
-						if not petType.g then
-							petType.g = {};
-						end
-					end
-				end
-				for i,_ in pairs(app.SearchForFieldContainer("speciesID")) do
-					if not self.battlepets[i] then
-						local battlepet = app.CreateSpecies(tonumber(i));
-						local sources = {};
-						for j,o in ipairs(_) do
-							MergeClone(sources, o);
-							local coords = GetRelativeValue(o, "coords");
-							if coords then
-								if not battlepet.coords then
-									battlepet.coords = { unpack(coords) };
-								elseif battlepet.coords ~= coords then
-									for i,coord in ipairs(coords) do
-										tinsert(battlepet.coords, coord);
-									end
-								end
-							end
-							if o.parent and not o.sourceQuests then
-								local questID = GetRelativeValue(o, "questID");
-								if questID then
-									if not battlepet.sourceQuests then
-										battlepet.sourceQuests = {};
-									end
-									if not contains(battlepet.sourceQuests, questID) then
-										tinsert(battlepet.sourceQuests, questID);
-									end
-								else
-									local sourceQuests = GetRelativeValue(o, "sourceQuests");
-									if sourceQuests then
-										if not battlepet.sourceQuests then
-											battlepet.sourceQuests = {};
-											for k,questID in ipairs(sourceQuests) do
-												tinsert(battlepet.sourceQuests, questID);
-											end
-										else
-											for k,questID in ipairs(sourceQuests) do
-												if not contains(battlepet.sourceQuests, questID) then
-													tinsert(battlepet.sourceQuests, questID);
-												end
-											end
-										end
-									end
-								end
-							end
-						end
-						local count = #sources;
-						if count == 1 then
-							for key,value in pairs(sources[1]) do
-								battlepet[key] = value;
-							end
-						elseif count > 1 then
-							-- Find the most accessible version of the thing.
-							app.Sort(sources, sortByAccessibility);
-							for key,value in pairs(sources[1]) do
-								battlepet[key] = value;
-							end
-						end
-						self.battlepets[i] = battlepet;
-						battlepet.progress = nil;
-						battlepet.total = nil;
-						battlepet.g = nil;
-						battlepet.parent = battlepet.petTypeID and petTypes[battlepet.petTypeID] or self;
-						if not battlepet.u or battlepet.u ~= 1 then
-							tinsert(battlepet.parent.g, battlepet);
-						end
-					end
-				end
-				app.Sort(self.g, app.SortDefaults.Text);
-				for i,petType in pairs(petTypes) do
-					app.Sort(petType.g, app.SortDefaults.Text);
-				end
-				self.OnUpdate = nil;
-			end
-		};
-		for _,petTypeID in ipairs({9,8,5,2,7,3,1,6,10,4}) do
-			table.insert(battlePetsCategory.g, app.CreatePetType(petTypeID));
-		end
-		table.insert(g, battlePetsCategory);
+		
 		
 		-- Dynamic Categories (Content generated and managed by a separate Window)
+		table.insert(g, app.CreateDynamicCategory("Battle Pets"));
 		table.insert(g, app.CreateDynamicCategory("Mounts"));
 		table.insert(g, app.CreateDynamicCategory("Titles"));
 		table.insert(g, app.CreateDynamicCategory("Toys"));
