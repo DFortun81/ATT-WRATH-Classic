@@ -2945,18 +2945,12 @@ local onClickForDynamicCategory = function(row, button)
 	end
 end
 local onUpdateForDynamicCategory = function(data)
-	local dynamicGroups = data.dynamicWindowData.g;
-	if dynamicGroups and #dynamicGroups > 0 then
-		-- Once we have data, then allow the default update to filter the data.
-		data.OnUpdate = nil;
-		return false;
-	end
-	
-	-- When nothing has been populated, always show.
-	local parent, progress = data.parent, data.progress;
-	if parent and progress then
-		parent.progress = parent.progress + progress;
-		parent.total = parent.total + data.total;
+	data.dynamicWindow:ForceRebuild();
+	--print("onUpdateForDynamicCategory", data.text, data.progress, data.total);
+	local parent, total = data.parent, data.total;
+	if parent and total then
+		parent.progress = parent.progress + data.progress;
+		parent.total = parent.total + total;
 		data.visible = app.GroupVisibilityFilter(data);
 	else
 		data.visible = true;
