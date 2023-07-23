@@ -8111,7 +8111,7 @@ app.CreateTitle = app.CreateClass("Title", "titleID", {
 		return L["TITLES_DESC"];
 	end,
 	["text"] = function(t)
-		return "|cff00ccff" .. (t.name or RETRIEVING_DATA) .. "|r";
+		return "|c" .. app.Colors.Account .. (t.name or RETRIEVING_DATA) .. "|r";
 	end,
 	["name"] = function(t)
 		return StylizePlayerTitle(t.titleName, t.style, UnitName("player"));
