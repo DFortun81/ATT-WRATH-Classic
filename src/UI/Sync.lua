@@ -295,12 +295,7 @@ local function ProcessAddonMessageMethod(self, method, sender, text)
 	if responseCount > 0 then
 		local wad = responses[1];
 		for i=2,responseCount,1 do
-			if string.len(wad) > 5000 then
-				method(sender, wad);
-				wad = responses[i];
-			else
-				wad = wad .. "~" .. responses[i];
-			end
+			wad = wad .. "~" .. responses[i];
 		end
 		method(sender, wad);
 	end
