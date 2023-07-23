@@ -201,7 +201,6 @@ end
 
 -- Data Lib
 local attData;
-local ATTCTempData = {}; 	-- For temporary data.
 local ATTClassicAD = {};			-- For account-wide data.
 local function SetDataMember(member, data)
 	ATTClassicAD[member] = data;
@@ -210,18 +209,6 @@ local function GetDataMember(member, default)
 	attData = ATTClassicAD[member];
 	if attData == nil then
 		ATTClassicAD[member] = default;
-		return default;
-	else
-		return attData;
-	end
-end
-local function SetTempDataMember(member, data)
-	ATTCTempData[member] = data;
-end
-local function GetTempDataMember(member, default)
-	attData = ATTCTempData[member];
-	if attData == nil then
-		ATTCTempData[member] = default;
 		return default;
 	else
 		return attData;
@@ -250,35 +237,10 @@ local function GetDataSubMember(member, submember, default)
 		return default;
 	end
 end
-local function SetTempDataSubMember(member, submember, data)
-	attData = ATTCTempData[member];
-	if attData == nil then
-		ATTCTempData[member] = { [submember] = data };
-	else
-		attData[submember] = data;
-	end
-end
-local function GetTempDataSubMember(member, submember, default)
-	attData = ATTCTempData[member];
-	if attData then
-		attData = attData[submember];
-		if attData == nil then
-			ATTCTempData[member][submember] = default;
-			return default;
-		else
-			return attData;
-		end
-	else
-		ATTCTempData[member] = { [submember] = default };
-		return default;
-	end
-end
 app.SetDataMember = SetDataMember;
 app.GetDataMember = GetDataMember;
 app.SetDataSubMember = SetDataSubMember;
 app.GetDataSubMember = GetDataSubMember;
-app.GetTempDataMember = GetTempDataMember;
-app.GetTempDataSubMember = GetTempDataSubMember;
 app.SetCollected = function()
 	app.print("SetCollected not initialized yet...");
 end;
