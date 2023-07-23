@@ -2730,134 +2730,7 @@ local function UpdateSearchResults(searchResults)
 end
 app.SearchForLink = SearchForLink;
 
--- Helper Functions
--- Dynamic Category Helper Functions (TODO: Move this)
-local BuildCategory = function(self, headers, searchResults, inst)
-	local sources, header, headerType = {}, self;
-	for j,o in ipairs(searchResults) do
-		if not o.u or o.u ~= 1 then
-			MergeClone(sources, o);
-			if o.parent then
-				if not o.sourceQuests then
-					local questID = GetRelativeValue(o, "questID");
-					if questID then
-						if not inst.sourceQuests then
-							inst.sourceQuests = {};
-						end
-						if not contains(inst.sourceQuests, questID) then
-							tinsert(inst.sourceQuests, questID);
-						end
-					else
-						local sourceQuests = GetRelativeValue(o, "sourceQuests");
-						if sourceQuests then
-							if not inst.sourceQuests then
-								inst.sourceQuests = {};
-								for k,questID in ipairs(sourceQuests) do
-									tinsert(inst.sourceQuests, questID);
-								end
-							else
-								for k,questID in ipairs(sourceQuests) do
-									if not contains(inst.sourceQuests, questID) then
-										tinsert(inst.sourceQuests, questID);
-									end
-								end
-							end
-						end
-					end
-				end
-				
-				if GetRelativeValue(o, "isHolidayCategory") then
-					headerType = "holiday";
-				elseif GetRelativeValue(o, "isPromotionCategory") then
-					headerType = "promo";
-				elseif GetRelativeValue(o, "isPVPCategory") then
-					headerType = "pvp";
-				elseif GetRelativeValue(o, "isEventCategory") then
-					headerType = "event";
-				elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == app.HeaderConstants.COMMON_BOSS_DROPS then
-					headerType = "drop";
-				elseif o.parent.npcID then
-					headerType = GetDeepestRelativeValue(o, "headerID") or o.parent.parent.headerID == app.HeaderConstants.VENDORS and app.HeaderConstants.VENDORS or "drop";
-				elseif GetRelativeValue(o, "isCraftedCategory") then
-					headerType = "crafted";
-				elseif o.parent.achievementID then
-					headerType = app.HeaderConstants.ACHIEVEMENTS;
-				else
-					headerType = GetDeepestRelativeValue(o, "headerID") or "drop";
-				end
-				local coords = GetRelativeValue(o, "coords");
-				if coords then
-					if not inst.coords then
-						inst.coords = { unpack(coords) };
-					else
-						for i,coord in ipairs(coords) do
-							tinsert(inst.coords, coord);
-						end
-					end
-				end
-			end
-		end
-	end
-	local count = #sources;
-	if count == 0 then return nil; end
-	if count == 1 then
-		for key,value in pairs(sources[1]) do
-			inst[key] = value;
-		end
-	elseif count > 1 then
-		-- Find the most accessible version of the thing.
-		app.Sort(sources, app.SortDefaults.Accessibility);
-		for key,value in pairs(sources[1]) do
-			inst[key] = value;
-		end
-	end
-	
-	-- Determine the type of header to put the thing into.
-	if not headerType then headerType = "drop"; end
-	header = headers[headerType];
-	if not header then
-		if headerType == "holiday" then
-			header = app.CreateNPC(app.HeaderConstants.HOLIDAYS);
-		elseif headerType == "promo" then
-			header = {};
-			header.text = BATTLE_PET_SOURCE_8;
-			header.icon = app.asset("Category_Promo");
-		elseif headerType == "pvp" then
-			header = {};
-			header.text = PVP;
-			header.icon = app.asset("Category_PvP");
-		elseif headerType == "event" then
-			header = {};
-			header.text = BATTLE_PET_SOURCE_7;
-			header.icon = app.asset("Category_Event");
-		elseif headerType == "drop" then
-			header = {};
-			header.text = BATTLE_PET_SOURCE_1;
-			header.icon = app.asset("Category_WorldDrops");
-		elseif headerType == "crafted" then
-			header = {};
-			header.text = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM;
-			header.icon = app.asset("Category_Crafting");
-		elseif type(headerType) == "number" then
-			header = app.CreateNPC(headerType);
-		else
-			print("Unhandled Header Type", headerType);
-		end
-		if not headers[headerType] then
-			headers[headerType] = header;
-			tinsert(self.g, header);
-			header.parent = self;
-			header.g = {};
-		end
-	end
-	inst.parent = header;
-	inst.progress = nil;
-	inst.total = nil;
-	inst.g = nil;
-	MergeObject(header.g, inst);
-	return inst;
-end
-
+-- Dynamic Categories
 do
 local onClickForDynamicCategory = function(row, button)
 	local window = row.ref.dynamicWindow;
@@ -10941,6 +10814,131 @@ local function SetWindowVisible(self, show)
 end
 local function ToggleWindow(self)
 	self:SetVisible(not self:IsVisible());
+end
+local BuildCategory = function(self, headers, searchResults, inst)
+	local sources, header, headerType = {}, self;
+	for j,o in ipairs(searchResults) do
+		if not o.u or o.u ~= 1 then
+			MergeClone(sources, o);
+			if o.parent then
+				if not o.sourceQuests then
+					local questID = GetRelativeValue(o, "questID");
+					if questID then
+						if not inst.sourceQuests then
+							inst.sourceQuests = {};
+						end
+						if not contains(inst.sourceQuests, questID) then
+							tinsert(inst.sourceQuests, questID);
+						end
+					else
+						local sourceQuests = GetRelativeValue(o, "sourceQuests");
+						if sourceQuests then
+							if not inst.sourceQuests then
+								inst.sourceQuests = {};
+								for k,questID in ipairs(sourceQuests) do
+									tinsert(inst.sourceQuests, questID);
+								end
+							else
+								for k,questID in ipairs(sourceQuests) do
+									if not contains(inst.sourceQuests, questID) then
+										tinsert(inst.sourceQuests, questID);
+									end
+								end
+							end
+						end
+					end
+				end
+				
+				if GetRelativeValue(o, "isHolidayCategory") then
+					headerType = "holiday";
+				elseif GetRelativeValue(o, "isPromotionCategory") then
+					headerType = "promo";
+				elseif GetRelativeValue(o, "isPVPCategory") then
+					headerType = "pvp";
+				elseif GetRelativeValue(o, "isEventCategory") then
+					headerType = "event";
+				elseif GetRelativeValue(o, "isWorldDropCategory") or o.parent.headerID == app.HeaderConstants.COMMON_BOSS_DROPS then
+					headerType = "drop";
+				elseif o.parent.npcID then
+					headerType = GetDeepestRelativeValue(o, "headerID") or o.parent.parent.headerID == app.HeaderConstants.VENDORS and app.HeaderConstants.VENDORS or "drop";
+				elseif GetRelativeValue(o, "isCraftedCategory") then
+					headerType = "crafted";
+				elseif o.parent.achievementID then
+					headerType = app.HeaderConstants.ACHIEVEMENTS;
+				else
+					headerType = GetDeepestRelativeValue(o, "headerID") or "drop";
+				end
+				local coords = GetRelativeValue(o, "coords");
+				if coords then
+					if not inst.coords then
+						inst.coords = { unpack(coords) };
+					else
+						for i,coord in ipairs(coords) do
+							tinsert(inst.coords, coord);
+						end
+					end
+				end
+			end
+		end
+	end
+	local count = #sources;
+	if count == 0 then return nil; end
+	if count == 1 then
+		for key,value in pairs(sources[1]) do
+			inst[key] = value;
+		end
+	elseif count > 1 then
+		-- Find the most accessible version of the thing.
+		app.Sort(sources, app.SortDefaults.Accessibility);
+		for key,value in pairs(sources[1]) do
+			inst[key] = value;
+		end
+	end
+	
+	-- Determine the type of header to put the thing into.
+	if not headerType then headerType = "drop"; end
+	header = headers[headerType];
+	if not header then
+		if headerType == "holiday" then
+			header = app.CreateNPC(app.HeaderConstants.HOLIDAYS);
+		elseif headerType == "promo" then
+			header = {};
+			header.text = BATTLE_PET_SOURCE_8;
+			header.icon = app.asset("Category_Promo");
+		elseif headerType == "pvp" then
+			header = {};
+			header.text = PVP;
+			header.icon = app.asset("Category_PvP");
+		elseif headerType == "event" then
+			header = {};
+			header.text = BATTLE_PET_SOURCE_7;
+			header.icon = app.asset("Category_Event");
+		elseif headerType == "drop" then
+			header = {};
+			header.text = BATTLE_PET_SOURCE_1;
+			header.icon = app.asset("Category_WorldDrops");
+		elseif headerType == "crafted" then
+			header = {};
+			header.text = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM;
+			header.icon = app.asset("Category_Crafting");
+		elseif type(headerType) == "number" then
+			header = app.CreateNPC(headerType);
+		else
+			print("Unhandled Header Type", headerType);
+		end
+		if not headers[headerType] then
+			headers[headerType] = header;
+			tinsert(self.g, header);
+			header.parent = self;
+			header.g = {};
+		end
+	end
+	inst.parent = header;
+	inst.progress = nil;
+	inst.total = nil;
+	inst.g = nil;
+	MergeObject(header.g, inst);
+	return inst;
 end
 function app:GetWindow(suffix, settings)
 	local window = app.Windows[suffix];
