@@ -931,7 +931,7 @@ app:GetWindow("Synchronization", {
 				{	-- Add Linked Character
 					text = "Add Linked Character",
 					icon = app.asset("Ability_Priest_VoidShift"),
-					description = "Click here to link a character to your account.",
+					description = "Click here to link a character to your account.\n\nOnce Linked, click on the Linked Character in the list below to initiate a sync with that character.\n\nNOTE: Your character must be on the same faction and server as your current character to sync.",
 					OnUpdate = app.AlwaysShowUpdate,
 					OnClick = function(row, button)
 						app:ShowPopupDialogWithEditBox("Please type the name of the character to link to.", "", function(cmd)
@@ -946,16 +946,26 @@ app:GetWindow("Synchronization", {
 						return true;
 					end,
 				},
-				{	-- Sync All Characters
+				setmetatable({	-- Sync All Characters
 					text = "Sync All Characters",
 					icon = app.asset("Ability_Priest_VoidShift"),
-					description = "Click here to sync all of your characters.",
+					description = "Click here to sync all of your characters.\n\nAlt+Click to toggle automatically syncing characters with your other accounts.\n\nYou must initially have the character stored on this account by Linking a Character and manually initiating a sync with that character. The character on your other account must also assign this character as a Linked Character.\n\nNOTE: Your character must be on the same faction and server as your current character to sync.",
 					OnUpdate = app.AlwaysShowUpdate,
 					OnClick = function(row, button)
-						BroadcastMessage("check," .. CurrentCharacter.battleTag);
+						if IsAltKeyDown() then
+							self.Settings.AutoSync = not self.Settings.AutoSync;
+							self:Redraw();
+						else
+							BroadcastMessage("check," .. CurrentCharacter.battleTag);
+						end
 						return true;
 					end,
-				},
+				}, { __index = function(t, key)
+					if key == "saved" then
+						return self.Settings.AutoSync;
+					end
+					return table[key];
+				end}),
 				{	-- Characters
 					text = "Characters",
 					icon = "Interface\\FriendsFrame\\Battlenet-Portrait",
@@ -1001,7 +1011,7 @@ app:GetWindow("Synchronization", {
 				{	-- Linked Characters
 					text = "Linked Characters",
 					icon = "Interface\\FriendsFrame\\Battlenet-Portrait",
-					description = "This shows all of the linked characters you have defined so far.",
+					description = "This shows all of the linked characters you have defined so far.\n\nClick on a Linked Character in the list below to initiate a sync with that character. The character on your other account must also assign this character as a Linked Character.\n\nNOTE: Your character must be on the same faction and server as your current character to sync.",
 					expanded = true,
 					g = {},
 					OnUpdate = function(data)
