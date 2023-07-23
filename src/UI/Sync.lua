@@ -8,9 +8,6 @@ local BNGetInfo, BNSendGameData, C_BattleNet, C_ChatInfo =
 	  BNGetInfo, BNSendGameData, C_BattleNet, C_ChatInfo;
 -- NOTES: BNGetFriendInfo and BNGetNumFriends are useless
 
--- Compression
-local LibDeflate = _G.LibStub:GetLibrary("LibDeflate");
-
 -- Temporary cache variables (these get replaced in OnLoad!)
 local AccountWideData, CharacterData, CurrentCharacter, LinkedCharacters, OnlineAccounts, SilentlyLinkedCharacters = {}, {}, {}, {}, {}, {}
 
@@ -129,23 +126,16 @@ local function ReceiveChunk(method, sender, uid, chunkIndex, chunkCount, chunk)
 		return message;
 	end
 end
-local function EncodeMessage(msg)
-	return msg;--LibDeflate:EncodeForWoWChatChannel(LibDeflate:CompressDeflate(msg));
-end
-local function DecodeMessage(msg)
-	return msg;--LibDeflate:DecompressDeflate(LibDeflate:DecodeForWoWChatChannel(msg));
-end
 local function _SendAddonMessage(target, msg)
 	C_ChatInfo.SendAddonMessage(AddonMessagePrefix, msg, "WHISPER", target);
 end
 local function SendAddonMessage(target, msg)
 	--print("SendAddonMessage", target, string.len(msg) > 40 and (strsub(msg, 1, 40) .. "...") or msg);
-	local encodedMessage = EncodeMessage(msg);
-	local chunks = GenerateChunks(encodedMessage, 255);
+	local chunks = GenerateChunks(msg, 255);
 	if chunks then
 		QueueSendChunks(_SendAddonMessage, target, chunks);
 	else
-		_SendAddonMessage(target, encodedMessage);
+		_SendAddonMessage(target, msg);
 	end
 end
 local function _SendBattleNetMessage(target, msg)
@@ -153,12 +143,11 @@ local function _SendBattleNetMessage(target, msg)
 end
 local function SendBattleNetMessage(target, msg)
 	--print("SendBattleNetMessage", target, string.len(msg) > 40 and (strsub(msg, 1, 40) .. "...") or msg);
-	local encodedMessage = EncodeMessage(msg);
-	local chunks = GenerateChunks(encodedMessage, 4086);
+	local chunks = GenerateChunks(msg, 4086);
 	if chunks then
 		QueueSendChunks(_SendBattleNetMessage, target, chunks);
 	else
-		BNSendGameData(target, AddonMessagePrefix, encodedMessage);
+		BNSendGameData(target, AddonMessagePrefix, msg);
 	end
 end
 local function SplitString(separator, text)
@@ -287,21 +276,16 @@ local function ProcessAddonMessageText(self, sender, text, responses)
 		end
 	end
 end
-local function ProcessAddonMessageMethod(self, method, sender, datastring)
+local function ProcessAddonMessageMethod(self, method, sender, text)
 	-- Check for chunks, which are gigantic sets of data.
-	if strsub(datastring, 1, 6) == "chunk`" then
-		local content = SplitString("`", datastring);
+	if strsub(text, 1, 6) == "chunk`" then
+		local content = SplitString("`", text);
 		local uid, chunkIndex, chunkCount, chunk = 
 			tonumber(content[2]), tonumber(content[3]), tonumber(content[4]), content[5];
 		
-		-- If we have finished receiving chunks for this UID, then return a datastring!
-		datastring = ReceiveChunk(method, sender, uid, chunkIndex, chunkCount, chunk);
-		if not datastring then return; end
-	end
-	local text = DecodeMessage(datastring);
-	if not text and datastring then
-		app.print("Failed to decode datastring...");
-		return;
+		-- If we have finished receiving chunks for this UID, then return a text!
+		text = ReceiveChunk(method, sender, uid, chunkIndex, chunkCount, chunk);
+		if not text then return; end
 	end
 	
 	-- Process the addon message and send back a response. (or several)
