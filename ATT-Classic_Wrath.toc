@@ -40,6 +40,7 @@ db\Wrath\Custom Headers.lua
 Settings.lua
 ATT-Classic.lua
 db\Wrath\Categories.lua
+src\UI\Achievements.lua
 src\UI\Attunements.lua
 src\UI\Auctions.lua
 src\UI\Battle Pets.lua

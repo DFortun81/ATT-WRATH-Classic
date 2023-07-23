@@ -39,16 +39,16 @@ local ipairs, tinsert, pairs, rawset, rawget
 	= ipairs, tinsert, pairs, rawset, rawget;
 local C_Map_GetMapInfo = C_Map.GetMapInfo;
 local C_Map_GetPlayerMapPosition = C_Map.GetPlayerMapPosition;
-local _GetAchievementInfo = _G["GetAchievementInfo"];
-local _GetAchievementNumCriteria = _G["GetAchievementNumCriteria"];
-local _GetAchievementCriteriaInfo = _G["GetAchievementCriteriaInfo"];
-local _GetAchievementCriteriaInfoByID = _G["GetAchievementCriteriaInfoByID"];
-local _GetCategoryInfo = _G["GetCategoryInfo"];
-local _GetFactionInfoByID = _G["GetFactionInfoByID"];
-local _GetItemInfo = _G["GetItemInfo"];
-local _GetItemInfoInstant = _G["GetItemInfoInstant"];
-local _GetItemCount = _G["GetItemCount"];
-local _InCombatLockdown = _G["InCombatLockdown"];
+local GetAchievementInfo = _G["GetAchievementInfo"];
+local GetAchievementNumCriteria = _G["GetAchievementNumCriteria"];
+local GetAchievementCriteriaInfo = _G["GetAchievementCriteriaInfo"];
+local GetAchievementCriteriaInfoByID = _G["GetAchievementCriteriaInfoByID"];
+local GetCategoryInfo = _G["GetCategoryInfo"];
+local GetFactionInfoByID = _G["GetFactionInfoByID"];
+local GetItemInfo = _G["GetItemInfo"];
+local GetItemInfoInstant = _G["GetItemInfoInstant"];
+local GetItemCount = _G["GetItemCount"];
+local InCombatLockdown = _G["InCombatLockdown"];
 local GetSpellInfo, IsPlayerSpell, IsSpellKnown, IsSpellKnownOrOverridesKnown, IsTitleKnown = 
 	  GetSpellInfo, IsPlayerSpell, IsSpellKnown, IsSpellKnownOrOverridesKnown, IsTitleKnown;
 local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
@@ -1553,7 +1553,7 @@ ResolveSymbolicLink = function(o)
 				if #types > 0 then
 					for k=#searchResults,1,-1 do
 						local s = searchResults[k];
-						if s.itemID and not contains(types, select(4, _GetItemInfoInstant(s.itemID))) then
+						if s.itemID and not contains(types, select(4, GetItemInfoInstant(s.itemID))) then
 							table.remove(searchResults, k);
 						end
 					end
@@ -1601,11 +1601,11 @@ ResolveSymbolicLink = function(o)
 				end
 			elseif cmd == "achievement_criteria" then
 				-- Instruction to select the criteria provided by the achievement this is attached to. (maybe build this into achievements?)
-				if _GetAchievementNumCriteria then
+				if GetAchievementNumCriteria then
 					local achievementID = o.achievementID;
 					local cache;
-					for criteriaID=1,_GetAchievementNumCriteria(achievementID),1 do
-						local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, id = _GetAchievementCriteriaInfo(achievementID, criteriaID);
+					for criteriaID=1,GetAchievementNumCriteria(achievementID),1 do
+						local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, id = GetAchievementCriteriaInfo(achievementID, criteriaID);
 						local criteriaObject = app.CreateAchievementCriteria(id);
 						criteriaObject.achievementID = achievementID;
 						if criteriaType == 27 then
@@ -1956,7 +1956,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				end
 				local itemName, itemLink = GameTooltip:GetItem();
 				if app.Settings:GetTooltipSetting("itemID") then tinsert(info, { left = L["ITEM_ID"], right = tostring(itemID) }); end
-				if app.Settings:GetTooltipSetting("itemLevel") then tinsert(info, { left = "Item Level", right = select(4, _GetItemInfo(itemLink or itemID)) }); end
+				if app.Settings:GetTooltipSetting("itemLevel") then tinsert(info, { left = "Item Level", right = select(4, GetItemInfo(itemLink or itemID)) }); end
 				if app.Settings:GetTooltipSetting("itemString") and itemLink then tinsert(info, { left = "Item String", right = string.match(itemLink, "item[%-?%d:]+") }); end
 				app.ShowSoftReservesForItem(itemID, info);
 				
@@ -2158,7 +2158,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 							local d = CreateObject(o);
 							d.sourceParent = o.parent;
 							d.collectible = true;
-							d.collected = _GetItemCount(paramB, true) > 0;
+							d.collected = GetItemCount(paramB, true) > 0;
 							d.progress = nil;
 							d.total = nil;
 							d.g = {};
@@ -2471,7 +2471,7 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 					if i > 1 then desc = desc .. ", "; end
 					desc = desc .. (character.text or "???");
 					if group.itemID and character == app.CurrentCharacter then
-						local count = _GetItemCount(group.itemID, true);
+						local count = GetItemCount(group.itemID, true);
 						if count and count > 1 then
 							desc = desc .. " (x" .. count .. ")";
 						end
@@ -2857,67 +2857,6 @@ local BuildCategory = function(self, headers, searchResults, inst)
 	MergeObject(header.g, inst);
 	return inst;
 end
-local function cacheAchievementData(self, categories, g)
-	if g then
-		for i,o in ipairs(g) do
-			if o.achievementCategoryID then
-				categories[o.achievementCategoryID] = o;
-				if not o.g then
-					o.g = {};
-				else
-					cacheAchievementData(self, categories, o.g);
-				end
-			elseif o.achievementID then
-				self.achievements[o.achievementID] = o;
-			end
-		end
-	end
-end
-local function getAchievementCategory(categories, achievementCategoryID)
-	local c = categories[achievementCategoryID];
-	if not c then
-		c = app.CreateAchievementCategory(achievementCategoryID);
-		categories[achievementCategoryID] = c;
-		c.g = {};
-		
-		local p = getAchievementCategory(categories, c.parentCategoryID);
-		if not p.g then p.g = {}; end
-		table.insert(p.g, c);
-		c.parent = p;
-	end
-	return c;
-end
-local function achievementSort(a, b)
-	if a.achievementCategoryID then
-		if b.achievementCategoryID then
-			return a.achievementCategoryID < b.achievementCategoryID;
-		end
-		return true;
-	elseif b.achievementCategoryID then
-		return false;
-	end
-	if a.rank then
-		if b.rank then
-			if a.f then
-				if b.f then
-					if a.f == b.f then
-						return a.rank < b.rank;
-					else
-						return a.f < b.f;
-					end
-				end
-				return true;
-			elseif b.f then
-				return false;
-			end
-			return a.rank < b.rank;
-		end
-		return true;
-	elseif b.rank then
-		return false;
-	end
-	return app.SortDefaults.Name(a, b);
-end;
 
 do
 local onClickForDynamicCategory = function(row, button)
@@ -3174,121 +3113,11 @@ function app:GetDataCache()
 			});
 		end
 		
-		-- Achievements (Dynamic)
-		app.Categories.Achievements = app.Categories.Achievements or {};
-		local achievementsCategory = app.CreateFilter(105, {
-			g = app.Categories.Achievements,
-			achievements = {},
-			OnUpdate = function(self)
-				local categories = {};
-				categories[-1] = self;
-				cacheAchievementData(self, categories, self.g);
-				for i,_ in pairs(app.SearchForFieldContainer("achievementID")) do
-					if not self.achievements[i] then
-						local achievement = app.CreateAchievement(tonumber(i));
-						local sources = {};
-						for j,o in ipairs(_) do
-							MergeClone(sources, o);
-							if o.parent then
-								achievement.sourceParent = o.parent;
-								if not o.sourceQuests then
-									local questID = GetRelativeValue(o, "questID");
-									if questID then
-										if not achievement.sourceQuests then
-											achievement.sourceQuests = {};
-										end
-										if not contains(achievement.sourceQuests, questID) then
-											tinsert(achievement.sourceQuests, questID);
-										end
-									else
-										local sourceQuests = GetRelativeValue(o, "sourceQuests");
-										if sourceQuests then
-											if not achievement.sourceQuests then
-												achievement.sourceQuests = {};
-												for k,questID in ipairs(sourceQuests) do
-													tinsert(achievement.sourceQuests, questID);
-												end
-											else
-												for k,questID in ipairs(sourceQuests) do
-													if not contains(achievement.sourceQuests, questID) then
-														tinsert(achievement.sourceQuests, questID);
-													end
-												end
-											end
-										end
-									end
-								end
-							end
-						end
-						local count = #sources;
-						if count == 1 then
-							for key,value in pairs(sources[1]) do
-								achievement[key] = value;
-							end
-						elseif count > 1 then
-							-- Find the most accessible version of the thing.
-							app.Sort(sources, app.SortDefaults.Accessibility);
-							for key,value in pairs(sources[1]) do
-								achievement[key] = value;
-							end
-						end
-						self.achievements[i] = achievement;
-						achievement.progress = nil;
-						achievement.total = nil;
-						achievement.g = nil;
-						achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
-						if not achievement.u or achievement.u ~= 1 then
-							tinsert(achievement.parent.g, achievement);
-						end
-					end
-				end
-				if GetCategoryList then
-					local unsorted = app:GetWindow("Unsorted");
-					for _,categoryID in ipairs(GetCategoryList()) do
-						local numAchievements = GetCategoryNumAchievements(categoryID);
-						if numAchievements > 0 then
-							for i=1,numAchievements,1 do
-								local achievementID, name = _GetAchievementInfo(categoryID, i);
-								if achievementID and not self.achievements[achievementID] then
-									local achievement = app.CreateAchievement(achievementID);
-									self.achievements[i] = achievement;
-									achievement.parent = getAchievementCategory(categories, achievement.parentCategoryID);
-									achievement.description = "@CRIEVE: This achievement has not been sourced yet.";
-									if not achievement.u or achievement.u ~= 1 then
-										tinsert(achievement.parent.g, achievement);
-									end
-									local numCriteria = _GetAchievementNumCriteria(achievementID);
-									if numCriteria > 0 then
-										local g = {};
-										for j=1,numCriteria,1 do
-											local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = _GetAchievementCriteriaInfo(achievementID, j);
-											local criteriaObject = app.CreateAchievementCriteria(criteriaID);
-											criteriaObject.parent = achievement;
-											table.insert(g, criteriaObject);
-										end
-										achievement.g = g;
-									end
-									app.CacheFields(achievement);
-									
-									-- Put a copy in Unsorted.
-									if unsorted then unsorted:AddUnsortedAchievement(achievement); end
-								end
-							end
-						end
-					end
-				end
-				app.Sort(self.g, achievementSort, true);
-				self.OnUpdate = nil;
-			end
-		});
-		if not (_GetCategoryInfo and _GetCategoryInfo(92) ~= "") then
-			achievementsCategory.description = "This section isn't a thing until Wrath, but by popular demand and my own insanity, I've added this section so you can track your progress for at least one of the big ticket achievements if you have the stomach for it.";
-		end
-		table.insert(g, achievementsCategory);
-		
-		
+		-- Now that we have all of the root data, cache it.
+		app.CacheFields(rootData);
 		
 		-- Dynamic Categories (Content generated and managed by a separate Window)
+		table.insert(g, app.CreateDynamicCategory("Achievements"));
 		table.insert(g, app.CreateDynamicCategory("Battle Pets"));
 		table.insert(g, app.CreateDynamicCategory("Factions"));
 		table.insert(g, app.CreateDynamicCategory("Flight Paths"));
@@ -3317,8 +3146,7 @@ function app:GetDataCache()
 			end
 		}));
 		
-		-- Now that we have data, build the structures
-		app.CacheFields(rootData);
+		-- Now assign the parent hierarchy for this cache.
 		BuildGroups(rootData);
 		
 		-- Determine how many tierID instances could be found
@@ -3492,7 +3320,7 @@ end
 local function AttachTooltip(self)
 	if not self.ATTCProcessing then
 		self.ATTCProcessing = true;
-		if (not _InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
+		if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
 			local numLines = self:NumLines();
 			if numLines > 0 then
 				--[[--
@@ -3614,7 +3442,7 @@ local function ShowItemCompareTooltips(...)
 		for i,item in ipairs(items) do
 			local shoppingTooltip = GameTooltip.shoppingTooltips[i];
 			if shoppingTooltip then
-				shoppingTooltip.attItem = type(item) == "number" and select(2, _GetItemInfo(item)) or item;
+				shoppingTooltip.attItem = type(item) == "number" and select(2, GetItemInfo(item)) or item;
 				pcall(shoppingTooltip.SetHyperlink, shoppingTooltip, shoppingTooltip.attItem);
 			else
 				break;
@@ -4101,7 +3929,7 @@ local categoryFields = {
 		return app.asset("Category_Achievements");
 	end,
 };
-if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
+if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
 	useAchievementAPI = true;
 	local GetAchievementCategory = _G["GetAchievementCategory"];
@@ -4109,7 +3937,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 		return t.link or "|cffffff00[" .. (t.name or ("@CRIEVE: INVALID ACHIEVEMENT " .. t.achievementID)) .. "]|r";
 	end
 	fields.name = function(t)
-		local name = select(2, _GetAchievementInfo(t.achievementID));
+		local name = select(2, GetAchievementInfo(t.achievementID));
 		if name then return name; end
 		local data = L.ACHIEVEMENT_DATA[t.achievementID];
 		if data and data[2] then return data[2]; end
@@ -4119,7 +3947,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 					if v[1] == "o" then
 						return app.ObjectNames[v[2]];
 					elseif v[1] == "i" then
-						return _GetItemInfo(v[2]);
+						return GetItemInfo(v[2]);
 					end
 				end
 			end
@@ -4130,7 +3958,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 		return GetAchievementLink(t.achievementID);
 	end
 	fields.icon = function(t)
-		local name = select(10, _GetAchievementInfo(t.achievementID));
+		local name = select(10, GetAchievementInfo(t.achievementID));
 		if name then return name; end
 		local data = L.ACHIEVEMENT_DATA[t.achievementID];
 		if data and data[3] then return data[3]; end
@@ -4141,7 +3969,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 						local icon = app.ObjectIcons[v[2]];
 						if icon then return icon; end
 					elseif v[1] == "i" then
-						return select(5, _GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
+						return select(5, GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
 					end
 				end
 			end
@@ -4169,12 +3997,12 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	local onTooltipForAchievement = function(t)
 		local achievementID = t.achievementID;
 		if achievementID and IsShiftKeyDown() then
-			local totalCriteria = _GetAchievementNumCriteria(achievementID) or 0;
+			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
 			GameTooltip:AddLine(" ", 1, 1, 1);
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
 			if totalCriteria > 0 then
 				for criteriaIndex=1,totalCriteria,1 do
-					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = _GetAchievementCriteriaInfo(achievementID, criteriaIndex);
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaIndex);
 					GameTooltip:AddDoubleLine(" " .. criteriaIndex .. ": [" .. criteriaID .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
 				end
 			end
@@ -4183,7 +4011,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	local onTooltipForAchievementCriteria = function(t)
 		local achievementID = t.achievementID;
 		if achievementID and IsShiftKeyDown() then
-			local totalCriteria = _GetAchievementNumCriteria(achievementID) or 0;
+			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
 			GameTooltip:AddLine(" ", 1, 1, 1);
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
 			if totalCriteria > 0 then
@@ -4191,9 +4019,9 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 				if criteriaIndex then
 					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID;
 					if criteriaIndex <= totalCriteria then
-						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =_GetAchievementCriteriaInfo(achievementID, criteriaIndex);
+						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfo(achievementID, criteriaIndex);
 					else
-						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =_GetAchievementCriteriaInfoByID(achievementID, criteriaIndex);
+						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfoByID(achievementID, criteriaIndex);
 					end
 					GameTooltip:AddDoubleLine(" [" .. (criteriaID or "??") .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
 				end
@@ -4204,14 +4032,14 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 		return onTooltipForAchievement;
 	end
 	categoryFields.text = function(t)
-		local data = _GetCategoryInfo(t.achievementCategoryID);
+		local data = GetCategoryInfo(t.achievementCategoryID);
 		if data then return data; end
 		data = L.ACHIEVEMENT_CRITERIA_DATA[t.achievementCategoryID];
 		if data then return data[2]; end
 		return RETRIEVING_DATA .. " achcat:" .. t.achievementCategoryID;
 	end
 	categoryFields.parentCategoryID = function(t)
-		local data = select(2, _GetCategoryInfo(t.achievementCategoryID));
+		local data = select(2, GetCategoryInfo(t.achievementCategoryID));
 		if data then return data; end
 		data = L.ACHIEVEMENT_CRITERIA_DATA[t.achievementCategoryID];
 		if data then return data[1]; end
@@ -4239,10 +4067,10 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 			if achievementID then
 				local criteriaID = t.criteriaID;
 				if criteriaID then
-					if criteriaID <= _GetAchievementNumCriteria(achievementID) then
-						return _GetAchievementCriteriaInfo(achievementID, criteriaID);
+					if criteriaID <= GetAchievementNumCriteria(achievementID) then
+						return GetAchievementCriteriaInfo(achievementID, criteriaID);
 					else
-						return _GetAchievementCriteriaInfoByID(achievementID, criteriaID);
+						return GetAchievementCriteriaInfoByID(achievementID, criteriaID);
 					end
 				end
 			end
@@ -4255,14 +4083,14 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 							local icon = app.ObjectIcons[v[2]];
 							if icon then return icon; end
 						elseif v[1] == "i" then
-							return select(5, _GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Bag_10";
+							return select(5, GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Bag_10";
 						end
 					end
 				end
 			end
 			local achievementID = t.achievementID;
 			if achievementID then
-				return select(10, _GetAchievementInfo(achievementID));
+				return select(10, GetAchievementInfo(achievementID));
 			end
 		end,
 		["model"] = function(t)
@@ -4280,7 +4108,7 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 		["description"] = function(t)
 			local achievementID = t.achievementID;
 			if achievementID then
-				return "Criteria for |cffffff00[" .. (select(2, _GetAchievementInfo(achievementID)) or RETRIEVING_DATA) .. "]|r";
+				return "Criteria for |cffffff00[" .. (select(2, GetAchievementInfo(achievementID)) or RETRIEVING_DATA) .. "]|r";
 			end
 		end,
 		["collected"] = function(t)
@@ -4297,10 +4125,10 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 				if app.Settings.AccountWide.Achievements and ATTAccountWideData.Achievements[achievementID] then return 2; end
 				local criteriaID = t.criteriaID;
 				if criteriaID then
-					if criteriaID <= _GetAchievementNumCriteria(achievementID) then
-						return select(3, _GetAchievementCriteriaInfo(achievementID, criteriaID));
+					if criteriaID <= GetAchievementNumCriteria(achievementID) then
+						return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
 					else
-						return select(3, _GetAchievementCriteriaInfoByID(achievementID, criteriaID));
+						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
 					end
 				end
 			end
@@ -4318,10 +4146,10 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
 				local criteriaID = t.criteriaID;
 				if criteriaID then
-					if criteriaID <= _GetAchievementNumCriteria(achievementID) then
-						return select(3, _GetAchievementCriteriaInfo(achievementID, criteriaID));
+					if criteriaID <= GetAchievementNumCriteria(achievementID) then
+						return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
 					else
-						return select(3, _GetAchievementCriteriaInfoByID(achievementID, criteriaID));
+						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
 					end
 				end
 			end
@@ -4334,14 +4162,14 @@ if _GetCategoryInfo and _GetCategoryInfo(92) ~= "" then
 	local function CheckAchievementCollectionStatus(achievementID)
 		achievementID = tonumber(achievementID);
 		local achievement = app.SearchForField("achievementID", achievementID);
-		SetAchievementCollected(achievement and achievement[1], achievementID, select(13, _GetAchievementInfo(achievementID)));
+		SetAchievementCollected(achievement and achievement[1], achievementID, select(13, GetAchievementInfo(achievementID)));
 	end
 	local function refreshAchievementCollection()
 		if ATTAccountWideData then
 			for achievementID,container in pairs(app.SearchForFieldContainer("achievementID")) do
 				local id = tonumber(achievementID);
 				if achievementID ~= 5788 then
-					SetAchievementCollected(container[1], id, select(13, _GetAchievementInfo(id)));
+					SetAchievementCollected(container[1], id, select(13, GetAchievementInfo(id)));
 				end
 			end
 		end
@@ -4427,7 +4255,7 @@ else
 					if v[1] == "o" then
 						return app.ObjectNames[v[2]];
 					elseif v[1] == "i" then
-						return _GetItemInfo(v[2]);
+						return GetItemInfo(v[2]);
 					end
 				end
 			end
@@ -4444,7 +4272,7 @@ else
 						local icon = app.ObjectIcons[v[2]];
 						if icon then return icon; end
 					elseif v[1] == "i" then
-						return select(5, _GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
+						return select(5, GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
 					end
 				end
 			end
@@ -4509,7 +4337,7 @@ else
 	commonAchievementHandlers.ALL_ITEM_PROVIDERS = function(t)
 		local collected = true;
 		for i,provider in ipairs(t.providers) do
-			if provider[1] == "i" and _GetItemCount(provider[2], true) == 0 then
+			if provider[1] == "i" and GetItemCount(provider[2], true) == 0 then
 				collected = false;
 				break;
 			end
@@ -4519,7 +4347,7 @@ else
 	commonAchievementHandlers.ANY_ITEM_PROVIDER = function(t)
 		local collected = false;
 		for i,provider in ipairs(t.providers) do
-			if provider[1] == "i" and _GetItemCount(provider[2], true) > 0 then
+			if provider[1] == "i" and GetItemCount(provider[2], true) > 0 then
 				collected = true;
 				break;
 			end
@@ -5205,7 +5033,7 @@ local speciesFields = {
 	end,
 	["link"] = function(t)
 		if t.itemID then
-			local link = select(2, _GetItemInfo(t.itemID));
+			local link = select(2, GetItemInfo(t.itemID));
 			if link then
 				t.link = link;
 				return link;
@@ -5225,7 +5053,7 @@ local mountFields = {
 		return select(3, GetSpellInfo(t.spellID));
 	end,
 	["link"] = function(t)
-		return (t.itemID and select(2, _GetItemInfo(t.itemID))) or GetSpellLink(t.spellID);
+		return (t.itemID and select(2, GetItemInfo(t.itemID))) or GetSpellLink(t.spellID);
 	end,
 	["f"] = function(t)
 		return 100;
@@ -5234,7 +5062,7 @@ local mountFields = {
 		return app.Settings.Collectibles.Mounts;
 	end,
 	["explicitlyCollected"] = function(t)
-		return IsSpellKnown(t.spellID) or (t.questID and IsQuestFlaggedCompleted(t.questID)) or (t.itemID and _GetItemCount(t.itemID, true) > 0);
+		return IsSpellKnown(t.spellID) or (t.questID and IsQuestFlaggedCompleted(t.questID)) or (t.itemID and GetItemCount(t.itemID, true) > 0);
 	end,
 	["b"] = function(t)
 		return (t.parent and t.parent.b) or 1;
@@ -5247,7 +5075,7 @@ local mountFields = {
 		if t.parent and t.parent.itemID then return string.format("i:%d", t.parent.itemID); end
 	end,
 	["linkForItem"] = function(t)
-		return select(2, _GetItemInfo(t.itemID)) or GetSpellLink(t.spellID);
+		return select(2, GetItemInfo(t.itemID)) or GetSpellLink(t.spellID);
 	end,
 };
 
@@ -5310,12 +5138,12 @@ if C_PetJournal then
 else
 	speciesFields.icon = function(t)
 		if t.itemID then
-			return select(5, _GetItemInfoInstant(t.itemID)) or "Interface\\Icons\\INV_Misc_QuestionMark";
+			return select(5, GetItemInfoInstant(t.itemID)) or "Interface\\Icons\\INV_Misc_QuestionMark";
 		end
 		return "Interface\\Icons\\INV_Misc_QuestionMark";
 	end
 	speciesFields.name = function(t)
-		return t.itemID and _GetItemInfo(t.itemID) or RETRIEVING_DATA;
+		return t.itemID and GetItemInfo(t.itemID) or RETRIEVING_DATA;
 	end
 	mountFields.name = function(t)
 		return GetSpellInfo(t.spellID) or RETRIEVING_DATA;
@@ -5375,7 +5203,7 @@ else
 		app.events.COMPANION_UPDATE = RefreshCompanionCollectionStatus;
 	else
 		speciesFields.collected = function(t)
-			return SetBattlePetCollected(t, t.speciesID, t.itemID and _GetItemCount(t.itemID, true) > 0);
+			return SetBattlePetCollected(t, t.speciesID, t.itemID and GetItemCount(t.itemID, true) > 0);
 		end
 		mountFields.collected = function(t)
 			local spellID = t.spellID;
@@ -5537,7 +5365,7 @@ GameTooltip.SetCurrencyByID = function(self, currencyID, count)
 			GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
 		end
 	end
-	if (not _InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
+	if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
 		AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, app.SearchForField, "currencyID", currencyID);
 		if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
 		self:Show();
@@ -5547,7 +5375,7 @@ local GameTooltip_SetCurrencyToken = GameTooltip.SetCurrencyToken;
 GameTooltip.SetCurrencyToken = function(self, tokenID)
 	-- Make sure to call to base functionality
 	if GameTooltip_SetCurrencyToken then GameTooltip_SetCurrencyToken(self, tokenID); end
-	if (not _InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
+	if (not InCombatLockdown() or app.Settings:GetTooltipSetting("DisplayInCombat")) and app.Settings:GetTooltipSetting("Enabled") then
 		-- Determine what kind of list data this is. (Blizzard is whack and using this API call for headers too...)
 		local name, isHeader = GetCurrencyListInfo(tokenID);
 		if not isHeader then
@@ -5844,7 +5672,7 @@ local StandingByID = {
 	},
 };
 app.FactionNameByID = setmetatable({}, { __index = function(t, id)
-	local name = _GetFactionInfoByID(id);
+	local name = GetFactionInfoByID(id);
 	if name then
 		rawset(t, id, name);
 		rawset(app.FactionIDByName, name, id);
@@ -5872,7 +5700,7 @@ app.GetFactionIDByName = function(name)
 	return app.FactionIDByName[name] or name;
 end
 app.GetFactionStanding = function(reputation)
-	-- Total earned rep from _GetFactionInfoByID is a value AWAY FROM ZERO, not a value within the standing bracket.
+	-- Total earned rep from GetFactionInfoByID is a value AWAY FROM ZERO, not a value within the standing bracket.
 	if reputation then
 		for i=#StandingByID,1,-1 do
 			local threshold = StandingByID[i].threshold;
@@ -5913,7 +5741,7 @@ local fields = {
 	["collectible"] = function(t)
 		if app.Settings.Collectibles.Reputations then
 			-- If your reputation is higher than the maximum for a different faction, return partial completion.
-			if not app.Settings.AccountWide.Reputations and t.maxReputation and t.maxReputation[1] ~= t.factionID and (select(3, _GetFactionInfoByID(t.maxReputation[1])) or 4) >= app.GetFactionStanding(t.maxReputation[2]) then
+			if not app.Settings.AccountWide.Reputations and t.maxReputation and t.maxReputation[1] ~= t.factionID and (select(3, GetFactionInfoByID(t.maxReputation[1])) or 4) >= app.GetFactionStanding(t.maxReputation[2]) then
 				return false;
 			end
 			return true;
@@ -5924,7 +5752,7 @@ local fields = {
 		local factionID = t.factionID;
 		local minReputation = t.minReputation;
 		if minReputation and minReputation[1] == factionID then
-			return setFactionCollected(t, factionID, (select(6, _GetFactionInfoByID(factionID)) or 0) >= minReputation[2]);
+			return setFactionCollected(t, factionID, (select(6, GetFactionInfoByID(factionID)) or 0) >= minReputation[2]);
 		else
 			return setFactionCollected(t, factionID, t.standing >= t.maxstanding);
 		end
@@ -5942,14 +5770,14 @@ local fields = {
 		return title;
 	end,
 	["reputation"] = function(t)
-		return select(6, _GetFactionInfoByID(t.factionID));
+		return select(6, GetFactionInfoByID(t.factionID));
 	end,
 	["ceiling"] = function(t)
-		local _, _, _, m, ma = _GetFactionInfoByID(t.factionID);
+		local _, _, _, m, ma = GetFactionInfoByID(t.factionID);
 		return ma and m and (ma - m);
 	end,
 	["standing"] = function(t)
-		return select(3, _GetFactionInfoByID(t.factionID)) or 1;
+		return select(3, GetFactionInfoByID(t.factionID)) or 1;
 	end,
 	["maxstanding"] = function(t)
 		if t.minReputation and t.minReputation[1] == t.factionID then
@@ -5958,7 +5786,7 @@ local fields = {
 		return 8;
 	end,
 	["description"] = function(t)
-		return select(2, _GetFactionInfoByID(t.factionID)) or "Not all reputations can be viewed on a single character. IE: Warsong Outriders cannot be viewed by an Alliance Player and Silverwing Sentinels cannot be viewed by a Horde Player.";
+		return select(2, GetFactionInfoByID(t.factionID)) or "Not all reputations can be viewed on a single character. IE: Warsong Outriders cannot be viewed by an Alliance Player and Silverwing Sentinels cannot be viewed by a Horde Player.";
 	end,
 };
 fields.collected = fields.saved;
@@ -5969,7 +5797,7 @@ app.OnUpdateReputationRequired = function(t)
 		return false;
 	else
 		local reputationID = t.minReputation[1];
-		t.visible = (select(3, _GetFactionInfoByID(reputationID)) or 1) >= 4;
+		t.visible = (select(3, GetFactionInfoByID(reputationID)) or 1) >= 4;
 		return true;
 	end
 end
@@ -6245,7 +6073,7 @@ if C_TransmogCollection then
 end
 local fieldsWithItem = {
 	link = function(t)
-		local name, link = _GetItemInfo(t.itemID);
+		local name, link = GetItemInfo(t.itemID);
 		if link then
 			rawset(t, "name", name);
 			rawset(t, "link", link);
@@ -6253,7 +6081,7 @@ local fieldsWithItem = {
 		end
 	end,
 	name = function(t)
-		local name, link = _GetItemInfo(t.itemID);
+		local name, link = GetItemInfo(t.itemID);
 		if link then
 			rawset(t, "name", name);
 			rawset(t, "link", link);
@@ -6289,7 +6117,7 @@ local TotalRetriesPerItemID = setmetatable({}, { __index = function(t, id)
 end });
 local BestItemLinkPerItemID = setmetatable({}, { __index = function(t, id)
 	local suffixID = BestSuffixPerItemID[id];
-	local link = select(2, _GetItemInfo(suffixID > 0 and string.format("item:%d:0:0:0:0:0:%d", id, suffixID) or id));
+	local link = select(2, GetItemInfo(suffixID > 0 and string.format("item:%d:0:0:0:0:0:%d", id, suffixID) or id));
 	if link then
 		rawset(t, id, link);
 		return link;
@@ -6298,8 +6126,8 @@ end });
 local BlacklistedRWPItems = {
 	[22736] = true,	-- Andonisus, Reaper of Souls
 };
-local base_GetItemCount = function(t)
-	return _GetItemCount(t.itemID, true);
+local baseGetItemCount = function(t)
+	return GetItemCount(t.itemID, true);
 end;
 app.ParseItemID = function(itemName)
 	if type(itemName) == "number" then
@@ -6311,7 +6139,7 @@ app.ParseItemID = function(itemName)
 			return itemID;
 		else
 			-- The itemID given was actually the name or a link.
-			itemID = _GetItemInfoInstant(itemName);
+			itemID = GetItemInfoInstant(itemName);
 			if itemID then
 				-- Oh good, it was cached by WoW.
 				return itemID;
@@ -6396,10 +6224,10 @@ local collectedAsRWP = function(t)
 		local id, b = t.itemID, t.b;
 		if not b or b == 2 or b == 3 then
 			-- This item is BOE. You CAN collect this on this character! (but not from a quest)
-			return app.SetCollected(t, "RWP", id, _GetItemCount(id, true) > 0);
+			return app.SetCollected(t, "RWP", id, GetItemCount(id, true) > 0);
 		elseif app.Settings:GetFilterForRWP(t.f) or (t.filterForRWP and app.Settings:GetFilterForRWP(t.filterForRWP)) then
 			-- This character matches requirements
-			if _GetItemCount(id, true) > 0 then
+			if GetItemCount(id, true) > 0 then
 				-- You kept this item. Nice!
 				return app.SetCollected(t, "RWP", id, true);
 			else
@@ -6425,14 +6253,14 @@ local itemFields = {
 		return t.link;
 	end,
 	["icon"] = function(t)
-		return select(5, _GetItemInfoInstant(t.itemID)) or "Interface\\Icons\\INV_Misc_QuestionMark";
+		return select(5, GetItemInfoInstant(t.itemID)) or "Interface\\Icons\\INV_Misc_QuestionMark";
 	end,
 	["link"] = function(t)
 		return BestItemLinkPerItemID[t.itemID];
 	end,
 	["name"] = function(t)
 		local link = t.link;
-		return link and _GetItemInfo(link);
+		return link and GetItemInfo(link);
 	end,
 	["b"] = function(t)
 		return 2;
@@ -6448,7 +6276,7 @@ local itemFields = {
 		return string.format("i:%d", t.itemID);
 	end,
 	["GetItemCount"] = function(t)
-		return base_GetItemCount;
+		return baseGetItemCount;
 	end,
 	["collectible"] = function(t)
 		return t.collectibleAsCost;
@@ -6531,7 +6359,7 @@ fields.collectible = function(t)
 	return app.Settings.Collectibles.Toys;
 end
 fields.collected = function(t)
-	if t.itemID then return app.SetCollected(t, "Toys", t.itemID, _GetItemCount(t.itemID, true) > 0); end
+	if t.itemID then return app.SetCollected(t, "Toys", t.itemID, GetItemCount(t.itemID, true) > 0); end
 end
 fields.isToy = function(t) return true; end
 app.CreateToy = app.CreateClass("Toy", "itemID", fields);
@@ -6549,7 +6377,7 @@ itemHarvesterFields.text = function(t)
 	if link then
 		local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
 		itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent
-			= _GetItemInfo(link);
+			= GetItemInfo(link);
 		if itemName then
 			local spellName, spellID;
 			if classID == "Recipe" or classID == "Mount" then
@@ -6883,7 +6711,7 @@ end
 local DiscoveredNewArea = {};
 local simplifyExplorationData = function()
 	local i = 100;
-	while _InCombatLockdown() do coroutine.yield(); end
+	while InCombatLockdown() do coroutine.yield(); end
 	while i > 0 do i = i - 1; coroutine.yield(); end
 	app.print("Simplifying Exploration Data...");
 	local allMapData = {};
@@ -7489,7 +7317,7 @@ app.CreateObject = app.CreateClass("Object", "objectID", {
 					if v[1] == "o" then
 						return app.ObjectNames[v[2]] or RETRIEVING_DATA;
 					elseif v[1] == "i" then
-						return _GetItemInfo(v[2]) or RETRIEVING_DATA;
+						return GetItemInfo(v[2]) or RETRIEVING_DATA;
 					end
 				end
 			end
@@ -7504,7 +7332,7 @@ app.CreateObject = app.CreateClass("Object", "objectID", {
 						local icon = app.ObjectIcons[v[2]];
 						if icon then return icon; end
 					elseif v[1] == "i" then
-						return select(5, _GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Bag_10";
+						return select(5, GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Bag_10";
 					end
 				end
 			end
@@ -7682,7 +7510,7 @@ local criteriaFuncs = {
 		-- v = factionID.standingRequiredToLock
 		local factionID = math.floor(v + 0.00001);
 		local lockStanding = math.floor((v - factionID) * 10 + 0.00001);
-        local standing = select(3, _GetFactionInfoByID(factionID)) or 4;
+        local standing = select(3, GetFactionInfoByID(factionID)) or 4;
 		--app.print("Check Faction", factionID,  "Standing (", standing, ") is locked @ (", lockStanding, ")");
 		return standing >= lockStanding;
     end,
@@ -7733,7 +7561,7 @@ local createQuest = app.CreateClass("Quest", "questID", {
 						local icon = app.ObjectIcons[v[2]];
 						if icon then return icon; end
 					elseif v[1] == "i" then
-						return select(5, _GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Book_09";
+						return select(5, GetItemInfoInstant(v[2])) or "Interface\\Icons\\INV_Misc_Book_09";
 					end
 				end
 			end
@@ -7813,7 +7641,7 @@ end),
 			return flag;
 		end
 		if t.maxReputation then
-			if (select(6, _GetFactionInfoByID(t.maxReputation[1])) or 0) >= t.maxReputation[2] then
+			if (select(6, GetFactionInfoByID(t.maxReputation[1])) or 0) >= t.maxReputation[2] then
 				return t.repeatable and 1 or 2;
 			end
 			if app.Settings.AccountWide.Reputations then
@@ -7913,7 +7741,7 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 						if v[1] == "o" then
 							return app.ObjectNames[v[2]] or RETRIEVING_DATA;
 						elseif v[1] == "i" then
-							return _GetItemInfo(v[2]) or RETRIEVING_DATA;
+							return GetItemInfo(v[2]) or RETRIEVING_DATA;
 						end
 					end
 				end
@@ -7931,7 +7759,7 @@ app.CreateQuestObjective = app.CreateClass("Objective", "objectiveID", {
 						local icon = app.ObjectIcons[v[2]];
 						if icon then return icon; end
 					elseif v[1] == "i" then
-						return select(5, _GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
+						return select(5, GetItemInfoInstant(v[2])) or "Interface\\Worldmap\\Gear_64Grey";
 					end
 				end
 			end
@@ -8329,13 +8157,13 @@ end;
 local createRecipe = app.CreateClass("Recipe", "spellID", recipeFields,
 "WithItem", {
 	baseIcon = function(t)
-		return select(5, _GetItemInfoInstant(t.itemID)) or baseIconFromSpellID(t);
+		return select(5, GetItemInfoInstant(t.itemID)) or baseIconFromSpellID(t);
 	end,
 	link = function(t)
-		return select(2, _GetItemInfo(t.itemID)) or RETRIEVING_DATA;
+		return select(2, GetItemInfo(t.itemID)) or RETRIEVING_DATA;
 	end,
 	name = function(t)
-		return _GetItemInfo(t.itemID) or nameFromSpellID(t);
+		return GetItemInfo(t.itemID) or nameFromSpellID(t);
 	end,
 	tsm = function(t)
 		return string.format("i:%d", t.itemID);
@@ -8699,7 +8527,7 @@ function app.FilterItemClass_RequiredSkill(item)
 end
 function app.FilterItemClass_RequireFaction(item)
 	if item.minReputation and app.IsFactionExclusive(item.minReputation[1]) then
-		if item.minReputation[2] > (select(6, _GetFactionInfoByID(item.minReputation[1])) or 0) then
+		if item.minReputation[2] > (select(6, GetFactionInfoByID(item.minReputation[1])) or 0) then
 			return false;
 		else
 			return true;
@@ -9017,7 +8845,7 @@ local function RefreshSkills()
 end
 local function RefreshCollections()
 	app:StartATTCoroutine("RefreshingCollections", function()
-		while _InCombatLockdown() do coroutine.yield(); end
+		while InCombatLockdown() do coroutine.yield(); end
 		app.print("Refreshing collection...");
 		app.events.QUEST_LOG_UPDATE();
 		coroutine.yield();
@@ -9047,7 +8875,7 @@ local function RefreshSaves()
 	end
 	
 	-- While the player is in combat, wait for combat to end.
-	while _InCombatLockdown() do coroutine.yield(); end
+	while InCombatLockdown() do coroutine.yield(); end
 	
 	-- While the player is still logging in, wait.
 	while not app.GUID do coroutine.yield(); end
@@ -10194,7 +10022,7 @@ local function RowOnEnter(self)
 		end
 		if reference.achievementID and app.Settings:GetTooltipSetting("achievementID") then
 			GameTooltip:AddDoubleLine(L["ACHIEVEMENT_ID"], tostring(reference.achievementID));
-			if reference.sourceQuests and not (_GetCategoryInfo and _GetCategoryInfo(92) ~= "") then
+			if reference.sourceQuests and not (GetCategoryInfo and GetCategoryInfo(92) ~= "") then
 				GameTooltip:AddLine("This achievement has associated quests that can be completed before the introduction of the Achievement system coming with the Wrath Prepatch. Not all achievements can be tracked this way, but for those that can, they will be displayed. All other non-trackable achievements will be activated with the prepatch.", 0.4, 0.8, 1, true);
 			end
 		end
@@ -10210,14 +10038,14 @@ local function RowOnEnter(self)
 			local standingId, offset = app.GetFactionStanding(reference.minReputation[2])
 			local msg = "Requires a minimum standing of"
 			if offset ~= 0 then msg = msg .. " " .. offset end
-			msg = msg .. " " .. app.GetFactionStandingText(standingId) .. " with " .. (_GetFactionInfoByID(reference.minReputation[1]) or "the opposite faction") .. "."
+			msg = msg .. " " .. app.GetFactionStandingText(standingId) .. " with " .. (GetFactionInfoByID(reference.minReputation[1]) or "the opposite faction") .. "."
 			GameTooltip:AddLine(msg);
 		end
 		if reference.maxReputation and not reference.minReputation then
 			local standingId, offset = app.GetFactionStanding(reference.maxReputation[2])
 			local msg = "Requires a standing lower than"
 			if offset ~= 0 then msg = msg .. " " .. offset end
-			msg = msg .. " " .. app.GetFactionStandingText(standingId) .. " with " .. (_GetFactionInfoByID(reference.maxReputation[1]) or "the opposite faction") .. "."
+			msg = msg .. " " .. app.GetFactionStandingText(standingId) .. " with " .. (GetFactionInfoByID(reference.maxReputation[1]) or "the opposite faction") .. "."
 			GameTooltip:AddLine(msg);
 		end
 		if reference.minReputation and reference.maxReputation then
@@ -10228,17 +10056,17 @@ local function RowOnEnter(self)
 				if minOffset ~= 0 then msg = msg .. " " .. minOffset end
 				msg = msg .. " " .. app.GetFactionStandingText(minStandingId) .. " and"
 				if maxOffset ~= 0 then msg = msg .. " " .. maxOffset end
-				msg = msg .. " " .. app.GetFactionStandingText(maxStandingId) .. " with " .. (_GetFactionInfoByID(reference.minReputation[1]) or "the opposite faction") .. ".";
+				msg = msg .. " " .. app.GetFactionStandingText(maxStandingId) .. " with " .. (GetFactionInfoByID(reference.minReputation[1]) or "the opposite faction") .. ".";
 				GameTooltip:AddLine(msg);
 			else
 				local msg = "Requires a minimum standing of"
 				if minOffset ~= 0 then msg = msg .. " " .. minOffset end
-				msg = msg .. " " .. app.GetFactionStandingText(minStandingId) .. " with " .. (_GetFactionInfoByID(reference.minReputation[1]) or "the opposite faction") .. "."
+				msg = msg .. " " .. app.GetFactionStandingText(minStandingId) .. " with " .. (GetFactionInfoByID(reference.minReputation[1]) or "the opposite faction") .. "."
 				GameTooltip:AddLine(msg);
 				
 				msg = "Requires a standing lower than"
 				if maxOffset ~= 0 then msg = msg .. " " .. maxOffset end
-				msg = msg .. " " .. app.GetFactionStandingText(maxStandingId) .. " with " .. (_GetFactionInfoByID(reference.maxReputation[1]) or "the opposite faction") .. "."
+				msg = msg .. " " .. app.GetFactionStandingText(maxStandingId) .. " with " .. (GetFactionInfoByID(reference.maxReputation[1]) or "the opposite faction") .. "."
 				GameTooltip:AddLine(msg);
 			end
 		end
@@ -10319,7 +10147,7 @@ local function RowOnEnter(self)
 						providerString = providerString .. ' (' .. providerID .. ')';
 					end
 				elseif providerType == "i" then
-					local _,name,_,_,_,_,_,_,_,icon = _GetItemInfo(providerID);
+					local _,name,_,_,_,_,_,_,_,icon = GetItemInfo(providerID);
 					providerString = (icon and ("|T" .. icon .. ":0|t") or "") .. (name or ("Item: " .. RETRIEVING_DATA));
 					if app.Settings:GetTooltipSetting("itemID") then
 						providerString = providerString .. ' (' .. providerID .. ')';
@@ -10546,7 +10374,7 @@ local function RowOnEnter(self)
 						GameTooltip:AddDoubleLine(k == 1 and "Cost" or " ", GetCoinTextureString(v[2]));
 					else
 						if _ == "i" then
-							_,name,_,_,_,_,_,_,_,icon = _GetItemInfo(v[2]);
+							_,name,_,_,_,_,_,_,_,icon = GetItemInfo(v[2]);
 						elseif _ == "c" then
 							name,_,icon = GetCurrencyInfo(v[2])
 						end
@@ -11063,7 +10891,7 @@ local function RefreshData(source, trigger)
 		currentlyRefreshingData = true;
 		
 		-- While the player is in combat, wait for combat to end.
-		while _InCombatLockdown() do coroutine.yield(); end
+		while InCombatLockdown() do coroutine.yield(); end
 		
 		-- Wait 1/2 second. For multiple simultaneous requests, each one will reapply the delay.
 		while refreshDataCooldown > 0 do
@@ -11426,7 +11254,7 @@ function app:GetWindow(suffix, settings)
 					coroutine.yield();
 					delays[method] = delays[method] - 1;
 				end
-				while _InCombatLockdown() do
+				while InCombatLockdown() do
 					coroutine.yield();
 				end
 				window[method](window, force);
@@ -12772,11 +12600,11 @@ app:GetWindow("Debugger", {
 				local rawGroups = {};
 				for i=1,GetNumQuestRewards(),1 do
 					local link = GetQuestItemLink("reward", i);
-					if link then table.insert(rawGroups, { ["itemID"] = _GetItemInfoInstant(link) }); end
+					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
 				end
 				for i=1,GetNumQuestChoices(),1 do
 					local link = GetQuestItemLink("choice", i);
-					if link then table.insert(rawGroups, { ["itemID"] = _GetItemInfoInstant(link) }); end
+					if link then table.insert(rawGroups, { ["itemID"] = GetItemInfoInstant(link) }); end
 				end
 				for i=1,GetNumQuestLogRewardSpells(questID),1 do
 					local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetQuestLogRewardSpell(i, questID);
@@ -12806,7 +12634,7 @@ app:GetWindow("Debugger", {
 				local msg, player, a, b, c, d, e, f, g, h, i, j, k, l = ...;
 				local itemString = string.match(msg, "item[%-?%d:]+");
 				if itemString then
-					self:AddObject({ ["itemID"] = _GetItemInfoInstant(itemString) });
+					self:AddObject({ ["itemID"] = GetItemInfoInstant(itemString) });
 				end
 			end
 		end);
@@ -13123,11 +12951,11 @@ app:GetWindow("Tradeskills", {
 								-- Attempt to harvest the item associated with this craft.
 								GameTooltip.SetCraftSpell(ATTCNPCHarvester, craftIndex);
 								local link, craftedItemID = select(2, ATTCNPCHarvester:GetItem());
-								if link then craftedItemID = _GetItemInfoInstant(link); end
+								if link then craftedItemID = GetItemInfoInstant(link); end
 								
 								-- Cache the Reagents used to make this item.
 								for i=1,GetCraftNumReagents(craftIndex) do
-									local itemID = _GetItemInfoInstant(GetCraftReagentItemLink(craftIndex, i));
+									local itemID = GetItemInfoInstant(GetCraftReagentItemLink(craftIndex, i));
 									if itemID then
 										-- Make sure a cache table exists for this item.
 										local _, _, reagentCount = GetCraftReagentInfo(craftIndex, i);
@@ -13182,10 +13010,10 @@ app:GetWindow("Tradeskills", {
 							-- Cache the Reagents used to make this item.
 							local tradeSkillItemLink = GetTradeSkillItemLink(skillIndex);
 							if tradeSkillItemLink then
-								local craftedItemID = _GetItemInfoInstant(tradeSkillItemLink);
+								local craftedItemID = GetItemInfoInstant(tradeSkillItemLink);
 								for i=1,GetTradeSkillNumReagents(skillIndex) do
 									local reagentCount = select(3, GetTradeSkillReagentInfo(skillIndex, i));
-									local itemID = _GetItemInfoInstant(GetTradeSkillReagentItemLink(skillIndex, i));
+									local itemID = GetItemInfoInstant(GetTradeSkillReagentItemLink(skillIndex, i));
 									
 									-- Make sure a cache table exists for this item.
 									-- Index 1: The Recipe Skill IDs
@@ -13278,7 +13106,7 @@ app:GetWindow("Tradeskills", {
 			self.TSMCraftingVisible = visible;
 			self:UpdateFrameVisibility();
 			app:StartATTCoroutine("UpdateTradeSkills", function()
-				while _InCombatLockdown() do coroutine.yield(); end
+				while InCombatLockdown() do coroutine.yield(); end
 				coroutine.yield();
 				self:Update();
 			end);
@@ -13330,7 +13158,7 @@ app:GetWindow("Tradeskills", {
 			else
 				self:SetMovable(false);
 				app:StartATTCoroutine("TSMWHY", function()
-					while _InCombatLockdown() or not TradeSkillFrame do coroutine.yield(); end
+					while InCombatLockdown() or not TradeSkillFrame do coroutine.yield(); end
 					app:StartATTCoroutine("TSMWHYPT2", function()
 						local thing = self.TSMCraftingVisible;
 						self.TSMCraftingVisible = nil;
@@ -13451,7 +13279,7 @@ app:GetWindow("Tradeskills", {
 					self.OldNewElement = TSMAPI_FOUR.UI.NewElement;
 					TSMAPI_FOUR.UI.NewElement = function(...)
 						app:StartATTCoroutine("UpdateTradeSkills", function()
-							while _InCombatLockdown() do coroutine.yield(); end
+							while InCombatLockdown() do coroutine.yield(); end
 							coroutine.yield();
 							self:Update();
 						end);
