@@ -42,7 +42,7 @@ local function SearchRecursivelyForValue(group, field, value, temp)
 end
 
 -- Local Functions
-local RandomSearchFilter;
+local SearchFilter;
 local excludedZones = {
 	947,	-- Cosmic
 	1414,	-- Kalimdor
@@ -166,9 +166,9 @@ local function Reroll(self)
 		o.parent = data;
 		tinsert(data.g, o);
 	end
-	if RandomSearchFilter then
+	if SearchFilter then
 		-- Call to our method and build a list to draw from
-		local temp = searchMethods[RandomSearchFilter](self) or {};
+		local temp = searchMethods[SearchFilter](self) or {};
 		local totalWeight = 0;
 		for i,o in ipairs(temp) do
 			totalWeight = totalWeight + ((o.total or 1) - (o.progress or 0));
@@ -198,8 +198,7 @@ local function Reroll(self)
 	end
 end
 local function SetSearchFilter(self, filter)
-	RandomSearchFilter = filter;
-	app.SetDataMember("RandomSearchFilter", filter);
+	SearchFilter = filter;
 	Reroll(self);
 	return true;
 end
@@ -215,11 +214,18 @@ app:GetWindow("Random", {
 			self:Toggle();
 		end
 	end,
+	OnLoad = function(self, settings)
+		SearchFilter = settings.SearchFilter or "Quest";
+	end,
+	OnSave = function(self, settings)
+		settings.SearchFilter = SearchFilter;
+	end,
 	OnRebuild = function(self, ...)
 		if self.data then return; end
 		
 		-- For this window's options to work, Prime needs to be fully initialized.
 		local prime = app:GetWindow("Prime");
+		if not prime then return; end
 		if not prime.data then prime:ForceUpdate(); end
 	
 		self.defaultHeader = {
@@ -252,7 +258,7 @@ app:GetWindow("Random", {
 						return true;
 					end,
 					OnUpdate = function(data)
-						data.text = "Reroll: " .. RandomSearchFilter;
+						data.text = "Reroll: " .. SearchFilter;
 						data.visible = true;
 						return true;
 					end,
@@ -336,7 +342,6 @@ app:GetWindow("Random", {
 			},
 		};
 		
-		RandomSearchFilter = app.GetDataMember("RandomSearchFilter", "Quest")
 		self.data = self.defaultHeader;
 		Reroll(self);
 	end,

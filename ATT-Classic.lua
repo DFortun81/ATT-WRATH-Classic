@@ -13743,7 +13743,6 @@ app.events.ADDON_LOADED = function(addonName)
 		"LocalizedCategoryNames",
 		"LocalizedFlightPathDB",
 		"Position",
-		"RandomSearchFilter",
 		"Reagents",
 		"SoftReserves",
 		"SoftReservePersistence",
