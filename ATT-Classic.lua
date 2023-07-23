@@ -3117,73 +3117,6 @@ function app:GetDataCache()
 			}));
 		end
 		
-		-- Factions (Dynamic)
-		table.insert(g, app.CreateNPC(app.HeaderConstants.FACTIONS, {
-			factions = {},
-			g = {},
-			OnUpdate = function(self)
-				for i,_ in pairs(app.SearchForFieldContainer("factionID")) do
-					if not self.factions[i] then
-						local faction = app.CreateFaction(tonumber(i));
-						for j,o in ipairs(_) do
-							if o.key == "factionID" then
-								for key,value in pairs(o) do faction[key] = value; end
-							end
-						end
-						self.factions[i] = faction;
-						if not faction.u or faction.u ~= 1 then
-							faction.progress = nil;
-							faction.total = nil;
-							faction.g = nil;
-							faction.parent = self;
-							tinsert(self.g, faction);
-						end
-					end
-				end
-				app.Sort(self.g, app.SortDefaults.Text);
-				self.OnUpdate = nil;
-			end
-		}));
-		
-		-- Flight Paths (Dynamic)
-		table.insert(g, {
-			text = "Flight Paths",
-			icon = app.asset("Category_FlightPaths"),
-			fps = {},
-			g = {},
-			OnUpdate = function(self)
-				for i,_ in pairs(app.SearchForFieldContainer("flightPathID")) do
-					if not self.fps[i] then
-						local fp = app.CreateFlightPath(tonumber(i));
-						for j,o in ipairs(_) do
-							for key,value in pairs(o) do fp[key] = value; end
-						end
-						self.fps[i] = fp;
-						if not fp.u or fp.u ~= 1 then
-							fp.g = nil;
-							fp.maps = nil;
-							fp.parent = self;
-							tinsert(self.g, fp);
-						end
-					end
-				end
-				for i,_ in pairs(ATTClassicAD.LocalizedFlightPathDB) do
-					if not self.fps[i] then
-						local fp = app.CreateFlightPath(tonumber(i));
-						self.fps[i] = fp;
-						if not _.u or _.u ~= 1 then
-							fp.r = _.r;
-							fp.u = _.u;
-							fp.parent = self;
-							tinsert(self.g, fp);
-						end
-					end
-				end
-				app.Sort(self.g, app.SortDefaults.Text);
-				self.OnUpdate = nil;
-			end
-		});
-		
 		-- Expansion Features
 		if app.Categories.ExpansionFeatures and #app.Categories.ExpansionFeatures > 0 then
 			table.insert(g, {
@@ -3357,6 +3290,8 @@ function app:GetDataCache()
 		
 		-- Dynamic Categories (Content generated and managed by a separate Window)
 		table.insert(g, app.CreateDynamicCategory("Battle Pets"));
+		table.insert(g, app.CreateDynamicCategory("Factions"));
+		table.insert(g, app.CreateDynamicCategory("Flight Paths"));
 		table.insert(g, app.CreateDynamicCategory("Mounts"));
 		table.insert(g, app.CreateDynamicCategory("Titles"));
 		table.insert(g, app.CreateDynamicCategory("Toys"));
