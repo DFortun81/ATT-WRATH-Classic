@@ -3091,40 +3091,6 @@ function app:GetDataCache()
 				g = app.Categories.Professions
 			});
 		end
-
-		-- In-Game Store
-		if app.Categories.InGameShop then
-			table.insert(g, app.CreateNPC(app.HeaderConstants.IN_GAME_SHOP, {
-				g = app.Categories.InGameShop,
-				expanded = false
-			}));
-		end
-		
-		-- Skills
-		if app.Categories.Skills then
-			table.insert(g, {
-				text = SKILLS,
-				icon = "Interface\\ICONS\\SPELL_NATURE_THUNDERCLAP",
-				g = app.Categories.Skills
-			});
-		end
-		
-		-- PvP
-		if app.Categories.PVP then
-			table.insert(g, app.CreateNPC(app.HeaderConstants.PVP, {
-				g = app.Categories.PVP,
-				isPVPCategory = true
-			}));
-		end
-		
-		-- Expansion Features
-		if app.Categories.ExpansionFeatures and #app.Categories.ExpansionFeatures > 0 then
-			table.insert(g, {
-				text = "Expansion Features",
-				icon = app.asset("Category_ExpansionFeatures"),
-				g = app.Categories.ExpansionFeatures
-			});
-		end
 		
 		-- Holidays
 		if app.Categories.Holidays then
@@ -3152,15 +3118,29 @@ function app:GetDataCache()
 			}));
 		end
 		
-		-- World Events
-		if app.Categories.WorldEvents then
+		-- Expansion Features
+		if app.Categories.ExpansionFeatures and #app.Categories.ExpansionFeatures > 0 then
 			table.insert(g, {
-				text = BATTLE_PET_SOURCE_7;
-				icon = app.asset("Category_Event"),
-				description = "These events occur at different times in the game's timeline, typically as one time server wide events. Special celebrations such as Anniversary events and such may be found within this category.",
-				g = app.Categories.WorldEvents,
-				isEventCategory = true,
+				text = "Expansion Features",
+				icon = app.asset("Category_ExpansionFeatures"),
+				g = app.Categories.ExpansionFeatures
 			});
+		end
+		
+		-- In-Game Store
+		if app.Categories.InGameShop then
+			table.insert(g, app.CreateNPC(app.HeaderConstants.IN_GAME_SHOP, {
+				g = app.Categories.InGameShop,
+				expanded = false
+			}));
+		end
+		
+		-- PvP
+		if app.Categories.PVP then
+			table.insert(g, app.CreateNPC(app.HeaderConstants.PVP, {
+				g = app.Categories.PVP,
+				isPVPCategory = true
+			}));
 		end
 		
 		-- Promotions
@@ -3171,6 +3151,26 @@ function app:GetDataCache()
 				description = "This section is for real world promotions that seeped extremely rare content into the game prior to some of them appearing within the In-Game Shop.",
 				g = app.Categories.Promotions,
 				isPromotionCategory = true
+			});
+		end
+		
+		-- Skills
+		if app.Categories.Skills then
+			table.insert(g, {
+				text = SKILLS,
+				icon = "Interface\\ICONS\\SPELL_NATURE_THUNDERCLAP",
+				g = app.Categories.Skills
+			});
+		end
+		
+		-- World Events
+		if app.Categories.WorldEvents then
+			table.insert(g, {
+				text = BATTLE_PET_SOURCE_7;
+				icon = app.asset("Category_Event"),
+				description = "These events occur at different times in the game's timeline, typically as one time server wide events. Special celebrations such as Anniversary events and such may be found within this category.",
+				g = app.Categories.WorldEvents,
+				isEventCategory = true,
 			});
 		end
 		
