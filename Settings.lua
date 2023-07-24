@@ -618,7 +618,7 @@ f:SetText("Crieve-Atiesh\nv" .. GetAddOnMetadata(appName, "Version"));
 f:Show();
 settings.version = f;
 
-f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f = CreateFrame("Button", nil, settings, "UIPanelButtonTemplate");
 f:SetPoint("TOPLEFT", settings, "BOTTOMLEFT", 0, -6);
 f:SetText("CurseForge");
 f:SetWidth(140);
@@ -629,7 +629,7 @@ f:SetATTTooltip("Click this button to copy the url to get the ALL THE THINGS add
 f.copypasta = "https://www.curseforge.com/wow/addons/all-the-things";
 settings.curse = f;
 
-f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f = CreateFrame("Button", nil, settings, "UIPanelButtonTemplate");
 f:SetPoint("TOPLEFT", settings.curse, "TOPRIGHT", 4, 0);
 f:SetText("Discord");
 f:SetWidth(140);
@@ -640,7 +640,7 @@ f:SetATTTooltip("Click this button to copy the url to get to the ALL THE THINGS 
 f.copypasta = "discord.gg/allthethings";
 settings.discord = f;
 
-f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f = CreateFrame("Button", nil, settings, "UIPanelButtonTemplate");
 f:SetPoint("TOPLEFT", settings.discord, "TOPRIGHT", 4, 0);
 f:SetText("Twitch");
 f:SetWidth(140);
@@ -1799,7 +1799,7 @@ for i,filterID in ipairs({ 113, 55, 104, 36 }) do
 	yoffset = 6;
 end
 
-f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f = CreateFrame("Button", nil, settings, "UIPanelButtonTemplate");
 f:SetPoint("BOTTOMLEFT", settings, "BOTTOMLEFT", 8, 8);
 f:SetText("Class Defaults");
 f:SetWidth(120);
@@ -1823,7 +1823,7 @@ end;
 tinsert(settings.MostRecentTab.objects, f);
 settings.classdefaults = f;
 
-f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+f = CreateFrame("Button", nil, settings, "UIPanelButtonTemplate");
 f:SetPoint("TOPLEFT", settings.classdefaults, "TOPRIGHT", 3, 0);
 f:SetText("All");
 f:SetWidth(80);
@@ -2660,7 +2660,7 @@ temporaryText:SetText("The sync tool has temporarily left this menu.\n\nYou can 
 temporaryText:Show();
 tinsert(settings.MostRecentTab.objects, temporaryText);
 
-local f = CreateFrame("Button", nil, settings, "OptionsButtonTemplate");
+local f = CreateFrame("Button", nil, settings, "UIPanelButtonTemplate");
 f:SetPoint("TOP", temporaryText, "BOTTOM", 0, -8);
 f:SetPoint("LEFT", line, "LEFT", 8, -8);
 f:SetPoint("RIGHT", line, "LEFT", 300, -8);
