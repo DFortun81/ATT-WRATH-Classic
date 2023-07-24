@@ -51,6 +51,7 @@ local GetItemCount = _G["GetItemCount"];
 local InCombatLockdown = _G["InCombatLockdown"];
 local GetSpellInfo, IsPlayerSpell, IsSpellKnown, IsSpellKnownOrOverridesKnown, IsTitleKnown = 
 	  GetSpellInfo, IsPlayerSpell, IsSpellKnown, IsSpellKnownOrOverridesKnown, IsTitleKnown;
+local C_QuestLog_GetAllCompletedQuestIDs = C_QuestLog.GetAllCompletedQuestIDs;
 local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
 local HORDE_FACTION_ID = Enum.FlightPathFaction.Horde;
 
@@ -7770,7 +7771,6 @@ app.AddQuestObjectivesToTooltip = function(tooltip, reference)
 end
 
 -- Game Events that trigger visual updates, but no computation updates.
-local C_QuestLog_GetAllCompletedQuestIDs = C_QuestLog.GetAllCompletedQuestIDs;
 local softRefresh = function()
 	wipe(searchCache);
 end;
@@ -13829,7 +13829,16 @@ app.events.VARIABLES_LOADED = function()
 		app.CurrentMapID = app.GetCurrentMapID();
 		
 		-- Mark all previously completed quests.
-		GetQuestsCompleted(CompletedQuests);
+		if C_QuestLog_GetAllCompletedQuestIDs then
+			local completedQuests = C_QuestLog_GetAllCompletedQuestIDs();
+			if completedQuests and #completedQuests > 0 then
+				for i,questID in ipairs(completedQuests) do
+					CompletedQuests[questID] = true;
+				end
+			end
+		else
+			GetQuestsCompleted(CompletedQuests);
+		end
 		wipe(DirtyQuests);
 		app.events.UPDATE_INSTANCE_INFO();
 		C_ChatInfo.RegisterAddonMessagePrefix("ATTC");
