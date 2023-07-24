@@ -8670,32 +8670,35 @@ local function RefreshSkills()
 	wipe(activeSkills);
 	rawset(app.SpellNameToSpellID, 0, nil);
 	app.GetSpellName(0);
-	for index=GetNumSkillLines(),2,-1 do
-		local skillName, header, isExpanded, skillRank, numTempPoints, skillModifier,
-			skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
-			skillDescription = GetSkillLineInfo(index);
-		if not header then
-			local spellID = app.SpellNameToSpellID[skillName];
-			if spellID then
-				local spellName = GetSpellInfo(spellID);
-				for _,s in pairs(app.SkillIDToSpellID) do
-					if GetSpellInfo(s) == spellName then
-						spellID = s;
-						break;
-					end
-				end
-				activeSkills[spellID] = { skillRank, skillMaxRank };
-			else
-				for _,s in pairs(app.SkillIDToSpellID) do
-					if GetSpellInfo(s) == skillName then
-						spellID = s;
-						break;
-					end
-				end
+	local GetSkillLineInfo = _G["GetSkillLineInfo"];
+	if GetSkillLineInfo then
+		for index=GetNumSkillLines(),2,-1 do
+			local skillName, header, isExpanded, skillRank, numTempPoints, skillModifier,
+				skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
+				skillDescription = GetSkillLineInfo(index);
+			if not header then
+				local spellID = app.SpellNameToSpellID[skillName];
 				if spellID then
+					local spellName = GetSpellInfo(spellID);
+					for _,s in pairs(app.SkillIDToSpellID) do
+						if GetSpellInfo(s) == spellName then
+							spellID = s;
+							break;
+						end
+					end
 					activeSkills[spellID] = { skillRank, skillMaxRank };
 				else
-					--print(skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription);
+					for _,s in pairs(app.SkillIDToSpellID) do
+						if GetSpellInfo(s) == skillName then
+							spellID = s;
+							break;
+						end
+					end
+					if spellID then
+						activeSkills[spellID] = { skillRank, skillMaxRank };
+					else
+						--print(skillName, header, isExpanded, skillRank, numTempPoints, skillModifier, skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType, skillDescription);
+					end
 				end
 			end
 		end
