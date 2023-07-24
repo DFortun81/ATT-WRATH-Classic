@@ -3834,7 +3834,14 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 				local criteriaID = t.criteriaID;
 				if criteriaID then
 					if criteriaID <= GetAchievementNumCriteria(achievementID) then
-						return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+						local collected = false;
+						local status, err = pcall(function()
+							collected = select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
+						end);
+						if err then
+							print("ERROR", err);
+						end
+						return collected;
 					else
 						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
 					end
