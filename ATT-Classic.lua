@@ -3228,33 +3228,40 @@ local function ShowItemCompareTooltips(...)
 	end
 end
 app.ShowItemCompareTooltips = ShowItemCompareTooltips;
-GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-GameTooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
-GameTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-GameTooltip:HookScript("OnShow", AttachTooltip);
-GameTooltip:HookScript("OnUpdate", AttachTooltip);
-GameTooltip:HookScript("OnHide", ClearTooltip);
-ItemRefTooltip:HookScript("OnShow", AttachTooltip);
-ItemRefTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-ItemRefTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-ItemRefTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-ItemRefShoppingTooltip1:HookScript("OnShow", AttachTooltip);
-ItemRefShoppingTooltip1:HookScript("OnTooltipSetQuest", AttachTooltip);
-ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", AttachTooltip);
-ItemRefShoppingTooltip1:HookScript("OnTooltipCleared", ClearTooltip);
-ItemRefShoppingTooltip2:HookScript("OnShow", AttachTooltip);
-ItemRefShoppingTooltip2:HookScript("OnTooltipSetQuest", AttachTooltip);
-ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", AttachTooltip);
-ItemRefShoppingTooltip2:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
-WorldMapTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
-WorldMapTooltip:HookScript("OnTooltipCleared", ClearTooltip);
-WorldMapTooltip:HookScript("OnShow", AttachTooltip);
+
+-- 10.0.2
+-- https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes#Tooltip_Changes
+if TooltipDataProcessor then
+	TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, AttachTooltip)
+else
+	GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+	GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+	GameTooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
+	GameTooltip:HookScript("OnTooltipCleared", ClearTooltip);
+	GameTooltip:HookScript("OnShow", AttachTooltip);
+	GameTooltip:HookScript("OnUpdate", AttachTooltip);
+	GameTooltip:HookScript("OnHide", ClearTooltip);
+	ItemRefTooltip:HookScript("OnShow", AttachTooltip);
+	ItemRefTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+	ItemRefTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+	ItemRefTooltip:HookScript("OnTooltipCleared", ClearTooltip);
+	ItemRefShoppingTooltip1:HookScript("OnShow", AttachTooltip);
+	ItemRefShoppingTooltip1:HookScript("OnTooltipSetQuest", AttachTooltip);
+	ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", AttachTooltip);
+	ItemRefShoppingTooltip1:HookScript("OnTooltipCleared", ClearTooltip);
+	ItemRefShoppingTooltip2:HookScript("OnShow", AttachTooltip);
+	ItemRefShoppingTooltip2:HookScript("OnTooltipSetQuest", AttachTooltip);
+	ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", AttachTooltip);
+	ItemRefShoppingTooltip2:HookScript("OnTooltipCleared", ClearTooltip);
+	WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+	WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+	WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetUnit", AttachTooltip);
+	WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", ClearTooltip);
+	WorldMapTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
+	WorldMapTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
+	WorldMapTooltip:HookScript("OnTooltipCleared", ClearTooltip);
+	WorldMapTooltip:HookScript("OnShow", AttachTooltip);
+end
 if select(4, GetBuildInfo()) > 11403 then
 	app:RegisterEvent("CURSOR_CHANGED");
 	app.events.CURSOR_CHANGED = function()
