@@ -646,6 +646,12 @@ app.L = {
 			["lore"] = "Shadowlands is the eighth expansion. What lies beyond the world you know? The Shadowlands, resting place for every mortal soul—virtuous or vile—that has ever lived.",
 			["lvl"] = 50,
 		},
+		{	-- Dragonflight
+			["text"] = "Dragonflight",
+			["icon"] = app.asset("Expansion_DF"),
+			["lore"] = "Dragonflight is the ninth expansion. The dragonflights of Azeroth have returned, called upon to defend their ancestral home, the Dragon Isles. Surging with elemental magic and the life energies of Azeroth, the Isles are awakening once more, and it's up to you to explore their primordial wonder and discover long-forgotten secrets.",
+			["lvl"] = 58,
+		},
 	};
 
 	-- This is necessary to have because Blizzard does not always have the correct map ID at the time of zone change.
