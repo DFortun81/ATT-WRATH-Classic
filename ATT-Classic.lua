@@ -5072,18 +5072,45 @@ end)();
 
 -- Currency Lib
 (function()
-local _GetCurrencyInfo, _GetCurrencyLink = GetCurrencyInfo, GetCurrencyLink;
-local CurrencyInfo = setmetatable({}, { __index = function(t, id)
-	local name, amount, icon = _GetCurrencyInfo(id);
-	if name then
-		local info = {
-			name = name,
-			icon = icon
-		}
-		rawset(t, id, info);
-		return info;
+local CurrencyInfo = {};
+local GetCurrencyCount;
+local GetCurrencyLink = GetCurrencyLink;
+if C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
+	local C_CurrencyInfo_GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo;
+	if C_CurrencyInfo.GetCurrencyLink then
+		GetCurrencyLink = C_CurrencyInfo.GetCurrencyLink;
 	end
-end });
+	setmetatable(CurrencyInfo, { __index = function(t, id)
+		local currencyInfo = C_CurrencyInfo_GetCurrencyInfo(id);
+		if currencyInfo then
+			local info = {
+				name = currencyInfo.name,
+				icon = currencyInfo.iconFileID
+			}
+			rawset(t, id, info);
+			return info;
+		end
+	end });
+	GetCurrencyCount = function(id)
+		return C_CurrencyInfo_GetCurrencyInfo(id).quantity or 0;
+	end
+else
+	local GetCurrencyInfo = GetCurrencyInfo;
+	setmetatable(CurrencyInfo, { __index = function(t, id)
+		local name, amount, icon = GetCurrencyInfo(id);
+		if name then
+			local info = {
+				name = name,
+				icon = icon
+			}
+			rawset(t, id, info);
+			return info;
+		end
+	end });
+	GetCurrencyCount = function(id)
+		return select(2, GetCurrencyInfo(id)) or 0;
+	end
+end
 local CurrencyCollectibleAsCost = setmetatable({}, { __index = function(t, id)
 	local results = app.SearchForField("currencyIDAsCost", id, true);
 	if results and #results > 0 then
@@ -5106,7 +5133,7 @@ local CurrencyCollectedAsCost = setmetatable({}, { __index = function(t, id)
 	local any, partial;
 	local results = app.SearchForField("currencyIDAsCost", id, true);
 	if results and #results > 0 then
-		local count = select(2, GetCurrencyInfo(id)) or 0;
+		local count = GetCurrencyCount(id);
 		for _,ref in pairs(results) do
 			if ref.currencyID ~= id and app.RecursiveDefaultClassAndRaceFilter(ref) then
 				if ref.collectible and ref.collected ~= 1 then
@@ -5167,7 +5194,7 @@ app.CreateCurrencyClass = app.CreateClass("Currency", "currencyID", {
 		return {};
 	end,
 	["link"] = function(t)
-		return _GetCurrencyLink(t.currencyID, 1);
+		return GetCurrencyLink(t.currencyID, 1);
 	end,
 	["collectible"] = function(t)
 		return t.collectibleAsCost;
@@ -5219,14 +5246,11 @@ GameTooltip.SetCurrencyToken = function(self, tokenID)
 			local cache = app.SearchForFieldContainer("currencyID");
 			if cache then
 				-- We only care about currencies in the addon at the moment.
-				for currencyID, _ in pairs(cache) do
+				for currencyID,results in pairs(cache) do
 					-- Compare the name of the currency vs the name of the token
-					if _GetCurrencyInfo(currencyID) == name then
+					if results[1].text == name then
 						if not GameTooltip_SetCurrencyToken then
-							local results = app.SearchForField("currencyID", currencyID);
-							if results and #results > 0 then
-								GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
-							end
+							GameTooltip:AddLine(results[1].text or RETRIEVING_DATA, 1, 1, 1);
 						end
 						AttachTooltipSearchResults(self, 1, "currencyID:" .. currencyID, app.SearchForField, "currencyID", currencyID);
 						if app.Settings:GetTooltipSetting("currencyID") then self:AddDoubleLine(L["CURRENCY_ID"], tostring(currencyID)); end
@@ -10219,9 +10243,13 @@ local function RowOnEnter(self)
 						GameTooltip:AddDoubleLine(k == 1 and "Cost" or " ", GetCoinTextureString(v[2]));
 					else
 						if _ == "i" then
-							_,name,_,_,_,_,_,_,_,icon = GetItemInfo(v[2]);
+							local item = app.CreateItem(v[2]);
+							name = item.name;
+							icon = item.icon;
 						elseif _ == "c" then
-							name,_,icon = GetCurrencyInfo(v[2])
+							local currency = app.CreateCurrencyClass(v[2]);
+							name = currency.text;
+							icon = currency.icon;
 						end
 						name = (icon and ("|T" .. icon .. ":0|t") or "") .. (name or RETRIEVING_DATA);
 						_ = (v[3] or 1);
