@@ -6690,7 +6690,10 @@ app.CreateMap = function(id, t)
 				explorationHeader = o;
 				if o.g then
 					for j,e in ipairs(o.g) do
-						explorationByAreaID[e.explorationID] = e;
+						local explorationID = e.explorationID;
+						if explorationID then
+							explorationByAreaID[explorationID] = e;
+						end
 					end
 				end
 				break;
