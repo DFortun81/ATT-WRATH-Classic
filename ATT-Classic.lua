@@ -9218,7 +9218,6 @@ local function CreateMinimapButton()
 	button:UpdateStyle();
 	
 	-- Button Configuration
-	local radius = 78;
 	local rounding = 10;
 	local MinimapShapes = {
 		-- quadrant booleans (same order as SetTexCoord)
@@ -9252,13 +9251,14 @@ local function CreateMinimapButton()
 		if sin > 0 then
 			q = q + 2;	-- right
 		end
+		local width = (Minimap:GetWidth() * 0.5) + 8;
+		local height = (Minimap:GetHeight() * 0.5) + 8;
 		if MinimapShapes[GetMinimapShape and GetMinimapShape() or "ROUND"][q] then
-			x = cos*radius;
-			y = sin*radius;
+			x = cos*width;
+			y = sin*height;
 		else
-			local diagRadius = math.sqrt(2*(radius)^2)-rounding
-			x = math.max(-radius, math.min(cos*diagRadius, radius))
-			y = math.max(-radius, math.min(sin*diagRadius, radius))
+			x = math.max(-width, math.min(cos*(math.sqrt(2*(width)^2)-rounding), width))
+			y = math.max(-height, math.min(sin*(math.sqrt(2*(height)^2)-rounding), height))
 		end
 		self:SetPoint("CENTER", "Minimap", "CENTER", -x, y);
 	end
