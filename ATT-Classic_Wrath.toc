@@ -1,4 +1,5 @@
 ## Title: ATT-Classic |cfd9b9b9b(Wrath)|r
+## IconTexture: Interface/Addons/ATT-Classic/assets/logo_32x32
 ## Name: ATT-Classic
 ## Notes: Addon for Tracking Collections & Account Completion
 ## Author: Crieve-Sargeras
