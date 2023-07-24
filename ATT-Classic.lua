@@ -6848,17 +6848,6 @@ app:RegisterEvent("ZONE_CHANGED");
 app:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 end)();
 
--- Music Rolls & Selfie Filter Lib: Music Rolls
-(function()
--- Neither of these are supported at this time.
-app.CreateMusicRoll = function(questID, t)
-	return nil;
-end
-app.CreateSelfieFilter = function(id, t)
-	return nil;
-end
-end)();
-
 -- NPC Lib
 (function()
 -- NPC Model Harvester (also acquires the displayID)
@@ -8250,6 +8239,67 @@ app.CreateTitle = app.CreateClass("Title", "titleID", {
 		return OnUpdateForGenderedTitle;
 	end
 }, (function(t) return t.titleIDs; end));
+end)();
+
+-- Unsupported Libs
+(function()
+-- Neither of these are supported at this time.
+app.CreateArtifact = function(id, t)
+	return { text = "Artifact #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateAzeriteEssence = function(id, t)
+	return { text = "AzeriteEssence #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateConduit = function(id, t)
+	return { text = "Conduit #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateDrakewatcherManuscript = function(id, t)
+	return { text = "DrakewatcherManuscript #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateFollower = function(id, t)
+	return { text = "Follower #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGarrisonBuilding = function(id, t)
+	return { text = "GarrisonBuilding #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGarrisonMission = function(id, t)
+	return { text = "GarrisonMission #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGarrisonTalent = function(id, t)
+	return { text = "GarrisonTalent #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGearSet = function(id, t)
+	return { text = "GearSet #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGearSetHeader = function(id, t)
+	return { text = "GearSetHeader #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGearSetSubHeader = function(id, t)
+	return { text = "GearSetSubHeader #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateMusicRoll = function(questID, t)
+	return { text = "MusicRoll #" .. questID, description = "This data type is not supported at this time." };
+end
+app.CreatePetAbility = function(id, t)
+	return { text = "PetAbility #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateRace = function(id, t)
+	return { text = "Race #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateRuneforgeLegendary = function(id, t)
+	return { text = "RuneforgeLegendary #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateSelfieFilter = function(id, t)
+	return { text = "SelfieFilter #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateVignette = function(id, t)
+	return { text = "Vignette #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateItemSource = function(sourceID, itemID, t)
+	t = app.CreateItem(itemID, t);
+	t.s = sourceID;
+	return t;
+end
 end)();
 
 -- Filtering
