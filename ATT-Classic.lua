@@ -371,6 +371,12 @@ GameTooltipModel.TrySetModel = function(self, reference)
 	GameTooltipModel.HideAllModels(self);
 	if app.Settings:GetTooltipSetting("Models") then
 		self.lastModel = reference;
+		local displayInfo = reference.displayInfo;
+		if displayInfo then
+			if GameTooltipModel.TrySetDisplayInfo(self, reference, displayInfo) then
+				return true;
+			end
+		end
 		if reference.qgs then
 			if #reference.qgs > 1 then
 				local displayInfo = {};
@@ -5329,9 +5335,6 @@ if EJ_GetEncounterInfo then
 		end,
 		["lore"] = function(t)
 			return select(2, EJ_GetEncounterInfo(t.encounterID));
-		end,
-		["link"] = function(t)
-			return select(5, EJ_GetEncounterInfo(t.encounterID));
 		end,
 		["displayID"] = function(t)
 			return select(4, EJ_GetCreatureInfo(1, t.encounterID));
