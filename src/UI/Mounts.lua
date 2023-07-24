@@ -35,7 +35,7 @@ app:GetWindow("Mounts", {
 								mounts[i] = self.BuildCategory(data, headers, matches, mount);
 								if mount.u and mount.u < 3 then
 									for j,o in ipairs(matches) do
-										if o.itemID and not o.u or o.u >= 3 then
+										if o.itemID and (not o.u or o.u >= 3) then
 											mount.u = nil;
 										end
 									end
