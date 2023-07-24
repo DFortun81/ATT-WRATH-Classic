@@ -13152,7 +13152,7 @@ app:GetWindow("Tradeskills", {
 		end
 		handlers.CRAFT_SHOW = updateTradeSkill;
 		handlers.TRADE_SKILL_SHOW = updateTradeSkill;
-		self:RegisterEvent("CRAFT_SHOW");
+		pcall(self.RegisterEvent, self, "CRAFT_SHOW");
 		self:RegisterEvent("TRADE_SKILL_SHOW");
 		
 		local tradeSkillClose = function()
@@ -13165,7 +13165,7 @@ app:GetWindow("Tradeskills", {
 		end
 		handlers.CRAFT_CLOSE = tradeSkillClose;
 		handlers.TRADE_SKILL_CLOSE = tradeSkillClose;
-		self:RegisterEvent("CRAFT_CLOSE");
+		pcall(self.RegisterEvent, self, "CRAFT_CLOSE");
 		self:RegisterEvent("TRADE_SKILL_CLOSE");
 		
 		local newSpellLearned = function(self, spellID)
@@ -13200,7 +13200,7 @@ app:GetWindow("Tradeskills", {
 		self:RegisterEvent("NEW_RECIPE_LEARNED");
 		
 		-- Default Update refreshes
-		self:RegisterEvent("CRAFT_UPDATE");
+		pcall(self.RegisterEvent, self, "CRAFT_UPDATE");
 		self:RegisterEvent("TRADE_SKILL_LIST_UPDATE");
 		self:RegisterEvent("SKILL_LINES_CHANGED");
 	end,
