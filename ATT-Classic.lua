@@ -7770,6 +7770,7 @@ app.AddQuestObjectivesToTooltip = function(tooltip, reference)
 end
 
 -- Game Events that trigger visual updates, but no computation updates.
+local C_QuestLog_GetAllCompletedQuestIDs = C_QuestLog.GetAllCompletedQuestIDs;
 local softRefresh = function()
 	wipe(searchCache);
 end;
@@ -7784,7 +7785,16 @@ app.events.QUEST_ACCEPTED = function(questLogIndex, questID)
 end
 app.events.QUEST_LOG_UPDATE = function()
 	app:UnregisterEvent("QUEST_LOG_UPDATE");
-	GetQuestsCompleted(CompletedQuests);
+	if C_QuestLog_GetAllCompletedQuestIDs then
+		local completedQuests = C_QuestLog_GetAllCompletedQuestIDs();
+		if completedQuests and #completedQuests > 0 then
+			for i,questID in ipairs(completedQuests) do
+				CompletedQuests[questID] = true;
+			end
+		end
+	else
+		GetQuestsCompleted(CompletedQuests);
+	end
 	for questID,completed in pairs(DirtyQuests) do
 		app.QuestCompletionHelper(tonumber(questID));
 	end
