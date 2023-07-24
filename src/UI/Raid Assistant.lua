@@ -720,13 +720,14 @@ app:GetWindow("RaidAssistant", {
 			end
 			
 			-- If Specializations are available, that means we don't need to look up player talents.
-			if GetSpecialization and GetSpecializationInfoByID then
+			if GetSpecialization and GetSpecializationInfo then
 				-- If Loot Spec exists, we have the ability to change the player's current loot specialization.
 				if GetLootSpecialization and SetLootSpecialization then
 					local lootspecialization = {
 						text = "Loot Specialization",
 						icon = "Interface\\Icons\\INV_7XP_Inscription_TalentTome02",
 						description = "In Personal Loot dungeons, raids, and outdoor encounters, this setting will dictate which items are available for you.\n\nClick this row to go back to the Raid Assistant.",
+						visible = true,
 						back = 1,
 						g = {},
 						OnClick = function(row, button)
@@ -770,6 +771,10 @@ app:GetWindow("RaidAssistant", {
 												self:Reset();
 												return true;
 											end,
+											OnUpdate = function(data)
+												data.visible = true;
+												return true;
+											end,
 										});
 									end
 								end
@@ -787,12 +792,20 @@ app:GetWindow("RaidAssistant", {
 						end,
 						OnUpdate = function(data)
 							local lootSpec = GetLootSpecialization() or 0;
-							local id, name, description, icon, role, class = GetSpecializationInfoByID(lootSpec == 0 and GetSpecialization() or lootSpec);
-							if name then
-								if lootSpec == 0 then name = name .. " (Automatic)"; end
-								data.text = name;
-								data.icon = icon;
+							if lootSpec == 0 then
+								local id, name, description, icon, role, class = GetSpecializationInfo(GetSpecialization());
+								if name then
+									data.text = name .. " (Automatic)";
+									data.icon = icon;
+								end
+							else
+								local id, name, description, icon, role, class = GetSpecializationInfoByID(lootSpec);
+								if name then
+									data.text = name;
+									data.icon = icon;
+								end
 							end
+							
 							data.visible = true;
 							return true;
 						end,
