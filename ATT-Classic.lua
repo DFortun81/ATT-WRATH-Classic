@@ -848,135 +848,7 @@ local function GetDeepestRelativeValue(group, field)
 end
 
 -- Quest Completion Lib
-local DirtyQuests = {};
-local IgnoreErrorQuests = {
-	[1476]=1,	-- Hearts of the Pure (Horde Pre-req for the Undercity Succubus Binding quest)
-	[1474]=1,	-- The Binding (Succubus) [Undercity]
-	[1508]=1,	-- Blind Cazul (Horde Pre-req for the Orgrimmar Succubus Binding quest)
-	[1509]=1,	-- News of Dogran (1/2) (Horde Pre-req for the Orgrimmar Succubus Binding quest)
-	[1510]=1,	-- News of Dogran (2/2) (Horde Pre-req for the Orgrimmar Succubus Binding quest)
-	[1511]=1,	-- Ken'zigla's Draught (Horde Pre-req for the Orgrimmar Succubus Binding quest)
-	[1515]=1,	-- Dogran's Captivity (Horde Pre-req for the Orgrimmar Succubus Binding quest)
-	[1512]=1,	-- Love's Gift (Horde Pre-req for the Orgrimmar Succubus Binding quest)
-	[1513]=1,	-- The Binding (Succubus) [Orgrimmar]
-	[1738]=1,	-- Heartswood (Alliance Pre-req for the Stormwind City Succubus Binding quest)
-	[1739]=1,	-- The Binding (Succubus) [Stormwind City]
-	[1516]=1, 	-- Call of Earth (1/3 Durotar)
-	[1519]=1, 	-- Call of Earth (1/3 Mulgore)
-	[9449]=1, 	-- Call of Earth (1/3 Ammen Vale)
-	[555]=1,	-- Soothing Turtle Bisque (A)
-	[7321]=1,	-- Soothing Turtle Bisque (H)
-	[3630]=1,	-- Gnome Engineering [A]
-	[3632]=1,	-- Gnome Engineering [A]
-	[3634]=1,	-- Gnome Engineering [H]
-	[3635]=1,	-- Gnome Engineering [H]
-	[3637]=1,	-- Gnome Engineering [H]
-	[3526]=1,	-- Goblin Engineering [H]
-	[3629]=1,	-- Goblin Engineering [A]
-	[3633]=1,	-- Goblin Engineering [H]
-	[4181]=1,	-- Goblin Engineering [A]
-	[5517]=1,	-- Chromatic Mantle of the Dawn
-	[5521]=1,	-- Chromatic Mantle of the Dawn
-	[5524]=1,	-- Chromatic Mantle of the Dawn
-	[5504]=1,	-- Mantles of the Dawn
-	[5507]=1,	-- Mantles of the Dawn
-	[5513]=1,	-- Mantles of the Dawn
-	[7170]=1,	-- Earned Reverence (Alliance)
-	[7165]=1,	-- Earned Reverence (Horde)
-	[7171]=1,	-- Legendary Heroes (Alliance)
-	[7166]=1,	-- Legendary Heroes (Horde)
-	[7168]=1,	-- Rise and Be Recognized (Alliance)
-	[7163]=1,	-- Rise and Be Recognized (Horde)
-	[7172]=1,	-- The Eye of Command (Alliance)
-	[7167]=1,	-- The Eye of Command (Horde)
-	[7164]=1,	-- Honored Amongst the Clan
-	[7169]=1,	-- Honored Amongst the Guard
-	[8870]=1,	-- The Lunar Festival
-	[8871]=1,	-- The Lunar Festival
-	[8872]=1,	-- The Lunar Festival
-	[8873]=1,	-- The Lunar Festival
-	[8874]=1,	-- The Lunar Festival
-	[8875]=1,	-- The Lunar Festival
-	[8700]=1,	-- Band of Unending Life
-	[8692]=1,	-- Cloak of Unending Life
-	[8708]=1,	-- Mace of Unending Life
-	[8704]=1,	-- Signet of the Unseen Path
-	[8696]=1,	-- Cloak of the Unseen Path
-	[8712]=1,	-- Scythe of the Unseen Path
-	[8699]=1,	-- Band of Vaulted Secrets
-	[8691]=1,	-- Drape of Vaulted Secrets
-	[8707]=1,	-- Blade of Vaulted Secrets
-	[8703]=1,	-- Ring of Eternal Justice
-	[8695]=1,	-- Cape of Eternal Justice
-	[8711]=1,	-- Blade of Eternal Justice
-	[8697]=1,	-- Ring of Infinite Wisdom
-	[8689]=1,	-- Shroud of Infinite Wisdom
-	[8705]=1,	-- Gavel of Infinite Wisdom
-	[8701]=1,	-- Band of Veiled Shadows
-	[8693]=1,	-- Cloak of Veiled Shadows
-	[8709]=1,	-- Dagger of Veiled Shadows
-	[8698]=1,	-- Ring of the Gathering Storm
-	[8690]=1,	-- Cloak of the Gathering Storm
-	[8706]=1,	-- Hammer of the Gathering Storm
-	[8702]=1,	-- Ring of Unspoken Names
-	[8694]=1,	-- Shroud of Unspoken Names
-	[8710]=1,	-- Kris of Unspoken Names
-	[8556]=1,	-- Signet of Unyielding Strength
-	[8557]=1,	-- Drape of Unyielding Strength
-	[8558]=1,	-- Sickle of Unyielding Strength
-	[9520]=1,	-- Diabolical Plans [Alliance]
-	[9535]=1,	-- Diabolical Plans [Horde]
-	[9522]=1,	-- Never Again! [Alliance]
-	[9536]=1,	-- Never Again! [Horde]
-	[10371]=1,	-- Yorus Barleybrew (Draenei)
-	[10621]=1,	-- Illidari Bane-Shard (A)
-	[10623]=1,	-- Illidari Bane-Shard (H)
-	[10759]=1,	-- Find the Deserter (A)
-	[10761]=1,	-- Find the Deserter (H)
-	[11185]=1,	-- The Apothecary's Letter
-	[11186]=1,	-- Signs of Treachery?
-	[11201]=1,	-- The Grimtotem Plot
-	[11123]=1,	-- Inspecting the Ruins [Alliance]
-	[11124]=1,	-- Inspecting the Ruins [Horde]
-	[11150]=1,	-- Raze Direhorn Post! [Alliance]
-	[11205]=1,	-- Raze Direhorn Post! [Horde]
-	[11215]=1,	-- Help Mudsprocket
-};
-local CompletedQuests = setmetatable({}, {__newindex = function (t, key, value)
-	if value then
-		rawset(t, key, value);
-		rawset(DirtyQuests, key, true);
-		app.SetCollected(nil, "Quests", key, true);
-		if app.Settings:GetTooltipSetting("Report:CompletedQuests") then
-			local searchResults = app.SearchForField("questID", key);
-			if searchResults and #searchResults > 0 then
-				local questID, nmr, nmc, text = key, false, false, "";
-				for i,searchResult in ipairs(searchResults) do
-					if searchResult.key == "questID" and not IgnoreErrorQuests[questID] and not GetRelativeField(searchResult, "headerID", app.HeaderConstants.TIER_ZERO_POINT_FIVE_SETS) then
-						if searchResult.nmr and not nmr then
-							nmr = true;
-							text = searchResult.text;
-						end
-						if searchResult.nmc and not nmc then
-							nmc = true;
-							text = searchResult.text;
-						end
-					end
-				end
-				if app.Settings:GetTooltipSetting("Report:UnsortedQuests") then
-					return true;
-				end
-				if nmc then key = key .. " [C]"; end
-				if nmr then key = key .. " [R]"; end
-				key = key .. " (" .. (text or RETRIEVING_DATA) .. ")";
-			else
-				local text = C_QuestLog.GetQuestInfo(key) or RETRIEVING_DATA;
-				key = key .. " [M] (" .. text .. ")";
-			end
-			print("Completed Quest #" .. key);
-		end
-	end
-end});
+local CompletedQuests, DirtyQuests = {}, {};
 local IsQuestFlaggedCompleted = function(questID)
 	return questID and CompletedQuests[questID];
 end
@@ -7332,10 +7204,11 @@ end)();
 
 -- Quest Lib
 (function()
+local C_QuestLog_GetQuestInfo = C_QuestLog.GetTitleForQuestID or C_QuestLog.GetQuestInfo;
 local C_QuestLog_GetQuestObjectives = C_QuestLog.GetQuestObjectives;
 local questRetries = {};
 local QuestTitleFromID = setmetatable({}, { __index = function(t, id)
-	local title = C_QuestLog.GetQuestInfo(id);
+	local title = C_QuestLog_GetQuestInfo(id);
 	if title and title ~= RETRIEVING_DATA then
 		rawset(questRetries, id, nil);
 		rawset(t, id, title);
@@ -7352,6 +7225,134 @@ local QuestTitleFromID = setmetatable({}, { __index = function(t, id)
 		end
 	end
 end })
+local IgnoreErrorQuests = {
+	[1476]=1,	-- Hearts of the Pure (Horde Pre-req for the Undercity Succubus Binding quest)
+	[1474]=1,	-- The Binding (Succubus) [Undercity]
+	[1508]=1,	-- Blind Cazul (Horde Pre-req for the Orgrimmar Succubus Binding quest)
+	[1509]=1,	-- News of Dogran (1/2) (Horde Pre-req for the Orgrimmar Succubus Binding quest)
+	[1510]=1,	-- News of Dogran (2/2) (Horde Pre-req for the Orgrimmar Succubus Binding quest)
+	[1511]=1,	-- Ken'zigla's Draught (Horde Pre-req for the Orgrimmar Succubus Binding quest)
+	[1515]=1,	-- Dogran's Captivity (Horde Pre-req for the Orgrimmar Succubus Binding quest)
+	[1512]=1,	-- Love's Gift (Horde Pre-req for the Orgrimmar Succubus Binding quest)
+	[1513]=1,	-- The Binding (Succubus) [Orgrimmar]
+	[1738]=1,	-- Heartswood (Alliance Pre-req for the Stormwind City Succubus Binding quest)
+	[1739]=1,	-- The Binding (Succubus) [Stormwind City]
+	[1516]=1, 	-- Call of Earth (1/3 Durotar)
+	[1519]=1, 	-- Call of Earth (1/3 Mulgore)
+	[9449]=1, 	-- Call of Earth (1/3 Ammen Vale)
+	[555]=1,	-- Soothing Turtle Bisque (A)
+	[7321]=1,	-- Soothing Turtle Bisque (H)
+	[3630]=1,	-- Gnome Engineering [A]
+	[3632]=1,	-- Gnome Engineering [A]
+	[3634]=1,	-- Gnome Engineering [H]
+	[3635]=1,	-- Gnome Engineering [H]
+	[3637]=1,	-- Gnome Engineering [H]
+	[3526]=1,	-- Goblin Engineering [H]
+	[3629]=1,	-- Goblin Engineering [A]
+	[3633]=1,	-- Goblin Engineering [H]
+	[4181]=1,	-- Goblin Engineering [A]
+	[5517]=1,	-- Chromatic Mantle of the Dawn
+	[5521]=1,	-- Chromatic Mantle of the Dawn
+	[5524]=1,	-- Chromatic Mantle of the Dawn
+	[5504]=1,	-- Mantles of the Dawn
+	[5507]=1,	-- Mantles of the Dawn
+	[5513]=1,	-- Mantles of the Dawn
+	[7170]=1,	-- Earned Reverence (Alliance)
+	[7165]=1,	-- Earned Reverence (Horde)
+	[7171]=1,	-- Legendary Heroes (Alliance)
+	[7166]=1,	-- Legendary Heroes (Horde)
+	[7168]=1,	-- Rise and Be Recognized (Alliance)
+	[7163]=1,	-- Rise and Be Recognized (Horde)
+	[7172]=1,	-- The Eye of Command (Alliance)
+	[7167]=1,	-- The Eye of Command (Horde)
+	[7164]=1,	-- Honored Amongst the Clan
+	[7169]=1,	-- Honored Amongst the Guard
+	[8870]=1,	-- The Lunar Festival
+	[8871]=1,	-- The Lunar Festival
+	[8872]=1,	-- The Lunar Festival
+	[8873]=1,	-- The Lunar Festival
+	[8874]=1,	-- The Lunar Festival
+	[8875]=1,	-- The Lunar Festival
+	[8700]=1,	-- Band of Unending Life
+	[8692]=1,	-- Cloak of Unending Life
+	[8708]=1,	-- Mace of Unending Life
+	[8704]=1,	-- Signet of the Unseen Path
+	[8696]=1,	-- Cloak of the Unseen Path
+	[8712]=1,	-- Scythe of the Unseen Path
+	[8699]=1,	-- Band of Vaulted Secrets
+	[8691]=1,	-- Drape of Vaulted Secrets
+	[8707]=1,	-- Blade of Vaulted Secrets
+	[8703]=1,	-- Ring of Eternal Justice
+	[8695]=1,	-- Cape of Eternal Justice
+	[8711]=1,	-- Blade of Eternal Justice
+	[8697]=1,	-- Ring of Infinite Wisdom
+	[8689]=1,	-- Shroud of Infinite Wisdom
+	[8705]=1,	-- Gavel of Infinite Wisdom
+	[8701]=1,	-- Band of Veiled Shadows
+	[8693]=1,	-- Cloak of Veiled Shadows
+	[8709]=1,	-- Dagger of Veiled Shadows
+	[8698]=1,	-- Ring of the Gathering Storm
+	[8690]=1,	-- Cloak of the Gathering Storm
+	[8706]=1,	-- Hammer of the Gathering Storm
+	[8702]=1,	-- Ring of Unspoken Names
+	[8694]=1,	-- Shroud of Unspoken Names
+	[8710]=1,	-- Kris of Unspoken Names
+	[8556]=1,	-- Signet of Unyielding Strength
+	[8557]=1,	-- Drape of Unyielding Strength
+	[8558]=1,	-- Sickle of Unyielding Strength
+	[9520]=1,	-- Diabolical Plans [Alliance]
+	[9535]=1,	-- Diabolical Plans [Horde]
+	[9522]=1,	-- Never Again! [Alliance]
+	[9536]=1,	-- Never Again! [Horde]
+	[10371]=1,	-- Yorus Barleybrew (Draenei)
+	[10621]=1,	-- Illidari Bane-Shard (A)
+	[10623]=1,	-- Illidari Bane-Shard (H)
+	[10759]=1,	-- Find the Deserter (A)
+	[10761]=1,	-- Find the Deserter (H)
+	[11185]=1,	-- The Apothecary's Letter
+	[11186]=1,	-- Signs of Treachery?
+	[11201]=1,	-- The Grimtotem Plot
+	[11123]=1,	-- Inspecting the Ruins [Alliance]
+	[11124]=1,	-- Inspecting the Ruins [Horde]
+	[11150]=1,	-- Raze Direhorn Post! [Alliance]
+	[11205]=1,	-- Raze Direhorn Post! [Horde]
+	[11215]=1,	-- Help Mudsprocket
+};
+setmetatable(CompletedQuests, {__newindex = function (t, key, value)
+	if value then
+		rawset(t, key, value);
+		rawset(DirtyQuests, key, true);
+		app.SetCollected(nil, "Quests", key, true);
+		if app.Settings:GetTooltipSetting("Report:CompletedQuests") then
+			local searchResults = app.SearchForField("questID", key);
+			if searchResults and #searchResults > 0 then
+				local questID, nmr, nmc, text = key, false, false, "";
+				for i,searchResult in ipairs(searchResults) do
+					if searchResult.key == "questID" and not IgnoreErrorQuests[questID] and not GetRelativeField(searchResult, "headerID", app.HeaderConstants.TIER_ZERO_POINT_FIVE_SETS) then
+						if searchResult.nmr and not nmr then
+							nmr = true;
+							text = searchResult.text;
+						end
+						if searchResult.nmc and not nmc then
+							nmc = true;
+							text = searchResult.text;
+						end
+					end
+				end
+				if app.Settings:GetTooltipSetting("Report:UnsortedQuests") then
+					return true;
+				end
+				if nmc then key = key .. " [C]"; end
+				if nmr then key = key .. " [R]"; end
+				key = key .. " (" .. (text or RETRIEVING_DATA) .. ")";
+			else
+				local text = C_QuestLog_GetQuestInfo(key) or RETRIEVING_DATA;
+				key = key .. " [M] (" .. text .. ")";
+			end
+			print("Completed Quest #" .. key);
+		end
+	end
+end});
 
 local criteriaFuncs = {
     ["achID"] = function(achievementID)
