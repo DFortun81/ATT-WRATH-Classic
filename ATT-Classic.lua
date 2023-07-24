@@ -7206,6 +7206,7 @@ end)();
 (function()
 local C_QuestLog_GetQuestInfo = C_QuestLog.GetTitleForQuestID or C_QuestLog.GetQuestInfo;
 local C_QuestLog_GetQuestObjectives = C_QuestLog.GetQuestObjectives;
+local GetQuestLogIndexByID = C_QuestLog.GetLogIndexForQuestID or GetQuestLogIndexByID;
 local questRetries = {};
 local QuestTitleFromID = setmetatable({}, { __index = function(t, id)
 	local title = C_QuestLog_GetQuestInfo(id);
@@ -9441,7 +9442,7 @@ local function SetRowData(self, row, data)
 	end
 	
 	-- If data is quest and is currently accepted or saved...
-	if data.questID and GetQuestLogIndexByID(data.questID) > 0 then
+	if data.questID and C_QuestLog.IsOnQuest(data.questID) then
 		indicatorTexture = app.asset("known_circle");
 	elseif data.saved then
 		if data.parent and data.parent.locks or data.isDaily then
