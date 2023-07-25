@@ -3241,7 +3241,188 @@ app.ShowItemCompareTooltips = ShowItemCompareTooltips;
 -- 10.0.2
 -- https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes#Tooltip_Changes
 if TooltipDataProcessor then
-	TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, AttachTooltip)
+	local Enum_TooltipDataType = Enum.TooltipDataType;
+	local TooltipTypes = {
+		[Enum_TooltipDataType.Toy] = "itemID",
+		[Enum_TooltipDataType.Item] = "itemID",
+		[Enum_TooltipDataType.Spell] = "spellID",
+		[Enum_TooltipDataType.UnitAura] = "spellID",
+		--[Enum_TooltipDataType.Mount] = "spellID",
+		--[Enum_TooltipDataType.Macro] = "spellID",	-- Possibly?
+		[Enum_TooltipDataType.Achievement] = "achievementID",
+		[Enum_TooltipDataType.Quest] = "questID",
+		[Enum_TooltipDataType.QuestPartyProgress] = "questID",
+		--[Enum_TooltipDataType.BattlePet] = "speciesID",
+		--[Enum_TooltipDataType.CompanionPet] = "speciesID",
+		[Enum_TooltipDataType.Currency] = "currencyID",
+		[Enum_TooltipDataType.InstanceLock] = "instanceID",
+	};
+	--[[
+	for key,id in pairs(Enum_TooltipDataType) do
+		if not TooltipTypes[id] then
+			print("Not handling Tooltip Type", key, id);
+		end
+	end
+	]]--
+	TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip, data)
+		if InCombatLockdown() and not app.Settings:GetTooltipSetting("DisplayInCombat") then
+			return;
+		end
+		if not app.Settings:GetTooltipSetting("Enabled") then
+			return;
+		end
+		
+		local enumType = data.type;
+		local key = TooltipTypes[enumType];
+		if key then
+			if key == "" then
+				-- Intentionally blacklisted.
+				return;
+			end
+			
+			-- Try the default.
+			local id = data.id;
+			if id then
+				AttachTooltipSearchResults(tooltip, 1, key .. ":" .. id, app.SearchForField, key, id);
+				return;
+			end
+			
+			local name, link, id = TooltipUtil.GetDisplayedItem(tooltip);
+			if link and id then
+				if id == 137642 then -- skip Mark of Honor for now
+					AttachTooltipSearchResults(self, 1, link, (function() end), "itemID", 137642);
+					return true;
+				else
+					AttachTooltipSearchResults(tooltip, 1, link, SearchForLink, link);
+					return;
+				end
+			end
+			
+			local name, spellID = TooltipUtil.GetDisplayedSpell(tooltip);
+			if spellID then
+				AttachTooltipSearchResults(tooltip, 1, "spellID:" .. spellID, app.SearchForField, "spellID", spellID);
+				return;
+			end
+		elseif enumType == 10 then
+			-- Mounts!
+			local spellID = select(2, C_MountJournal.GetMountInfoByID(data.id));
+			if spellID then
+				AttachTooltipSearchResults(tooltip, 1, "spellID:" .. spellID, app.SearchForField, "spellID", spellID);
+				return;
+			end
+		elseif enumType == 4 then
+			-- Objects!
+			local objectID = app.GetBestObjectIDForName(data.lines[1].leftText);
+			if objectID then
+				AttachTooltipSearchResults(tooltip, 1, "objectID:" .. objectID, app.SearchForField, "objectID", objectID);
+				return true;
+			end
+		elseif enumType == 21 then
+			-- Minimap Mouseover
+			local content = data.lines;
+			if content and #content > 0 then
+				local text = content[1].leftText;
+				local arr = { strsplit("|", text) };
+				if #arr == 3 then text = strsub(arr[3], 2); end
+				local objectID = app.GetBestObjectIDForName(text);
+				if objectID then
+					AttachTooltipSearchResults(tooltip, 1, "objectID:" .. objectID, app.SearchForField, "objectID", objectID);
+					return true;
+				end
+			end
+		elseif enumType == 2 then
+			-- Units!
+			local name, t, guid = TooltipUtil.GetDisplayedUnit(tooltip);
+			if guid then
+				local type, zero, server_id, instance_id, zone_uid, npcID, spawn_uid = strsplit("-",guid);
+				-- print(guid, type, npcID);
+				if type == "Player" then
+					if guid == "Player-4372-0000390A" or guid == "Player-76-0895E23B" then
+						local leftSide = _G[tooltip:GetName() .. "TextLeft1"];
+						if leftSide then
+							leftSide:SetText("|c" .. app.Colors.Raid .. name .. " the Completionist|r");
+						end
+						local rightSide = _G[tooltip:GetName() .. "TextRight2"];
+						leftSide = _G[tooltip:GetName() .. "TextLeft2"];
+						if leftSide and rightSide then
+							leftSide:SetText(L["TITLE"]);
+							leftSide:Show();
+							rightSide:SetText("Author");
+							rightSide:Show();
+						else
+							tooltip:AddDoubleLine(L["TITLE"], "Author");
+						end
+					elseif SCARAB_LORD[guid] then
+						local leftSide = _G[tooltip:GetName() .. "TextLeft1"];
+						if leftSide then leftSide:SetText("|c" .. app.Colors.Raid .. "Scarab Lord " .. name .. "|r"); end
+					elseif GOLD_TYCOON[guid] then
+						local leftSide = _G[tooltip:GetName() .. "TextLeft1"];
+						if leftSide then leftSide:SetText("|c" .. app.Colors.Raid .. "Gold Tycoon " .. name .. "|r"); end
+					elseif EXTERMINATOR[guid] then
+						local leftSide = _G[tooltip:GetName() .. "TextLeft1"];
+						if leftSide then leftSide:SetText("|cffa335ee" .. name .. " the Exterminator|r"); end
+					elseif guid == "Player-4372-00006B41" then
+						local leftSide = _G[tooltip:GetName() .. "TextLeft1"];
+						if leftSide then leftSide:SetText("|cffF58CBA" .. name .. " the Huggler|r"); end
+					elseif guid == "Player-4647-031D0890" then
+						local leftSide = _G[tooltip:GetName() .. "TextLeft1"];
+						if leftSide then leftSide:SetText("|cff665a2c" .. name .. " the Time-Loser|r"); end
+						local rightSide = _G[tooltip:GetName() .. "TextRight2"];
+						if rightSide then rightSide:SetText(GetCollectionIcon(0)); end
+						tooltip:AddLine("This scumbag abused an auto-invite addon to steal the Time-Lost Proto Drake from a person that had them on their friends list. ATT has deemed this unacceptable behaviour and will forever stain this player's reputation so long as they remain on the server.", 0.4, 0.8, 1, true);
+					end
+				elseif type == "Creature" or type == "Vehicle" then
+					if app.Settings:GetTooltipSetting("creatureID") then tooltip:AddDoubleLine(L["CREATURE_ID"], tostring(npcID)); end
+					AttachTooltipSearchResults(tooltip, 1, "creatureID:" .. npcID, app.SearchForField, "creatureID", tonumber(npcID));
+				end
+				return true;
+			end
+		elseif enumType == 25 then
+			-- Macro!
+			local tooltipType = data.lines[2].type;
+			if tooltipType == 13 then
+				local spellID = data.lines[1].tooltipID;
+				if spellID then
+					AttachTooltipSearchResults(tooltip, 1, "spellID:" .. spellID, app.SearchForField, "spellID", spellID);
+					return;
+				end
+			elseif tooltipType == 29 then
+				local itemID = data.lines[1].tooltipID;
+				if itemID then
+					AttachTooltipSearchResults(tooltip, 1, "itemID:" .. itemID, app.SearchForField, "itemID", itemID);
+					return;
+				end
+			end
+		else
+			--[[
+			for key,value in pairs(data) do
+				if type(value) == "table" then
+					tooltip:AddLine(key);
+					for key2,value2 in pairs(value) do
+						tooltip:AddLine(" " .. key2);
+						if type(value2) == "table" then
+							for key3,value3 in pairs(value2) do
+								tooltip:AddDoubleLine("  " .. key3, tostring(value3));
+							end
+						else
+							tooltip:AddDoubleLine(" " .. key2, tostring(value2));
+						end
+					end
+				else
+					tooltip:AddDoubleLine(key, tostring(value));
+				end
+			end
+			-- Report unhandled types.
+			for key,id in pairs(Enum_TooltipDataType) do
+				if id == enumType then
+					print("Unhandled Tooltip Type", key, enumType);
+					return;
+				end
+			end
+			print("Unhandled Tooltip Type", enumType);
+			]]--
+		end
+	end)
 else
 	GameTooltip:HookScript("OnTooltipSetQuest", AttachTooltip);
 	GameTooltip:HookScript("OnTooltipSetItem", AttachTooltip);
@@ -5112,6 +5293,7 @@ app.CreateCurrencyClass = app.CreateClass("Currency", "currencyID", {
 	end,
 });
 
+if not TooltipDataProcessor then
 local GameTooltip_SetCurrencyByID = GameTooltip.SetCurrencyByID;
 GameTooltip.SetCurrencyByID = function(self, currencyID, count)
 	-- Make sure to call to base functionality
@@ -5156,6 +5338,7 @@ GameTooltip.SetCurrencyToken = function(self, tokenID)
 			end
 		end
 	end
+end
 end
 end)();
 
