@@ -10071,7 +10071,7 @@ local function RowOnEnter(self)
 				end
 			elseif reference.currencyID then
 				GameTooltip:SetCurrencyByID(reference.currencyID, 1);
-			else
+			elseif reference.key ~= "questID" then
 				local link = reference.link;
 				if link then
 					pcall(GameTooltip.SetHyperlink, GameTooltip, link);
@@ -10090,7 +10090,10 @@ local function RowOnEnter(self)
 		end
 		
 		-- Miscellaneous fields
-		if GameTooltip:NumLines() < 1 then GameTooltip:AddLine(self.Label:GetText()); end
+		if GameTooltip:NumLines() < 1 then
+			GameTooltip:ClearLines();
+			GameTooltip:AddLine(reference.text);
+		end
 		if app.Settings:GetTooltipSetting("Progress") then
 			if reference.trackable and reference.total and reference.total >= 2 then
 				GameTooltip:AddDoubleLine("Tracking Progress", GetCompletionText(reference.saved));
