@@ -688,44 +688,47 @@ local function BuildGroups(parent)
 	end
 end
 local function BuildSourceText(group, l, skip)
-	local parent = group.parent;
-	if parent then
-		if not group.itemID and not skip and (parent.key == "filterID" or parent.key == "spellID" or ((parent.headerID or (parent.spellID and (group.categoryID or group.tierID)))
-			and ((parent.headerID == app.HeaderConstants.VENDORS or parent.headerID == app.HeaderConstants.QUESTS or parent.headerID == app.HeaderConstants.WORLD_BOSSES) or (parent.parent and parent.parent.parent)))) then
-			return BuildSourceText(parent.parent, 5, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA) .. " (" .. (parent.text or RETRIEVING_DATA) .. ")";
-		end
-		if group.headerID then
-			if group.headerID == app.HeaderConstants.ZONE_DROPS then
-				if group.crs and #group.crs == 1 then
-					return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (app.NPCNameFromID[group.crs[1]] or RETRIEVING_DATA) .. " (Drop)";
+	if group then
+		local parent = group.parent;
+		if parent then
+			if not group.itemID and not skip and (parent.key == "filterID" or parent.key == "spellID" or ((parent.headerID or (parent.spellID and (group.categoryID or group.tierID)))
+				and ((parent.headerID == app.HeaderConstants.VENDORS or parent.headerID == app.HeaderConstants.QUESTS or parent.headerID == app.HeaderConstants.WORLD_BOSSES) or (parent.parent and parent.parent.parent)))) then
+				return BuildSourceText(parent.parent, 5, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA) .. " (" .. (parent.text or RETRIEVING_DATA) .. ")";
+			end
+			if group.headerID then
+				if group.headerID == app.HeaderConstants.ZONE_DROPS then
+					if group.crs and #group.crs == 1 then
+						return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (app.NPCNameFromID[group.crs[1]] or RETRIEVING_DATA) .. " (Drop)";
+					end
+					return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
 				end
-				return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
+				if parent.difficultyID then
+					return BuildSourceText(parent, l + 1, skip);
+				end
+				if parent.parent then
+					return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
+				end
 			end
-			if parent.difficultyID then
-				return BuildSourceText(parent, l + 1, skip);
+			if group.key == "criteriaID" and group.achievementID then
+				local tooltipText = achievementTooltipText[group.achievementID];
+				if tooltipText then
+					return BuildSourceText(parent, 5, group.itemID or skip) .. " (" .. tooltipText .. ")";
+				else
+					return BuildSourceText(parent, 5, group.itemID or skip);
+				end
 			end
-			if parent.parent then
-				return BuildSourceText(parent, l + 1, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
+			if parent.key == "categoryID" or parent.key == "tierID" or group.key == "filterID" or group.key == "spellID" or group.key == "encounterID" or (parent.key == "mapID" and group.key == "npcID") then
+				return BuildSourceText(parent, 5, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
 			end
-		end
-		if group.key == "criteriaID" and group.achievementID then
-			local tooltipText = achievementTooltipText[group.achievementID];
-			if tooltipText then
-				return BuildSourceText(parent, 5, group.itemID or skip) .. " (" .. tooltipText .. ")";
+			if l < 1 then
+				return BuildSourceText(parent, l + 1, group.itemID or skip);
 			else
-				return BuildSourceText(parent, 5, group.itemID or skip);
+				return BuildSourceText(parent, l + 1, group.itemID or skip) .. " > " .. (group.text or RETRIEVING_DATA);
 			end
 		end
-		if parent.key == "categoryID" or parent.key == "tierID" or group.key == "filterID" or group.key == "spellID" or group.key == "encounterID" or (parent.key == "mapID" and group.key == "npcID") then
-			return BuildSourceText(parent, 5, skip) .. DESCRIPTION_SEPARATOR .. (group.text or RETRIEVING_DATA);
-		end
-		if l < 1 then
-			return BuildSourceText(parent, l + 1, group.itemID or skip);
-		else
-			return BuildSourceText(parent, l + 1, group.itemID or skip) .. " > " .. (group.text or RETRIEVING_DATA);
-		end
+		return group.text or RETRIEVING_DATA;
 	end
-	return group.text or RETRIEVING_DATA;
+	return L.TITLE;
 end
 local function BuildSourceTextForChat(group, l)
 	if group.parent then
