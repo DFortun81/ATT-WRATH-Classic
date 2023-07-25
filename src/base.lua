@@ -508,15 +508,11 @@ app.CreateClass = function(className, classKey, fields, ...)
 		fields.conditionals = conditionals;
 		local Class = app.BaseObjectFields(fields, className);
 		return function(id, t)
-			if t then
-				t = constructor(id, t, classKey);
-				for i=1,total,2 do
-					if conditionals[i](t) then
-						return setmetatable(t, conditionals[i + 1]);
-					end
+			t = constructor(id, t, classKey);
+			for i=1,total,2 do
+				if conditionals[i](t) then
+					return setmetatable(t, conditionals[i + 1]);
 				end
-			else
-				t = constructor(id, t, classKey);
 			end
 			return setmetatable(t, Class);
 		end, Class;
