@@ -35,8 +35,8 @@ BINDING_NAME_ALLTHETHINGS_REROLL_RANDOM = L["REROLL_RANDOM"];
 -- While this may seem silly, caching references to commonly used APIs is actually a performance gain...
 local C_DateAndTime_GetServerTimeLocal
 	= C_DateAndTime.GetServerTimeLocal;
-local ipairs, tinsert, pairs, rawset, rawget
-	= ipairs, tinsert, pairs, rawset, rawget;
+local ipairs, tinsert, pairs, rawset, rawget, pcall
+	= ipairs, tinsert, pairs, rawset, rawget, pcall;
 local C_Map_GetMapInfo = C_Map.GetMapInfo;
 local C_Map_GetPlayerMapPosition = C_Map.GetPlayerMapPosition;
 local GetAchievementInfo = _G["GetAchievementInfo"];
@@ -2833,8 +2833,12 @@ function app:GetDataCache()
 		-- Now that we have all of the root data, cache it.
 		app.CacheFields(rootData);
 		
+		-- The achievements window has a mix of dynamic and non-dynamic information.
+		local achievementDynamicCategory = app.CreateDynamicCategory("Achievements");
+		BuildGroups(achievementDynamicCategory.dynamicWindow.data);
+		table.insert(g, achievementDynamicCategory);
+		
 		-- Dynamic Categories (Content generated and managed by a separate Window)
-		table.insert(g, app.CreateDynamicCategory("Achievements"));
 		table.insert(g, app.CreateDynamicCategory("Battle Pets"));
 		table.insert(g, app.CreateDynamicCategory("Factions"));
 		table.insert(g, app.CreateDynamicCategory("Flight Paths"));
@@ -3953,7 +3957,10 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	app.CreateAchievement = app.CreateClass("Achievement", "achievementID", fields);
 	app.CreateAchievementCriteria = app.CreateClass("AchievementCriteria", "criteriaID", {
 		["achievementID"] = function(t)
-			return t.achID or t.parent.achievementID;
+			return t.achID or t.criteriaParent.achievementID;
+		end,
+		["criteriaParent"] = function(t)
+			return t.sourceParent or t.parent or app.EmptyTable;
 		end,
 		["index"] = function(t)
 			return 1;
@@ -3972,11 +3979,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			if achievementID then
 				local criteriaID = t.criteriaID;
 				if criteriaID then
-					if criteriaID <= GetAchievementNumCriteria(achievementID) then
-						return GetAchievementCriteriaInfo(achievementID, criteriaID);
-					else
-						return GetAchievementCriteriaInfoByID(achievementID, criteriaID);
-					end
+					return t.GetInfo(achievementID, criteriaID, true) or ("achievementID:" .. achievementID .. ":" .. criteriaID);
 				end
 			end
 		end,
@@ -4017,59 +4020,48 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			end
 		end,
 		["collected"] = function(t)
-			if t.parent.achievementID then
-				-- If the parent is collected, return immediately.
-				local collected = t.parent.collected;
-				if collected then return collected; end
-			end
-			
 			-- Check to see if the criteria was completed.
 			local achievementID = t.achievementID;
 			if achievementID then
-				if app.CurrentCharacter.Achievements[achievementID] then return true; end
+				if app.CurrentCharacter.Achievements[achievementID] then return 1; end
 				if app.Settings.AccountWide.Achievements and ATTAccountWideData.Achievements[achievementID] then return 2; end
+				
 				local criteriaID = t.criteriaID;
 				if criteriaID then
-					if criteriaID <= GetAchievementNumCriteria(achievementID) then
-						local collected = false;
-						local status, err = pcall(function()
-							collected = select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
-						end);
-						if err then
-							print("ERROR", err);
-						end
-						return collected;
-					else
-						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
+					local collected = false;
+					local status, err = pcall(function()
+						collected = select(3, t.GetInfo(achievementID, criteriaID, true));
+					end);
+					if err then
+						print("ERROR", err);
 					end
+					return collected;
 				end
 			end
 		end,
 		["saved"] = function(t)
-			if t.parent.achievementID then
-				-- If the parent is saved, return immediately.
-				local saved = t.parent.saved;
-				if saved then return saved; end
-			end
-			
 			-- Check to see if the criteria was completed.
 			local achievementID = t.achievementID;
 			if achievementID then
 				if app.CurrentCharacter.Achievements[achievementID] then return true; end
 				local criteriaID = t.criteriaID;
 				if criteriaID then
-					if criteriaID <= GetAchievementNumCriteria(achievementID) then
-						return select(3, GetAchievementCriteriaInfo(achievementID, criteriaID));
-					else
-						return select(3, GetAchievementCriteriaInfoByID(achievementID, criteriaID));
-					end
+					return select(3, t.GetInfo(achievementID, criteriaID, true));
 				end
 			end
 		end,
 		["OnTooltip"] = function()
 			return onTooltipForAchievementCriteria;
 		end,
-	});
+		GetInfo = function()
+			return GetAchievementCriteriaInfoByID;
+		end,
+	},
+	"WithIndex", {
+		GetInfo = function()
+			return GetAchievementCriteriaInfo;
+		end;
+	}, (function(t) return t.criteriaID < 100; end));
 	
 	local function CheckAchievementCollectionStatus(achievementID)
 		achievementID = tonumber(achievementID);
