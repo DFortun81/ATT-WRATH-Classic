@@ -2349,10 +2349,10 @@ local function GetCachedSearchResults(search, method, paramA, paramB, ...)
 				end
 			end
 			
-			group.tooltipInfo = uniques;
 			for i,item in ipairs(uniques) do
 				if item.color then item.r, item.g, item.b = HexToRGB(item.color); end
 			end
+			group.tooltipInfo = uniques;
 		end
 		
 		-- Cache the result for a while depending on if there is more work to be done.
@@ -3014,7 +3014,7 @@ local function AttachTooltipRawSearchResults(self, lineNumber, group)
 						end
 					else
 						if entry.wrap then
-							self:AddLine(left, nil, nil, nil, 1);
+							self:AddLine(left, 1, 1, 1, 1);
 						else
 							self:AddLine(left);
 						end
@@ -4032,7 +4032,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 					local status, err = pcall(function()
 						collected = select(3, t.GetInfo(achievementID, criteriaID, true));
 					end);
-					if err then
+					if not status then
 						print("ERROR", err);
 					end
 					return collected;
@@ -10091,7 +10091,6 @@ local function RowOnEnter(self)
 		
 		-- Miscellaneous fields
 		if GameTooltip:NumLines() < 1 then
-			GameTooltip:ClearLines();
 			GameTooltip:AddLine(reference.text);
 		end
 		if app.Settings:GetTooltipSetting("Progress") then
@@ -10298,8 +10297,8 @@ local function RowOnEnter(self)
 					GameTooltip:AddLine(lore, r, g, b, 1);
 				end
 			end
-			if reference.description and app.Settings:GetTooltipSetting("Descriptions") then
-				local description = reference.description;
+			local description = reference.description;
+			if description and app.Settings:GetTooltipSetting("Descriptions") then
 				local found = false;
 				for i=1,GameTooltip:NumLines() do
 					if _G["GameTooltipTextLeft"..i]:GetText() == description then
