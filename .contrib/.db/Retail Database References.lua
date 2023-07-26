@@ -55,6 +55,7 @@
 -- #IMPORT: 09 - PvP\\03 Wrath of the Lich King PvP Seasons.lua
 
 -- NYI
+-- #IMPORT: 17 - NYI\\NYI Flight Paths.lua
 -- #IMPORT: 17 - NYI\\NYI Professions\\
 -- #IMPORT: 17 - NYI\\NYI Mounts.lua
 -- #IMPORT: 17 - NYI\\NYI Quests.lua
