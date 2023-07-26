@@ -4037,7 +4037,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 						collected = select(3, t.GetInfo(achievementID, criteriaID, true));
 					end);
 					if not status then
-						print("ERROR", err);
+						print("ERROR", achievementID, criteriaID, err);
 					end
 					return collected;
 				end
