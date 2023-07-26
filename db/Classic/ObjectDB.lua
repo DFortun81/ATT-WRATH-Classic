@@ -1731,7 +1731,7 @@ _.ObjectNames = {
 }
 
 if simplifiedLocale == "de" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "Alte Löwenstatue",
 	[34] = "Alter Henkelkrug",
@@ -2506,7 +2506,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "es" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "Estatua de león antigua",
 	[34] = "Vieja jarra",
@@ -3274,7 +3274,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "fr" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "Statue du vieux lion",
 	[34] = "Vieille cruche",
@@ -4044,7 +4044,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "it" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "Vecchia Statua di Leone",
 	[34] = "Vecchio Fiasco",
@@ -4814,7 +4814,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "ko" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "오래된 사자상",
 	[34] = "낡은 단지",
@@ -5577,7 +5577,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "pt" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "Estátua de Leão Antiga",
 	[34] = "Velho Garrafão",
@@ -6341,7 +6341,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "ru" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "Статуя старого льва",
 	[34] = "Старый кувшин",
@@ -7114,7 +7114,7 @@ for key,value in pairs({
 end
 
 if simplifiedLocale == "zh" then
-a = _.ObjectNames;
+local a = _.ObjectNames;
 for key,value in pairs({
 	[31] = "陈旧的石狮子",
 	[34] = "旧罐子",
