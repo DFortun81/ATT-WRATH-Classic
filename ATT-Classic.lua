@@ -2992,7 +2992,7 @@ local function AttachTooltipRawSearchResults(self, lineNumber, group)
 			local rightname = self:GetName() .. "TextRight";
 			for i,entry in ipairs(group.tooltipInfo) do
 				local found = false;
-				left = entry.left;
+				left = entry.left or " ";
 				for i=self:NumLines(),1,-1 do
 					if _G[leftname..i]:GetText() == left then
 						o = _G[rightname..i];
@@ -3005,7 +3005,11 @@ local function AttachTooltipRawSearchResults(self, lineNumber, group)
 				if not found then
 					right = entry.right;
 					if right then
-						self:AddDoubleLine(left or " ", right);
+						if entry.r then
+							self:AddDoubleLine(left, right, entry.r, entry.g, entry.b, entry.r, entry.g, entry.b);
+						else
+							self:AddDoubleLine(left, right);
+						end
 					elseif entry.r then
 						if entry.wrap then
 							self:AddLine(left, entry.r, entry.g, entry.b, 1);
@@ -7066,26 +7070,48 @@ end});
 app.NPCDisplayIDFromID = NPCDisplayIDFromID;
 
 -- NPC & Title Name Harvesting Lib (https://us.battle.net/forums/en/wow/topic/20758497390?page=1#post-4, Thanks Gello!)
-local NPCTitlesFromID = {};
-local ATTCNPCHarvester = CreateFrame("GameTooltip", "ATTCNPCHarvester", UIParent, "GameTooltipTemplate");
-local NPCNameFromID = setmetatable({}, { __index = function(t, id)
-	if id > 0 then
-		ATTCNPCHarvester:SetOwner(UIParent,"ANCHOR_NONE")
-		ATTCNPCHarvester:SetHyperlink(format("unit:Creature-0-0-0-0-%d-0000000000",id))
-		local title = ATTCNPCHarvesterTextLeft1:GetText();
-		if title and ATTCNPCHarvester:NumLines() > 2 then
-			rawset(NPCTitlesFromID, id, ATTCNPCHarvesterTextLeft2:GetText());
+local NPCNameFromID, NPCTitlesFromID = {},{};
+local C_TooltipInfo_GetHyperlink = C_TooltipInfo and C_TooltipInfo.GetHyperlink;
+if C_TooltipInfo_GetHyperlink then
+	setmetatable(NPCNameFromID, { __index = function(t, id)
+		if id > 0 then
+			local tooltipData = C_TooltipInfo_GetHyperlink(format("unit:Creature-0-0-0-0-%d-0000000000",id));
+			if tooltipData then
+				local title = tooltipData.lines[1].leftText;
+				if title and #tooltipData.lines > 2 then
+					NPCTitlesFromID[id] = tooltipData.lines[2].leftText;
+				end
+				if title and title ~= RETRIEVING_DATA then
+					t[id] = title;
+					return title;
+				end
+			end
+		else
+			return L.HEADER_NAMES[id];
 		end
-		ATTCNPCHarvester:Hide();
-		if title and title ~= RETRIEVING_DATA then
-			rawset(t, id, title);
-			return title;
+	end});
+else
+	local ATTCNPCHarvester = CreateFrame("GameTooltip", "ATTCNPCHarvester", UIParent, "GameTooltipTemplate");
+	setmetatable(NPCNameFromID, { __index = function(t, id)
+		if id > 0 then
+			ATTCNPCHarvester:SetOwner(UIParent,"ANCHOR_NONE")
+			ATTCNPCHarvester:SetHyperlink(format("unit:Creature-0-0-0-0-%d-0000000000",id))
+			local title = ATTCNPCHarvesterTextLeft1:GetText();
+			if title and ATTCNPCHarvester:NumLines() > 2 then
+				NPCTitlesFromID[id] = ATTCNPCHarvesterTextLeft2:GetText();
+			end
+			ATTCNPCHarvester:Hide();
+			if title and title ~= RETRIEVING_DATA then
+				t[id] = title;
+				return title;
+			end
+		else
+			return L.HEADER_NAMES[id];
 		end
-	else
-		return L["HEADER_NAMES"][id];
-	end
-end});
+	end});
+end
 app.NPCNameFromID = NPCNameFromID;
+app.NPCTitlesFromID = NPCTitlesFromID;
 
 -- Event, Header, and NPC Lib
 local createNPC = app.CreateClass("NPC", "npcID", {
