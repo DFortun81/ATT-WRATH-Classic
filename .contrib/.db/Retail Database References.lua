@@ -59,3 +59,6 @@
 
 -- Weapon Masters
 -- #IMPORT: 23 - NPC Types\\
+
+-- Temporarily needed.
+-- #IMPORT: ..\\lib\\zz - Classic Only
