@@ -19,7 +19,6 @@ _.HeaderConstants = {
 	FACTIONS = -1000019,
 	FEAST_OF_WINTER_VEIL_HEADER = -1000168,
 	FLIGHT_PATHS = -1000020,
-	FOLLOWERS = -1000021,
 	HALLOWS_END_HEADER = -1000170,
 	HARVEST_FESTIVAL_HEADER = -1000171,
 	HOLIDAYS = -1000023,
@@ -85,6 +84,7 @@ local a = L.HEADER_ICONS;
 for key,value in pairs({
 	[-1000004] = _.asset("Category_Achievements"),
 	[-1000006] = _.asset("Interface_World_boss"),
+	[-1000008] = "Interface/MINIMAP/TRACKING/Class",
 	[-1000009] = _.asset("Achievement_Garrison_Horde_PVE"),
 	[-1000012] = "Interface/Icons/INV_Misc_Coin_02",
 	[-1000013] = _.asset("Category_Crafting"),
@@ -92,10 +92,8 @@ for key,value in pairs({
 	[-1000018] = "Interface/Icons/INV_Misc_Map02",
 	[-1000019] = _.asset("Category_Factions"),
 	[-1000020] = _.asset("Category_FlightPaths"),
-	[-1000021] = "Interface/Icons/Achievement_GarrisonFollower_LevelUp",
 	[-1000023] = _.asset("Category_Holidays"),
 	[-1000024] = "Interface/Icons/inv_letter_17",
-	[-1000025] = "Interface/Icons/Inv_misc_map02",
 	[-1000028] = _.asset("Category_Professions"),
 	[-1000029] = _.asset("Interface_Quest_header"),
 	[-1000030] = _.asset("Interface_Rare"),
@@ -134,7 +132,9 @@ for key,value in pairs({
 	[-1000087] = "Interface/FriendsFrame/PlusManz-Horde",
 	[-1000088] = "Interface/FriendsFrame/PlusManz-PlusManz",
 	[-1000089] = _.asset("Category_InGameShop"),
+	[-1000091] = "Interface/Icons/Inv_shirt_white_01",
 	[-1000097] = _.asset("Weapon_Type_Legendary"),
+	[-1000099] = "Interface/Icons/Inv_shirt_grey_01",
 	[-1000107] = _.asset("Expansion_CLASSIC"),
 	[-1000108] = _.asset("Expansion_TBC"),
 	[-1000109] = _.asset("Expansion_WOTLK"),
@@ -220,12 +220,14 @@ for key,value in pairs({
 	[-1000237] = "Interface/Icons/inv_misc_ticket_tarot_stack_01",
 	[-1000239] = "Interface/Icons/inv_chest_leather_08",
 	[-1000240] = "Interface/Icons/inv_mace_1h_bastionquest_b_02",
+	[-1000241] = "Interface/Icons/inv_misc_questionmark",
 }) do a[key] = value; end
 
 local a = L.HEADER_NAMES;
 for key,value in pairs({
 	[-1000004] = ACHIEVEMENTS,
 	[-1000006] = RAID_BOSSES,
+	[-1000008] = CLASS,
 	[-1000009] = BATTLE_PET_BREED_QUALITY2.." "..TRANSMOG_SOURCE_1,
 	[-1000012] = "Common Vendor Items",
 	[-1000013] = LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM,
@@ -233,10 +235,8 @@ for key,value in pairs({
 	[-1000018] = "Exploration",
 	[-1000019] = FACTION,
 	[-1000020] = "Flight Paths",
-	[-1000021] = GARRISON_FOLLOWERS,
 	[-1000023] = "Holiday",
 	[-1000024] = MINIMAP_TRACKING_MAILBOX,
-	[-1000025] = BRAWL_TOOLTIP_MAPS,
 	[-1000028] = TRADE_SKILLS,
 	[-1000029] = TRACKER_HEADER_QUESTS,
 	[-1000030] = BATTLE_PET_BREED_QUALITY4,
@@ -275,7 +275,9 @@ for key,value in pairs({
 	[-1000087] = FACTION_HORDE,
 	[-1000088] = COMBATLOG_FILTER_STRING_NEUTRAL_UNITS,
 	[-1000089] = BATTLE_PET_SOURCE_10,
+	[-1000091] = ITEM_QUALITY1_DESC,
 	[-1000097] = ITEM_QUALITY5_DESC,
+	[-1000099] = ITEM_QUALITY0_DESC,
 	[-1000107] = "Patch 1.x.x",
 	[-1000108] = "Patch 2.x.x",
 	[-1000109] = "Patch 3.x.x",
@@ -361,6 +363,7 @@ for key,value in pairs({
 	[-1000237] = BATTLE_PET_SOURCE_9,
 	[-1000239] = "Ensembles",
 	[-1000240] = "Arsenals",
+	[-1000241] = "Sourceless",
 }) do a[key] = value; end
 
 local a = L.HEADER_DESCRIPTIONS;
@@ -395,6 +398,7 @@ for key,value in pairs({
 	[-1000232] = "These were only available through the 2006 iCoke Promotion (China Only)",
 	[-1000233] = "This section is for miscellaneous promotions that took place in the real world or something to do with account management.",
 	[-1000236] = "This is a Battlegrounds-based event that coincides with the beginning of the Summer Olympic games. The only time this was celebrated was in 2008 to correspond to the Beijing Olympics, and although there appeared to be the intention to repeat this event, it never returned.",
+	[-1000241] = "This Category contains Things that probably exist in the game but no known source.",
 }) do a[key] = value; end
 
 local a = L.HEADER_LORE;
@@ -617,6 +621,7 @@ for key,value in pairs({
 	[-1000208] = "Вторжение Плети",
 	[-1000215] = "Коллекционное издание",
 	[-1000216] = "Пропуск Темного портала",
+	[-1000241] = "Без Источника",
 }) do a[key] = value; end
 end
 
@@ -676,6 +681,7 @@ for key,value in pairs({
 	[-1000226] = "巫妖王之怒经典怀旧服诺森德英雄礼包",
 	[-1000227] = "巫妖王之怒经典怀旧服诺森德史诗礼包",
 	[-1000232] = "可口可乐活动",
+	[-1000241] = "无来源",
 }) do a[key] = value; end
 end
 

@@ -60,7 +60,11 @@
 -- #IMPORT: 17 - NYI\\NYI Armors.lua
 -- #IMPORT: 17 - NYI\\NYI Bags.lua
 -- #IMPORT: 17 - NYI\\NYI Battle Pets.lua
+-- #IMPORT: 17 - NYI\\NYI ClassItems.lua
+-- #IMPORT: 17 - NYI\\NYI Consumables.lua
+-- #IMPORT: 17 - NYI\\NYI Factions.lua
 -- #IMPORT: 17 - NYI\\NYI Flight Paths.lua
+-- #IMPORT: 17 - NYI\\NYI Followers.lua
 -- #IMPORT: 17 - NYI\\NYI Maps.lua
 -- #IMPORT: 17 - NYI\\NYI Misc.lua
 -- #IMPORT: 17 - NYI\\NYI Mounts.lua
@@ -68,7 +72,11 @@
 -- #IMPORT: 17 - NYI\\NYI Quest Items.lua
 -- #IMPORT: 17 - NYI\\NYI Quests.lua
 -- #IMPORT: 17 - NYI\\NYI Recipes.lua
+-- #IMPORT: 17 - NYI\\NYI Sets.lua
+-- #IMPORT: 17 - NYI\\NYI Toys.lua
 -- #IMPORT: 17 - NYI\\NYI Weapons.lua
+-- #IMPORT: 17 - NYI\\Unsorted.lua
+-- #IMPORT: 17 - NYI\\Temporary\\
 
 -- Weapon Masters
 -- #IMPORT: 23 - NPC Types\\
