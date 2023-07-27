@@ -55,11 +55,20 @@
 -- #IMPORT: 09 - PvP\\03 Wrath of the Lich King PvP Seasons.lua
 
 -- NYI
+-- #IMPORT: 17 - NYI\\Hidden Triggers\\
+-- #IMPORT: 17 - NYI\\NYI Achievements.lua
+-- #IMPORT: 17 - NYI\\NYI Armors.lua
+-- #IMPORT: 17 - NYI\\NYI Bags.lua
+-- #IMPORT: 17 - NYI\\NYI Battle Pets.lua
 -- #IMPORT: 17 - NYI\\NYI Flight Paths.lua
--- #IMPORT: 17 - NYI\\NYI Professions\\
+-- #IMPORT: 17 - NYI\\NYI Maps.lua
+-- #IMPORT: 17 - NYI\\NYI Misc.lua
 -- #IMPORT: 17 - NYI\\NYI Mounts.lua
+-- #IMPORT: 17 - NYI\\NYI Professions\\
+-- #IMPORT: 17 - NYI\\NYI Quest Items.lua
 -- #IMPORT: 17 - NYI\\NYI Quests.lua
 -- #IMPORT: 17 - NYI\\NYI Recipes.lua
+-- #IMPORT: 17 - NYI\\NYI Weapons.lua
 
 -- Weapon Masters
 -- #IMPORT: 23 - NPC Types\\
