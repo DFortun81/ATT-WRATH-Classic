@@ -3907,6 +3907,9 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			end
 		end
 	end
+	fields.isStatistic = function(t)
+		return select(15, GetAchievementInfo(t.achievementID));
+	end
 	local onTooltipForAchievement = function(t)
 		local achievementID = t.achievementID;
 		if achievementID and IsShiftKeyDown() then
