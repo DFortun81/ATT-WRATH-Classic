@@ -175,7 +175,7 @@ local UnobtainableSettingsBase = {
 local OnClickForTab = function(self)
 	local id = self:GetID();
 	local parent = self:GetParent();
-	PanelTemplates_SetTab(parent, id);
+	--PanelTemplates_SetTab(parent, id);
 	-- print("CLICKED TAB", id, self:GetText());
 	for i,tab in ipairs(parent.Tabs) do
 		if i == id then
@@ -390,7 +390,7 @@ settings.CreateTab = function(self, text)
 	tab:SetID(id);
 	tab:SetText(text);
 	self.TabsByName[text] = tab;
-	PanelTemplates_TabResize(tab, 0);
+	--PanelTemplates_TabResize(tab, 0);
 	tab:SetScript('OnClick', OnClickForTab);
 	return tab;
 end
