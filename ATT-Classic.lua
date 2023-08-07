@@ -1459,7 +1459,7 @@ ResolveSymbolicLink = function(o)
 						elseif criteriaType == 110 or criteriaType == 29 or criteriaType == 69 or criteriaType == 52 or criteriaType == 53 or criteriaType == 54 or criteriaType == 32 then
 							-- Ignored
 						else
-							print("Unhandled Criteria Type", criteriaType, assetID);
+							--print("Unhandled Criteria Type", criteriaType, assetID);
 						end
 						if cache then
 							local uniques = {};
@@ -7181,6 +7181,10 @@ local createCustomHeader = app.CreateClass("Header", "headerID", {
 "WithEvent", app.Modules.Events.Fields, (function(t) return L.HEADER_EVENTS[t.headerID]; end));
 app.CreateCustomHeader = createCustomHeader;
 app.CreateNPC = function(id, t)
+	if not id then
+		print("Broken ID for CreateNPC");
+		id = 0;
+	end
 	if id < 1 then
 		if t and t.npcID == id then t.npcID = nil; end
 		return createCustomHeader(id, t);
