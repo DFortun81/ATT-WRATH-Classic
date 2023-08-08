@@ -27,6 +27,7 @@ db\Classic\ObjectDB.lua
 src\Cache.lua
 locales\en.lua
 src\Modules\Events.lua
+src\Modules\Filter Types.lua
 src\Modules\Illusions.lua
 src\Modules\PVP Ranks.lua
 locales\en_auto.lua

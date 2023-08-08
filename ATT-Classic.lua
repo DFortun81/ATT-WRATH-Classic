@@ -5737,18 +5737,6 @@ app.OnUpdateReputationRequired = function(t)
 end
 end)();
 
--- Filter Lib
-(function()
-app.CreateFilter = app.CreateClass("Filter", "filterID", {
-	["text"] = function(t)
-		return L["FILTER_ID_TYPES"][t.filterID];
-	end,
-	["icon"] = function(t)
-		return L["FILTER_ID_ICONS"][t.filterID];
-	end,
-});
-end)();
-
 -- Flight Path Lib
 (function()
 local arrOfNodes = {
