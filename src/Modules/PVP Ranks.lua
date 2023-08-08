@@ -4,6 +4,10 @@ do
 local app = select(2, ...);
 local L = app.L;
 
+-- Global Variables
+local GetPVPLifetimeStats =
+	  GetPVPLifetimeStats;
+
 -- Protected Variables
 local Collectible = true;
 local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;

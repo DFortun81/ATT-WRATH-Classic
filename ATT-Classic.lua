@@ -6005,7 +6005,8 @@ if C_TransmogCollection then
 		end
 	end
 end
-local fieldsWithItem = {
+app.CreateIllusion = app.CreateClass("Illusion", "illusionID", illusionFields,
+"WithItem", {
 	link = function(t)
 		local name, link = GetItemInfo(t.itemID);
 		if link then
@@ -6026,9 +6027,7 @@ local fieldsWithItem = {
 	text = function(t)
 		return "|cffff80ff[" .. t.name .. "]|r";
 	end
-};
-app.CreateIllusion = app.CreateClass("Illusion", "illusionID", illusionFields,
-	"WithItem", fieldsWithItem, function(t) return t.itemID; end);	-- This is a conditional contructor.
+}, function(t) return t.itemID; end);
 end)();
 
 -- Item Lib
