@@ -199,6 +199,7 @@ app.L = {
 		[100] = MOUNTS,											-- Mounts
 		[101] = AUCTION_CATEGORY_BATTLE_PETS,					-- Battle Pets
 		[102] = TOY,											-- Toys
+		[103] = "Illusions",
 		[104] = AUCTION_CATEGORY_QUEST_ITEMS, 					-- Quest Items
 		[105] = TRACKER_FILTER_ACHIEVEMENTS,					-- Achievements
 		[113] = INVTYPE_BAG, 									-- Bags

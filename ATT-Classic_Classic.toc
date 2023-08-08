@@ -27,6 +27,7 @@ db\Classic\ObjectDB.lua
 src\Cache.lua
 locales\en.lua
 src\Modules\Events.lua
+src\Modules\Illusions.lua
 src\Modules\PVP Ranks.lua
 locales\en_auto.lua
 locales\es.lua
@@ -51,6 +52,7 @@ src\UI\Factions.lua
 src\UI\Flight Paths.lua
 src\UI\Hidden Achievement Triggers.lua
 src\UI\Hidden Quest Triggers.lua
+src\UI\Illusions.lua
 src\UI\Maps.lua
 src\UI\Mounts.lua
 src\UI\Never Implemented.lua
