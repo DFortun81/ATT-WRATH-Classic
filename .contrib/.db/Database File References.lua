@@ -5,6 +5,7 @@
 -- #IMPORT: 00 - DB\\ItemDB.lua
 -- #IMPORT: 00 - DB\\MountDB.lua
 -- #IMPORT: 00 - DB\\ObjectDB.lua
+-- #IMPORT: 00 - DB\\ObjectDB_Conditionals.lua
 -- #IMPORT: 00 - DB\\PetDB.lua
 -- #IMPORT: 00 - DB\\PetTypeDB.lua
 -- #IMPORT: 00 - DB\\ToyDB.lua
