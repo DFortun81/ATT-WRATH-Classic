@@ -428,7 +428,7 @@ app:GetWindow("Auctions", {
 					end
 				end,
 			};
-			self:RegisterEvent("AUCTION_ITEM_LIST_UPDATE");
+			pcall(self.RegisterEvent, self, "AUCTION_ITEM_LIST_UPDATE");
 		end
 		self:UpdatePosition();
 	end

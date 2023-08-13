@@ -5959,6 +5959,122 @@ app.events.TAXIMAP_OPENED = function()
 end
 end)();
 
+-- Garrison Lib
+(function()
+if C_Garrison then
+local C_Garrison_GetBuildingInfo = C_Garrison.GetBuildingInfo;
+local GarrisonBuildingInfoMeta = { __index = function(t, key)
+	local _, name, _, icon, lore, _, _, _, _, _, uncollected = C_Garrison_GetBuildingInfo(t.garrisonBuildingID);
+	if not name then return nil; end
+	t.name = name;
+	t.icon = icon;
+	t.lore = lore;
+	setmetatable(t, nil);
+	return t[key];
+end };
+local GarrisonBuildingInfoByID = setmetatable({}, { __index = function(t, id)
+	local info = setmetatable({ garrisonBuildingID = id }, GarrisonBuildingInfoMeta);
+	t[id] = info;
+	return info;
+end });
+app.CreateGarrisonBuilding = app.CreateClass("GarrisonBuilding", "garrisonBuildingID", {
+	info = function(t)
+		return GarrisonBuildingInfoByID[t.garrisonBuildingID];
+	end,
+	name = function(t)
+		return t.info.name;
+	end,
+	icon = function(t)
+		return t.info.icon;
+	end,
+	lore = function(t)
+		return t.info.lore;
+	end,
+},
+"WithItem", {
+	icon = function(t)
+		return select(5, GetItemInfoInstant(t.itemID)) or t.info.icon;
+	end,
+	link = function(t)
+		return select(2, GetItemInfo(t.itemID)) or RETRIEVING_DATA;
+	end,
+	name = function(t)
+		return GetItemInfo(t.itemID) or t.info.name;
+	end,
+	tsm = function(t)
+		return string.format("i:%d", t.itemID);
+	end,
+	f = function(t)
+		return 200;
+	end,
+	collectible = function(t)
+		return app.Settings.Collectibles.Recipes;
+	end,
+	collected = function(t)
+		local id = t.garrisonBuildingID;
+		if app.CurrentCharacter.GarrisonBuildings[id] then return 1; end
+		return app.SetCollected(t, "GarrisonBuildings", id, not select(11, C_Garrison_GetBuildingInfo(id)));
+	end,
+}, (function(t) return t.itemID; end));
+
+local C_Garrison_GetMissionName = C_Garrison.GetMissionName;
+app.CreateGarrisonMission = app.CreateClass("GarrisonMission", "garrisonMissionID", {
+	name = function(t)
+		return C_Garrison_GetMissionName(t.missionID);
+	end,
+	icon = function(t)
+		return "Interface/ICONS/INV_Icon_Mission_Complete_Order";
+	end,
+});
+
+local C_Garrison_GetTalentInfo = C_Garrison.GetTalentInfo;
+local GarrisonTalentInfoMeta = { __index = function(t, key)
+	local info = C_Garrison_GetTalentInfo(t.garrisonTalentID);
+	if not info then return nil; end
+	t.name = info.name;
+	t.icon = info.icon or "Interface/ICONS/INV_Icon_Mission_Complete_Order";
+	t.description = info.description;
+	setmetatable(t, nil);
+	return t[key];
+end };
+local GarrisonTalentInfoByID = setmetatable({}, { __index = function(t, id)
+	local info = setmetatable({ garrisonTalentID = id }, GarrisonTalentInfoMeta);
+	t[id] = info;
+	return info;
+end });
+app.CreateGarrisonTalent = app.CreateClass("GarrisonTalent", "garrisonTalentID", {
+	info = function(t)
+		return GarrisonTalentInfoByID[t.garrisonTalentID];
+	end,
+	name = function(t)
+		return t.info.name;
+	end,
+	icon = function(t)
+		return t.info.icon;
+	end,
+	description = function(t)
+		return t.info.description;
+	end,
+	trackable = function(t)
+		return true;
+	end,
+	saved = function(t)
+		return C_Garrison_GetTalentInfo(t.garrisonTalentID).researched;
+	end,
+});
+else
+app.CreateGarrisonBuilding = function(id, t)
+	return { text = "GarrisonBuilding #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGarrisonMission = function(id, t)
+	return { text = "GarrisonMission #" .. id, description = "This data type is not supported at this time." };
+end
+app.CreateGarrisonTalent = function(id, t)
+	return { text = "GarrisonTalent #" .. id, description = "This data type is not supported at this time." };
+end
+end
+end)();
+
 -- Item Lib
 (function()
 local BestSuffixPerItemID = setmetatable({}, { __index = function(t, id)
@@ -8241,18 +8357,22 @@ end)();
 -- Title Lib
 (function()
 local function StylizePlayerTitle(title, style, me)
-	if style == 0 then
-		-- Prefix
-		return title .. me;
-	elseif style == 1 then
-		-- Player Name First
-		return me .. title;
-	elseif style == 2 then
-		-- Player Name First (with space)
-		return me .. " " .. title;
-	elseif style == 3 then
-		-- Comma Separated
-		return me .. ", " .. title;
+	if title then
+		if style == 0 then
+			-- Prefix
+			return title .. me;
+		elseif style == 1 then
+			-- Player Name First
+			return me .. title;
+		elseif style == 2 then
+			-- Player Name First (with space)
+			return me .. " " .. title;
+		elseif style == 3 then
+			-- Comma Separated
+			return me .. ", " .. title;
+		end
+	else
+		return title or "??";
 	end
 end
 local OnUpdateForSpecificGender = function(t)
@@ -8415,15 +8535,7 @@ end
 app.CreateFollower = function(id, t)
 	return { text = "Follower #" .. id, description = "This data type is not supported at this time." };
 end
-app.CreateGarrisonBuilding = function(id, t)
-	return { text = "GarrisonBuilding #" .. id, description = "This data type is not supported at this time." };
-end
-app.CreateGarrisonMission = function(id, t)
-	return { text = "GarrisonMission #" .. id, description = "This data type is not supported at this time." };
-end
-app.CreateGarrisonTalent = function(id, t)
-	return { text = "GarrisonTalent #" .. id, description = "This data type is not supported at this time." };
-end
+
 app.CreateGearSet = function(id, t)
 	return { text = "GearSet #" .. id, description = "This data type is not supported at this time." };
 end
@@ -11083,6 +11195,9 @@ local BuildCategory = function(self, headers, searchResults, inst)
 					headerType = app.HeaderConstants.ACHIEVEMENTS;
 				else
 					headerType = GetDeepestRelativeValue(o, "headerID") or "drop";
+					if headerType == true then	-- Seriously don't do this...
+						headerType = "drop";
+					end
 				end
 				local coords = GetRelativeValue(o, "coords");
 				if coords then
@@ -13740,6 +13855,7 @@ app.events.ADDON_LOADED = function(addonName)
 	if not currentCharacter.Exploration then currentCharacter.Exploration = {}; end
 	if not currentCharacter.Factions then currentCharacter.Factions = {}; end
 	if not currentCharacter.FlightPaths then currentCharacter.FlightPaths = {}; end
+	if not currentCharacter.GarrisonBuildings then currentCharacter.GarrisonBuildings = {}; end
 	if not currentCharacter.Lockouts then currentCharacter.Lockouts = {}; end
 	if not currentCharacter.Quests then currentCharacter.Quests = {}; end
 	if not currentCharacter.RWP then currentCharacter.RWP = {}; end
@@ -13889,6 +14005,7 @@ app.events.ADDON_LOADED = function(addonName)
 	if not accountWideData.Exploration then accountWideData.Exploration = {}; end
 	if not accountWideData.Factions then accountWideData.Factions = {}; end
 	if not accountWideData.FlightPaths then accountWideData.FlightPaths = {}; end
+	if not accountWideData.GarrisonBuildings then accountWideData.GarrisonBuildings = {}; end
 	if not accountWideData.Illusions then accountWideData.Illusions = {}; end
 	if not accountWideData.Quests then accountWideData.Quests = {}; end
 	if not accountWideData.RWP then accountWideData.RWP = {}; end
