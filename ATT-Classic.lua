@@ -1449,7 +1449,7 @@ ResolveSymbolicLink = function(o)
 					local achievementID = o.achievementID;
 					local cache;
 					for criteriaID=1,GetAchievementNumCriteria(achievementID),1 do
-						local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, id = GetAchievementCriteriaInfo(achievementID, criteriaID);
+						local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, id = GetAchievementCriteriaInfo(achievementID, criteriaID, true);
 						local criteriaObject = app.CreateAchievementCriteria(id);
 						criteriaObject.achievementID = achievementID;
 						if criteriaType == 27 then
@@ -3918,7 +3918,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
 			if totalCriteria > 0 then
 				for criteriaIndex=1,totalCriteria,1 do
-					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaIndex);
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaIndex, true);
 					GameTooltip:AddDoubleLine(" " .. criteriaIndex .. ": [" .. criteriaID .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
 				end
 			end
@@ -3935,7 +3935,7 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 				if criteriaIndex then
 					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID;
 					if criteriaIndex <= totalCriteria then
-						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfo(achievementID, criteriaIndex);
+						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfo(achievementID, criteriaIndex, true);
 					else
 						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfoByID(achievementID, criteriaIndex);
 					end
@@ -7227,6 +7227,15 @@ app.CreateCustomHeader = createCustomHeader;
 app.CreateNPC = function(id, t)
 	if not id then
 		print("Broken ID for CreateNPC");
+		t = {};
+		if t[1] then
+			t = { g = t };
+		end
+		t.OnUpdate = function()
+			print("HEY! FIX THIS", BuildSourceTextForDynamicPath(t, 0));
+			print(t.progress, t.total, t.g and #t.g);
+			
+		end
 		id = 0;
 	end
 	if id < 1 then
@@ -7255,6 +7264,9 @@ local AlternateDataTypes = {
 };
 app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 	["text"] = function(t)
+		return t.isRaid and ("|c" .. app.Colors.Raid .. t.name .. "|r") or t.name;
+	end,
+	["name"] = function(t)
 		return t.result.name or t.result.text;
 	end,
 	["icon"] = function(t)
