@@ -99,6 +99,10 @@ app.L = {
 	["TITLE_ID"] = "Title ID";
 	["TOY_ID"] = "Toy ID";
 	["VISUAL_ID"] = "Visual ID";
+	
+	
+	["CRITERIA_FOR"] = "Criteria for";
+	["CURRENCY_FOR"] = "Currency for";
 
 	-- Icons and Collection Text
 	["LOGO_SMALL"] = app.asset("logo_tiny");		-- Winner of the Logo Contest (Used to be "Interface\\Icons\\INV_Axe_106.blp")

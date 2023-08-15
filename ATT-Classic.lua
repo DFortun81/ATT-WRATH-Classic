@@ -3492,7 +3492,6 @@ end
 
 -- Achievement Lib
 (function()
-local useAchievementAPI, commonAchievementHandlers = false;
 local SetAchievementCollected = function(t, achievementID, collected)
 	return app.SetCollected(t, "Achievements", achievementID, collected);
 end
@@ -3630,7 +3629,7 @@ local LOREMASTER_CreateQuestsAndStructures = function(t, mapID, extraQuestIDs)
 	-- Return the Outdoor Zones and Dungeon structures.
 	return quests, structures;
 end
-commonAchievementHandlers = {
+local commonAchievementHandlers = {
 ["COMPANIONS_OnClick"] = function(row, button)
 	if button == "RightButton" then
 		local t = row.ref;
@@ -3844,7 +3843,6 @@ local categoryFields = {
 };
 if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	-- Achievements are in. We can use the API.
-	useAchievementAPI = true;
 	local GetAchievementCategory = _G["GetAchievementCategory"];
 	fields.text = function(t)
 		return t.link or "|cffffff00[" .. (t.name or ("@CRIEVE: INVALID ACHIEVEMENT " .. t.achievementID)) .. "]|r";
@@ -3913,33 +3911,51 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 	local onTooltipForAchievement = function(t)
 		local achievementID = t.achievementID;
 		if achievementID and IsShiftKeyDown() then
+			local criteriaDatas,criteriaDatasByUID = {}, {};
+			for criteriaID=1,99999,1 do
+				local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaUID = GetAchievementCriteriaInfoByID(achievementID, criteriaID);
+				if criteriaString then
+					criteriaDatasByUID[criteriaUID] = true;
+					tinsert(criteriaDatas, {
+						" [" .. criteriaUID .. "]: " .. tostring(criteriaString),
+						"(" .. tostring(assetID) .. " @ " .. tostring(criteriaType) .. ") " .. tostring(quantityString) .. " " .. GetCompletionIcon(completed)
+					});
+				end
+			end
 			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
-			GameTooltip:AddLine(" ", 1, 1, 1);
-			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
 			if totalCriteria > 0 then
 				for criteriaIndex=1,totalCriteria,1 do
-					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID = GetAchievementCriteriaInfo(achievementID, criteriaIndex, true);
-					GameTooltip:AddDoubleLine(" " .. criteriaIndex .. ": [" .. criteriaID .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaUID = GetAchievementCriteriaInfo(achievementID, criteriaIndex, true);
+					if criteriaString and (not criteriaDatasByUID[criteriaUID] or criteriaUID == 0) then
+						tinsert(criteriaDatas, {
+							" [" .. criteriaUID .. " @ Index: " .. criteriaIndex .. "]: " .. tostring(criteriaString),
+							"(" .. tostring(assetID) .. " @ " .. tostring(criteriaType) .. ") " .. tostring(quantityString) .. " " .. GetCompletionIcon(completed)
+						});
+					end
+				end
+			end
+			if #criteriaDatas > 0 then
+				GameTooltip:AddLine(" ", 1, 1, 1);
+				GameTooltip:AddDoubleLine("Total Criteria", tostring(#criteriaDatas), 0.8, 0.8, 1);
+				for i,criteriaData in ipairs(criteriaDatas) do
+					GameTooltip:AddDoubleLine(criteriaData[1], criteriaData[2], 1, 1, 1, 1, 1, 1);
 				end
 			end
 		end
 	end
 	local onTooltipForAchievementCriteria = function(t)
 		local achievementID = t.achievementID;
-		if achievementID and IsShiftKeyDown() then
-			local totalCriteria = GetAchievementNumCriteria(achievementID) or 0;
-			GameTooltip:AddLine(" ", 1, 1, 1);
-			GameTooltip:AddDoubleLine("Total Criteria", tostring(totalCriteria), 0.8, 0.8, 1);
-			if totalCriteria > 0 then
-				local criteriaIndex = t.criteriaID;
-				if criteriaIndex then
-					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID;
-					if criteriaIndex <= totalCriteria then
-						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfo(achievementID, criteriaIndex, true);
-					else
-						criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaID =GetAchievementCriteriaInfoByID(achievementID, criteriaIndex);
+		if achievementID then
+			GameTooltip:AddDoubleLine(L.CRITERIA_FOR, "|cffffff00[" .. (select(2, GetAchievementInfo(achievementID)) or RETRIEVING_DATA) .. "]|r");
+			if IsShiftKeyDown() then
+				local criteriaID = t.criteriaID;
+				if criteriaID then
+					GameTooltip:AddLine(" ", 1, 1, 1);
+					local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString, criteriaUID = t.GetInfo(achievementID, criteriaID, true)
+					if criteriaString then
+						GameTooltip:AddDoubleLine(" [" .. criteriaUID .. "]: " .. tostring(criteriaString),
+							"(" .. tostring(assetID) .. " @ " .. tostring(criteriaType) .. ") " .. tostring(quantityString) .. " " .. GetCompletionIcon(completed), 1, 1, 1, 1, 1, 1);
 					end
-					GameTooltip:AddDoubleLine(" [" .. (criteriaID or "??") .. "]: " .. tostring(criteriaString) .. " (" .. tostring(criteriaType) .. " - " .. tostring(assetID) ..")", tostring(quantityString) .. " " .. (completed and 1 or 0), 1, 1, 1, 1, 1, 1);
 				end
 			end
 		end
@@ -4018,12 +4034,6 @@ if GetCategoryInfo and GetCategoryInfo(92) ~= "" then
 						end
 					end
 				end
-			end
-		end,
-		["description"] = function(t)
-			local achievementID = t.achievementID;
-			if achievementID then
-				return "Criteria for |cffffff00[" .. (select(2, GetAchievementInfo(achievementID)) or RETRIEVING_DATA) .. "]|r";
 			end
 		end,
 		["collected"] = function(t)
@@ -4423,7 +4433,6 @@ else
 				if #spells < 1 then return true; end
 				t.spells = spells;
 			end
-			if useAchievementAPI then return; end
 			local collected = true;
 			for i,spell in ipairs(t.spells) do
 				if spell.collected then
@@ -4449,7 +4458,6 @@ else
 				if #spells < 1 then return true; end
 				t.spells = spells;
 			end
-			if useAchievementAPI then return; end
 			local collected = false;
 			for i,spell in ipairs(t.spells) do
 				if spell.collected then
@@ -9413,7 +9421,7 @@ local function AddTomTomWaypoint(group)
 										if key == "objectiveID" then
 											if o.parent and o.parent.questID then tooltip:AddLine("Objective for " .. o.parent.text); end
 										elseif key == "criteriaID" then
-											tooltip:AddLine("Criteria for " .. GetAchievementLink(group.achievementID));
+											tooltip:AddDoubleLine(L.CRITERIA_FOR, GetAchievementLink(group.achievementID));
 										else
 											if key == "npcID" then key = "creatureID"; end
 											AttachTooltipSearchResults(tooltip, 1, key .. ":" .. o[o.key], app.SearchForField, key, o[o.key], line);
