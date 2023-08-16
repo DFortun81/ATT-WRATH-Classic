@@ -27,9 +27,9 @@ db\Wrath\ObjectDB.lua
 src\Cache.lua
 locales\en.lua
 src\Modules\Events.lua
-src\Modules\Filter Types.lua
-src\Modules\Illusions.lua
-src\Modules\PVP Ranks.lua
+src\Classes\Filter Types.lua
+src\Classes\Illusions.lua
+src\Classes\PVP Ranks.lua
 locales\en_auto.lua
 locales\es.lua
 locales\de.lua
