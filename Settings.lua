@@ -10,7 +10,7 @@ local L = app.L;
 local ATTClassicSettings, ATTClassicSettingsPerCharacter = {}, {};
 
 -- The Settings Frame
-local settings = CreateFrame("FRAME", app:GetName() .. "-Settings", InterfaceOptionsFramePanelContainer or UIParent, BackdropTemplateMixin and "BackdropTemplate");
+local settings = CreateFrame("FRAME", appName .. "-Settings", InterfaceOptionsFramePanelContainer or UIParent, BackdropTemplateMixin and "BackdropTemplate");
 app.Settings = settings;
 settings.AccountWide = {
 	Achievements = true,
@@ -43,7 +43,7 @@ settings.Collectibles = {
 	Titles = true,
 	Toys = true,
 };
-settings.name = app:GetName();
+settings.name = appName;
 settings.MostRecentTab = nil;
 settings:Hide();
 settings.Tabs = {};
@@ -614,7 +614,7 @@ settings.title = f;
 f = settings:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
 f:SetPoint("TOPRIGHT", settings, "TOPRIGHT", -8, -8);
 f:SetJustifyH("RIGHT");
-f:SetText("Crieve-Atiesh\nv" .. GetAddOnMetadata(appName, "Version"));
+f:SetText("Crieve-Atiesh\n" .. app.Version);
 f:Show();
 settings.version = f;
 

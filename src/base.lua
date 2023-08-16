@@ -4,16 +4,22 @@
 --            Copyright 2017-2023 Dylan Fortune (Crieve-Sargeras)             --
 --------------------------------------------------------------------------------
 -- This is a hidden frame that intercepts all of the event notifications that we have registered for.
-local name, app = ...;
-function app:GetName() return name; end
-app.Version = GetAddOnMetadata(name, "Version");
+local appName, app = ...;
+
+-- Generate the version identifier.
+app.Version = GetAddOnMetadata(appName, "Version");
+if string.match(app.Version, "version") then
+	app.Version = "[Git]";
+else
+	app.Version = "v" .. app.Version;
+end
 
 -- ReloadUI slash command (for ease of use)
 SLASH_RELOADUI1 = "/reloadui";
 SLASH_RELOADUI2 = "/rl";
 SlashCmdList["RELOADUI"] = ReloadUI;
 
-local assetRootPath = "Interface\\Addons\\" .. name .. "\\assets\\";
+local assetRootPath = "Interface\\Addons\\" .. appName .. "\\assets\\";
 app.asset = function(path)
 	return assetRootPath .. path;
 end

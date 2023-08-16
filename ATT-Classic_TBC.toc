@@ -3,7 +3,7 @@
 ## Name: ATT-Classic
 ## Notes: Addon for Tracking Collections & Account Completion
 ## Author: Crieve-Sargeras
-## Version: 1.5.6
+## Version: @project-version@
 ## Interface: 20504
 ## X-Interface: 20504
 ## X-Wago-ID: yQKyY5K7
