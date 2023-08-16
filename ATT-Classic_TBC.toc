@@ -24,8 +24,8 @@ src\base.lua
 lib\Audio.lua
 db\TBC\CategoryDB.lua
 db\TBC\ObjectDB.lua
-src\Cache.lua
 locales\en.lua
+src\Cache.lua
 src\Modules\Events.lua
 src\Classes\Filter Types.lua
 src\Classes\Illusions.lua

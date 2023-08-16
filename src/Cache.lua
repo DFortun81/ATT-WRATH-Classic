@@ -1,5 +1,6 @@
 do
 local appName, app = ...;
+local L = app.L;
 
 -- Global locals
 local ipairs, tinsert, pairs, rawset, rawget
@@ -125,20 +126,20 @@ if app.Version == "[Git]" then
 			referenceCounter[npcID] = (referenceCounter[npcID] or 0) + 1;
 		end
 	end
-	cacheHeaderID = function(group, value)
-		if not group.type and not L["HEADER_NAMES"][value] then
-			print("Header Missing Name ", value);
-			L["HEADER_NAMES"][value] = "Header #" .. value;
+	cacheHeaderID = function(group, headerID)
+		if not group.type and not L["HEADER_NAMES"][headerID] then
+			print("Header Missing Name ", headerID);
+			L["HEADER_NAMES"][headerID] = "Header #" .. headerID;
 		end
-		referenceCounter[value] = (referenceCounter[value] or 0) + 1;
-		CacheField(group, "headerID", value);
+		referenceCounter[headerID] = (referenceCounter[headerID] or 0) + 1;
+		CacheField(group, "headerID", headerID);
 	end
-	cacheObjectID = function(group, value)
+	cacheObjectID = function(group, objectID)
 		if not app.ObjectNames[objectID] then
 			print("Object Missing Name ", objectID);
 			app.ObjectNames[objectID] = "Object #" .. objectID;
 		end
-		CacheField(group, "objectID", value);
+		CacheField(group, "objectID", objectID);
 	end
 end
 local uncacheMap = function(group, mapID, field)
