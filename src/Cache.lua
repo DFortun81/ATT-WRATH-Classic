@@ -58,6 +58,9 @@ local cacheCreatureID = function(group, value)
 		CacheField(group, "creatureID", value);
 	end
 end;
+local cacheHeaderID = function(group, value)
+	CacheField(group, "headerID", value);
+end
 local cacheMapID = function(group, mapID)
 	local count = currentMaps[mapID] or 0;
 	if count == 0 then
@@ -72,10 +75,68 @@ local cacheObjectID = function(group, value)
 	CacheField(group, "objectID", value);
 end;
 if app.Version == "[Git]" then
+	local referenceCounter = {};
+	app.ReferenceCounter = referenceCounter;
+	app.CheckReferenceCounters = function()
+		local CUSTOM_HEADERS = {};
+		for id,count in pairs(referenceCounter) do
+			if type(id) == "number" and tonumber(id) < 1 and tonumber(id) > -100000 then
+				tinsert(CUSTOM_HEADERS, { id, count });
+			end
+		end
+		for id,_ in pairs(L.HEADER_NAMES) do
+			if not referenceCounter[id] then
+				referenceCounter[id] = 1;
+				tinsert(CUSTOM_HEADERS, { id, 0 });
+			end
+		end
+		for id,_ in pairs(L.HEADER_DESCRIPTIONS) do
+			if not referenceCounter[id] then
+				tinsert(CUSTOM_HEADERS, { id, 0, " and only exists as a description..." });
+			end
+		end
+		for id,_ in pairs(L.HEADER_ICONS) do
+			if not referenceCounter[id] then
+				tinsert(CUSTOM_HEADERS, { id, 0, " and only exists as an icon..." });
+			end
+		end
+		app.Sort(CUSTOM_HEADERS, function(a, b)
+			return (a[1] or 0) < (b[1] or 0);
+		end);
+		for _,data in ipairs(CUSTOM_HEADERS) do
+			local id = data[1];
+			print("Custom Header " .. id .. " has " .. data[2] .. " references" .. (data[3] or "."));
+			local header = {};
+			if L.HEADER_NAMES[id] then header.name = L.HEADER_NAMES[id]; end
+			if L.HEADER_ICONS[id] then header.icon = L.HEADER_ICONS[id]; end
+			if L.HEADER_DESCRIPTIONS[id] then header.description = L.HEADER_DESCRIPTIONS[id]; end
+			if data[3] then
+				data[3] = header;
+			else
+				tinsert(data, header);
+			end
+		end
+		app.SetDataMember("CUSTOM_HEADERS", CUSTOM_HEADERS);
+	end
+	cacheCreatureID = function(group, npcID)
+		if npcID > 0 then
+			CacheField(group, "creatureID", npcID);
+		else
+			referenceCounter[npcID] = (referenceCounter[npcID] or 0) + 1;
+		end
+	end
+	cacheHeaderID = function(group, value)
+		if not group.type and not L["HEADER_NAMES"][value] then
+			print("Header Missing Name ", value);
+			L["HEADER_NAMES"][value] = "Header #" .. value;
+		end
+		referenceCounter[value] = (referenceCounter[value] or 0) + 1;
+		CacheField(group, "headerID", value);
+	end
 	cacheObjectID = function(group, value)
-		if not app.ObjectNames[value] then
-			print("Object Missing Name ", value);
-			app.ObjectNames[value] = "Object #" .. value;
+		if not app.ObjectNames[objectID] then
+			print("Object Missing Name ", objectID);
+			app.ObjectNames[objectID] = "Object #" .. objectID;
 		end
 		CacheField(group, "objectID", value);
 	end
@@ -133,9 +194,7 @@ local fieldConverters = {
 	["flightPathID"] = function(group, value)
 		CacheField(group, "flightPathID", value);
 	end,
-	["headerID"] = function(group, value)
-		CacheField(group, "headerID", value);
-	end,
+	["headerID"] = cacheHeaderID,
 	["illusionID"] = function(group, value)
 		CacheField(group, "illusionID", value);
 	end,
