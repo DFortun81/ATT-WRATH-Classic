@@ -1,6 +1,5 @@
 do
 local appName, app = ...;
-local DESCRIPTION_SEPARATOR = "`";
 
 -- Global locals
 local ipairs, tinsert, pairs, rawset, rawget
@@ -70,14 +69,17 @@ local cacheMapID = function(group, mapID)
 	return true;
 end;
 local cacheObjectID = function(group, value)
-	-- WARNING: DEV ONLY START
-	if not app.ObjectNames[value] then
-		print("Object Missing Name ", value);
-		app.ObjectNames[value] = "Object #" .. value;
-	end
-	-- WARNING: DEV ONLY END
 	CacheField(group, "objectID", value);
 end;
+if app.Version == "[Git]" then
+	cacheObjectID = function(group, value)
+		if not app.ObjectNames[value] then
+			print("Object Missing Name ", value);
+			app.ObjectNames[value] = "Object #" .. value;
+		end
+		CacheField(group, "objectID", value);
+	end
+end
 local uncacheMap = function(group, mapID, field)
 	local count = currentMaps[mapID] or 0;
 	if count > 0 then

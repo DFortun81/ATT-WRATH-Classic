@@ -55,6 +55,15 @@ local C_QuestLog_GetAllCompletedQuestIDs = C_QuestLog.GetAllCompletedQuestIDs;
 local ALLIANCE_FACTION_ID = Enum.FlightPathFaction.Alliance;
 local HORDE_FACTION_ID = Enum.FlightPathFaction.Horde;
 
+-- Add a header debugger
+setmetatable(app.HeaderConstants, {
+	__index = function(t, key)
+		print("MISSING HeaderConstant:", key);
+		rawset(t, key, -9999999999);
+		return -9999999999;
+	end
+});
+
 -- Local Variables
 local DESCRIPTION_SEPARATOR = "`";
 local ALLIANCE_ONLY = {
