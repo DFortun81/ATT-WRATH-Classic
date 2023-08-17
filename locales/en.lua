@@ -26,6 +26,7 @@ app.L = {
 	["RECENTLY_MADE_OBTAINABLE_PT2"] = "|CFFFF0000The more information, the better.  Thanks!|r";
 	["I_ONLY_CARE_ABOUT_MY_MAIN"] = "|cff3399ffI only care about my main.|r";
 	["MAIN_LIST_REQUIRES_REFRESH"] = "[Click to Update Progress]";
+	["VISIT_FLIGHT_MASTER"] = "Visit the Flight Master to cache.";
 
 	["FACTION_MODE_TOOLTIP"] = "Turn this setting on if you want to see Account Mode data only for races and classes of your current faction.";
 	["REQUIRES_PVP"] = "|CFF00FFDEThis may require participation in PvP.|r";

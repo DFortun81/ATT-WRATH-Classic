@@ -4,7 +4,7 @@
 local appName, _ = ...;
 local simplifiedLocale = string.sub(GetLocale(),1,2);
 
-_.FlightPathDB = {
+_.FlightPathNames = {
 	[1] = "Northshire Abbey",
 	[2] = "Stormwind, Elwynn",
 	[3] = "Programmer Isle",

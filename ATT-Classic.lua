@@ -5767,6 +5767,25 @@ local arrOfNodes = {
 	--882,	-- Mac'Aree (All of Argus)
 	--862,	-- Zuldazar (All of Zuldazar)
 	--896,	-- Drustvar (All of Kul Tiras)
+	
+	1209,	-- Kalimdor
+	1208,	-- Eastern Kingdoms
+	1467,	-- Outland
+	1384,	-- Northrend
+	1923,	-- Pandaria
+	1922,	-- Draenor
+	993,	-- Broken Isles
+	994,	-- Argus
+	1011,	-- Zandalar
+	1014,	-- Kul Tiras
+	1504,	-- Nazjatar
+	1647,	-- The Shadowlands
+	1409,	-- Exile's Reach [Correct]
+	2046,	-- Zereth Mortis
+	2057,	-- Dragon Isles
+	2055,	-- Sepulcher of the First Ones (has FPs inside)
+	2149,	-- Ohn'ahran Plains [The Nokhud Offensive] (has FPs inside)
+	2175,	-- Zaralek Cavern
 };
 app.CacheFlightPathData = function()
 	local newNodes, anyNew = {}, false;
@@ -5775,29 +5794,9 @@ app.CacheFlightPathData = function()
 		if allNodeData then
 			for j,nodeData in ipairs(allNodeData) do
 				if nodeData.name then
-					local node = ATTClassicAD.LocalizedFlightPathDB[nodeData.nodeID];
-					if node then
-						-- Update the name of the node for this flight path.
-						if node.name ~= nodeData.name then
-							node.name = nodeData.name;
-							ATTClassicAD.LocalizedFlightPathDB[nodeData.nodeID] = node;
-						end
-					else
-						node = {};
-						node.name = nodeData.name;
-						ATTClassicAD.LocalizedFlightPathDB[nodeData.nodeID] = node;
-					end
+					ATTClassicAD.LocalizedFlightPathNames[nodeData.nodeID] = nodeData.name;
 					if not app.SearchForField("flightPathID", nodeData.nodeID) then
-						if nodeData.faction and nodeData.faction > 0 then
-							node.r = nodeData.faction;
-						elseif nodeData.atlasName then
-							if nodeData.atlasName == "TaxiNode_Alliance" then
-								node.r = ALLIANCE_FACTION_ID;
-							elseif nodeData.atlasName == "TaxiNode_Horde" then
-								node.r = HORDE_FACTION_ID;
-							end
-						end
-						newNodes[nodeData.nodeID] = node;
+						newNodes[nodeData.nodeID] = nodeData.name;
 						anyNew = true;
 					end
 				end
@@ -5806,8 +5805,8 @@ app.CacheFlightPathData = function()
 	end
 	if anyNew then
 		print("Found new flight path data:");
-		for i,node in pairs(newNodes) do
-			print(i, node.name);
+		for i,name in pairs(newNodes) do
+			print(i, name);
 		end
 		SetDataMember("NewFlightPathData", newNodes);
 	end
@@ -5881,8 +5880,7 @@ app.CreateFlightPath = app.CreateClass("FlightPath", "flightPathID", {
 		return t.name;
 	end,
 	["name"] = function(t)
-		local info = ATTClassicAD.LocalizedFlightPathDB[t.flightPathID];
-		return info and info.name or "Visit the Flight Master to cache.";
+		return ATTClassicAD.LocalizedFlightPathNames[t.flightPathID] or "Visit the Flight Master to cache.";
 	end,
 	["icon"] = function(t)
 		local r = t.r;
@@ -13847,7 +13845,7 @@ app.events.ADDON_LOADED = function(addonName)
 	app.CategoryNames = nil;
 	
 	-- Cache the Localized Flight Path Data
-	ATTClassicAD.LocalizedFlightPathDB = setmetatable(ATTClassicAD.LocalizedFlightPathDB or {}, { __index = app.FlightPathDB });
+	ATTClassicAD.LocalizedFlightPathNames = setmetatable(ATTClassicAD.LocalizedFlightPathNames or {}, { __index = app.FlightPathNames });
 	app.FlightPathDB = nil;
 	
 	-- Character Data Storage
@@ -14137,7 +14135,7 @@ app.events.ADDON_LOADED = function(addonName)
 	for i,key in ipairs({
 		"GroupQuestsByGUID",
 		"LocalizedCategoryNames",
-		"LocalizedFlightPathDB",
+		"LocalizedFlightPathNames",
 		"Position",
 		"Reagents",
 		"SoftReserves",
