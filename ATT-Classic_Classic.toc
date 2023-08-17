@@ -18,7 +18,7 @@ lib\Sort.lua
 lib\Table.lua
 db\Presets.lua
 db\RaceDB.lua
-db\FlightPathDB.lua
+db\Classic\FlightPathDB.lua
 db\Classic\ExplorationDB.lua
 src\base.lua
 lib\Audio.lua
