@@ -3392,18 +3392,21 @@ if TooltipDataProcessor then
 			end
 		elseif enumType == 25 then
 			-- Macro!
-			local tooltipType = data.lines[2].type;
-			if tooltipType == 13 then
-				local spellID = data.lines[1].tooltipID;
-				if spellID then
-					AttachTooltipSearchResults(tooltip, 1, "spellID:" .. spellID, app.SearchForField, "spellID", spellID);
-					return;
-				end
-			elseif tooltipType == 29 then
-				local itemID = data.lines[1].tooltipID;
-				if itemID then
-					AttachTooltipSearchResults(tooltip, 1, "itemID:" .. itemID, app.SearchForField, "itemID", itemID);
-					return;
+			local content = data.lines;
+			if content and #content > 1 then
+				local tooltipType = content[2].type;
+				if tooltipType == 13 then
+					local spellID = content[1].tooltipID;
+					if spellID then
+						AttachTooltipSearchResults(tooltip, 1, "spellID:" .. spellID, app.SearchForField, "spellID", spellID);
+						return;
+					end
+				elseif tooltipType == 29 then
+					local itemID = content[1].tooltipID;
+					if itemID then
+						AttachTooltipSearchResults(tooltip, 1, "itemID:" .. itemID, app.SearchForField, "itemID", itemID);
+						return;
+					end
 				end
 			end
 		else
@@ -7305,6 +7308,8 @@ app.CreateHeader = app.CreateClass("AutomaticHeader", "autoID", {
 				end
 			end
 		end
+		print("Unhandled Header Type", t.type, t.autoID, typ);
+		return app.EmptyTable;
 	end,
 },
 "WithQuest", {
