@@ -19,13 +19,14 @@ lib\Table.lua
 db\Presets.lua
 db\RaceDB.lua
 db\FlightPathDB.lua
-db\Dragonflight\ExplorationDB.lua
 src\base.lua
 lib\Audio.lua
+db\Dragonflight\ExplorationDB.lua
 db\Dragonflight\CategoryDB.lua
 db\Dragonflight\ObjectDB.lua
 locales\en.lua
 src\Cache.lua
+src\Classes\base.lua
 src\Modules\Events.lua
 src\Classes\Filter Types.lua
 src\Classes\Illusions.lua

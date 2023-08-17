@@ -5,6 +5,7 @@
 --------------------------------------------------------------------------------
 -- This is a hidden frame that intercepts all of the event notifications that we have registered for.
 local appName, app = ...;
+app.EmptyTable = {};
 
 -- Generate the version identifier.
 app.Version = GetAddOnMetadata(appName, "Version");
@@ -23,162 +24,75 @@ local assetRootPath = "Interface\\Addons\\" .. appName .. "\\assets\\";
 app.asset = function(path)
 	return assetRootPath .. path;
 end
---app.Debugging = true;
-app.EmptyTable = {};
 
 -- External API
-_G["ATTC"] = app;
+-- TODO: We will use a common API eventually.
+if not _G["ATTC"] then
+	_G["ATTC"] = app;
+end
 if not _G["AllTheThings"] then
 	_G["AllTheThings"] = app;
 end
 
--- Cache information about the player.
-local _, class, classIndex = UnitClass("player");
-app.Class = class;
-app.ClassIndex = classIndex;
-local name, realm = UnitName("player");
-if not realm then realm = GetRealmName(); end
-app.GUID = UnitGUID("player");
-local classInfo = C_CreatureInfo.GetClassInfo(app.ClassIndex);
-app.Me = "|c" .. (RAID_CLASS_COLORS[classInfo.classFile].colorStr or "ff1eff00") .. name .. "-" .. realm .. "|r";
-app.Level = UnitLevel("player");
-app.Race = select(2, UnitRace("player"));
-local raceIndex = app.RaceDB[app.Race];
-app.RaceIndex = type(raceIndex) == "table" and raceIndex[app.Faction] or raceIndex;
-app.Faction = UnitFactionGroup("player");
-if app.Faction == "Horde" then
-	app.FactionID = Enum.FlightPathFaction.Horde;
-elseif app.Faction == "Alliance" then
-	app.FactionID = Enum.FlightPathFaction.Alliance;
-else
-	-- Neutral Pandaren or... something else. Scourge? Neat.
-	app.FactionID = 0;
-end
+-- Debugging
+--app.Debugging = true;
+--app.DEBUG_PRINT = true;	-- TODO: Deprecate this variable and use the other one.
 
--- Create an Event Processor.
-local events = {};
-local frame = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
-frame.Suffix = "ATTFRAME";
-if app.Debugging and false then
-frame:SetScript("OnEvent", function(self, e, ...) print(e, ...); (events[e] or print)(...); end);
-else
-frame:SetScript("OnEvent", function(self, e, ...) (events[e] or print)(...); end);
+-- Consolidated debug-only print with preceding precise timestamp
+local GetTimePreciseSec = GetTimePreciseSec;
+local DEBUG_PRINT_LAST;
+app.PrintDebug = function(...)
+	DEBUG_PRINT_LAST = GetTimePreciseSec();
+	if app.DEBUG_PRINT then print(DEBUG_PRINT_LAST,...) end
 end
-frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 0);
-frame:SetSize(1, 1);
-frame:Show();
-app.frame = frame;
-app.events = events;
-app.RegisterEvent = function(self, ...)
-	frame:RegisterEvent(...);
-end
-app.UnregisterEvent = function(self, ...)
-	frame:UnregisterEvent(...);
-end
-app.SetScript = function(self, ...)
-	local scriptName, method = ...;
-	if method then
-		frame:SetScript(scriptName, function(...)
-			method(app, ...);
-		end);
-	else
-		frame:SetScript(scriptName, nil);
+-- Consolidated debug-only print with precise frame duration since last successful print
+app.PrintDebugPrior = function(...)
+	if app.DEBUG_PRINT then
+		local now = GetTimePreciseSec();
+		if DEBUG_PRINT_LAST then
+			local diff = now - DEBUG_PRINT_LAST;
+			print(now,"<>",diff,"Stutter @", math.ceil(1 / diff), ...)
+		else
+			print(now,0,...)
+		end
+		DEBUG_PRINT_LAST = GetTimePreciseSec();
 	end
 end
-
--- Declare Event Handlers
-app.EventHandlers = {
-	OnRecalculate = {}
-};
-
-local button = CreateFrame("BUTTON", nil, frame);
-local checkbutton = CreateFrame("CHECKBUTTON", nil, frame);
-local texture = frame:CreateTexture(nil, "ARTWORK");
-local frameClass = getmetatable(frame).__index;
-local buttonClass = getmetatable(button).__index;
-local checkbuttonClass = getmetatable(checkbutton).__index;
-local textureClass = getmetatable(texture).__index;
-buttonClass.SetATTTooltip = function(self, text)
-	self:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-		GameTooltip:SetText(text, nil, nil, nil, nil, true);
-		if self.OnTooltip then self:OnTooltip(); end
-		GameTooltip:Show();
-	end);
-	self:SetScript("OnLeave", function(self)
-		if GameTooltip:GetOwner() == self then
-			GameTooltip:Hide();
-		end
-	end);
-end
-checkbuttonClass.SetATTTooltip = buttonClass.SetATTTooltip;
-frameClass.SetATTTooltip = buttonClass.SetATTTooltip;
-textureClass.SetATTSprite = function(self, name, x, y, w, h, sourceW, sourceH)
-	self:SetTexture(app.asset("content"));
-	self:SetTexCoord(x / sourceW, (x + w) / sourceW, y / sourceH, (y + h) / sourceH);
-end
-buttonClass.SetATTHighlightSprite = function(self, name, x, y, w, h, sourceW, sourceH)
-	self:SetHighlightTexture(app.asset("content"));
-	local hl = self:GetHighlightTexture();
-	hl:SetATTSprite(name, x, y, w, h, sourceW, sourceH);
-	return hl;
-end
-texture:Hide();
-button:Hide();
-
--- Extend the Frame Class and give them Coroutines!
-local coroutineStack = {};
-local function OnCoroutineUpdate()
-	for i=#coroutineStack,1,-1 do
-		if not coroutineStack[i][3]() then
-			table.remove(coroutineStack, i);
-			if #coroutineStack < 1 then
-				frame:SetScript("OnUpdate", nil);
-				--print("Coroutines Finished.");
-			end
-		--else
-			--print(coroutineStack[i][1], coroutineStack[i][2]);
-		end
-	end
-end
-local function Push(self, name, method)
-	if #coroutineStack < 1 then
-		frame:SetScript("OnUpdate", OnCoroutineUpdate);
-	end
-	local owner = self.Suffix or (self.GetName and self:GetName()) or self.text;
-	--print(owner, "Push ->", name);
-	table.insert(coroutineStack, { owner, name, method });
-end
-local function StartATTCoroutine(self, name, method)
-	if method then
-		local refreshing = self.__attActiveCoroutines;
-		if not refreshing then
-			refreshing = {};
-			self.__attActiveCoroutines = refreshing;
-		end
-		if not refreshing[name] then
-			refreshing[name] = true;
-			local instance = coroutine.create(method);
-			Push(self, name, function()
-				-- Check the status of the coroutine
-				if instance and coroutine.status(instance) ~= "dead" then
-					local ok, err = coroutine.resume(instance, self);
-					if ok then return true;	-- This means more work is required.
-					else
-						-- Show the error. Returning nothing is the same as canceling the work.
-						error(err,2);
-					end
+--[[ Performance Tracking ]
+do
+local pairs, tinsert, table_concat
+	= pairs, tinsert, table.concat;
+app.__perf = {};
+app.PrintPerf = function()
+	local h = app.__perf;
+	if h then
+		local blob, line = {}, {};
+		for type,typeData in pairs(h) do
+			for k,v in pairs(typeData) do
+				if not k:find("_Time") then
+					line[1] = type;
+					line[2] = k;
+					line[3] = v;
+					line[4] = typeData[k.."_Time"];
+					tinsert(blob, table_concat(line, ","))
 				end
-				refreshing[name] = nil;
-			end);
+			end
 		end
+		local csv = table_concat(blob, "\n");
+		app:ShowPopupDialogWithMultiLineEditBox(csv);
 	end
 end
-frameClass.StartATTCoroutine = StartATTCoroutine;
-buttonClass.StartATTCoroutine = StartATTCoroutine;
-app.StartATTCoroutine = function(self, ...)
-	StartATTCoroutine(frame, ...);
+app.ClearPerf = function()
+	local h = app.__perf;
+	if h then
+		for _,typeData in pairs(h) do
+			wipe(typeData);
+		end
+	end
+	app.print("Cleared Performance Stats");
 end
+end	-- Performance Tracking --]]
+
 
 -- API Functions
 local function AssignFieldValue(group, field, value)
@@ -218,10 +132,189 @@ local function CloneReference(group)
 	end
 	return setmetatable(clone, { __index = group });
 end
+local function GetRelativeValue(group, field)
+	if group then
+		return group[field] or GetRelativeValue(group.sourceParent or group.parent, field);
+	end
+end
 app.AssignFieldValue = AssignFieldValue;
 app.CloneArray = CloneArray;
 app.CloneDictionary = CloneDictionary;
 app.CloneReference = CloneReference;
+app.GetRelativeValue = GetRelativeValue;
+
+-- Declare Event Handlers
+app.EventHandlers = {
+	OnRecalculate = {}
+};
+
+-- Cache information about the player.
+app.Gender = UnitSex("player");
+app.GUID = UnitGUID("player");
+app.Level = UnitLevel("player");
+
+-- Determine the player's faction.
+local factionGroup = UnitFactionGroup("player");
+app.Faction = factionGroup;
+if factionGroup == "Horde" then
+	app.FactionID = Enum.FlightPathFaction.Horde;
+elseif factionGroup == "Alliance" then
+	app.FactionID = Enum.FlightPathFaction.Alliance;
+else
+	-- Neutral Pandaren or... something else. Scourge? Neat.
+	app.FactionID = 0;
+end
+
+-- Determine the player's name and class information.
+local name, realm = UnitName("player");
+if not realm then realm = GetRealmName(); end
+local className, classFile, classID = UnitClass("player");
+local classColorPrefix = "|c".. (RAID_CLASS_COLORS[classFile].colorStr or "ff1eff00");
+app.Me = classColorPrefix .. name .. "-" .. realm .. "|r";
+app.ClassName = classColorPrefix..className.."|r";
+app.ClassIndex = classID;
+app.Class = classFile;
+
+-- Determine the player's race information.
+local raceName, race, raceID = UnitRace("player");
+local raceIndex = app.RaceDB[race] or raceID;
+app.RaceIndex = type(raceIndex) == "table" and raceIndex[factionGroup] or raceIndex;
+app.RaceID = raceID;
+app.Race = race;
+
+-- Create an Event Processor.
+local events = {};
+local frame = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate");
+frame.Suffix = "ATTFRAME";
+if app.Debugging then
+frame:SetScript("OnEvent", function(self, e, ...)
+	app.PrintDebug(e,...);
+	(events[e] or print)(...);
+	app.PrintDebugPrior(e);
+end);
+else
+frame:SetScript("OnEvent", function(self, e, ...) (events[e] or print)(...); end);
+end
+frame:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", 0, 0);
+frame:SetSize(1, 1);
+frame:Show();
+app.frame = frame;
+app.events = events;
+app.RegisterEvent = function(self, ...)
+	frame:RegisterEvent(...);
+end
+app.UnregisterEvent = function(self, ...)
+	frame:UnregisterEvent(...);
+end
+app.SetScript = function(self, ...)
+	local scriptName, method = ...;
+	if method then
+		frame:SetScript(scriptName, function(...)
+			method(app, ...);
+		end);
+	else
+		frame:SetScript(scriptName, nil);
+	end
+end
+
+(function()
+-- Extend the Frame Class and give them ATT-Style Coroutines and Tooltips!
+local coroutineStack = {};
+local function OnCoroutineUpdate()
+	for i=#coroutineStack,1,-1 do
+		if not coroutineStack[i][3]() then
+			table.remove(coroutineStack, i);
+			if #coroutineStack < 1 then
+				frame:SetScript("OnUpdate", nil);
+				--print("Coroutines Finished.");
+			end
+		--else
+			--print(coroutineStack[i][1], coroutineStack[i][2]);
+		end
+	end
+end
+local function Push(self, name, method)
+	if #coroutineStack < 1 then
+		frame:SetScript("OnUpdate", OnCoroutineUpdate);
+	end
+	local owner = self.Suffix or (self.GetName and self:GetName()) or self.text;
+	--print(owner, "Push ->", name);
+	table.insert(coroutineStack, { owner, name, method });
+end
+local function StartATTCoroutine(self, name, method)
+	if method then
+		local refreshing = self.__attActiveCoroutines;
+		if not refreshing then
+			refreshing = {};
+			self.__attActiveCoroutines = refreshing;
+		end
+		if not refreshing[name] then
+			refreshing[name] = true;
+			local co = coroutine.create(method);
+			Push(self, name, function()
+				-- Check the status of the coroutine
+				if co and coroutine.status(co) ~= "dead" then
+					local ok, err = coroutine.resume(co, self);
+					if ok then return true;	-- This means more work is required.
+					else
+						-- Show the error. Returning nothing is the same as canceling the work.
+						print(debugstack(co));
+						error(err,2);
+					end
+				end
+				refreshing[name] = nil;
+			end);
+		end
+	end
+end
+local SetATTTooltip = function(self, text)
+	self:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetText(text, nil, nil, nil, nil, true);
+		if self.OnTooltip then self:OnTooltip(); end
+		GameTooltip:Show();
+	end);
+	self:SetScript("OnLeave", function(self)
+		if GameTooltip:GetOwner() == self then
+			GameTooltip:Hide();
+		end
+	end);
+end
+
+local frameClass = getmetatable(frame).__index;
+frameClass.SetATTTooltip = SetATTTooltip;
+frameClass.StartATTCoroutine = StartATTCoroutine;
+app.StartATTCoroutine = function(self, ...)
+	StartATTCoroutine(frame, ...);
+end
+
+local button = CreateFrame("BUTTON", nil, frame);
+local buttonClass = getmetatable(button).__index;
+buttonClass.StartATTCoroutine = StartATTCoroutine;
+buttonClass.SetATTTooltip = SetATTTooltip;
+buttonClass.SetATTHighlightSprite = function(self, name, x, y, w, h, sourceW, sourceH)
+	self:SetHighlightTexture(app.asset("content"));
+	local hl = self:GetHighlightTexture();
+	hl:SetATTSprite(name, x, y, w, h, sourceW, sourceH);
+	return hl;
+end
+button:Hide();
+
+local checkbutton = CreateFrame("CHECKBUTTON", nil, frame);
+getmetatable(checkbutton).__index.SetATTTooltip = SetATTTooltip;
+checkbutton:Hide();
+
+local editbox = CreateFrame("EDITBOX", nil, frame);
+getmetatable(editbox).__index.SetATTTooltip = SetATTTooltip;
+editbox:Hide();
+
+local texture = frame:CreateTexture(nil, "ARTWORK");
+getmetatable(texture).__index.SetATTSprite = function(self, name, x, y, w, h, sourceW, sourceH)
+	self:SetTexture(app.asset("content"));
+	self:SetTexCoord(x / sourceW, (x + w) / sourceW, y / sourceH, (y + h) / sourceH);
+end
+texture:Hide();
+end)();
 
 function app:ShowPopupDialog(msg, callback)
 	local popup = StaticPopupDialogs["ALL_THE_THINGS"];
@@ -255,7 +348,7 @@ function app:ShowPopupDialogWithEditBox(msg, text, callback, timeout)
 			enterClicksFirstButton = true,
 			hasEditBox = true,
 			OnAccept = function(self)
-				if popup.callback then
+				if popup.callback and type(popup.callback) == "function" then
 					popup.callback(self.editBox:GetText());
 				end
 			end,
@@ -267,13 +360,16 @@ function app:ShowPopupDialogWithEditBox(msg, text, callback, timeout)
 		self.editBox:SetText(text);
 		self.editBox:SetJustifyH("CENTER");
 		self.editBox:SetWidth(240);
+		if self.editBox.HighlightText then
+			self.editBox:HighlightText();
+		end
 	end;
-	popup.text = msg or "Ctrl+A, Ctrl+C to Copy to your Clipboard.";
+	popup.text = msg or "";
 	popup.callback = callback;
 	StaticPopup_Hide ("ALL_THE_THINGS_EDITBOX");
 	StaticPopup_Show ("ALL_THE_THINGS_EDITBOX");
 end
-function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
+function app:ShowPopupDialogWithMultiLineEditBox(text, onclick, label)
 	if not ATTEditBox then
 		local f = CreateFrame("Frame", "ATTEditBox", UIParent, "DialogBoxFrame")
 		f:SetPoint("CENTER")
@@ -298,8 +394,19 @@ function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
 		local sf = CreateFrame("ScrollFrame", "ATTEditBoxScrollFrame", ATTEditBox, "UIPanelScrollFrameTemplate")
 		sf:SetPoint("LEFT", 16, 0)
 		sf:SetPoint("RIGHT", -32, 0)
-		sf:SetPoint("TOP", 0, -16)
 		sf:SetPoint("BOTTOM", ATTEditBoxButton, "TOP", 0, 0)
+		
+		-- Label (conditionally create)
+		if label then
+			local l = f:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
+			l:SetPoint("TOP", f, "TOP", 0, -3);
+			l:SetJustifyH("CENTER");
+			l:SetText(label or "");
+			f.Label = l;
+			sf:SetPoint("TOP", l, "BOTTOM", 0, -5)
+		else
+			sf:SetPoint("TOP", 0, -16);
+		end
 		
 		-- EditBox
 		local eb = CreateFrame("EditBox", "ATTEditBoxEditBox", ATTEditBoxScrollFrame)
@@ -319,7 +426,7 @@ function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
 		-- Resizable
 		f:SetResizable(true)
 		if f.SetResizeBounds then
-			f:SetResizeBounds(150, 100);
+			f:SetResizeBounds(150, 100, 600, 600);
 		else
 			f:SetMinResize(150, 100);
 		end
@@ -353,237 +460,9 @@ function app:ShowPopupDialogWithMultiLineEditBox(text, onclick)
 	end
 	ATTEditBox:Show()
 end
-
--- Lib Helpers
-local keysByPriority = {	-- Sorted by frequency of use.
-	"itemID",
-	"questID",
-	"npcID",
-	"creatureID",
-	"objectID",
-	"mapID",
-	"currencyID",
-	"spellID",
-	"classID",
-	"professionID",
-	"categoryID",
-	"illusionID",
-	"headerID",
-};
-local function GetKey(t)
-	for i,key in ipairs(keysByPriority) do
-		if rawget(t, key) then
-			return key;
-		end
-	end
-	for i,key in ipairs(keysByPriority) do
-		if t[key] then	-- This goes a bit deeper.
-			return key;
-		end
-	end
+function app:ShowPopupDialogToReport(reportReason, text)
+	app:ShowPopupDialogWithMultiLineEditBox(text, nil, (reportReason or "Missing Data").."\n"..app.L["PLEASE_REPORT_MESSAGE"]..app.L["REPORT_TIP"]);
 end
-local DefaultFields = {
-	-- Cloned groups will not directly have a parent, but they will instead have a sourceParent, so fill in with that instead
-	["parent"] = function(t)
-		return t.sourceParent;
-	end,
-	-- A semi-unique string value that identifies this object based on its key, or text if it doesn't have one.
-	["hash"] = function(t)
-		local key = t.key or GetKey(t);
-		if key then
-			return key .. t[key];
-		end
-		return t.text;
-	end,
-	-- Default text should be a valid link or the name
-	["text"] = function(t)
-		return t.link or t.name;
-	end,
-	-- Whether or not something is repeatable.
-	["repeatable"] = function(t)
-		return t.isDaily or t.isWeekly or t.isMonthly or t.isYearly or t.isWorldQuest;
-	end,
-	["progress"] = function(t) return 0; end,
-	["total"] = function(t) return 0; end,
-};
-
-local constructor = function(id, t, typeID)
-	if t then
-		if not t.g and t[1] then
-			return { g=t, [typeID]=id };
-		else
-			t[typeID] = id;
-			return t;
-		end
-	else
-		return {[typeID] = id};
-	end
-end
-
--- Creates a Base Object Table which will evaluate the provided set of 'fields' (each field value being a keyed function)
-local classDefinitions, _cache = {};
-app.BaseObjectFields = function(fields, className)
-	if not className then
-		print("A Class Name must be declared when using BaseObjectFields");
-	end
-	local class = { __type = function() return className; end };
-	if not classDefinitions[className] then
-		classDefinitions[className] = class;
-	else
-		print("A Class has already been defined with that name!", className);
-	end
-	if fields then
-		for key,method in pairs(fields) do
-			class[key] = method;
-		end
-	end
-	
-	-- Inject the default fields into the class
-	for key,method in pairs(DefaultFields) do
-		if not rawget(class, key) then
-			class[key] = method;
-		end
-	end
-	return {
-		__index = function(t, key)
-			_cache = rawget(class, key);
-			if _cache then return _cache(t); end
-		end
-	};
-end
-app.BaseClass = app.BaseObjectFields(nil, "BaseClass");
-
-app.CreateClass = function(className, classKey, fields, ...)
-	-- Validate arguments
-	if not className then
-		print("A Class Name must be declared when using CreateClass");
-	end
-	if not classKey then
-		print("A Class Key must be declared when using CreateClass");
-	end
-	if not fields then
-		print("Fields must be declared when using CreateClass");
-	end
-	
-	-- Ensure that a key field exists!
-	if not fields.key then
-		fields.key = function() return classKey; end;
-	end
-	
-	-- If this object supports collectibleAsCost, that means it needs a way to fallback to a version of itself without any cost evaluations should it detect that it doesn't use it anywhere.
-	if fields.collectibleAsCost then
-		local simpleclass = {};
-		for key,method in pairs(fields) do
-			simpleclass[key] = method;
-		end
-		simpleclass.collectibleAsCost = function(t) return false; end;
-		simpleclass.collectedAsCost = nil;
-		local simplemeta = app.BaseObjectFields(simpleclass, "Simple" .. className);
-		fields.simplemeta = function(t) return simplemeta; end;
-	end
-	
-	local args = { ... };
-	local total = #args;
-	if total > 0 then
-		local conditionals = {};
-		for i=1,total,3 do
-			local class = args[i + 1];
-			table.insert(conditionals, args[i + 2]);
-			if class then
-				for key,method in pairs(fields) do
-					if not rawget(class, key) then
-						class[key] = method;
-					end
-				end
-				if class.collectibleAsCost then
-					local simpleclass = {};
-					for key,method in pairs(class) do
-						simpleclass[key] = method;
-					end
-					simpleclass.collectibleAsCost = function(t) return false; end;
-					simpleclass.collectedAsCost = nil;
-					local simplemeta = app.BaseObjectFields(simpleclass, "Simple" .. className .. args[i]);
-					class.simplemeta = function(t) return simplemeta; end;
-				end
-				table.insert(conditionals, app.BaseObjectFields(class, className .. args[i]));
-			else
-				table.insert(conditionals, {});
-			end
-		end
-		total = #conditionals;
-		fields.conditionals = conditionals;
-		local Class = app.BaseObjectFields(fields, className);
-		return function(id, t)
-			t = constructor(id, t, classKey);
-			for i=1,total,2 do
-				if conditionals[i](t) then
-					return setmetatable(t, conditionals[i + 1]);
-				end
-			end
-			return setmetatable(t, Class);
-		end, Class;
-	else
-		local Class = app.BaseObjectFields(fields, className);
-		return function(id, t)
-			return setmetatable(constructor(id, t, classKey), Class);
-		end, Class;
-	end
-end
-app.ExtendClass = function(baseClassName, className, classKey, fields, ...)
-	local baseClass = classDefinitions[baseClassName];
-	if baseClass then
-		if not fields then fields = {}; end
-		for key,method in pairs(baseClass) do
-			if not fields[key] then
-				fields[key] = method;
-			end
-		end
-		fields.__type = nil;
-		fields.key = nil;
-	else
-		print("Could not find specified base class:", baseClassName);
-	end
-	return app.CreateClass(className, classKey, fields, ...);
-end
-
---[[
--- Proof of Concept with Class Conditionals
-local fields = {
-	["name"] = function(t)
-		return "Loki";
-	end,
-	["OnTest"] = function()
-		return function(t)
-			print(t.name .. " (" .. t.__type .. "): I'm a god!");
-		end
-	end,
-};
-local fieldsWithArgs = {
-	OnTest = function()
-		return function(t)
-			print(t.name .. " (" .. t.__type .. "): I'm a variant!");
-		end
-	end
-};
-local fieldsWithFeeling = {
-	OnTest = function()
-		return function(t)
-			print(t.name .. " (" .. t.__type .. "): I'm a variant... with feeling!");
-		end
-	end
-};
-app.CreateExample = app.CreateClass("Example", "exampleID", fields,
-	"WithArgs", fieldsWithArgs, (function(t) return t.args; end),
-	"WithFeeling", fieldsWithFeeling, (function(t) return t.feeling; end));
-
-for i,instance in ipairs({
-	app.CreateExample(1),
-	app.CreateExample(2, { name = "Alligator Loki", args = "I'm a Crocodile!" }),
-	app.CreateExample(3, { name = "Sylvie", feeling = "Pretty Neat" }),
-}) do
-	instance.OnTest(instance);
-end
-]]--
 
 -- Define Modules
 app.Modules = {};

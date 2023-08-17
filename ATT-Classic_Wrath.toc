@@ -26,6 +26,7 @@ db\Wrath\CategoryDB.lua
 db\Wrath\ObjectDB.lua
 locales\en.lua
 src\Cache.lua
+src\Classes\base.lua
 src\Modules\Events.lua
 src\Classes\Filter Types.lua
 src\Classes\Illusions.lua

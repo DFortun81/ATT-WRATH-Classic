@@ -4,21 +4,18 @@ local L = app.L;
 local searchCache = app.searchCache;
 
 -- Global locals
-local _GetRaidRosterInfo, _GuildControlGetNumRanks, _GetGuildRosterInfo, _GetGuildRosterLastOnline =
-	   GetRaidRosterInfo,  GuildControlGetNumRanks,  GetGuildRosterInfo,  GetGuildRosterLastOnline;
-local _GetItemInfo = _G["GetItemInfo"];
-local _GetItemInfoInstant = _G["GetItemInfoInstant"];
+local GetRaidRosterInfo, GuildControlGetNumRanks, GetGuildRosterInfo, GetGuildRosterLastOnline =
+	  GetRaidRosterInfo, GuildControlGetNumRanks, GetGuildRosterInfo, GetGuildRosterLastOnline;
+local GetItemInfo, GetItemInfoInstant = GetItemInfo, GetItemInfoInstant;
 local GetLootMethod, GetRealmName, UnitName, UnitGUID, UnitInRaid, UnitInParty =
 	  GetLootMethod, GetRealmName, UnitName, UnitGUID, UnitInRaid, UnitInParty;
 local strsplit, strsub = strsplit, strsub;
 
+-- App locals
+local GetRelativeValue = app.GetRelativeValue;
+
 -- Helper Functions
 -- TODO: Make these functions in an internal ATT helper class or something
-local function GetRelativeValue(group, field)
-	if group then
-		return group[field] or GetRelativeValue(group.parent, field);
-	end
-end
 local function SendGroupChatMessage(msg)
 	if IsInRaid() then
 		SendChatMessage(msg, "RAID", nil, nil);
@@ -74,7 +71,7 @@ local PlayerGUIDFromInfo = setmetatable({}, { __index = function(t, info)
 		local count = GetNumGuildMembers();
 		if count > 0 then
 			for guildIndex = 1, count, 1 do
-				local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = _GetGuildRosterInfo(guildIndex);
+				local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(guildIndex);
 				if name and guid then
 					rawset(t, strsplit('-', name), guid);
 				end
@@ -134,7 +131,7 @@ local function ParseSoftReserve(guid, cmd, isSilentMode, isCurrentPlayer)
 		end
 		
 		-- Parse out the itemID if possible.
-		local itemID = tonumber(cmd) or _GetItemInfoInstant(cmd);
+		local itemID = tonumber(cmd) or GetItemInfoInstant(cmd);
 		if itemID then cmd = "itemid:" .. itemID; end
 		
 		-- Search for the Link in the database
@@ -210,7 +207,7 @@ local function QuerySoftReserve(guid, cmd, target)
 		end
 		
 		-- Parse out the itemID if possible.
-		local itemID = tonumber(cmd) or _GetItemInfoInstant(cmd);
+		local itemID = tonumber(cmd) or GetItemInfoInstant(cmd);
 		if itemID then cmd = "itemid:" .. itemID; end
 		
 		-- Search for the Link in the database
@@ -358,12 +355,12 @@ UpdateSoftReserve = function(guid, itemID, timeStamp, silentMode, isCurrentPlaye
 				local searchResults = app.SearchForLink("itemid:" .. itemID);
 				if searchResults and #searchResults > 0 then
 					if guid ~= UnitGUID("player") then
-						SendGUIDWhisper("SR: Updated to " .. (searchResults[1].link or _GetItemInfo(itemID) or ("itemid:" .. itemID)), guid);
+						SendGUIDWhisper("SR: Updated to " .. (searchResults[1].link or GetItemInfo(itemID) or ("itemid:" .. itemID)), guid);
 					end
 					if IsPrimaryLooter() then
 						C_ChatInfo.SendAddonMessage("ATTC", "!\tsrml\t" .. guid .. "\t" .. itemID, GetGroupType());
 						if app.Settings:GetTooltipSetting("SoftReservesLocked") then
-							SendGroupChatMessage("Updated " .. (SoftReserveWindow.GUIDToName(guid) or UnitName(guid) or guid) .. " to " .. (searchResults[1].link or _GetItemInfo(itemID) or ("itemid:" .. itemID)));
+							SendGroupChatMessage("Updated " .. (SoftReserveWindow.GUIDToName(guid) or UnitName(guid) or guid) .. " to " .. (searchResults[1].link or GetItemInfo(itemID) or ("itemid:" .. itemID)));
 						end
 					end
 				end
@@ -767,7 +764,7 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 									end
 									persistence[itemID] = tonumber(g[3]);
 									success = success + 1;
-									-- app.print(g[1] .. ": " .. (select(2, _GetItemInfo(itemID)) or g[2]) .. " [+" .. g[3] .. "]");
+									-- app.print(g[1] .. ": " .. (select(2, GetItemInfo(itemID)) or g[2]) .. " [+" .. g[3] .. "]");
 								else
 									app.print("FAILED TO IMPORT: ", g[1], g[2], guid, itemID);
 								end
@@ -933,7 +930,7 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 					end
 					-- Insert Guild Members
 					local g, groupMembers = data.g, self.groupMembers;
-					local numRanks = _GuildControlGetNumRanks();
+					local numRanks = GuildControlGetNumRanks();
 					if numRanks > 0 then
 						for rankIndex = #g + 1, numRanks, 1 do
 							table.insert(g, {
@@ -950,11 +947,11 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 						local count = GetNumGuildMembers();
 						if count > 0 then
 							for guildIndex = 1, count, 1 do
-								local _, _, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = _GetGuildRosterInfo(guildIndex);
+								local _, _, rankIndex, _, _, _, _, _, _, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(guildIndex);
 								if guid then
 									if not groupMembers[guid] then
 										groupMembers[guid] = true;
-										local yearsOffline, monthsOffline, daysOffline, hoursOffline = _GetGuildRosterLastOnline(guildIndex);
+										local yearsOffline, monthsOffline, daysOffline, hoursOffline = GetGuildRosterLastOnline(guildIndex);
 										if (((yearsOffline or 0) * 12) + (monthsOffline or 0)) < 3 or debugMode then
 											local a = g[rankIndex + 1];
 											if a then table.insert(a.g, app.CreateSoftReserveUnit(guid, { parent = a, visible = true })); end
@@ -1035,7 +1032,7 @@ SoftReserveWindow = app:GetWindow("SoftReserves", {
 				if count > 0 then
 					local groupies = { [name] = true };
 					for raidIndex = 1, 40, 1 do
-						name = _GetRaidRosterInfo(raidIndex);
+						name = GetRaidRosterInfo(raidIndex);
 						if name then
 							groupies[name] = true;
 							if not groupMembers[name] then
@@ -1174,7 +1171,7 @@ app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
 	["itemText"] = function(t)
 		local itemID = t.itemID;
 		if itemID then
-			local itemName, itemLink,_,_,_,_,_,_,_,icon = _GetItemInfo(itemID);
+			local itemName, itemLink,_,_,_,_,_,_,_,icon = GetItemInfo(itemID);
 			if itemLink then
 				return (icon and ("|T" .. icon .. ":0|t") or "") .. itemLink .. (t.mapText or "");
 			else
@@ -1227,10 +1224,10 @@ app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
 		end
 	end,
 	["preview"] = function(t)
-		return t.itemID and select(5, _GetItemInfoInstant(t.itemID));
+		return t.itemID and select(5, GetItemInfoInstant(t.itemID));
 	end,
 	["link"] = function(t)
-		return t.itemID and select(2, _GetItemInfo(t.itemID));
+		return t.itemID and select(2, GetItemInfo(t.itemID));
 	end,
 	["tooltipText"] = function(t)
 		local text = t.classText;
@@ -1253,7 +1250,7 @@ app.CreateSoftReserveUnit = app.ExtendClass("Unit", "SoftReserveUnit", "unit", {
 	["itemName"] = function(t)
 		local itemID = t.itemID;
 		if itemID then
-			local itemName = _GetItemInfo(itemID);
+			local itemName = GetItemInfo(itemID);
 			if itemName then
 				return itemName;
 			else

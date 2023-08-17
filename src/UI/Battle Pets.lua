@@ -6,12 +6,8 @@ local contains, MergeClone = app.contains, app.MergeClone;
 local ipairs, pairs, tinsert, tremove =
 	  ipairs, pairs, tinsert, table.remove;
 
--- Temporary locals (TODO: Move these)
-local function GetRelativeValue(group, field)
-	if group then
-		return group[field] or GetRelativeValue(group.parent, field);
-	end
-end
+-- App locals
+local GetRelativeValue = app.GetRelativeValue;
 
 -- Implementation
 app:GetWindow("Battle Pets", {

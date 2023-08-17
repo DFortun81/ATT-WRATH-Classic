@@ -9,11 +9,7 @@ local GetAchievementCriteriaInfo, GetAchievementNumCriteria, GetAchievementInfo,
 	  GetAchievementCriteriaInfo, GetAchievementNumCriteria, GetAchievementInfo, GetCategoryInfo, GetCategoryList;
 
 -- App locals
-local function GetRelativeValue(group, field)
-	if group then
-		return group[field] or GetRelativeValue(group.parent, field);
-	end
-end
+local GetRelativeValue = app.GetRelativeValue;
 
 -- Module locals
 local function cacheAchievementData(self, categories, g)
