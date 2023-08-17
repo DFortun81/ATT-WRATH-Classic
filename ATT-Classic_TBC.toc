@@ -31,7 +31,6 @@ src\Modules\Events.lua
 src\Classes\Filter Types.lua
 src\Classes\Illusions.lua
 src\Classes\PVP Ranks.lua
-locales\en_auto.lua
 locales\es.lua
 locales\de.lua
 locales\fr.lua
